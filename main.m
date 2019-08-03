@@ -52,7 +52,7 @@ end
 
 % % Plot the States and Animate
 state_plot(flight)
-% animation_plot(flight)
+animation_plot(flight)
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
 
 % figure(3)
