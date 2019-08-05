@@ -1,16 +1,16 @@
 clear
 addpath(genpath(pwd));
 
-tf = 5;
+tf = 10;
 fc_hz = 100;
 act_hz = 1000;
 
-model  = model_init('simple',act_hz,fc_hz); % Initialize Physics Model
+model  = model_init('simple vII',act_hz,fc_hz); % Initialize Physics Model
 s_est  = se_init('mocap',fc_hz);            % Initialize State Estimator
 fc     = fc_init(model,'ilqr');             % Initialize Controller
-wp_t   = wp_init('square',tf,'no plot');     % Initialize timestamped keyframes
-FT_ext = nudge_init(act_hz,tf);             % Initialize External Forces
-flight = flight_init(model,tf);             % Initialize Flight Variables
+wp     = wp_init('square',tf,'no plot');     % Initialize timestamped keyframes
+FT_ext = nudge_init(act_hz,tf,'off');             % Initialize External Forces
+flight = flight_init(model,tf,wp);             % Initialize Flight Variables
 
 % Simulation
 k_fc = 1;       % Flight Control Step Counter
@@ -23,7 +23,7 @@ for k_act = 1:(length(flight.t_act)-1)
     % State Estimation and Control
     if abs(curr_time - flight.t_fc(k_fc)) < 1e-6
         % Display Current Time and Current Time
-        curr_wp = wp_t.x(1:3,fc.wp);
+        curr_wp = wp.x(1:3,fc.wp);
         disp(['[main]: Current Time: ',num2str(curr_time),' Current WP: ',mat2str(curr_wp)]);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -31,7 +31,7 @@ for k_act = 1:(length(flight.t_act)-1)
         x_est = flight.x_act(:,k_act);
         
         % Control
-        [curr_m_cmd, fc] = ilqr(x_est,model,fc,wp_t);
+        [curr_m_cmd, fc] = ilqr(x_est,model,fc,wp);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % Log the state est and motor cmd and update fc step tracker

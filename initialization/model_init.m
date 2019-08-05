@@ -50,6 +50,29 @@ switch mode
         
         % Model Noise
         model.Q = 0.0*eye(6);
+    case 'simple vII'
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [7.52e-6 0.00 0.00]';
+        model.b_est  = 0.015; 
+        model.kd_est = 0.0;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [7.52e-6 0.00 0.00]';
+        model.b_act  = 0.015;
+        model.kd_act = 0.0;
+        model.L_act  = 0.0885;
+        
+        % Model Noise
+        model.Q = 0.0*eye(6);
 end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');

@@ -4,9 +4,17 @@ switch traj
     case 'hover'
         t = [0 tf];
         
-        x = zeros(12,3);
+        x = zeros(12,2);
+        x(:,1) = [0 ; 0 ; 1 ; zeros(9,1)];
+        x(:,2) = [0 ; 0 ; 1 ; zeros(9,1)];
         
         N_wp = 2;
+    case 'hi-res hover'
+        N_wp = tf/0.5 + 1;
+        t = linspace(0,tf,N_wp);
+        
+        x = zeros(12,N_wp);
+        x(3,:) = ones(1,N_wp);        
     case 'climb'
         t = [0 tf];
         
@@ -14,6 +22,7 @@ switch traj
         x(:,2) = [0 ; 0 ; 1 ; zeros(9,1)];
         
         N_wp = 2;
+
     case 'line'
         t = [0 0.5*tf tf];
         
@@ -34,6 +43,28 @@ switch traj
         x(:,7) = [0 ; 0 ; 1; zeros(9,1)];
         
         N_wp = 7;
+    case 'hi-res square'
+        N_wp = tf/0.5 + 1;
+        t = linspace(0,tf,N_wp);
+        
+        kfr = 6;
+        x = zeros(12,N_wp);
+
+        for k = 1:N_wp
+            if     (k >= round(0*N_wp/kfr)) && (k < round(1*N_wp/kfr))
+                x(:,k) = [0 ; 0 ; 0; zeros(9,1)];
+            elseif (k >= round(1*N_wp/kfr)) && (k < round(2*N_wp/kfr))
+                x(:,k) = [0 ; 0 ; 1; zeros(9,1)];
+            elseif (k >= round(2*N_wp/kfr)) && (k < round(3*N_wp/kfr))
+                x(:,k) = [0 ; 2 ; 1; zeros(9,1)];
+            elseif (k >= round(3*N_wp/kfr)) && (k < round(4*N_wp/kfr))
+                x(:,k) = [2 ; 2 ; 1; zeros(9,1)];
+            elseif (k >= round(4*N_wp/kfr)) && (k < round(5*N_wp/kfr))
+                x(:,k) = [2 ; 0 ; 1; zeros(9,1)];
+            elseif (k >= round(5*N_wp/kfr)) && (k <= round(6*N_wp/kfr))
+                x(:,k) = [0 ; 0 ; 1; zeros(9,1)];
+            end
+        end
     case 'slit'
 
     otherwise
