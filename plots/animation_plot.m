@@ -1,32 +1,47 @@
-function animation_plot(flight)
+function animation_plot(flight,wp)
+
+map = wp.map;
+    
     t_act = flight.t_act;
     x_act = flight.x_act;
     
     dt = t_act(1,2)-t_act(1,1);
-    
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Define plot window and clear previous stuff
     figure(2)
     clf
-%     subplot(2,2,3);
-%     plot(time.t_act,states(3,:));
-%     title('Z Position (over time)');
-%     
-%     subplot(2,2,4);
-%     plot(states(1,:),states(2,:));
-%     title('XY Position (net)');
-%     xlim([-5 5]);
-%     ylim([-5 5]);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Generate flight room map
+    gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
+    gate_h.LineWidth = 3;
+    xlim(wp.x_lim);
+    ylim(wp.y_lim);
+    zlim(wp.z_lim);
+    grid on
+    
+    % Set Camera Angle
+    daspect([1 1 1])
+    view(320,20);
+%     view(90,0);
 
-    % Plot Craft Angles
+    hold on
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the Initial Frame
+    
+    % Body Frame Axes
     vect_x = [0.2 0.0 0.0]';
     vect_y = [0.0 0.2 0.0]';
-    vect_z = [0.0 0.0 0.2]';
-
-
-    % Construct Rotation Matrices
+    vect_z = [0.0 0.0 0.1]';
+    
+    % Construct Rotation Matrix
     q0 = sqrt(1-x_act(7:9,1)'*x_act(7:9,1));
     quat = [q0 ; x_act(7:9,1)];
-    
     bRw = quat2rotm(quat');
+    
+    % Determine World Frame Pose of Craft Axes
     pos = x_act(1:3,1);
     
     x_arrow = [pos pos+(bRw*vect_x)];
@@ -37,24 +52,22 @@ function animation_plot(flight)
     y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
     z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
     
-%     subplot(2,2,[1 2]);
+    % Plot It!
     h_persp = plot3(x,y,z,'linewidth',3);
-    hold on
     plot3(x_act(1,:),x_act(2,:),x_act(3,:));
+    
+    % Set the Correct Colors
     h_persp(1).Color = [1 0 0];
     h_persp(2).Color = [0 1 0];
     h_persp(3).Color = [0 0 1];
+
+    % Labels and Legend
     xlabel('x-axis');
     ylabel('y-axis');
     zlabel('z-axis');
     legend('X','Y','Z','trajectory');
-    grid on
-    xlim([-8.1 8.1]);
-    ylim([-3.2 3.2]);
-    zlim([0 3]);
-    daspect([1 1 1])
-    view(320,20);
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the Remainder with REAL-TIME
     curr_time = dt;
     while (curr_time <= t_act(end))
         tic

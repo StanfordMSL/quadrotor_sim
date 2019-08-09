@@ -1,22 +1,20 @@
-function fc = ilqr_init(fc,wp,model,x_fc)
+function nom = ilqr_init(t_fc,x_fc,wp,model)
 
-t1 = wp.t(fc.wp);
-t2 = wp.t(fc.wp+1);
+% Determine Total Number of Time Steps
+N = wp.tf*model.fc_hz+1;
 
-fr_total = floor((t2 - t1)*model.fc_hz);
-fc.fr_total = fr_total;
+nom.t_bar = linspace(t_fc,t_fc+wp.tf,N);
+nom.x_bar = zeros(12,N);
+nom.x_bar(:,1) = x_fc;
 
-fc.t_nom = linspace(t1,t2,fr_total+1);
-fc.x_bar = zeros(12,fr_total+1);
-fc.x_bar = x_fc;
+nom.u_bar = model.hover_wrench.*ones(4,N-1);
 
-fc.u_bar = model.hover_wrench.*ones(4,fr_total);
-
-for k = 1:fc.fr_total
+for k = 1:N-1
     FT_ext = zeros(6,1);
-    m_cmd  = wrench2m_cmd(fc.u_bar(:,k),model);
+    m_cmd  = wrench2m_cmd(nom.u_bar(:,k),model);
 
-    fc.x_bar(:,k+1) = quadcopter(fc.x_bar(:,k),m_cmd,model,FT_ext,'fc');
+    nom.x_bar(:,k+1) = quadcopter(nom.x_bar(:,k),m_cmd,model,FT_ext,'fc');
 end
 
-fc.wp = fc.wp + 1;
+nom.index = 1;
+nom.total = N;

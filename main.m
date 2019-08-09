@@ -1,60 +1,74 @@
 clear
 addpath(genpath(pwd));
 
-tf = 10;
-fc_hz = 100;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Time and Simulation Rate
+tf = 9;
+fc_hz = 50;
 act_hz = 1000;
 
+sim_dt = 1/lcm(fc_hz,act_hz);
+sim_N  = tf/sim_dt;
+t_fc   = 0:1/fc_hz:tf;
+t_act  = 0:1/act_hz:tf; 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Initialize Simulation
 model  = model_init('simple vII',act_hz,fc_hz); % Initialize Physics Model
-s_est  = se_init('mocap',fc_hz);            % Initialize State Estimator
-fc     = fc_init(model,'ilqr');             % Initialize Controller
-wp     = wp_init('square',tf,'no plot');     % Initialize timestamped keyframes
-FT_ext = nudge_init(act_hz,tf,'off');             % Initialize External Forces
-flight = flight_init(model,tf,wp);             % Initialize Flight Variables
+s_est  = se_init('mocap',fc_hz);                % Initialize State Estimator
+fc     = fc_init(model,'ilqr');                 % Initialize Controller
+wp     = wp_init('half-square',0,tf,'no plot');% Initialize timestamped keyframes
+FT_ext = nudge_init(act_hz,tf,'off');           % Initialize External Forces
+flight = flight_init(model,tf,wp);              % Initialize Flight Variables
+% t_comp = calc_init();                         % Initialize Compute Time Variables
 
-% Simulation
-k_fc = 1;       % Flight Control Step Counter
-k_kf = 1;       % Keyframe Step Counter
+k_fc  = 1;          % Flight Controller Time Counter
+k_act = 1;          % Actual Dynamics Time Counter
 
-flight.t_log = 0;
-for k_act = 1:(length(flight.t_act)-1)
-    curr_time = round(flight.t_act(k_act),2);
-       
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Simulation
+
+% Cold Start the nominal trajectory for the iLQR
+nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,model);
+
+for k = 1:sim_N
     % State Estimation and Control
-    if abs(curr_time - flight.t_fc(k_fc)) < 1e-6
-        % Display Current Time and Current Time
-        curr_wp = wp.x(1:3,fc.wp);
+    if (abs(t_fc(k_fc) - (k-1)*sim_dt) <= 1e-3) && (k_fc <= tf*fc_hz)
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Display Current Time and Target Waypoint
+        curr_time = t_fc(k_fc);
+        curr_wp   = zeros(3,1);
         disp(['[main]: Current Time: ',num2str(curr_time),' Current WP: ',mat2str(curr_wp)]);
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         % State Estimation
-        x_est = flight.x_act(:,k_act);
+        x_fc = flight.x_act(:,k_act);
         
         % Control
-        [curr_m_cmd, fc] = ilqr(x_est,model,fc,wp);
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        [curr_m_cmd, nom] = ilqr(curr_time,x_fc,nom,wp,fc,model);
         
-        % Log the state est and motor cmd and update fc step tracker
-        flight.x_fc(:,k_fc)  = x_est;
+        % Log State Estimation and Control
+        flight.x_fc(:,k_fc)  = x_fc;
         flight.m_cmd(:,k_fc) = curr_m_cmd;
-
-        if k_fc < length(flight.t_fc)
-            k_fc = k_fc + 1;
-        else
-            % Reached the end. Don't update.
-        end
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Update Flight Controller Time Counter
+        k_fc = k_fc + 1;
+        
     end
     
-    % Actual Dynamics of Next Step
-    flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext(:,k_act),'actual');
- 
+    if abs(t_act(k_act) - (k-1)*sim_dt) <= 1e-3
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+        % Dynamic Model
+        flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext(:,k_act),'actual');
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Update Actual Dynamics Time Counter
+        k_act = k_act + 1;
+    end
 end
 
-% % Plot the States and Animate
+%% Plot the States and Animate
 state_plot(flight)
-animation_plot(flight)
+animation_plot(flight,wp)
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
-
-% figure(3)
-% plot(flight.t_log)
-% ylim([0 3]);

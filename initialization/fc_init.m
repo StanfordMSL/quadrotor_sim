@@ -44,38 +44,62 @@ switch type
     case 'ilqr'
         fc.type = 'ilqr';
         
-        % Stage-Wise Q and R
-        Q_xy     = 0*ones(2,1);
-        Q_z      = 0*ones(1,1);
-        Q_vel    = 0*ones(3,1);
-        Q_q      = [100 100 1]';
-        Q_omg_xy = 0*ones(2,1);
-        Q_omg_z  = 0*ones(1,1);
-
+        % Stagewise R
         R_f = 1e-5*ones(1,1);
         R_tau = 1e-5*ones(3,1);
-        
-        Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
-        fc.Q = diag(Q_vect);
         R_vect = [R_f ; R_tau];
-        fc.R = diag(R_vect);
+        fc.R = diag(R_vect);   
         
-        % Terminal Q and R
-        Q_xy     = 100*ones(2,1);
-        Q_z      = 100*ones(1,1);
+        fc.Q = zeros(12,12,4);
+               
+        % Stagewise Q
+        Q_xy     = 1*ones(2,1);
+        Q_z      = 1*ones(1,1);
         Q_vel    = 1*ones(3,1);
-        Q_q      = [1 1 1]';
+        Q_q      = 1*[100 100 1]';
         Q_omg_xy = 1*ones(2,1);
         Q_omg_z  = 1*ones(1,1);
         
         Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
-        fc.Q_N = diag(Q_vect);
-
-        % Inversion Guaranteeing Offset
-        fc.rho = 1;
+        fc.Q(:,:,1) = diag(Q_vect);
         
-        fc.frame = 1;
-        fc.wp = 1;
+        % Position Weighted Q
+        Q_xy     = 100*ones(2,1);
+        Q_z      = 100*ones(1,1);
+        Q_vel    = 0*ones(3,1);
+        Q_q      = 0*[1 1 1]';
+        Q_omg_xy = 0*ones(2,1);
+        Q_omg_z  = 0*ones(1,1);
+        
+        Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
+        fc.Q(:,:,2) = diag(Q_vect);
+        
+        % Orientation Weighted Q
+        Q_xy     = 5*ones(2,1);
+        Q_z      = 5*ones(1,1);
+        Q_vel    = 1*ones(3,1);
+        Q_q      = [10 10 10]';
+        Q_omg_xy = 1*ones(2,1);
+        Q_omg_z  = 1*ones(1,1);
+        
+        Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
+        fc.Q(:,:,3) = diag(Q_vect);
+        
+        % Pose Weighted Q
+        Q_xy     = 10*ones(2,1);
+        Q_z      = 10*ones(1,1);
+        Q_vel    = 1*ones(3,1);
+        Q_q      = 10*[1 1 1]';
+        Q_omg_xy = 1*ones(2,1);
+        Q_omg_z  = 1*ones(1,1);
+        
+        Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
+        fc.Q(:,:,4) = diag(Q_vect);
+        
+        % Terminal Q
+        fc.Q_N = diag(Q_vect);
+        disp('[fc_init]: TODO: implement a cleaner way of holding Q_N. It is not in the same array as the rest');
+        
     case 'PID'
         fc.type = 'PID';
         % Pitch/Roll Gains

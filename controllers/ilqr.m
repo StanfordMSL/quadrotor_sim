@@ -1,22 +1,12 @@
-function [m_cmd,fc] = ilqr(x_fc,model,fc,kf_t)
-    % Check for initial and determine number of steps to compute.
-    index = fc.frame;
-
-    if index == 1
-        fc = ilqr_init(fc,kf_t,model,x_fc);
-    elseif (index == fc.fr_total) && (fc.wp < kf_t.N_wp)
-        fc.frame = 0;
-    elseif (index >= fc.fr_total) && (fc.wp == kf_t.N_wp)
-        index = fc.fr_total;
-    end
-    fc.frame = fc.frame + 1;
-
-    x_wp = kf_t.x(:,fc.wp);
-    N = fc.fr_total-index+1;
-
+function [m_cmd,nom] = ilqr(t_now,x_fc,nom,wp,fc,model)
+    nom.index = nom.index + 1;
+    % Determine current point along trajectory and remainder of points
+    n = find(nom.t_bar > t_now,1)-1;
+    N = nom.total-n+1;
+    
     % Unpack the Terms    
-    x_bar = fc.x_bar(:,index:end);
-    u_bar = fc.u_bar(:,index:end);   
+    x_bar = nom.x_bar(:,n:end);
+    u_bar = nom.u_bar(:,n:end);  
 
     % Initialize the iLQR variables
     l = zeros(4,1,N);
@@ -25,15 +15,15 @@ function [m_cmd,fc] = ilqr(x_fc,model,fc,kf_t)
     % Convergence variables
     itrs = 0;
     del_u_tol = 10;
-
+    
     while del_u_tol > 1e-1
         itrs = itrs + 1;
 
         % Forward Pass
-        [x_bar,u_bar,del_u,A,B] = ilqr_fp(x_bar,u_bar,x_fc,l,L,N,model,fc);
+        [x_bar,u_bar,del_u,A,B] = ilqr_fp(x_bar,u_bar,t_now,x_fc,wp,l,L,N,model,fc);
 
         % Backward Pass   
-        [l,L] = ilqr_bp(x_bar,u_bar,x_wp,A,B,N,fc);
+        [l,L] = ilqr_bp(x_bar,u_bar,t_now,wp,A,B,N,model,fc);
 
         % Check for Convergence
         if itrs == 1
@@ -41,15 +31,15 @@ function [m_cmd,fc] = ilqr(x_fc,model,fc,kf_t)
         elseif itrs > 1 && itrs < 1000
             del_u_tol = sum(vecnorm(del_u))/N;
         else
-            x_bar = fc.x_bar(:,index:end);
-            u_bar = fc.u_bar(:,index:end);
+            x_bar = nom.x_bar(:,n:end);
+            u_bar = nom.u_bar(:,n:end);
             disp('[ilqr]: convergence timeout');
             break;
         end
     end
-
-    fc.x_bar(:,index:end) = x_bar;
-    fc.u_bar(:,index:end) = u_bar;
+    
+    nom.x_bar(:,n:end) = x_bar;
+    nom.u_bar(:,n:end) = u_bar;
 
     % Compute Motor Commands
     m_cmd = wrench2m_cmd(u_bar(:,1),model);
