@@ -1,11 +1,15 @@
-function animation_plot(flight)
+function fig_h = animation_plot(flight, varargin)
     t_act = flight.t_act;
     x_act = flight.x_act;
     
     dt = t_act(1,2)-t_act(1,1);
     
-    figure(2)
+    fig_h = figure(2);
     clf
+    if(~isempty(varargin))
+        hold on;
+        plot_camera(varargin{1}, gcf);
+    end
 %     subplot(2,2,3);
 %     plot(time.t_act,states(3,:));
 %     title('Z Position (over time)');

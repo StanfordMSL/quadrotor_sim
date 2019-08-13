@@ -10,8 +10,8 @@ switch activate
         t2 = tf/2;
         t3 = 0.01 + t2;
 
-        nudge_1 = [0 ; 0 ; 0 ; 2 ; 0 ; 0];
-        nudge_2 = [0 ; 0 ; 0 ; 0 ; 2 ; 0];
+        nudge_1 = [0 ; 0 ; 0 ; 0.11 ; 0 ; 0];
+        nudge_2 = [0 ; 0 ; 0 ; 0 ; 0.1 ; 0];
 
         for k = 1:total_steps
             if k >= t0*act_hz && k <= t1*act_hz
