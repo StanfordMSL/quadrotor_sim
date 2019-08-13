@@ -1,4 +1,4 @@
-clear; clc; format compact
+clear; clc;
 addpath(genpath(pwd));
 
 tf = 10;
@@ -29,8 +29,11 @@ ukf_prms.kappa = 2; % scaling param - how far sig. points are from mean
 ukf_prms.beta = 2; % optimal choice according to prob rob
 ukf_prms.lambda = ukf_prms.alpha^2*(dims + ukf_prms.kappa) - dims;
 ukf_prms.meas_len = length(predict_quad_bounding_box(mu_curr, camera, initial_bb));
+
 ukf_prms.R = eye(dims) * 0.01;
-ukf_prms.Q = eye(ukf_prms.meas_len) * 0.01;
+ukf_prms.Q = eye(ukf_prms.meas_len) * 0.1;
+
+% yukf save variable for later plotting
 sv.mu_hist = zeros(dims, length(flight.t_act)); sv.mu_hist(:, 1) = mu_curr;
 sv.sig_hist = zeros(dims, dims, length(flight.t_act)); sv.sig_hist(:, :, 1) = sig_curr;
 sv.sig_trace_hist = zeros(length(flight.t_act), 1); sv.sig_trace_hist(1) = trace(sig_curr);
@@ -39,8 +42,8 @@ sv.hist_mask = false(length(flight.t_act), 1); sv.hist_mask(1) = true;
 q = mu_curr(7:9, 1);
 quat = [sqrt(1 - q'*q); q];
 [yaw, pitch, roll] = quat2angle(quat(:)');
-sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll]*180/pi;
-sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll]*180/pi;
+sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll];
+sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k_act = 1:(length(flight.t_act)-1)
@@ -70,11 +73,11 @@ for k_act = 1:(length(flight.t_act)-1)
         
         q = mu_out(7:9, 1); q = [sqrt(1 - q'*q); q];
         [yaw, pitch, roll] = quat2angle(q(:)');
-        sv.ypr_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
+        sv.ypr_hist(:, k_act) = [yaw; pitch; roll];
         
         q = flight.x_act(7:9,k_act); q = [sqrt(1 - q'*q); q];
         [yaw, pitch, roll] = quat2angle(q(:)');
-        sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
+        sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll];
         disp('')
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
