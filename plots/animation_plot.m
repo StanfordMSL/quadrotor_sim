@@ -55,7 +55,7 @@ function fig_h = animation_plot(flight, varargin)
     grid on
     xlim([-8.1 8.1]);
     ylim([-3.2 3.2]);
-    zlim([0 3]);
+    zlim([-1.1 3]);
     daspect([1 1 1])
     view(320,20);
     

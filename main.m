@@ -29,9 +29,18 @@ ukf_prms.kappa = 2; % scaling param - how far sig. points are from mean
 ukf_prms.beta = 2; % optimal choice according to prob rob
 ukf_prms.lambda = ukf_prms.alpha^2*(dims + ukf_prms.kappa) - dims;
 ukf_prms.meas_len = length(predict_quad_bounding_box(mu_curr, camera, initial_bb));
-
 ukf_prms.R = eye(dims) * 0.01;
 ukf_prms.Q = eye(ukf_prms.meas_len) * 0.01;
+sv.mu_hist = zeros(dims, length(flight.t_act)); sv.mu_hist(:, 1) = mu_curr;
+sv.sig_hist = zeros(dims, dims, length(flight.t_act)); sv.sig_hist(:, :, 1) = sig_curr;
+sv.sig_trace_hist = zeros(length(flight.t_act), 1); sv.sig_trace_hist(1) = trace(sig_curr);
+sv.time_hist = zeros(length(flight.t_act), 1); sv.time_hist(1) = 0;
+sv.hist_mask = false(length(flight.t_act), 1); sv.hist_mask(1) = true;
+q = mu_curr(7:9, 1);
+quat = [sqrt(1 - q'*q); q];
+[yaw, pitch, roll] = quat2angle(quat(:)');
+sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll]*180/pi;
+sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll]*180/pi;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k_act = 1:(length(flight.t_act)-1)
@@ -53,6 +62,19 @@ for k_act = 1:(length(flight.t_act)-1)
         
         yolo_output = predict_quad_bounding_box(flight.x_act(:,k_act), camera, initial_bb); % Add noise??
         [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, curr_m_cmd, yolo_output, model, camera, initial_bb, ukf_prms);
+        sv.mu_hist(:, k_act) = mu_out;
+        sv.sig_hist(:, :, k_act) = sigma_out;
+        sv.sig_trace_hist(k_act) = trace(sigma_out);
+        sv.time_hist(k_act) = curr_time;
+        sv.hist_mask(k_act) = true;
+        
+        q = mu_out(7:9, 1); q = [sqrt(1 - q'*q); q];
+        [yaw, pitch, roll] = quat2angle(q(:)');
+        sv.ypr_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
+        
+        q = flight.x_act(7:9,k_act); q = [sqrt(1 - q'*q); q];
+        [yaw, pitch, roll] = quat2angle(q(:)');
+        sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
         disp('')
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,7 +96,9 @@ for k_act = 1:(length(flight.t_act)-1)
 end
 
 % % Plot the States and Animate
-state_plot(flight);
+ukf_state_plot(sv, flight);
+
+state_plot(flight)
 fig_h_ani = animation_plot(flight, camera);
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
 
