@@ -1,4 +1,4 @@
-clear; clc;
+clear; clc; 
 addpath(genpath(pwd));
 
 tf = 10;
@@ -8,7 +8,7 @@ act_hz = 1000;
 model  = model_init('simple vII',act_hz,fc_hz); % Initialize Physics Model
 s_est  = se_init('mocap',fc_hz);            % Initialize State Estimator
 fc     = fc_init(model,'ilqr');             % Initialize Controller
-wp     = wp_init('square',tf,'no plot');     % Initialize timestamped keyframes
+wp     = wp_init('line',tf,'no plot');     % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');             % Initialize External Forces
 flight = flight_init(model,tf,wp);             % Initialize Flight Variables
 
@@ -39,11 +39,20 @@ sv.sig_hist = zeros(dims, dims, length(flight.t_act)); sv.sig_hist(:, :, 1) = si
 sv.sig_trace_hist = zeros(length(flight.t_act), 1); sv.sig_trace_hist(1) = trace(sig_curr);
 sv.time_hist = zeros(length(flight.t_act), 1); sv.time_hist(1) = 0;
 sv.hist_mask = false(length(flight.t_act), 1); sv.hist_mask(1) = true;
-q = mu_curr(7:9, 1);
-quat = [sqrt(1 - q'*q); q];
-[yaw, pitch, roll] = quat2angle(quat(:)');
+
+qtmp = mu_curr(7:9, 1);
+qm = [sqrt(1 - qtmp'*qtmp); qtmp];
+[yaw, pitch, roll] = quat2angle(qm(:)');
 sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll];
+
+qtmp = flight.x_act(7:9 ,1); 
+qa = [sqrt(1 - qtmp'*qtmp); qtmp];
+[yaw, pitch, roll] = quat2angle(qa(:)');
 sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll];
+
+sv.ang_err = zeros(length(flight.t_act), 1); sv.ang_err(1) = quat_dist(qa, qm);
+sv.ang = zeros(length(flight.t_act), 1); sv.ang(1) = 0;
+sv.ang_act = zeros(length(flight.t_act), 1); sv.ang_act(1) = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k_act = 1:(length(flight.t_act)-1)
@@ -59,27 +68,36 @@ for k_act = 1:(length(flight.t_act)-1)
         % State Estimation
         x_est = flight.x_act(:,k_act);
         
-        
         % Control
         [curr_m_cmd, fc] = ilqr(x_est,model,fc,wp);
         
+        % Sensing
         yolo_output = predict_quad_bounding_box(flight.x_act(:,k_act), camera, initial_bb); % Add noise??
+        
+        % Tracking (UKF)
         [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, curr_m_cmd, yolo_output, model, camera, initial_bb, ukf_prms);
+        
+        % Save values for plotting %%%%%%%%%%%%%%%%%%
         sv.mu_hist(:, k_act) = mu_out;
         sv.sig_hist(:, :, k_act) = sigma_out;
         sv.sig_trace_hist(k_act) = trace(sigma_out);
         sv.time_hist(k_act) = curr_time;
         sv.hist_mask(k_act) = true;
         
-        q = mu_out(7:9, 1); q = [sqrt(1 - q'*q); q];
-        [yaw, pitch, roll] = quat2angle(q(:)');
+        qtmp = mu_out(7:9, 1); 
+        qm = [sqrt(1 - qtmp'*qtmp); qtmp];
+        [yaw, pitch, roll] = quat2angle(qm(:)');
         sv.ypr_hist(:, k_act) = [yaw; pitch; roll];
         
-        q = flight.x_act(7:9,k_act); q = [sqrt(1 - q'*q); q];
-        [yaw, pitch, roll] = quat2angle(q(:)');
+        qtmp = flight.x_act(7:9,k_act); 
+        qa = [sqrt(1 - qtmp'*qtmp); qtmp];
+        [yaw, pitch, roll] = quat2angle(qa(:)');
         sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll];
-        disp('')
         
+        sv.ang_err(k_act) = quat_dist(qa, qm);
+        sv.ang(k_act) = 2*acos(qm(1));
+        sv.ang_act(k_act) = 2*acos(qa(1));
+        disp('')
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % Log the state est and motor cmd and update fc step tracker

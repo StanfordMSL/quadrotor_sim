@@ -20,7 +20,7 @@ function camera = init_camera()
            sind(ang_z) , cosd(ang_z) , 0.  ;
            0.              , 0.        1.   ];
     R_cam_w = Rx * Ry * Rz;
-    R_w_cam = R_cam_w'
+    R_w_cam = R_cam_w';
     camera_quat = rotm2quat(R_w_cam);
     camera_pose = [camera_position_w, camera_quat]; % [x,y,z, quat] in world frame    
     

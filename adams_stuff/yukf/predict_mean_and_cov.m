@@ -14,5 +14,5 @@ function [mu_bar, sig_bar, w0_c, wi] = predict_mean_and_cov(sps, ukf_prms, cov_a
         sig_bar = sig_bar + wi*(sps(:, dim+k+1)-mu_bar)*(sps(:, dim+k+1)-mu_bar)';
     end
     sig_bar = sig_bar + cov_add_noise;
-    warning('Prob rob references a more accurate way to add noise to UKF... currently just adding Rt (line 5 of algo)')
+%     warning('Prob rob references a more accurate way to add noise to UKF... currently just adding Rt (line 5 of algo)')
 end

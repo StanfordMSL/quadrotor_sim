@@ -1,0 +1,7 @@
+
+# data files
+*.zip
+
+# matlab extra files
+*.m~
+*.mat

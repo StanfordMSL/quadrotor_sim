@@ -1,7 +1,6 @@
 function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera, initial_bb, ukf_prms)
     dim = length(mu_curr);
     num_sp = 2*dim + 1;
-    R = eye()
     
     % line 2 prob rob
     sps = calc_sigma_points(mu_curr, sig_curr, ukf_prms); 
