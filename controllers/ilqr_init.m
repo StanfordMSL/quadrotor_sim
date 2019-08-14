@@ -1,12 +1,12 @@
-function nom = ilqr_init(t_fc,x_fc,wp,model)
+function nom = ilqr_init(t_now,x_now,wp,fc,model)
 
 % Determine Total Number of Time Steps
-N = wp.tf*model.fc_hz+1;
+N = wp.tf*model.con_hz+1;
 
-nom.t_bar = linspace(t_fc,t_fc+wp.tf,N);
+% Initialized Time and Trajectory and Input Variables
+nom.t_bar = linspace(t_now,t_now+wp.tf,N);
 nom.x_bar = zeros(12,N);
-nom.x_bar(:,1) = x_fc;
-
+nom.x_bar(:,1) = x_now;
 nom.u_bar = model.hover_wrench.*ones(4,N-1);
 
 for k = 1:N-1
@@ -16,5 +16,17 @@ for k = 1:N-1
     nom.x_bar(:,k+1) = quadcopter(nom.x_bar(:,k),m_cmd,model,FT_ext,'fc');
 end
 
+% Initialize the Control Law Feedforward and Feedback Variables
+nom.l = zeros(4,1,N-1);
+nom.L = zeros(4,12,N-1);
+
+nom.alpha = 1;
+% Initialize the Cost Variable
+% nom.cost = -1;
+
+% Initialize Counter Variables (for convenience)
 nom.index = 1;
 nom.total = N;
+
+% Run a First Pass of the iLQR
+nom = ilqr(t_now,x_now,wp,nom,fc,model);

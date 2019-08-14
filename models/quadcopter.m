@@ -4,7 +4,7 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
         case 'actual'
           dt = model.act_dt;  
         case 'fc'
-          dt = model.fc_dt;
+          dt = model.con_dt;
     end
     
     pos   = x_curr(1:3,1);

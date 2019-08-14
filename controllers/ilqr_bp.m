@@ -1,44 +1,43 @@
-function [l,L] = ilqr_bp(x_bar,u_bar,t_now,wp,A,B,N,model,fc)
+function [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,model,fc)
 
-% Unpack some terms
+% Unpack Waypoint Terms
 t_wp = wp.t;
 x_wp = wp.x;
-
 Q_key = wp.Q_key;
-Q     = fc.Q;
-R     = fc.R;
-rho   = fc.rho;
-        
-% Initialize v and V
+
+% Initialize BP
 wp_bk = wp.N_wp;
+Q = fc.Q_N;
+R = fc.R(:,:,1);
+x_targ = x_wp(:,end);
 
-v = Q(:,:,Q_key(wp_bk))*(x_bar(:,N)-x_wp(:,wp_bk));
-V = Q(:,:,Q_key(wp_bk));
+v = Q*(x_bar(:,N)-x_targ);
+V = Q;
 
-wp_bk = wp_bk-1;
-
+% Execute the Backward Pass
 for k = N-1:-1:1
-    t_bp = k*model.fc_dt+t_now;
+    t_bp = t_bar(k);
 
-    % Determine Some Useful Terms
-    if (wp_bk > 0) && (abs(t_bp - t_wp(wp_bk)) <= 1e-3)
-        Q_x  = Q(:,:,Q_key(wp_bk)) *(x_bar(:,k)-x_wp(:,wp_bk)) + A(:,:,k)'*v;
-        Q_xx = Q(:,:,Q_key(wp_bk)) + A(:,:,k)'*V*A(:,:,k);
-    
-        wp_bk = wp_bk - 1;
-        
+    % Update Q and R according to the waypoints
+    if (wp_bk > 2) && (abs(t_bp - t_wp(wp_bk)) <= model.con_dt)
+        wp_bk = wp_bk-1;
+        Q = fc.Q(:,:,Q_key(wp_bk));
+        x_targ = x_wp(:,wp_bk);
     else
-        Q_x  = Q(:,:,1)*x_bar(:,k) + A(:,:,k)'*v;
-        Q_xx = Q(:,:,1) + A(:,:,k)'*V*A(:,:,k);
+%         Q = fc.Q(:,:,Q_key(1));
+%         x_targ = zeros(12,1);
     end 
 
+    % Update the Stagewise Variables
+    Q_x  = Q *(x_bar(:,k)-x_targ) + A(:,:,k)'*v;
+    Q_xx = Q + A(:,:,k)'*V*A(:,:,k);
     Q_u  = R*u_bar(:,k) + B(:,:,k)'*v;
     Q_uu = R + B(:,:,k)'*V*B(:,:,k);
     Q_ux = B(:,:,k)'*V*A(:,:,k);
-
+    
     % Update the feed-forward and feedback terms
-    l(:,:,k) = -(Q_uu+rho*eye(4))\Q_u;
-    L(:,:,k) = -(Q_uu+rho*eye(4))\Q_ux;
+    l(:,:,k) = -(Q_uu+eye(4))\Q_u;
+    L(:,:,k) = -(Q_uu+eye(4))\Q_ux;
 
     % Update v and V for next bp state
     v = Q_x - L(:,:,k)'*Q_uu*l(:,k);

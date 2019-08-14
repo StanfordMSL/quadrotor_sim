@@ -1,65 +1,47 @@
-function [m_cmd,nom] = ilqr(t_now,x_fc,nom,wp,fc,model)
-    nom.index = nom.index + 1;
+function nom = ilqr(t_now,x_now,wp,nom,fc,model)
+    tic
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
     N = nom.total-n+1;
     
-    % Unpack the Terms    
+    % Unpack the Terms
+    t_bar = nom.t_bar(:,n:end)-nom.t_bar(:,n);
     x_bar = nom.x_bar(:,n:end);
     u_bar = nom.u_bar(:,n:end);  
-
-    % Initialize the iLQR variables
-    l = zeros(4,1,N);
-    L = zeros(4,12,N);
-
-    % Convergence variables
-    itrs = 0;
-    del_u_tol = 10;
     
-    while del_u_tol > 1e-1
-        itrs = itrs + 1;
-
-        % Forward Pass
-        [x_bar,u_bar,del_u,A,B] = ilqr_fp(x_bar,u_bar,t_now,x_fc,wp,l,L,N,model,fc);
-
+    % Convergence Variables
+    itrs = 1;
+    u_diff_avg = 10;
+    while u_diff_avg > 1e-1
+        % Determine A and B matrices for this step
+        [A,B] = dynamics_linearizer(x_bar,u_bar,model);
+        
         % Backward Pass   
-        [l,L] = ilqr_bp(x_bar,u_bar,t_now,wp,A,B,N,model,fc);
+        [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,model,fc);
+        
+        % Forward Pass
+        [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,model,fc);
 
         % Check for Convergence
-        if itrs == 1
-            % Do nothing
-        elseif itrs > 1 && itrs < 1000
-            del_u_tol = sum(vecnorm(del_u))/N;
+        if itrs < 100
+            u_diff_avg = u_diff/N;
+%             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_u difference: ',num2str(u_diff_avg)]);
+
+            itrs = itrs + 1;
         else
-            x_bar = nom.x_bar(:,n:end);
-            u_bar = nom.u_bar(:,n:end);
-            disp('[ilqr]: convergence timeout');
+%             x_bar = nom.x_bar(:,n:end);
+%             u_bar = nom.u_bar(:,n:end);
+            disp('[ilqr]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
             break;
         end
     end
     
+    % Update the Nominal Values
     nom.x_bar(:,n:end) = x_bar;
     nom.u_bar(:,n:end) = u_bar;
-
-    % Compute Motor Commands
-    m_cmd = wrench2m_cmd(u_bar(:,1),model);
-
-    for k = 1:4
-        if m_cmd(k,1) < model.motor_min
-            m_cmd(k,1) = model.motor_min;
-            
-            if m_cmd(k,1) <  (model.motor_min - 1e-6)
-                disp('[ilqr]: Exceeded Motor Min');
-            end
-            
-        elseif m_cmd(k,1) > model.motor_max
-            m_cmd(k,1) = model.motor_max;
-            
-            if m_cmd(k,1) > (model.motor_max + 1e-6)
-                disp('[ilqr]: Exceeded Motor Max');
-            end
-            
-        end
-    end
+    nom.l(:,:,n:end) = l;
+    nom.L(:,:,n:end) = L;
+    
+    disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
 end
 

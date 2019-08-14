@@ -21,3 +21,19 @@ end
 disp(motor_cmd)
 toc
 % u = wrench2omega([6.5 0 0 0 ]',model)
+
+%     % [FROM BP] Update Q according the waypoints
+%     if (wp_bk > 0) && (abs(t_bp - t_wp(wp_bk)) <= model.con_dt)
+%         Q_x  = Q(:,:,4) *(x_bar(:,k)-x_wp(:,wp_bk)) + A(:,:,k)'*v;
+%         Q_xx = Q(:,:,4) + A(:,:,k)'*V*A(:,:,k);
+%     
+%         wp_bk = wp_bk - 1;
+%         
+%     else
+%         Q_x  = Q(:,:,1)*x_bar(:,k) + A(:,:,k)'*v;
+%         Q_xx = Q(:,:,1) + A(:,:,k)'*V*A(:,:,k);
+%     end 
+% 
+%     Q_u  = R*u_bar(:,k) + B(:,:,k)'*v;
+%     Q_uu = R + B(:,:,k)'*V*B(:,:,k);
+%     Q_ux = B(:,:,k)'*V*A(:,:,k);

@@ -6,7 +6,7 @@ addpath(genpath(pwd));
 tf = 10;
 
 est_hz = 200;       % State Estimator Time Counter
-lqr_hz = 1;        % Low Rate Controller Sample Rate
+lqr_hz = 10;        % Low Rate Controller Sample Rate
 con_hz = 50;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
 
@@ -23,7 +23,7 @@ t_act = 0:1/act_hz:tf;
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
 s_est  = se_init('mocap',con_hz);                % Initialize State Estimator
 fc     = fc_init(model,'ilqr');                 % Initialize Controller
-wp     = wp_init('square',0,tf,'no plot');% Initialize timestamped keyframes
+wp     = wp_init('climb',0,tf,'no plot');% Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');           % Initialize External Forces
 flight = flight_init(model,tf,wp);              % Initialize Flight Variables
 % t_comp = calc_init();                         % Initialize Compute Time Variables
@@ -69,7 +69,7 @@ for k = 1:sim_N
         end
         
         curr_wp   = wp.x(k_wp);
-%         disp(['[main]: L-R Controller Current Time: ',num2str(t_now),' Current WP: ',mat2str(curr_wp)]);
+        disp(['[main]: L-R Controller Current Time: ',num2str(t_now),' Current WP: ',mat2str(curr_wp)]);
 
         % Update LQR params
 %         nom = ilqr(t_now,x_fc,wp,nom,fc,model);
@@ -79,10 +79,12 @@ for k = 1:sim_N
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
         % Draw Out Motor Commands from u_bar computed by iLQR
+%         del_x = x_fc-nom.x_bar(:,k_con);
+%         u  = nom.u_bar(:,k_con) + nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
+%         curr_m_cmd = direct_motor_control(u,model);
         del_x = x_fc-nom.x_bar(:,k_con);
-        u  = nom.u_bar(:,k_con) + nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
-        curr_m_cmd = direct_motor_control(u,model);
-%         curr_m_cmd = direct_motor_control(nom.u_bar(:,k_con),model);
+        u  =  + nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
+        curr_m_cmd = direct_motor_control(nom.u_bar(:,k_con),model);
 
         % Log State Estimation and Control
         flight.m_cmd(:,k_con) = curr_m_cmd;       

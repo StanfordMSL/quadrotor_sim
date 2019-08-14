@@ -100,6 +100,11 @@ switch type
         fc.Q_N = diag(Q_vect);
         disp('[fc_init]: TODO: implement a cleaner way of holding Q_N. It is not in the same array as the rest');
         
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        % Inversion Guaranteeing Offset
+        fc.rho = 1;
+>>>>>>> Complete Overhaul of iLQR methods to allow multiple waypoints along with a more accurate method of time sampling. This commit also organizes the code for easier modification in the state estimator. This code also allows for the compute of new iLQR arrays at a slower rate while running a higher rate low level implementation of said gains.
     case 'PID'
         fc.type = 'PID';
         % Pitch/Roll Gains

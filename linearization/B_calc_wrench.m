@@ -1,6 +1,6 @@
 function B = B_calc_wrench(mu_curr,model)
 
-    dt = model.fc_dt;
+    dt = model.con_dt;
     
     q1 = mu_curr(7,1);
     q2 = mu_curr(8,1);
