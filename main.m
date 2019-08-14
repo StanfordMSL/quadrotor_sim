@@ -57,11 +57,11 @@ for k = 1:sim_N
         x_fc = flight.x_act(:,k_act);
         flight.x_fc(:,k_est)  = x_fc;
 
-%         %%%%%%%%%%%%%%%%%%%%
-%         % YOLO UKF Test
+        %%%%%%%%%%%%%%%%%%%%
+        % YOLO UKF Test
         t_now = t_est(k_est);
         [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, t_now, initial_bb, camera, model);
-%         %%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

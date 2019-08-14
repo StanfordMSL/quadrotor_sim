@@ -50,7 +50,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 4 & 5 - predict new mean & cov %%%%%%%%%%%%%%%%%%%%%%%
-    [mu_bar, sigma_bar, ~, ~] = predict_mean_and_cov(sps_pred, yukf, yukf.prms.R);
+    [mu_bar, sigma_bar, ~, ~] = predict_mean_and_cov_state(sps_pred, yukf, yukf.prms.R);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 6 - update sigma points 
@@ -59,7 +59,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     
     % line 7 - 9 - predict observation & uncertainty for each sigma point
     pred_obs = predict_obs(sps_updated, camera, initial_bb, yukf);
-    [z_hat, S, w0_c, wi] = predict_mean_and_cov(pred_obs, yukf, yukf.prms.Q);
+    [z_hat, S, w0_c, wi] = predict_mean_and_cov_obs(pred_obs, yukf, yukf.prms.Q);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 10

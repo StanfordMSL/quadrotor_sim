@@ -13,7 +13,7 @@ function sps = calc_sigma_points(mu, sigma, yukf)
         sps(1:6, 2 + 2*(i-1))  = mu(1:6) + sigma_point_step(1:6, i);
         sps(10:12, 2 + 2*(i-1)) = mu(10:12) + sigma_point_step(10:12, i);
         
-        q_perturb = calc_peturb_quat(sigma_point_step(7:9, i));
+        q_perturb = axang_to_quat(sigma_point_step(7:9, i));
         q_new = quatmultiply(q_mean(:)', q_perturb(:)');
         sps(7:9, 2 + 2*(i-1)) = q_new(2:4);
         
@@ -21,7 +21,7 @@ function sps = calc_sigma_points(mu, sigma, yukf)
         sps(1:6, 2 + 2*(i-1) + 1) = mu(1:6) - sigma_point_step(1:6, i);
         sps(10:12, 2 + 2*(i-1) + 1) = mu(10:12) - sigma_point_step(10:12, i);
         
-        q_perturb = calc_peturb_quat(-sigma_point_step(7:9, i));
+        q_perturb = axang_to_quat(-sigma_point_step(7:9, i));
         q_new = quatmultiply(q_mean(:)', q_perturb(:)');
         sps(7:9, 2 + 2*(i-1) + 1) = q_new(2:4);
     end
