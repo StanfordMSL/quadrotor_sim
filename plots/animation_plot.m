@@ -1,18 +1,18 @@
-function animation_plot(flight,wp)
-
-map = wp.map;
+function fig_h = animation_plot(flight, wp, varargin)
     
+    % Unpack Some Stuff
+    map = wp.map;
     t_act = flight.t_act;
     x_act = flight.x_act;
-    
     dt = t_act(1,2)-t_act(1,1);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Environment Stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     % Define plot window and clear previous stuff
-    figure(2)
+    fig_h = figure(2);
     clf
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
@@ -21,14 +21,20 @@ map = wp.map;
     zlim(wp.z_lim);
     grid on
     
+    hold on
+    
+    % Generate camera position
+    if(~isempty(varargin))
+        plot_camera(varargin{1}, gcf);
+    end
+    
     % Set Camera Angle
     daspect([1 1 1])
     view(320,20);
-%     view(90,0);
 
-    hold on
-    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Quadocopter Stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     % Plot the Initial Frame
     
     % Body Frame Axes
@@ -66,6 +72,7 @@ map = wp.map;
     ylabel('y-axis');
     zlabel('z-axis');
     legend('X','Y','Z','trajectory');
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;
