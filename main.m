@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('half-square',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('square',0,tf,'no plot');              % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');                   % Initialize External Forces
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 % t_comp = calc_init();                                 % Initialize Compute Time Variables
@@ -68,6 +68,7 @@ for k = 1:sim_N
     % Low Rate Controller    
     if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
         % Update LQR params
+%         t_now = t_lqr(k_lqr);
 %         nom = ilqr(t_now,x_fc,wp,nom,fc,model);
         k_lqr = k_lqr + 1;
     end
