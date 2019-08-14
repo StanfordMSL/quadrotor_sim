@@ -31,7 +31,7 @@ flight = flight_init(model,tf,wp);                      % Initialize Flight Vari
 
 % %%%%%%%%%%%%%%%%%%%%
 % %%% YOLO UKF Test Initialization
-% [sv,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr] = yolo_ukf_init(flight);
+[sv, yukf, initial_bb, camera] = yolo_ukf_init(flight);
 % %%%%%%%%%%%%%%%%%%%%
 
 %%% Time Counters Initialization
@@ -59,8 +59,8 @@ for k = 1:sim_N
 
 %         %%%%%%%%%%%%%%%%%%%%
 %         % YOLO UKF Test
-%         t_now = t_est(k_est);
-%         [sv,mu_prev] = yolo_ukf(sv,flight,k_est,t_now,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr,model);
+        t_now = t_est(k_est);
+        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, t_now, initial_bb, camera, model);
 %         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
@@ -90,7 +90,6 @@ for k = 1:sim_N
     % Dynamic Model
     if (abs(t_act(k_act)-sim_time) < tol)
         flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext(:,k_act),'actual');
-        
         k_act = k_act + 1;
     end
 end
@@ -99,7 +98,8 @@ end
 % state_plot(flight)
 animation_plot(flight,wp);
 
-% ukf_state_plot(sv, flight);
+ukf_state_plot(sv, flight);
 % state_plot(flight)
-% fig_h_ani = animation_plot(flight, wp, camera);
+fig_h_ani = animation_plot(flight, wp, camera);
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
+disp('')
