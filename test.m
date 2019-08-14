@@ -37,3 +37,13 @@ toc
 %     Q_u  = R*u_bar(:,k) + B(:,:,k)'*v;
 %     Q_uu = R + B(:,:,k)'*V*B(:,:,k);
 %     Q_ux = B(:,:,k)'*V*A(:,:,k);
+
+%%%  Print Time and WP
+%         t_now = t_con(k_con);
+%         
+%         if t_now >= wp.t(k_wp)
+%             k_wp = k_wp + 1;
+%         end
+%         
+%         curr_wp   = wp.x(k_wp);
+% %         disp(['[main]: L-R Controller Current Time: ',num2str(t_now),' Current WP: ',mat2str(curr_wp)]);

@@ -25,7 +25,7 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
         % Check for Convergence
         if itrs < 100
             u_diff_avg = u_diff/N;
-%             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_u difference: ',num2str(u_diff_avg)]);
+            disp(['[ilqr]: Iteration ',num2str(itrs),'  del_u difference: ',num2str(u_diff_avg)]);
 
             itrs = itrs + 1;
         else

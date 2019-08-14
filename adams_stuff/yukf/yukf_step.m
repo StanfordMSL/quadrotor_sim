@@ -9,12 +9,12 @@ function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera,
     % line 3 prob rob ( Predict ) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sps_pred = zeros(dim, num_sp);
     for j = 1:num_sp
-        sps_pred(1:3,j) = sps(1:3,j) + model.fc_dt*mu_curr(4:6,1);
+        sps_pred(1:3,j) = sps(1:3,j) + model.con_dt*mu_curr(4:6,1);
 
         % Predict Velocities
         if(~isempty(u))
             vel_dot = lin_acc(sps(:,j),u,model,[0 0 0]',0,'actual');
-            sps_pred(4:6,j) = sps(4:6,j) + model.fc_dt*vel_dot;
+            sps_pred(4:6,j) = sps(4:6,j) + model.con_dt*vel_dot;
         else
             vel_dot = [0;0;0];
             sps_pred(4:6,j) = sps(1:3,j) - mu_prev(1:3);
@@ -35,13 +35,13 @@ function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera,
         q  = sps(7:9, j);
         quat  = [sqrt(1-q'*q) ; q];
     
-        q_hat = quat + 0.5*Omega*quat*model.fc_dt;
+        q_hat = quat + 0.5*Omega*quat*model.con_dt;
         sps_pred(7:9,j) = q_hat(2:4);
 
         % Predict Angular Velocities
         if(~isempty(u))
             omega_dot = ang_acc(u,sps(10:12,j),model,[0 0 0]','actual');
-            sps_pred(10:12,j) = sps(10:12,j) + omega_dot*model.fc_dt;
+            sps_pred(10:12,j) = sps(10:12,j) + omega_dot*model.con_dt;
         else
             omega_dot = [0;0;0];
             sps_pred(10:12,j) = sps(10:12,j);% - mu_prev(10:12);

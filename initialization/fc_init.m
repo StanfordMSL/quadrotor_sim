@@ -43,7 +43,6 @@ switch type
         [fc.K,~,~] = dlqr(u2w,B,Q,R);
     case 'ilqr'
         fc.type = 'ilqr';
-        
         % Stagewise R
         R_f = 1e-5*ones(1,1);
         R_tau = 1e-5*ones(3,1);
@@ -51,7 +50,7 @@ switch type
         fc.R = diag(R_vect);   
         
         fc.Q = zeros(12,12,4);
-               
+
         % Stagewise Q
         Q_xy     = 1*ones(2,1);
         Q_z      = 1*ones(1,1);
@@ -96,9 +95,11 @@ switch type
         Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
         fc.Q(:,:,4) = diag(Q_vect);
         
-        % Terminal Q
         fc.Q_N = diag(Q_vect);
         disp('[fc_init]: TODO: implement a cleaner way of holding Q_N. It is not in the same array as the rest');
+
+        % Inversion Guaranteeing Offset
+        fc.rho = 1;
         
     case 'PID'
         fc.type = 'PID';
