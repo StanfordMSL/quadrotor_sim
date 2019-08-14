@@ -8,7 +8,7 @@ act_hz = 1000;
 model  = model_init('simple vII',act_hz,fc_hz); % Initialize Physics Model
 s_est  = se_init('mocap',fc_hz);            % Initialize State Estimator
 fc     = fc_init(model,'ilqr');             % Initialize Controller
-wp     = wp_init('line',tf,'no plot');     % Initialize timestamped keyframes
+wp     = wp_init('square',tf,'no plot');     % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');             % Initialize External Forces
 flight = flight_init(model,tf,wp);             % Initialize Flight Variables
 
@@ -21,7 +21,7 @@ initial_bb = init_quad_bounding_box();
 camera = init_camera();
 
 % INIT YUKF %%%%%%%%%%%%%%%%%%
-mu_curr = flight.x_act(:, 1);
+mu_curr = flight.x_act(:, 1); mu_prev = mu_curr;
 dims = length(mu_curr);
 sig_curr = eye(dims) * 0.01;
 ukf_prms.alpha = 1; % scaling param - how far sig. points are from mean
@@ -31,7 +31,7 @@ ukf_prms.lambda = ukf_prms.alpha^2*(dims + ukf_prms.kappa) - dims;
 ukf_prms.meas_len = length(predict_quad_bounding_box(mu_curr, camera, initial_bb));
 
 ukf_prms.R = eye(dims) * 0.01;
-ukf_prms.Q = eye(ukf_prms.meas_len) * 0.1;
+ukf_prms.Q = eye(ukf_prms.meas_len) * .1;
 
 % yukf save variable for later plotting
 sv.mu_hist = zeros(dims, length(flight.t_act)); sv.mu_hist(:, 1) = mu_curr;
@@ -75,7 +75,12 @@ for k_act = 1:(length(flight.t_act)-1)
         yolo_output = predict_quad_bounding_box(flight.x_act(:,k_act), camera, initial_bb); % Add noise??
         
         % Tracking (UKF)
-        [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, curr_m_cmd, yolo_output, model, camera, initial_bb, ukf_prms);
+        u_est = [];
+%         u_est = curr_m_cmd;
+        [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, [], yolo_output, model, camera, initial_bb, ukf_prms, mu_prev);
+        mu_prev = mu_curr;
+%         mu_curr = mu_out;
+%         sig_curr = sigma_out;
         
         % Save values for plotting %%%%%%%%%%%%%%%%%%
         sv.mu_hist(:, k_act) = mu_out;

@@ -1,4 +1,4 @@
-function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera, initial_bb, ukf_prms)
+function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera, initial_bb, ukf_prms, mu_prev)
     dim = length(mu_curr);
     num_sp = 2*dim + 1;
     
@@ -12,8 +12,13 @@ function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera,
         sps_pred(1:3,j) = sps(1:3,j) + model.fc_dt*mu_curr(4:6,1);
 
         % Predict Velocities
-        vel_dot = lin_acc(sps(:,j),u,model,[0 0 0]',0,'actual');
-        sps_pred(4:6,j) = sps(4:6,j) + model.fc_dt*vel_dot;
+        if(~isempty(u))
+            vel_dot = lin_acc(sps(:,j),u,model,[0 0 0]',0,'actual');
+            sps_pred(4:6,j) = sps(4:6,j) + model.fc_dt*vel_dot;
+        else
+            vel_dot = [0;0;0];
+            sps_pred(4:6,j) = sps(1:3,j) - mu_prev(1:3);
+        end
 
         % Predict Quaternions
         % omegas
@@ -34,8 +39,14 @@ function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera,
         sps_pred(7:9,j) = q_hat(2:4);
 
         % Predict Angular Velocities
-        omega_dot = ang_acc(u,sps(10:12,j),model,[0 0 0]','actual');
-        sps_pred(10:12,j) = sps(10:12,j) + omega_dot*model.fc_dt;
+        if(~isempty(u))
+            omega_dot = ang_acc(u,sps(10:12,j),model,[0 0 0]','actual');
+            sps_pred(10:12,j) = sps(10:12,j) + omega_dot*model.fc_dt;
+        else
+            omega_dot = [0;0;0];
+            sps_pred(10:12,j) = sps(10:12,j);% - mu_prev(10:12);
+        end
+        
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -63,6 +74,11 @@ function [mu_out, sigma_out] = yukf_step(mu_curr, sig_curr, u, z, model, camera,
     K = sig_xz * inv(S);
     mu_out = mu_bar + K * (z - z_hat);
     sigma_out = sigma_bar - K * S * K';
+    
+    % project sigma to pos. def. cone to avoid numeric issues
+    [V,D] = eig(sigma_out);
+    D(D<0) = 0.000001;
+    sigma_out = V*D*V';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp('')
 end

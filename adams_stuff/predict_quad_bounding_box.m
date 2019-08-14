@@ -42,15 +42,22 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
         min_coords = min(bb_rc_list);
         delta_rc = max_coords - min_coords;
         center_rc = (max_coords + min_coords)/2;
-%         pos_c = camera.tf_cam_w * [pos_w(:); 1];
-%         est_dist = norm(pos_c(1:3));
-%         x_width_pixel = camera.K_3x3(1, 1) * delta_rc(2) / est_dist;
-%         y_width_pixel = camera.K_3x3(2, 2) * delta_rc(1) / est_dist;
-        width_pixel = delta_rc(2);
-        height_pixel = delta_rc(1);
         
-        output = [center_rc(:); width_pixel; height_pixel; height_pixel/width_pixel];
-%         output = [center_rc(:); width_pixel; height_pixel];
+        b_use_qs_method = false;
+        if b_use_qs_method
+            pos_c = camera.tf_cam_w * [pos_w(:); 1];
+            est_dist = norm(pos_c(1:3));
+            width = initial_bb(1,2) * 2;
+            height = initial_bb(1,3) * 2;
+            width_pixel = camera.K_3x3(1, 1) * width / est_dist;
+            height_pixel = camera.K_3x3(2, 2) * height / est_dist;
+        else
+            width_pixel = delta_rc(2);
+            height_pixel = delta_rc(1);
+        end
+        
+%         output = [center_rc(:); width_pixel; height_pixel; height_pixel/width_pixel];
+        output = [center_rc(:); width_pixel; height_pixel];
         if b_draw_box
             figure(3433); clf; axis equal;  hold on;
             plot(center_rc(2), center_rc(1), 'b*');

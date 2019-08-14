@@ -23,12 +23,12 @@ function ukf_state_plot(sv, flight)
     ylim([min_disp, max_disp])
     
     if(b_single_ang_err)
-        subplot(3,2,2); ylabel('|angle error (deg)|'); hold on; grid on; xlabel('time (s)');
-        plot(sv.time_hist(msk), sv.ang_err(msk),'ms'); 
-
-        subplot(3,2,4); ylabel('axis-angle angle (deg)'); hold on; grid on; xlabel('time (s)');
+        subplot(3,2,2); ylabel('axis-angle angle (deg)'); hold on; grid on; xlabel('time (s)');
         plot(sv.time_hist(msk), sv.ang(msk)*180/pi,'rs'); 
         plot(sv.time_hist(msk), sv.ang_act(msk)*180/pi,'bs')
+        
+        subplot(3,2,4); ylabel('|angle error (deg)|'); hold on; grid on; xlabel('time (s)');
+        plot(sv.time_hist(msk), sv.ang_err(msk),'ms'); 
         
         subplot(3,2,6); ylabel('trace(covar)'); hold on; grid on; xlabel('time (s)');
         title("Uncertainty vs Time")

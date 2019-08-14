@@ -4,7 +4,8 @@ function sps = calc_sigma_points(mu_curr, sig_curr, ukf_prms)
     sps = zeros(dim, 2*dim + 1);
     
     sps(:, 1) = mu_curr;
-    sigma_point_step = sqrt(dim + ukf_prms.lambda) * sqrtm(sig_curr);
+    sig_sqrt = chol(sig_curr);
+    sigma_point_step = sqrt(dim + ukf_prms.lambda) * sig_sqrt; %* sqrtm(sig_curr);
     
     q_mean = mu_curr(7:9); 
     q_mean = [sqrt(1 - q_mean'*q_mean); q_mean];
