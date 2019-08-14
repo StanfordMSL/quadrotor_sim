@@ -42,6 +42,7 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
     nom.l(:,:,n:end) = l;
     nom.L(:,:,n:end) = L;
     
+    fast_plot(x_bar);
     disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
 end
 

@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('slit',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('square',0,tf,'no plot');              % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');                   % Initialize External Forces
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 % t_comp = calc_init();                                 % Initialize Compute Time Variables
@@ -54,8 +54,9 @@ for k = 1:sim_N
     % State Estimator
     if (abs(t_est(k_est)-sim_time) < tol) && (k_est <= tf*est_hz)
         % Perfect Sensing (used for flight control)
-        x_fc = flight.x_act(:,k_act);
-        flight.x_fc(:,k_est)  = x_fc;
+        t_now = t_est(k_est);
+        x_now = flight.x_act(:,k_act);
+        flight.x_fc(:,k_est)  = x_now;
 
 %         %%%%%%%%%%%%%%%%%%%%
 %         % YOLO UKF Test
@@ -68,15 +69,14 @@ for k = 1:sim_N
     % Low Rate Controller    
     if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
         % Update LQR params
-%         t_now = t_lqr(k_lqr);
-%         nom = ilqr(0,x_fc,wp,nom,fc,model);
+        nom = ilqr(t_now,x_now,wp,nom,fc,model);
         k_lqr = k_lqr + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
         % Draw Out Motor Commands from u_bar computed by iLQR
-        del_x = x_fc-nom.x_bar(:,k_con);
+        del_x = x_now-nom.x_bar(:,k_con);
         del_u = nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
         u  = nom.u_bar(:,k_con) + del_u;
         curr_m_cmd = wrench2m_controller(u,model);
