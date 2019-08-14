@@ -11,7 +11,7 @@ nom.u_bar = model.hover_wrench.*ones(4,N-1);
 
 for k = 1:N-1
     FT_ext = zeros(6,1);
-    m_cmd  = wrench2m_cmd(nom.u_bar(:,k),model);
+    m_cmd  = wrench2m_controller(nom.u_bar(:,k),model);
 
     nom.x_bar(:,k+1) = quadcopter(nom.x_bar(:,k),m_cmd,model,FT_ext,'fc');
 end

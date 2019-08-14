@@ -27,7 +27,7 @@ for k = 1:N-1
 
     % Predict Dynamics of Next Step
     FT_ext = zeros(6,1);
-    m_cmd = wrench2m_cmd(u_fp(:,k),model);
+    m_cmd = wrench2m_controller(u_fp(:,k),model);
 
     x_fp(:,k+1) = quadcopter(x_fp(:,k),m_cmd,model,FT_ext,'fc');
 

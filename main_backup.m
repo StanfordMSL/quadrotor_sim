@@ -1,4 +1,4 @@
-clear; clc; 
+clear
 addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,21 +20,18 @@ t_act = 0:1/act_hz:tf;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize Simulation
-
-%%% Map, Dynamics and Control Initialization
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
-fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('half-square',0,tf,'no plot');              % Initialize timestamped keyframes
-FT_ext = nudge_init(act_hz,tf,'off');                   % Initialize External Forces
-flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
-% t_comp = calc_init();                                 % Initialize Compute Time Variables
+fc     = fc_init(model,'ilqr');                 % Initialize Controller
+wp     = wp_init('half-square',0,tf,'no plot');% Initialize timestamped keyframes
+FT_ext = nudge_init(act_hz,tf,'off');           % Initialize External Forces
+flight = flight_init(model,tf,wp);              % Initialize Flight Variables
+% t_comp = calc_init();                         % Initialize Compute Time Variables
 
 % %%%%%%%%%%%%%%%%%%%%
 % %%% YOLO UKF Test Initialization
 % [sv,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr] = yolo_ukf_init(flight);
 % %%%%%%%%%%%%%%%%%%%%
 
-%%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter
 k_lqr = 1;          % Low Rate Controller Time Counter
 k_con = 1;          % High Rate Controller Time Counter
@@ -56,12 +53,13 @@ for k = 1:sim_N
         % Perfect Sensing (used for flight control)
         x_fc = flight.x_act(:,k_act);
         flight.x_fc(:,k_est)  = x_fc;
-
+        
 %         %%%%%%%%%%%%%%%%%%%%
 %         % YOLO UKF Test
 %         t_now = t_est(k_est);
 %         [sv,mu_prev] = yolo_ukf(sv,flight,k_est,t_now,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr,model);
 %         %%%%%%%%%%%%%%%%%%%%
+        
         k_est = k_est + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,10 +74,10 @@ for k = 1:sim_N
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
         % Draw Out Motor Commands from u_bar computed by iLQR
         del_x = x_fc-nom.x_bar(:,k_con);
-        del_u = nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
-        u  = nom.u_bar(:,k_con) + del_u;
+        u  = nom.u_bar(:,k_con) + nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
         curr_m_cmd = wrench2m_controller(u,model);
-        
+%         curr_m_cmd = direct_motor_control(nom.u_bar(:,k_con),model);
+
         % Log State Estimation and Control
         flight.m_cmd(:,k_con) = curr_m_cmd;       
         
