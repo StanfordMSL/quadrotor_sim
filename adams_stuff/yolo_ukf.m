@@ -17,11 +17,11 @@ function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, k_act, t_now, initial_bb
 
     qm = complete_unit_quat(yukf.mu(7:9)); 
     [yaw, pitch, roll] = quat2angle(qm(:)');
-    sv.ypr_hist(:, k_act) = [yaw; pitch; roll];
+    sv.ypr_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
 
     qa = complete_unit_quat(flight.x_act(7:9, k_act)); 
     [yaw, pitch, roll] = quat2angle(qa(:)');
-    sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll];
+    sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
 
     sv.ang_err(k_act) = quat_dist(qa, qm);
     sv.ang(k_act) = 2*acosd(qm(1));

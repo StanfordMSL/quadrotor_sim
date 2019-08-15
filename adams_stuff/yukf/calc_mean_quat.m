@@ -1,7 +1,7 @@
 function [mu_bar, ei_quat_set] = calc_mean_quat(sps, yukf)
     % see https://kodlab.seas.upenn.edu/uploads/Arun/UKFpaper.pdf, sec 3.4
     max_itr = 20;
-    thresh = 0.5 * pi/180;
+    thresh = 0.1 * pi/180;
     
     % calculate the mean of the vector parts
     mu_bar = (yukf.w0_m * sps(:,1)) + (yukf.wi*sum(sps(:,2:end), 2));
@@ -25,10 +25,13 @@ function [mu_bar, ei_quat_set] = calc_mean_quat(sps, yukf)
         q_bar = quatmultiply(e_quat(:)', q_bar(:)');
         q_bar_inv = quatinv( q_bar(:)' );
         
-        if(norm(e_quat(2:4)) < thresh)
+        if(norm(e_vec) < thresh)
+            if(itr == 1); continue; end % so quick its worth taking another step
             % we have converged
-            break;
+            mu_bar(7:9) = q_bar(2:4);
+            return
         end
     end
+    warning('orientation mean calculation did not converge!')
     mu_bar(7:9) = q_bar(2:4);
 end

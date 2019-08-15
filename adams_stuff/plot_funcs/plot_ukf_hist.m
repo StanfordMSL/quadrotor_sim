@@ -10,19 +10,16 @@ function plot_ukf_hist(sv, flight)
     subplot(3,2,1); ylabel('X [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(1, msk),'rs'); 
     plot(flight.t_act, flight.x_act(1, :),'bs')
-    plot(sv.time_hist(msk), sv.mu_act(1, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,3); ylabel('Y [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(2, msk),'rs'); 
     plot(flight.t_act, flight.x_act(2, :),'bs')
-    plot(sv.time_hist(msk), sv.mu_act(2, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,5); ylabel('Z [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(3, msk),'rs'); 
     plot(flight.t_act, flight.x_act(3, :),'bs')
-    plot(sv.time_hist(msk), sv.mu_act(3, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     if(b_single_ang_err)
@@ -37,29 +34,26 @@ function plot_ukf_hist(sv, flight)
         subplot(3,2,6); ylabel('trace(covar)'); hold on; grid on; xlabel('time (s)');
         title("Uncertainty vs Time")
         plot(sv.time_hist(msk), sv.sig_trace_hist(msk), 'm-')
-    else
+    
+        figure(11541); clf; hold on %%%%%%%%%%%%%%%%%%
         max_ang = ceil(max(max([sv.ypr_hist(:, msk), sv.ypr_act_hist(:, msk)]')));
         min_ang = floor(min(min([sv.ypr_hist(:, msk), sv.ypr_act_hist(:, msk)]')));
 
-        subplot(3,2,2); ylabel('yaw (deg)'); hold on; grid on; xlabel('time (s)'); 
+        subplot(3,1,1); ylabel('yaw (deg)'); hold on; grid on; xlabel('time (s)'); 
         plot(sv.time_hist(msk), sv.ypr_hist(1, msk),'rs'); 
         plot(sv.time_hist(msk), sv.ypr_act_hist(1, msk),'bs')
         ylim([min_ang, max_ang])
 
-        subplot(3,2,4); ylabel('pitch (deg)'); hold on; grid on; xlabel('time (s)'); 
+        subplot(3,1,2); ylabel('pitch (deg)'); hold on; grid on; xlabel('time (s)'); 
         plot(sv.time_hist(msk), sv.ypr_hist(2, msk),'rs'); 
         plot(sv.time_hist(msk), sv.ypr_act_hist(2, msk),'bs')
         ylim([min_ang, max_ang])
 
-        subplot(3,2,6); ylabel('roll (deg)'); hold on; grid on; xlabel('time (s)'); 
+        subplot(3,1,3); ylabel('roll (deg)'); hold on; grid on; xlabel('time (s)'); 
         plot(sv.time_hist(msk), sv.ypr_hist(3, msk),'rs'); 
         plot(sv.time_hist(msk), sv.ypr_act_hist(3, msk),'bs')
         ylim([min_ang, max_ang])
         sgtitle("UKF - red     Ground Truth - blue")
-
-        figure(23213); clf; ylabel('trace(covar)'); hold on; grid on; xlabel('time (s)'); 
-        title("Uncertainty vs Time")
-        plot(sv.time_hist(msk), sv.sig_trace_hist(msk), 'ms')
     end
     
     disp('')

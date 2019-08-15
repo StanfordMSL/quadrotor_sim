@@ -6,9 +6,9 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     %   note: R_w_quad = quat2rotm(quat(:)'); 
     
     output = [];
-    b_draw_box = false;
-    b_use_aspect_ratio_too = false;
-    b_angled_bounding_box = false;
+    b_draw_box = false; % settign to true slows it down considerably, but shows the prediction vs. true state & how the sigma points vary around the mean
+    b_use_aspect_ratio_too = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     
     disp('')
     % unpack state

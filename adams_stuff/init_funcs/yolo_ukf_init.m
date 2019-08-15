@@ -32,11 +32,11 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight)
 
     qm = complete_unit_quat(yukf.mu(7:9, 1));
     [yaw, pitch, roll] = quat2angle(qm(:)');
-    sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll];
+    sv.ypr_hist = zeros(3, length(flight.t_act)); sv.ypr_hist(:, 1) = [yaw; pitch; roll]*180/pi;
 
     qa = complete_unit_quat(flight.x_act(7:9, 1)); 
     [yaw, pitch, roll] = quat2angle(qa(:)');
-    sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll];
+    sv.ypr_act_hist = zeros(3, length(flight.t_act)); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll]*180/pi;
 
     sv.ang_err = zeros(length(flight.t_act), 1); sv.ang_err(1) = quat_dist(qa, qm);
     sv.ang = zeros(length(flight.t_act), 1); sv.ang(1) = 0;

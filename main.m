@@ -5,7 +5,7 @@ addpath(genpath(pwd));
 %% Time and Simulation Rate
 tf = 10;
 
-est_hz = 200;       % State Estimator Time Counter
+est_hz = 500;       % State Estimator Time Counter
 lqr_hz = 1;        % Low Rate Controller Sample Rate
 con_hz = 50;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate

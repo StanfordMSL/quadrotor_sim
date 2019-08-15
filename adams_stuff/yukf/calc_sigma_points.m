@@ -4,7 +4,10 @@ function sps = calc_sigma_points(mu, sigma, yukf)
     sps = zeros(dim, 2 * dim + 1);
     
     sps(:, 1) = mu;
-    sig_sqrt = chol(sigma); % sig_sqrt = sqrtm(sigma);
+    sig_sqrt = chol(sigma); 
+%     sig_sqrt = sqrtm(sigma);
+%     [U, S, V] = svd(sigma);
+%     sig_sqrt = U * S.^0.5 * V';
     sigma_point_step = sqrt(dim + yukf.prms.lambda) * sig_sqrt; 
     
     q_mean = complete_unit_quat(mu(7:9)); 

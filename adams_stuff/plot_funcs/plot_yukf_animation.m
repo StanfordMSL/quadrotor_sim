@@ -1,4 +1,9 @@
-function plot_yukf_animation(flight, wp, camera, sv)
+function plot_yukf_animation(flight, wp, camera, sv, varargin)
+
+    b_view_from_camera_perspective = false;
+    if ~isempty(varargin)
+        b_view_from_camera_perspective = boolean(varargin{1});
+    end
 
     map = wp.map;
     
@@ -9,31 +14,29 @@ function plot_yukf_animation(flight, wp, camera, sv)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
-    fig_h = figure(2);
-    clf
-    [camera_lims, cmr_h] = plot_camera(camera, fig_h); hold on
+    fig_h = figure(2); clf; hold on
+    [camera_lims, cmr_h] = plot_camera(camera, fig_h);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
-%     xlim(wp.x_lim);
-%     ylim(wp.y_lim);
-%     zlim(wp.z_lim);
-%     xlim([min(camera_lims(1, 1), wp.x_lim(1)), max(camera_lims(2, 1), wp.x_lim(2))]);
-%     ylim([min(camera_lims(1, 2), wp.y_lim(1)), max(camera_lims(2, 2), wp.y_lim(2))]);
-%     zlim([min(camera_lims(1, 3), wp.z_lim(1)), max(camera_lims(2, 3), wp.z_lim(2))]);
-    xlim([min([camera_lims(1, 1), x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), max([camera_lims(2, 1), x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
-    ylim([min([camera_lims(1, 2), x_act(2, :) - 1, sv.mu_hist(2, sv.hist_mask) - 1]), max([camera_lims(2, 2), x_act(2, :) + 1, sv.mu_hist(2, sv.hist_mask) + 1])]);
-    zlim([min([camera_lims(1, 3), x_act(3, :) - 1, sv.mu_hist(3, sv.hist_mask) - 1]), max([camera_lims(2, 3), x_act(3, :) + 1, sv.mu_hist(3, sv.hist_mask) + 1])]);
+    xlim([min([camera_lims(1, 1), x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), ...
+          max([camera_lims(2, 1), x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
+    ylim([min([camera_lims(1, 2), x_act(2, :) - 1, sv.mu_hist(2, sv.hist_mask) - 1]), ...
+          max([camera_lims(2, 2), x_act(2, :) + 1, sv.mu_hist(2, sv.hist_mask) + 1])]);
+    zlim([min([camera_lims(1, 3), x_act(3, :) - 1, sv.mu_hist(3, sv.hist_mask) - 1]), ...
+          max([camera_lims(2, 3), x_act(3, :) + 1, sv.mu_hist(3, sv.hist_mask) + 1])]);
     grid on
     
     % Set Camera Angle
     daspect([1 1 1])
-    view(320,20);
-%     view(90,0);
-
-    hold on
+    
+    if b_view_from_camera_perspective
+        set(gca, 'CameraPosition', [-8,0,0]); view(-90,0); % look from behind the camera
+    else
+        view(320, 20);
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -109,37 +112,62 @@ function plot_yukf_animation(flight, wp, camera, sv)
     legend([cmr_h; traj_h; traj_est_h; h_persp; h_persp_est], {'camera', 'traj._{gt}', 'traj._{est}', 'X_{gt}','Y_{gt}','Z_{gt}', 'X_{est}','Y_{est}','Z_{est}'});
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
-    curr_time = dt;
-    b_real_time = true;
-    while (curr_time <= t_act(end))
-        tic
-        k = ceil(curr_time / dt);
-        
-        quat = complete_unit_quat(x_act(7:9, k));
-        bRw = quat2rotm(quat');
-        pos = x_act(1:3, k);
-        
-        x_arrow = [pos pos + (bRw*vect_x)];
-        y_arrow = [pos pos + (bRw*vect_y)];
-        z_arrow = [pos pos + (bRw*vect_z)];
-        h_persp = reassign(h_persp, x_arrow, y_arrow, z_arrow);
-        
-        if(sv.hist_mask(k))
-            quat_est = complete_unit_quat(sv.mu_hist(7:9, k));
+    b_real_time = false;
+    if b_real_time
+        curr_time = dt;
+        while (curr_time <= t_act(end))
+            tic
+            k = ceil(curr_time / dt);
+
+            quat = complete_unit_quat(x_act(7:9, k));
+            bRw = quat2rotm(quat');
+            pos = x_act(1:3, k);
+
+            x_arrow = [pos pos + (bRw*vect_x)];
+            y_arrow = [pos pos + (bRw*vect_y)];
+            z_arrow = [pos pos + (bRw*vect_z)];
+            h_persp = reassign(h_persp, x_arrow, y_arrow, z_arrow);
+
+            if(sv.hist_mask(k))
+                quat_est = complete_unit_quat(sv.mu_hist(7:9, k));
+                bRw_est = quat2rotm(quat_est');
+                pos_est = sv.mu_hist(1:3, k);
+
+                x_arrow_est = [pos_est pos_est + (bRw_est*vect_x_est)];
+                y_arrow_est = [pos_est pos_est + (bRw_est*vect_y_est)];
+                z_arrow_est = [pos_est pos_est + (bRw_est*vect_z_est)];
+                h_persp_est = reassign(h_persp_est, x_arrow_est, y_arrow_est, z_arrow_est);
+            end
+
+            drawnow
+            curr_time = curr_time + toc;
+        end
+    else
+        dt_replay = 0.01;
+        for curr_time = linspace(t_act(1), t_act(end), (t_act(end) - t_act(1)) / dt_replay)
+            k = ceil( max(curr_time, 0.0000001) / dt);
+            quat = complete_unit_quat(x_act(7:9, k));
+            bRw = quat2rotm(quat');
+            pos = x_act(1:3, k);
+
+            x_arrow = [pos pos + (bRw*vect_x)];
+            y_arrow = [pos pos + (bRw*vect_y)];
+            z_arrow = [pos pos + (bRw*vect_z)];
+            h_persp = reassign(h_persp, x_arrow, y_arrow, z_arrow);
+            
+            most_recent_state_ind = k + 1 - find(sv.hist_mask(k:-1:1), 1);
+%             if(sv.hist_mask(k))
+            quat_est = complete_unit_quat(sv.mu_hist(7:9, most_recent_state_ind));
             bRw_est = quat2rotm(quat_est');
-            pos_est = sv.mu_hist(1:3, k);
+            pos_est = sv.mu_hist(1:3, most_recent_state_ind);
 
             x_arrow_est = [pos_est pos_est + (bRw_est*vect_x_est)];
             y_arrow_est = [pos_est pos_est + (bRw_est*vect_y_est)];
             z_arrow_est = [pos_est pos_est + (bRw_est*vect_z_est)];
             h_persp_est = reassign(h_persp_est, x_arrow_est, y_arrow_est, z_arrow_est);
-        end
+%             end
 
-        drawnow
-        
-        if b_real_time
-            curr_time = curr_time + toc;
-        else
+            drawnow
             curr_time = curr_time + dt;
         end
     end

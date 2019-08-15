@@ -32,7 +32,18 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     
     % line 11 - 13: kalman gain & update
     K = sigma_xz * S_inv;
-    mu_out = mu_bar + K * (z - z_hat);
+    b_add_all = true;
+    if b_add_all
+        % this is how the paper I am following does it
+        mu_out = mu_bar + K * (z - z_hat);
+    else
+        % this is what would make sense to me
+        innovation = K * (z - z_hat);
+        mu_out(1:6) = mu_bar(1:6) + innovation(1:6);
+        mu_out(10:12) = mu_bar(10:12) + innovation(10:12);
+        q_tmp = quatmultiply( complete_unit_quat(mu_bar(7:9))', axang_to_quat(innovation(7:9))' );
+        mu_out(7:9) = q_tmp(2:4);
+    end
     sigma_out = sigma_bar - K * S * K';
     
     % project sigma to pos. def. cone to avoid numeric issues
@@ -42,7 +53,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     yukf.mu_prev = yukf.mu;
-    yukf.mu = mu_out;
+    yukf.mu = mu_out(:);
     yukf.sigma = sigma_out;
     disp('')
 end
