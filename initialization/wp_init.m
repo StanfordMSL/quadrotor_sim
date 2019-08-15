@@ -14,53 +14,34 @@ switch traj
         x = zeros(12,2);
         x(:,1) = [0 ; 0 ; 1 ; zeros(9,1)];
         x(:,2) = [0 ; 0 ; 1 ; zeros(9,1)];
-        
-        labels = {' 1',' 2'};
-        
-        Q_key = [1 4]';
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'hi-res hover'
-        N_wp = tf/0.5 + 1;
-        t = linspace(0,tf,N_wp);
-        
-        x = zeros(12,N_wp);
-        x(3,:) = ones(1,N_wp);  
-        
-        labels = cell(N_wp,1);        
-        for k = 1:N_wp
-            labels{k} = [' ',num2str(k)];
-        end
-        
-        Q_key = zeros(N_wp,1);
-        Q_key(1,1) = 1;
-        for k = 2:N_wp
-            Q_key(k,1) = 4;
-        end
+                
+        Q_key = [4 4]';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'climb'
-        N_wp = 3;
+        N_wp = 2;
         t = [0 0.5 tf];
         
         x = zeros(12,2);
         x(:,2) = [0 ; 0 ; 1 ; zeros(3,1) ; 0 ; 0 ; 0.7 ; 0 ; 0 ; 0];
         x(:,3) = [0 ; 0 ; 1 ; zeros(3,1) ; 0 ; 0 ; 0.7 ; 0 ; 0 ; 0];
-        
-        labels = {' 1',' 2','   3'};
-        
-        Q_key = [1 3 3 3]';
+                
+        Q_key = [4 4;...
+                 4 4];
+             
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'line'
-        N_wp = 4;
-        t = [0 0.4*tf 0.8*tf tf];
+        N_wp = 3;
+        t = [0 (1/3)*tf (2/3)*tf tf];
         
         x = zeros(12,3);
         x(:,2) = [0 ; 0 ; 1; zeros(9,1)];
         x(:,3) = [2 ; 0 ; 1; zeros(9,1)];
         x(:,4) = [2 ; 0 ; 1; zeros(9,1)];
-
-        labels = {' 1',' 2',' 3','   4'};
         
-        Q_key = [1 4 4 4 4]';
+        Q_key = [4 4;...
+                 4 4;...
+                 4 4];
+             
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'half-square'
         N_wp = 5;
@@ -71,10 +52,12 @@ switch traj
         x(:,3) = [0 ; 2 ; 1; zeros(9,1)];
         x(:,4) = [2 ; 2 ; 1; zeros(3,1) ; 0 ; 0 ; -0.7 ; 0 ; 0 ; 0];
         x(:,5) = [2 ; 2 ; 1; zeros(9,1)];
-
-        labels = {' 1',' 2',' 3',' 4','   5'};
         
-        Q_key = [1 4 4 4 4]';
+        Q_key = [4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4];
+             
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'almost-square'
         N_wp = 6;
@@ -86,14 +69,16 @@ switch traj
         x(:,4) = [2 ; 2 ; 1; zeros(9,1)];
         x(:,5) = [2 ; 0 ; 1; zeros(9,1)];
         x(:,6) = [2 ; 0 ; 1; zeros(9,1)];
-
-        labels = {' 1',' 2',' 3',' 4',' 5','   6'};
         
-        Q_key = [1 4 4 4 4 4 4]';
+        Q_key = [4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'square'
-        N_wp = 8;
-        t = [0 (1/7)*tf (2/7)*tf (3/7)*tf (4/7)*tf (5/7)*tf (6/7)*tf tf]';
+        N_wp = 6;
+        t = [0 (1/6)*tf (2/6)*tf (3/6)*tf (4/6)*tf (5/6)*tf tf]';
         
         x = zeros(12,7);
         x(:,2) = [ 0 ; 0 ; 1; zeros(9,1)];
@@ -102,64 +87,31 @@ switch traj
         x(:,5) = [ 2 ; 0 ; 1; zeros(9,1)];
         x(:,6) = [ 0 ; 0 ; 1; zeros(9,1)];
         x(:,7) = [ 0 ; 0 ; 0; zeros(9,1)];
-        x(:,8) = [ 0 ; 0 ; 0; zeros(9,1)];
-        
-        labels = {' 1',' 2',' 3',' 4',' 5','   ,6','   ,7','     ,7'};
-        
-        Q_key = [1 4 4 4 4 4 4 4 4]';
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'hi-res square'
-        N_wp = tf/0.5 + 1;
-        t = linspace(0,tf,N_wp);
-        
-        kfr = 6;
-        x = zeros(12,N_wp);
-
-        for k = 1:N_wp
-            if     (k >= round(0*N_wp/kfr)) && (k < round(1*N_wp/kfr))
-                x(:,k) = [0 ; 0 ; 0; zeros(9,1)];
-            elseif (k >= round(1*N_wp/kfr)) && (k < round(2*N_wp/kfr))
-                x(:,k) = [0 ; 0 ; 1; zeros(9,1)];
-            elseif (k >= round(2*N_wp/kfr)) && (k < round(3*N_wp/kfr))
-                x(:,k) = [0 ; 2 ; 1; zeros(9,1)];
-            elseif (k >= round(3*N_wp/kfr)) && (k < round(4*N_wp/kfr))
-                x(:,k) = [2 ; 2 ; 1; zeros(9,1)];
-            elseif (k >= round(4*N_wp/kfr)) && (k < round(5*N_wp/kfr))
-                x(:,k) = [2 ; 0 ; 1; zeros(9,1)];
-            elseif (k >= round(5*N_wp/kfr)) && (k <= round(6*N_wp/kfr))
-                x(:,k) = [0 ; 0 ; 1; zeros(9,1)];
-            end
-        end
-
-        labels = cell(N_wp,1);        
-        for k = 1:N_wp
-            labels{k} = [' ',num2str(k)];
-        end
-        
-        Q_key = zeros(N_wp,1);
-        Q_key(1,1) = 1;
-        for k = 2:N_wp
-            Q_key(k,1) = 4;
-        end
+                
+        Q_key = [4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4;...
+                 4 4];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     case 'slit'
-        N_wp = 6;
-        t = [0 (1/5)*tf (2/5)*tf (3/5)*tf (4/5)*tf tf];
+        N_wp = 4;
+        t = [0 (1/3)*tf (2/3)*tf tf];
         
         x = zeros(12,N_wp);
-        x(:,1) = [-1.0 ; 0.0 ; 0.0 ; zeros(9,1)];                                   % On the Ground
-        x(:,2) = [-1.0 ; 0.0 ; 1.0 ; zeros(9,1)];                                   % Hover
-        x(:,3) = [ 0.0 ; 0.0 ; 1.0 ; zeros(3,1) ; 0.3 ; 0.0 ; 0.0 ; zeros(3,1)];    % Tilt (through the hole)
-        x(:,4) = [ 1.0 ; 0.0 ; 1.0 ; zeros(9,1)];                                   % Hover
-        x(:,5) = [ 1.0 ; 0.0 ; 0.0 ; zeros(9,1)];                                   % Land
-        x(:,6) = [ 1.0 ; 0.0 ; 0.0 ; zeros(9,1)];                                   % Enforce Landing
-         
-        labels = {' 1',' 2',' 3',' 4',' 5','   ,6'};
-        
-        Q_key = [1 4 4 4 4 4 4]';
+        x(:,1) = [-1.0 ; 0.0 ; 1.0 ; zeros(9,1)];
+        % Hover
+        x(:,2) = [ 0.0 ; 0.0 ; 1.0 ; zeros(3,1) ; 0.3 ; 0.0 ; 0.0 ; zeros(3,1)];    % Tilt (through the hole)
+        x(:,3) = [ 1.0 ; 0.0 ; 1.0 ; zeros(9,1)];
+        x(:,4) = [ 1.0 ; 0.0 ; 1.0 ; zeros(9,1)];
+                 
+        Q_key = [4 4;...
+                 4 4;...
+                 4 4];
                
-        q0 = sqrt(1-x(7:9,3)'*x(7:9,3));
-        quat = [q0 ; x(7:9,3)];
+        q0 = sqrt(1-x(7:9,2)'*x(7:9,2));
+        quat = [q0 ; x(7:9,2)];
         bRw = quat2rotm(quat');
 
         map = bRw*base_gate + [0 0 1]';
@@ -178,7 +130,6 @@ wp.x_lim = [-8.1 8.1];
 wp.y_lim = [-3.2 3.2];
 wp.z_lim = [0 3];
 
-wp.labels = labels;
 wp.Q_key = Q_key;
 wp.map = map;
 
@@ -215,7 +166,7 @@ switch plot_show
             quad_h(2).Color = [0 1 0];
             quad_h(3).Color = [0 0 1];
             
-            text(pos(1),pos(2),pos(3),labels{k});
+            text(pos(1),pos(2),pos(3),num2str(k));
         end
 
         xlabel('x-axis');

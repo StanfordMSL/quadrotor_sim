@@ -3,11 +3,11 @@ addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
-tf = 8;
+tf = 10;
 
 est_hz = 200;       % State Estimator Time Counter
 lqr_hz = 1;        % Low Rate Controller Sample Rate
-con_hz = 50;       % High Rate Controller Sample Rate
+con_hz = 200;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
 
 sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('square',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('line',0,tf,'no plot');              % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');                   % Initialize External Forces
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 % t_comp = calc_init();                                 % Initialize Compute Time Variables

@@ -5,7 +5,7 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
     N = nom.total-n+1;
     
     % Unpack the Terms
-    t_bar = nom.t_bar(:,n:end)-nom.t_bar(:,n);
+    t_bar = nom.t_bar(:,n:end);
     x_bar = nom.x_bar(:,n:end);
     u_bar = nom.u_bar(:,n:end);  
     
@@ -17,7 +17,7 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
         [A,B] = dynamics_linearizer(x_bar,u_bar,model);
         
         % Backward Pass   
-        [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,model,fc);
+        [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,fc);
         
         % Forward Pass
         [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,model,fc);
@@ -42,7 +42,6 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
     nom.l(:,:,n:end) = l;
     nom.L(:,:,n:end) = L;
     
-    fast_plot(x_bar);
     disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
 end
 

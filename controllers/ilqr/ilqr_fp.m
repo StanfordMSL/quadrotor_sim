@@ -5,16 +5,15 @@ t_wp = wp.t;
 x_wp = wp.x;
 Q_key = wp.Q_key;
 
+% Find wp to start from
+wp_fw = find((t_wp > t_bar(1)),1)-1;       % This is the waypoint we are seeking. 
+R = fc.R;
+
 % Initialize some terms
 alpha = 1;
 x_fp = zeros(12,N);
 x_fp(:,1) = x_now;
 u_fp = u_bar; 
-wp_k = 2;
-Q = fc.Q(:,:,Q_key(wp_k));
-R = fc.R;
-x_targ = x_wp(:,wp_k);
-
 cost_curr =  0;
     
 for k = 1:N-1
@@ -32,14 +31,13 @@ for k = 1:N-1
     x_fp(:,k+1) = quadcopter(x_fp(:,k),m_cmd,model,FT_ext,'fc');
 
     % Trigger Q, R and target waypoint update
-    if (abs(t_fp - t_wp(wp_k)) < model.con_dt) && (wp_k < (wp.N_wp))
-        wp_k = wp_k + 1;
+    if ((t_fp + model.con_dt) > t_wp(wp_fw+1)) && (wp_fw < (wp.N_wp))
+        Q = fc.Q(:,:,Q_key(wp_fw,2));
 
-        Q = fc.Q(:,:,Q_key(wp_k));
-        x_targ = x_wp(:,wp_k);
+        wp_fw = wp_fw + 1;      
     else
-%             Q = fc.Q(:,:,Q_key(1));
-%             x_targ = zeros(12,1);
+        Q = fc.Q(:,:,Q_key(wp_fw,1));
+        x_targ = x_wp(:,wp_fw+1);
     end
 
     % Update Cost
@@ -48,11 +46,12 @@ for k = 1:N-1
 end
 
 % Add terminal cost   
-Q = fc.Q_N;
+Q = fc.Q(:,:,Q_key(wp_fw,2));
+
 err_x = x_fp(:,N)-x_targ;
 cost_curr = cost_curr + 0.5* err_x'*Q*err_x;
 
-% disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
+disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
 
 % If cost goes down, we know it's feasible. Update x_bar.
 u_diff = sum(vecnorm(u_bar-u_fp));
