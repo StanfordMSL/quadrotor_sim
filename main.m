@@ -98,7 +98,7 @@ end
 % state_plot(flight)
 animation_plot(flight,wp);
 
-ukf_state_plot(sv, flight);
+plot_ukf_hist(sv, flight);
 % state_plot(flight)
 fig_h_ani = animation_plot(flight, wp, camera);
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
