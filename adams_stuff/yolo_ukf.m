@@ -1,5 +1,6 @@
 function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, t_now, initial_bb, camera, model)
-    % Unpack
+    % fake sensor measurement using ground truth state and "perfect"
+    % bounding box placement
     yolo_output = predict_quad_bounding_box(flight.x_act(:, k_est), camera, initial_bb); % Add noise??
 
     u_est = []; % u_est = curr_m_cmd;

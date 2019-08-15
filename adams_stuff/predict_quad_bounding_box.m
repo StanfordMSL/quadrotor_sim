@@ -7,6 +7,7 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     
     output = [];
     b_draw_box = false;
+    b_use_aspect_ratio_too = true;
     b_angled_bounding_box = false;
     
     disp('')
@@ -56,23 +57,18 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
             height_pixel = delta_rc(1);
         end
         
-%         output = [center_rc(:); width_pixel; height_pixel; height_pixel/width_pixel];
-        output = [center_rc(:); width_pixel; height_pixel];
+        if(false)
+            output = [min_coords, max_coords]';
+        else
+            if b_use_aspect_ratio_too
+                output = [center_rc(:); width_pixel; height_pixel; height_pixel/width_pixel];
+            else
+                output = [center_rc(:); width_pixel; height_pixel];
+            end
+        end
+        
         if b_draw_box
-            figure(3433); clf; axis equal;  hold on;
-            plot(center_rc(2), center_rc(1), 'b*');
-            box = [center_rc(2), center_rc(1)] + ...
-                [-delta_rc(2)/2, -delta_rc(1)/2;
-                  delta_rc(2)/2, -delta_rc(1)/2;
-                  delta_rc(2)/2,  delta_rc(1)/2;
-                 -delta_rc(2)/2,  delta_rc(1)/2;
-                 -delta_rc(2)/2, -delta_rc(1)/2];
-            plot(box(:,1), box(:,2), 'b-')
-            xlim([0, 2*camera.K_3x3(1,3)]); ylim([0, 2*camera.K_3x3(2,3)]); set(gca,'Ydir','reverse')
-            [yaw, pitch, roll] = quat2angle(quat(:)');
-            text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
-                pos_w(1), pos_w(2), pos_w(2), ...
-                yaw*180/pi, pitch*180/pi, roll*180/pi), 'VerticalAlignment','top');
+            plot_bounding_box(center_rc, delta_rc, bb_rc_list, pos_w, quat, camera);
         end
         disp('')
     else
@@ -113,14 +109,14 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
         if b_draw_box
             figure(3433); clf; axis equal;  hold on;
             plot(center_rc(2), center_rc(1), 'b*');
-            box = [center_rc(2), center_rc(1)] + ...
+            bb_box = [center_rc(2), center_rc(1)] + ...
                ( rot_mat * ...
                 [-width_pixel/2,   -height_pixel/2;
                   width_pixel/2, -height_pixel/2;
                   width_pixel/2,  height_pixel/2;
                  -width_pixel/2,  height_pixel/2;
                  -width_pixel/2, -height_pixel/2]')';
-            plot(box(:,1), box(:,2), 'b-')
+            plot(bb_box(:,1), bb_box(:,2), 'b-')
             xlim([0, 2*camera.K_3x3(1,3)]); ylim([0, 2*camera.K_3x3(2,3)]); set(gca,'Ydir','reverse')
             [yaw, pitch, roll] = quat2angle(quat(:)');
             text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...

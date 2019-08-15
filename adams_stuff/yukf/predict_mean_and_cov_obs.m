@@ -1,20 +1,16 @@
-function [mu_bar, sig_bar, w0_c, wi] = predict_mean_and_cov_obs(sps, yukf, cov_add_noise)
+function [z_hat, S, S_inv] = predict_mean_and_cov_obs(pred_obs, yukf, cov_add_noise)
     % inverse of the unscented transform
-    
-    dim = size(sps, 1);
-    % calculate weights
-    w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
-    w0_c = w0_m + 1 - yukf.prms.alpha^2 + yukf.prms.beta;
-    wi = 1 / (2*(yukf.prms.lambda + dim));
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
+    dim = size(pred_obs, 1);
     
     % Calculate mean
-    mu_bar = (w0_m * sps(:,1)) + (wi*sum(sps(:,2:end), 2));    
+    z_hat = (yukf.w0_m * pred_obs(:, 1)) + (yukf.wi * sum(pred_obs(:, 2:end), 2));    
     
-    sig_bar = w0_c*(sps(:,1)-mu_bar)*(sps(:,1)-mu_bar)';
-    for k = 1:dim
-        sig_bar = sig_bar + wi * (sps(:, k + 1) - mu_bar) * (sps(:, k+1) - mu_bar)';
-        sig_bar = sig_bar + wi * (sps(:, dim + k + 1) - mu_bar)*(sps(:, dim + k + 1) - mu_bar)';
+    % Calculate covar
+    S = yukf.w0_c * (pred_obs(:, 1 )- z_hat) * (pred_obs(:, 1) - z_hat)';
+    for obs_ind = 2:dim
+        S = S + yukf.wi * (pred_obs(:, obs_ind + 1) - z_hat) * (pred_obs(:, obs_ind+1) - z_hat)';
+        S = S + yukf.wi * (pred_obs(:, dim + obs_ind + 1) - z_hat) * (pred_obs(:, dim + obs_ind + 1) - z_hat)';
     end
-    sig_bar = sig_bar + cov_add_noise;
+    S = S + cov_add_noise;
+    S_inv = inv(S);
 end

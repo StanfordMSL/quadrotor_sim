@@ -4,7 +4,7 @@ function quat = complete_unit_quat(quat_vec)
     if(length(quat_vec) ~= 3)
         error("partial quaternion must be vector component of length 4");
     elseif(norm(quat_vec) > 1)
-        error("norm of vector component is > 1 --> invalid unit quaternion");
+        error("norm of vector component is > 1 --> invalid unit quaternion (%.3f, %.3f, %.3f)", quat_vec(1), quat_vec(2), quat_vec(3));
     end
     
     % currently quat is a column vector
