@@ -22,7 +22,7 @@ function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, t_now, initial_bb, camer
     sv.ypr_act_hist(:, k_est) = [yaw; pitch; roll];
 
     sv.ang_err(k_est) = quat_dist(qa, qm);
-    sv.ang(k_est) = 2*acos(qm(1));
-    sv.ang_act(k_est) = 2*acos(qa(1));
+    sv.ang(k_est) = 2*acosd(qm(1));
+    sv.ang_act(k_est) = 2*acosd(qa(1));
     disp('')
 end

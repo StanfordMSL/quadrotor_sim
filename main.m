@@ -95,11 +95,9 @@ for k = 1:sim_N
 end
 
 %% Plot the States and Animate
-% state_plot(flight)
-animation_plot(flight,wp);
-
 plot_ukf_hist(sv, flight);
 % state_plot(flight)
-fig_h_ani = animation_plot(flight, wp, camera);
+% animation_plot(flight, wp);
+plot_yukf_animation(flight, wp, camera, sv)
 % presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
 disp('')

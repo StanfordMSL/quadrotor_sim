@@ -37,8 +37,8 @@ function camera = init_camera()
     camera.tf_cam_w = [R_w_cam', -R_w_cam'*camera_position_w(:); [zeros(1, 3), 1]];
     
     % for plotting only
-    len = 1;
-    cam_width = 2*len / K_image_to_pix(1,1) * K_image_to_pix(1, 3)*2;
+    len = 0.75;
+    cam_width = len / K_image_to_pix(1,1) * K_image_to_pix(1, 3)*2;
     cam_height = len / K_image_to_pix(2,2) * K_image_to_pix(2, 3)*2;
     camera.viz_wf = [0, 0, 0; cam_width/2, cam_height/2, len; NaN, NaN, NaN; ...
                      0, 0, 0; -cam_width/2, cam_height/2, len; NaN, NaN, NaN;  ...

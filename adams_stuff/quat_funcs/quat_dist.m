@@ -14,8 +14,17 @@ function ang_dist = quat_dist(q1, q2)
     axang = rotationMatrixToVector(R2*R1');
     err = norm(axang) * 180/pi;
     
-    if(err - ang_dist > 0.5)
+    if(abs(err - ang_dist) > 0.5)
         warning('ang issue')
     end
+    
+%   NOTE: ALL THIS IS EQUIVALENT TO:  
+    q_diff = quatmultiply(q2(:)', quatinv(q1(:)'));
+    ang_diff = 2 * acosd(q_diff(1));
+    
+    if(abs(ang_diff - ang_dist) > 0.5)
+        warning('ang issue')
+    end
+    
     disp('');
 end

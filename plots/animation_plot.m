@@ -1,6 +1,6 @@
 function animation_plot(flight,wp)
 
-map = wp.map;
+    map = wp.map;
     
     t_act = flight.t_act;
     x_act = flight.x_act;

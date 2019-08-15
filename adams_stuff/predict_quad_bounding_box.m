@@ -7,16 +7,14 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     
     output = [];
     b_draw_box = false;
-    b_use_aspect_ratio_too = true;
+    b_use_aspect_ratio_too = false;
     b_angled_bounding_box = false;
     
     disp('')
     % unpack state
     pos_w = x_curr(1:3, 1);
     vel = x_curr(4:6, 1);
-    q = x_curr(7:9, 1);
-    q0 = sqrt(1 - q'*q);
-    quat = [q0; q];
+    quat = complete_unit_quat(x_curr(7:9, 1));
     wx = x_curr(10, 1);
     wy = x_curr(11, 1);
     wz = x_curr(12, 1);
@@ -44,18 +42,8 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
         delta_rc = max_coords - min_coords;
         center_rc = (max_coords + min_coords)/2;
         
-        b_use_qs_method = false;
-        if b_use_qs_method
-            pos_c = camera.tf_cam_w * [pos_w(:); 1];
-            est_dist = norm(pos_c(1:3));
-            width = initial_bb(1,2) * 2;
-            height = initial_bb(1,3) * 2;
-            width_pixel = camera.K_3x3(1, 1) * width / est_dist;
-            height_pixel = camera.K_3x3(2, 2) * height / est_dist;
-        else
-            width_pixel = delta_rc(2);
-            height_pixel = delta_rc(1);
-        end
+        width_pixel = delta_rc(2);
+        height_pixel = delta_rc(1);
         
         if(false)
             output = [min_coords, max_coords]';
