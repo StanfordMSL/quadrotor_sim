@@ -60,7 +60,7 @@ for k = 1:sim_N
         %%%%%%%%%%%%%%%%%%%%
         % YOLO UKF Test
         t_now = t_est(k_est);
-        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, t_now, initial_bb, camera, model);
+        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, k_act, t_now, initial_bb, camera, model);
         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end

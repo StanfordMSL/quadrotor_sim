@@ -3,6 +3,8 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight)
     initial_bb = init_quad_bounding_box();
     camera = init_camera();
 
+%     rel_state = get_relative_state(flight.x_act(:, 1), get_camera_state_vec(camera));
+    
     yukf.mu = flight.x_act(:, 1);
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
@@ -22,6 +24,7 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight)
 
     % yukf save variable for later plotting
     sv.mu_hist = zeros(dim, length(flight.t_act)); sv.mu_hist(:, 1) = yukf.mu;
+    sv.mu_act = zeros(dim, length(flight.t_act)); sv.mu_act(:, 1) = flight.x_act(:, 1);
     sv.sig_hist = zeros(dim, dim, length(flight.t_act)); sv.sig_hist(:, :, 1) = yukf.sigma;
     sv.sig_trace_hist = zeros(length(flight.t_act), 1); sv.sig_trace_hist(1) = trace(yukf.sigma);
     sv.time_hist = zeros(length(flight.t_act), 1); sv.time_hist(1) = 0;

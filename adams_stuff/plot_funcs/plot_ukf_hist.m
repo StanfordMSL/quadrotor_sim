@@ -10,16 +10,19 @@ function plot_ukf_hist(sv, flight)
     subplot(3,2,1); ylabel('X [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(1, msk),'rs'); 
     plot(flight.t_act, flight.x_act(1, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_act(1, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,3); ylabel('Y [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(2, msk),'rs'); 
     plot(flight.t_act, flight.x_act(2, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_act(2, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,5); ylabel('Z [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(3, msk),'rs'); 
     plot(flight.t_act, flight.x_act(3, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_act(3, msk),'c-'); 
     ylim([min_disp, max_disp])
     
     if(b_single_ang_err)

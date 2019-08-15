@@ -29,6 +29,16 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     bb_cam = (tf_cam_quad * [initial_bb, ones(num_verts, 1)]')';
     bb_cam = bb_cam(:, 1:3);
     
+    
+%     quad_aligned_bb = [l/2, w/2, h/2;... %    1 front, left, up (from quad's perspective)
+%                        l/2, -w/2, h/2;... %   2 front, right, up
+%                        -l/2, -w/2, h/2;... %  3 back, right, up
+%                        -l/2, w/2, h/2; ... %  4 back, left, up
+%                        l/2, w/2, -h/2;... %   5 front, left, down
+%                        l/2, -w/2, -h/2;... %  6 front, right, down
+%                        -l/2, -w/2, -h/2;... % 7 back, right, down
+%                        -l/2, w/2, -h/2 ]; %   8 back, left, down
+    
     % project each vertex into the pixel coordinates (row, col)
     %   save 3 corners
     bb_rc_list = zeros(num_verts, 2);
@@ -37,10 +47,10 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     end
     
     if ~b_angled_bounding_box
-        max_coords = max(bb_rc_list);
-        min_coords = min(bb_rc_list);
-        delta_rc = max_coords - min_coords;
-        center_rc = (max_coords + min_coords)/2;
+        max_rc = max(bb_rc_list);
+        min_rc = min(bb_rc_list);
+        delta_rc = max_rc - min_rc;
+        center_rc = (max_rc + min_rc)/2;
         
         width_pixel = delta_rc(2);
         height_pixel = delta_rc(1);
@@ -89,9 +99,9 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
         width_pixel = max(ax_aligned_pix(:, 2)) - min(ax_aligned_pix(:, 2));
         height_pixel = max(ax_aligned_pix(:, 1)) - min(ax_aligned_pix(:, 1));
         
-        max_coords = max(bb_rc_list);
-        min_coords = min(bb_rc_list);
-        center_rc = (max_coords + min_coords)/2;
+        max_rc = max(bb_rc_list);
+        min_rc = min(bb_rc_list);
+        center_rc = (max_rc + min_rc)/2;
         
         output = [center_rc(:); width_pixel; height_pixel; box_ang];
         if b_draw_box
