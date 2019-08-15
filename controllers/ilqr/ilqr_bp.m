@@ -20,7 +20,7 @@ for k = N-1:-1:1
     t_bp = t_bar(k);
 
     % Update Q and R according to the waypoints
-    if (wp_bk > 2) && (t_bp < t_wp(wp_bk))
+    if (wp_bk > 1) && (t_bp < t_wp(wp_bk))
         wp_bk = wp_bk-1;
         Q = fc.Q(:,:,Q_key(wp_bk,2));
         x_targ = x_wp(:,wp_bk+1);

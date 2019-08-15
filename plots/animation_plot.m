@@ -23,8 +23,8 @@ map = wp.map;
     
     % Set Camera Angle
     daspect([1 1 1])
-   view(320,20);
-%     view(90,0);
+%    view(320,20);
+    view(90,0);
 
     hold on
     
