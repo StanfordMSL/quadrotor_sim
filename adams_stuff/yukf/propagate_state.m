@@ -1,23 +1,34 @@
 function est_next_state = propagate_state(state, model, u)
     est_next_state = zeros(size(state));
     
-    % Predict Positions
+    % Predict Positions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     est_next_state(1:3) = state(1:3) + model.con_dt * state(4:6);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Predict Velocities
+    % Predict Velocities %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if(~isempty(u))
         vel_dot = lin_acc(state, u, model,[0 0 0]', 0, 'actual');
         est_next_state(4:6) = state(4:6) + model.con_dt * vel_dot;
     else
         est_next_state(4:6) = state(4:6); 
     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % Predict Angular Velocities %%%%%%%%%%%%%%%%%%%%%%%%
+    if(~isempty(u))
+        omega_dot = ang_acc(u, state(7:9), model, [0 0 0]', 'actual');
+        est_next_state(7:9) = state(7:9) + omega_dot * model.con_dt;
+    else
+        est_next_state(7:9) = state(7:9);
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Predict Quaternions
-    quat = complete_unit_quat(state(7:9));
+    % Predict Quaternions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    quat = state(10:13);
     
     b_use_paper_method = true;
     if b_use_paper_method
-        w_vec = state(10:12);
+        w_vec = state(7:9);
         % convert omega to angle axis
 %         nrm = norm(w_vec);
 %         ang = nrm * model.con_dt;
@@ -27,9 +38,9 @@ function est_next_state = propagate_state(state, model, u)
         q_hat = quatmultiply(quat(:)', quat_delta(:)')';
     else
         % omegas
-        wx = state(10);
-        wy = state(11);
-        wz = state(12);
+        wx = state(7);
+        wy = state(8);
+        wz = state(9);
 
         % Setup Some Useful Stuff for Pred 
         Omega = [ 0 -wx -wy -wz ;...
@@ -39,19 +50,15 @@ function est_next_state = propagate_state(state, model, u)
 
         q_hat = quat + 0.5 * Omega * quat * model.con_dt;
     end
-    est_next_state(7:9) = q_hat(2:4);
-    vec_norm = norm( est_next_state(7:9) );
-    if( vec_norm > 1 && vec_norm < 1.001 )
-        % just a numerical thing
-        est_next_state(7:9) = est_next_state(7:9) / vec_norm;
+    est_next_state(10:13) = q_hat;
+    vec_norm = norm( est_next_state(11:13) );
+    if( vec_norm < 1 )
+        % We have a valid quaternion, normalize to make sure norm is 1
+        est_next_state(10) = sqrt(1 - vec_norm^2);
+    elseif( vec_norm > 1 && vec_norm < 1.001 )
+        % a small numeric issue, try to fix
+        est_next_state(10) = 0;
+        est_next_state(11:13) = est_next_state(11:13) / vec_norm;
     end
-
-    % Predict Angular Velocities
-    if(~isempty(u))
-        omega_dot = ang_acc(u, state(10:12), model, [0 0 0]', 'actual');
-        est_next_state(10:12) = state(10:12) + omega_dot * model.con_dt;
-    else
-        est_next_state(10:12) = state(10:12);
-    end
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 end
