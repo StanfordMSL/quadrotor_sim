@@ -14,11 +14,11 @@ function  output = predict_quad_bounding_box(x_curr, camera, initial_bb)
     % unpack state
     pos_w = x_curr(1:3, 1);
     vel = x_curr(4:6, 1);
-    wx = x_curr(7, 1);
-    wy = x_curr(8, 1);
-    wz = x_curr(9, 1);
-    w_all = x_curr(7:9, 1);
-    quat = x_curr(10:13, 1);
+    quat = complete_unit_quat(x_curr(7:9, 1));
+    wx = x_curr(10, 1);
+    wy = x_curr(11, 1);
+    wz = x_curr(12, 1);
+    w_all = x_curr(10:12, 1);
     
     R_w_quad = quat2rotm(quat(:)'); % I confirmed this
     tf_w_quad = [R_w_quad, pos_w(:); [zeros(1, 3), 1]];

@@ -8,7 +8,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
     map = wp.map;
     
     t_act = flight.t_act;
-    x_act = [flight.x_act(1:6, :); flight.x_act(10:12, :); flight.x_act(7:9, :)];
+    x_act = flight.x_act;
     
     dt = t_act(1,2)-t_act(1,1);
 
@@ -19,7 +19,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    gate_h = plot3(map(1,:)', map(2,:)', map(3,:)');
+    gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
     xlim([min([camera_lims(1, 1), x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), ...
           max([camera_lims(2, 1), x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
@@ -42,7 +42,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
     
     % plot the trajectories
     traj_h = plot3(x_act(1,:), x_act(2,:), x_act(3,:), 'b-');
-    traj_est_h = plot3(sv.mu_hist(1, sv.hist_mask), sv.mu_hist(2, sv.hist_mask), sv.mu_hist(3, sv.hist_mask), 'r-');
+    traj_est_h = plot3(sv.mu_hist(1,sv.hist_mask), sv.mu_hist(2,sv.hist_mask), sv.mu_hist(3,sv.hist_mask), 'r-');
     
     % Plot the Initial Frame
         % ground truth %%%%%%%%%%%%%%%%%%%
@@ -53,19 +53,19 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         vect_z = [0.0 0.0 0.1]';
 
         % Construct Rotation Matrix
-        quat = complete_unit_quat(x_act(10:12, 1));
+        quat = complete_unit_quat(x_act(7:9, 1));
         bRw = quat2rotm(quat');
 
         % Determine World Frame Pose of Craft Axes
-        pos = x_act(1:3, 1);
+        pos = x_act(1:3,1);
 
-        x_arrow = [pos pos + (bRw * vect_x)];
-        y_arrow = [pos pos + (bRw * vect_y)];
-        z_arrow = [pos pos + (bRw * vect_z)];
+        x_arrow = [pos pos + (bRw*vect_x)];
+        y_arrow = [pos pos + (bRw*vect_y)];
+        z_arrow = [pos pos + (bRw*vect_z)];
 
-        x = [x_arrow(1, :); y_arrow(1, :); z_arrow(1, :)]';
-        y = [x_arrow(2, :); y_arrow(2, :); z_arrow(2, :)]';
-        z = [x_arrow(3,: ); y_arrow(3, :); z_arrow(3, :)]';
+        x = [x_arrow(1,:); y_arrow(1,:); z_arrow(1,:)]';
+        y = [x_arrow(2,:); y_arrow(2,:); z_arrow(2,:)]';
+        z = [x_arrow(3,:); y_arrow(3,:); z_arrow(3,:)]';
 
         % Plot It!
         h_persp = plot3(x, y, z, 'linewidth', 3);
@@ -82,7 +82,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         vect_z_est = [0.0 0.0 0.1]';
 
         % Construct Rotation Matrix
-        quat_est = sv.mu_hist(10:13, 1);
+        quat_est = complete_unit_quat(sv.mu_hist(7:9, 1));
         bRw_est = quat2rotm(quat_est');
 
         % Determine World Frame Pose of Craft Axes
@@ -119,7 +119,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             tic
             k = ceil(curr_time / dt);
 
-            quat = complete_unit_quat(x_act(10:12, k));
+            quat = complete_unit_quat(x_act(7:9, k));
             bRw = quat2rotm(quat');
             pos = x_act(1:3, k);
 
@@ -129,7 +129,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             h_persp = reassign(h_persp, x_arrow, y_arrow, z_arrow);
 
             if(sv.hist_mask(k))
-                quat_est = sv.mu_hist(10:13, k);
+                quat_est = complete_unit_quat(sv.mu_hist(7:9, k));
                 bRw_est = quat2rotm(quat_est');
                 pos_est = sv.mu_hist(1:3, k);
 
@@ -146,7 +146,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         dt_replay = 0.01;
         for curr_time = linspace(t_act(1), t_act(end), (t_act(end) - t_act(1)) / dt_replay)
             k = ceil( max(curr_time, 0.0000001) / dt);
-            quat = complete_unit_quat(x_act(10:12, k));
+            quat = complete_unit_quat(x_act(7:9, k));
             bRw = quat2rotm(quat');
             pos = x_act(1:3, k);
 
@@ -157,7 +157,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             
             most_recent_state_ind = k + 1 - find(sv.hist_mask(k:-1:1), 1);
 %             if(sv.hist_mask(k))
-            quat_est = sv.mu_hist(10:13, most_recent_state_ind);
+            quat_est = complete_unit_quat(sv.mu_hist(7:9, most_recent_state_ind));
             bRw_est = quat2rotm(quat_est');
             pos_est = sv.mu_hist(1:3, most_recent_state_ind);
 

@@ -3,25 +3,23 @@ function plot_ukf_hist(sv, flight)
     msk = sv.hist_mask;
     disp('')
     
-    x_act_permuted = [flight.x_act(1:6, :); flight.x_act(10:12, :); flight.x_act(7:9, :)];
-    
-    max_disp = ceil(max(max([sv.mu_hist(1:3, msk), x_act_permuted(1:3, :)]')));
-    min_disp = floor(min(min([sv.mu_hist(1:3, msk), x_act_permuted(1:3, :)]')));
+    max_disp = ceil(max(max([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
+    min_disp = floor(min(min([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
     
     figure(1234); clf; sgtitle("UKF - red     Ground Truth - blue")
     subplot(3,2,1); ylabel('X [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(1, msk),'rs'); 
-    plot(flight.t_act, x_act_permuted(1, :),'bs')
+    plot(flight.t_act, flight.x_act(1, :),'bs')
     ylim([min_disp, max_disp])
     
     subplot(3,2,3); ylabel('Y [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(2, msk),'rs'); 
-    plot(flight.t_act, x_act_permuted(2, :),'bs')
+    plot(flight.t_act, flight.x_act(2, :),'bs')
     ylim([min_disp, max_disp])
     
     subplot(3,2,5); ylabel('Z [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(3, msk),'rs'); 
-    plot(flight.t_act, x_act_permuted(3, :),'bs')
+    plot(flight.t_act, flight.x_act(3, :),'bs')
     ylim([min_disp, max_disp])
     
     if(b_single_ang_err)
