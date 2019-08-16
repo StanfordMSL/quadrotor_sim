@@ -32,7 +32,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     
     % line 11 - 13: kalman gain & update
     K = sigma_xz * S_inv;
-    b_add_all = true;
+    b_add_all = false;
     if b_add_all
         % this is how the paper I am following does it
         mu_out = mu_bar + K * (z - z_hat);

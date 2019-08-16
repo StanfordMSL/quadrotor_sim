@@ -15,21 +15,31 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
     fig_h = figure(2); clf; hold on
-    [camera_lims, cmr_h] = plot_camera(camera, fig_h);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
-    xlim([min([camera_lims(1, 1), x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), ...
-          max([camera_lims(2, 1), x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
-    ylim([min([camera_lims(1, 2), x_act(2, :) - 1, sv.mu_hist(2, sv.hist_mask) - 1]), ...
-          max([camera_lims(2, 2), x_act(2, :) + 1, sv.mu_hist(2, sv.hist_mask) + 1])]);
-    zlim([min([camera_lims(1, 3), x_act(3, :) - 1, sv.mu_hist(3, sv.hist_mask) - 1]), ...
-          max([camera_lims(2, 3), x_act(3, :) + 1, sv.mu_hist(3, sv.hist_mask) + 1])]);
+    xlim([min([x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), ...
+          max([x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
+    ylim([min([x_act(2, :) - 1, sv.mu_hist(2, sv.hist_mask) - 1]), ...
+          max([x_act(2, :) + 1, sv.mu_hist(2, sv.hist_mask) + 1])]);
+    zlim([min([x_act(3, :) - 1, sv.mu_hist(3, sv.hist_mask) - 1]), ...
+          max([x_act(3, :) + 1, sv.mu_hist(3, sv.hist_mask) + 1])]);
+%     xlim([min([camera_lims(1, 1), x_act(1, :) - 1, sv.mu_hist(1, sv.hist_mask) - 1]), ...
+%           max([camera_lims(2, 1), x_act(1, :) + 1, sv.mu_hist(1, sv.hist_mask) + 1])]);
+%     ylim([min([camera_lims(1, 2), x_act(2, :) - 1, sv.mu_hist(2, sv.hist_mask) - 1]), ...
+%           max([camera_lims(2, 2), x_act(2, :) + 1, sv.mu_hist(2, sv.hist_mask) + 1])]);
+%     zlim([min([camera_lims(1, 3), x_act(3, :) - 1, sv.mu_hist(3, sv.hist_mask) - 1]), ...
+%           max([camera_lims(2, 3), x_act(3, :) + 1, sv.mu_hist(3, sv.hist_mask) + 1])]);
     grid on
     
-    % Set Camera Angle
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the camera
+    [camera_lims, cmr_h] = plot_camera(camera, fig_h);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Set (matlab's) Camera Angle
     daspect([1 1 1])
     
     if b_view_from_camera_perspective
@@ -39,7 +49,6 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
     % plot the trajectories
     traj_h = plot3(x_act(1,:), x_act(2,:), x_act(3,:), 'b-');
     traj_est_h = plot3(sv.mu_hist(1,sv.hist_mask), sv.mu_hist(2,sv.hist_mask), sv.mu_hist(3,sv.hist_mask), 'r-');

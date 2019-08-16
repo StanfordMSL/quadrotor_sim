@@ -38,6 +38,7 @@ function camera = init_camera()
     
     % for plotting only
     len = 0.75;
+    camera.draw_len = len;
     cam_width = len / K_image_to_pix(1,1) * K_image_to_pix(1, 3)*2;
     cam_height = len / K_image_to_pix(2,2) * K_image_to_pix(2, 3)*2;
     camera.viz_wf = [0, 0, 0; cam_width/2, cam_height/2, len; NaN, NaN, NaN; ...
