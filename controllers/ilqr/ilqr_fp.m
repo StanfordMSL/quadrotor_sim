@@ -1,4 +1,4 @@
-function [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,model,fc)
+function [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,alpha,model,fc)
 
 % Unpack some terms
 t_wp = wp.t;
@@ -10,7 +10,6 @@ wp_fw = find((t_wp > t_bar(1)),1)-1;       % This is the waypoint we are seeking
 R = fc.R;
 
 % Initialize some terms
-alpha = 1;
 x_fp = zeros(12,N);
 x_fp(:,1) = x_now;
 u_fp = u_bar; 

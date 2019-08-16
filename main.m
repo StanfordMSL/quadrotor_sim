@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('slit',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('square',0,tf,'no plot');              % Initialize timestamped keyframes
 FT_ext = nudge_init(act_hz,tf,'off');                   % Initialize External Forces
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 % t_comp = calc_init();                                 % Initialize Compute Time Variables
@@ -47,6 +47,9 @@ tol = 1e-5;         % Tolerance to trigger various processes
 
 % Cold Start the nominal trajectory for the iLQR
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
+disp('[main]: Warm start complete! Ready to launch!');
+disp('--------------------------------------------------')
+pause;
 
 for k = 1:sim_N
     sim_time = (k-1)*sim_dt;
@@ -97,7 +100,7 @@ end
 
 %% Plot the States and Animate
 % state_plot(flight)
-animation_plot(flight,wp);
+animation_plot(flight,wp,'persp');
 
 % ukf_state_plot(sv, flight);
 % state_plot(flight)

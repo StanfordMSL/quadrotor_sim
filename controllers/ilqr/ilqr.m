@@ -20,7 +20,7 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
         [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,fc);
         
         % Forward Pass
-        [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,model,fc);
+        [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,nom.alpha,model,fc);
 
         % Check for Convergence
         if itrs < 100
