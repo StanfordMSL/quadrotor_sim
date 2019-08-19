@@ -1,9 +1,8 @@
-function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, k_act, t_now, initial_bb, camera, model)
+function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camera, model, u_est)
     % fake sensor measurement using ground truth state and "perfect"
     % bounding box placement
     yolo_output = predict_quad_bounding_box(flight.x_act(:, k_act), camera, initial_bb); % Add noise??
 
-    u_est = []; % u_est = curr_m_cmd;
     yukf = yukf_step(yukf, u_est, yolo_output, model, camera, initial_bb);
 
     % Save values for plotting %%%%%%%%%%%%%%%%%%

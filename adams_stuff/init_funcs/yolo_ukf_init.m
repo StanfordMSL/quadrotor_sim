@@ -21,6 +21,8 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight)
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);
     yukf.wi = 1 / (2*(yukf.prms.lambda + dim));
+    
+    yukf.prms.b_use_control = false;  % whether to use the control in our estimate
 
     % yukf save variable for later plotting
     sv.mu_hist = zeros(dim, length(flight.t_act)); sv.mu_hist(:, 1) = yukf.mu;

@@ -32,6 +32,7 @@ flight = flight_init(model,tf,wp);                      % Initialize Flight Vari
 % %%%%%%%%%%%%%%%%%%%%
 % %%% YOLO UKF Test Initialization
 [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight);
+prev_m_cmd = []; u_est = [];
 % %%%%%%%%%%%%%%%%%%%%
 
 %%% Time Counters Initialization
@@ -60,7 +61,10 @@ for k = 1:sim_N
         %%%%%%%%%%%%%%%%%%%%
         % YOLO UKF Test
         t_now = t_est(k_est);
-        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_est, k_act, t_now, initial_bb, camera, model);
+        if( yukf.prms.b_use_control )
+            u_est = prev_m_cmd;
+        end
+        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camera, model, u_est);
         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
