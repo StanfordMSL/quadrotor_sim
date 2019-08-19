@@ -1,4 +1,4 @@
-function animation_plot(flight,wp)
+function animation_plot(flight,wp,view_point)
 
     map = wp.map;
     
@@ -23,9 +23,15 @@ function animation_plot(flight,wp)
     
     % Set Camera Angle
     daspect([1 1 1])
-    view(320,20);
-%     view(90,0);
-
+    
+    switch view_point
+        case 'persp'
+            view(320,20);
+%             zoom(1.8)
+        case 'back'
+            view(-90,0);
+    end
+    
     hold on
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

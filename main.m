@@ -7,7 +7,7 @@ tf = 10;
 
 est_hz = 500;       % State Estimator Time Counter
 lqr_hz = 1;        % Low Rate Controller Sample Rate
-con_hz = 50;       % High Rate Controller Sample Rate
+con_hz = 200;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
 
 sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
@@ -48,6 +48,9 @@ tol = 1e-5;         % Tolerance to trigger various processes
 
 % Cold Start the nominal trajectory for the iLQR
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
+disp('[main]: Warm start complete! Ready to launch!');
+disp('--------------------------------------------------')
+pause;
 
 for k = 1:sim_N
     sim_time = (k-1)*sim_dt;
@@ -55,8 +58,9 @@ for k = 1:sim_N
     % State Estimator
     if (abs(t_est(k_est)-sim_time) < tol) && (k_est <= tf*est_hz)
         % Perfect Sensing (used for flight control)
-        x_fc = flight.x_act(:,k_act);
-        flight.x_fc(:,k_est)  = x_fc;
+        t_now = t_est(k_est);
+        x_now = flight.x_act(:,k_act);
+        flight.x_fc(:,k_est)  = x_now;
 
         %%%%%%%%%%%%%%%%%%%%
         % YOLO UKF Test
@@ -72,15 +76,14 @@ for k = 1:sim_N
     % Low Rate Controller    
     if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
         % Update LQR params
-%         t_now = t_lqr(k_lqr);
-%         nom = ilqr(t_now,x_fc,wp,nom,fc,model);
+        nom = ilqr(t_now,x_now,wp,nom,fc,model);
         k_lqr = k_lqr + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
         % Draw Out Motor Commands from u_bar computed by iLQR
-        del_x = x_fc-nom.x_bar(:,k_con);
+        del_x = x_now-nom.x_bar(:,k_con);
         del_u = nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
         u  = nom.u_bar(:,k_con) + del_u;
         curr_m_cmd = wrench2m_controller(u,model);

@@ -1,4 +1,4 @@
-function [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,model,fc)
+function [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,fc)
 
 % Unpack Waypoint Terms
 t_wp = wp.t;
@@ -6,10 +6,11 @@ x_wp = wp.x;
 Q_key = wp.Q_key;
 
 % Initialize BP
+R = fc.R;
+
 wp_bk = wp.N_wp;
-Q = fc.Q_N;
-R = fc.R(:,:,1);
-x_targ = x_wp(:,end);
+Q =  fc.Q(:,:,Q_key(wp_bk,2));
+x_targ = x_wp(:,wp_bk+1);
 
 v = Q*(x_bar(:,N)-x_targ);
 V = Q;
@@ -19,13 +20,12 @@ for k = N-1:-1:1
     t_bp = t_bar(k);
 
     % Update Q and R according to the waypoints
-    if (wp_bk > 2) && (abs(t_bp - t_wp(wp_bk)) <= model.con_dt)
+    if (wp_bk > 1) && (t_bp < t_wp(wp_bk))
         wp_bk = wp_bk-1;
-        Q = fc.Q(:,:,Q_key(wp_bk));
-        x_targ = x_wp(:,wp_bk);
+        Q = fc.Q(:,:,Q_key(wp_bk,2));
+        x_targ = x_wp(:,wp_bk+1);
     else
-%         Q = fc.Q(:,:,Q_key(1));
-%         x_targ = zeros(12,1);
+        Q = fc.Q(:,:,Q_key(wp_bk,1));
     end 
 
     % Update the Stagewise Variables

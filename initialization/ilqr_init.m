@@ -30,3 +30,4 @@ nom.total = N;
 
 % Run a First Pass of the iLQR
 nom = ilqr(t_now,x_now,wp,nom,fc,model);
+% fast_plot(nom.x_bar);
