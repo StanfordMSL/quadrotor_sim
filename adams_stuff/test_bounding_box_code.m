@@ -1,30 +1,5 @@
 function test_bounding_box_code(varargin)
-
-    %%% PARAMS %%%
-    yukf.prms.b_use_control = true;  % whether to use the control in our estimate
-    %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
-    % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
-    %%%%%%%%%%%%%%%%%%%%
-    % Option 2 %%%%%%%   z = [state]
-    yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
-    %%%%%%%%%%%%%%%%%%%%
-    % Option 3 (DEFAULT) %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
-    % ___extra A
-    yukf.prms.b_measure_yaw = false;
-    % ___extra A
-    yukf.prms.b_measure_pitch = false;
-    % ___extra A
-    yukf.prms.b_measure_roll = false;
-    % ___extra B
-    yukf.prms.b_measure_x = false;
-    % ___extra C
-    yukf.prms.b_measure_quat = false;
-    % ___extra D
-    yukf.prms.b_measure_pos = false;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    global yukf
 
     initial_bb = init_quad_bounding_box();
     camera = init_camera();

@@ -1,15 +1,16 @@
 function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     %%% PARAMS %%%
-    yukf.prms.b_use_control = false;  % whether to use the control in our estimate
+    yukf.prms.b_use_control = true;  % whether to use the control in our estimate
+    b_offset_at_t0 = false;
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 3  %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = true; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
@@ -34,7 +35,19 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
 
     yukf.dt = t_arr(2) - t_arr(1);
     
-    yukf.mu = flight.x_act(:, 1);% + [1;2;-1;zeros(length(flight.x_act(:, 1)) - 3, 1)];
+    pos0_est = [1; 2; -1] + flight.x_act(1:3, 1);
+    v0_est = [0; 0; 0] + flight.x_act(4:6, 1);
+    yaw0 = 0;
+    pitch0 = 1*pi/180;
+    roll0 = 3*pi/180;
+    quat0_est = quatmultiply(complete_unit_quat(flight.x_act(7:9, 1))', angle2quat(yaw0, pitch0, roll0))';
+    w0_est = [0; 0; 0] + flight.x_act(10:12, 1);
+    
+    if b_offset_at_t0
+        yukf.mu = [pos0_est(:); v0_est(:); quat0_est(2:4); w0_est(:)];
+    else
+        yukf.mu = flight.x_act(:, 1);
+    end
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
     

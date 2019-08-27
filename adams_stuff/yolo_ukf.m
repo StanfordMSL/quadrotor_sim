@@ -4,7 +4,7 @@ function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camer
     % fake sensor measurement using ground truth state and "perfect" bounding box placement
     yolo_output = predict_quad_bounding_box(flight.x_act(:, k_act), camera, initial_bb, yukf); % Add noise??
     
-    if mod(t_tmp, 0.5) <= 1/1000
+    if mod(t_tmp, 1.0) <= 1/1000
         test_bounding_box_code(flight.x_act(:, k_act))
         meas_str = repmat('%.4f, ', 1, yukf.prms.meas_len);
         fprintf(['t_now = %.3f s, z_t = [', meas_str(1:end-2), ']\n'], t_tmp, yolo_output)

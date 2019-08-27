@@ -3,9 +3,7 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     % camera is z out, x right and y down 
     % state is x_curr = [position - world; lin vel - world; quat [scal, x,
     %   y, z] - body frame; ang_vel - body frame] 
-    %   note: R_w_quad = quat2rotm(quat(:)'); 
-    
-    
+    %   note: R_w_quad = quat2rotm(quat(:)');     
     global flight k_act
     
     output = [];
