@@ -5,27 +5,31 @@ function plot_ukf_hist(sv, flight)
     
     max_disp = ceil(max(max([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
     min_disp = floor(min(min([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
-    
+    min_disp = -3;
+    max_disp = 5;
     figure(1234); clf; sgtitle("UKF - red     Ground Truth - blue")
     subplot(3,2,1); ylabel('X [m]'); hold on; grid on; xlabel('time (s)'); 
-    plot(sv.time_hist(msk), sv.mu_hist(1, msk),'rs'); 
-    plot(flight.t_act, flight.x_act(1, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_hist(1, msk),'r-', 'LineWidth', 2); 
+    plot(flight.t_act, flight.x_act(1, :),'b-', 'LineWidth', 2)
+    plot(sv.time_hist(msk), sv.dyn_ol_hist(1, 1:min(sv.do_ind-1,length(sv.time_hist(msk)))),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,3); ylabel('Y [m]'); hold on; grid on; xlabel('time (s)'); 
-    plot(sv.time_hist(msk), sv.mu_hist(2, msk),'rs'); 
-    plot(flight.t_act, flight.x_act(2, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_hist(2, msk),'r-', 'LineWidth', 2); 
+    plot(flight.t_act, flight.x_act(2, :),'b-', 'LineWidth', 2)
+    plot(sv.time_hist(msk), sv.dyn_ol_hist(2, 1:min(sv.do_ind-1,length(sv.time_hist(msk)))),'c-'); 
     ylim([min_disp, max_disp])
     
     subplot(3,2,5); ylabel('Z [m]'); hold on; grid on; xlabel('time (s)'); 
-    plot(sv.time_hist(msk), sv.mu_hist(3, msk),'rs'); 
-    plot(flight.t_act, flight.x_act(3, :),'bs')
+    plot(sv.time_hist(msk), sv.mu_hist(3, msk),'r-', 'LineWidth', 2); 
+    plot(flight.t_act, flight.x_act(3, :),'b-', 'LineWidth', 2)
+    plot(sv.time_hist(msk), sv.dyn_ol_hist(3, 1:min(sv.do_ind-1,length(sv.time_hist(msk)))),'c-'); 
     ylim([min_disp, max_disp])
     
     if(b_single_ang_err)
         subplot(3,2,2); ylabel('|axis-angle angle (deg)|'); hold on; grid on; xlabel('time (s)');
-        plot(sv.time_hist(msk), sv.ang(msk),'rs'); 
-        plot(sv.time_hist(msk), sv.ang_act(msk),'bs')
+        plot(sv.time_hist(msk), sv.ang(msk),'r-', 'LineWidth', 2); 
+        plot(sv.time_hist(msk), sv.ang_act(msk),'b-', 'LineWidth', 2)
         plot(sv.time_hist(msk), sv.ang_err(msk),'m-'); 
         
         subplot(3,2,4); ylabel('|angle error (deg)| (zoomed)'); hold on; grid on; xlabel('time (s)');
@@ -40,18 +44,18 @@ function plot_ukf_hist(sv, flight)
         min_ang = floor(min(min([sv.ypr_hist(:, msk), sv.ypr_act_hist(:, msk)]')));
 
         subplot(3,1,1); ylabel('yaw (deg)'); hold on; grid on; xlabel('time (s)'); 
-        plot(sv.time_hist(msk), sv.ypr_hist(1, msk),'rs'); 
-        plot(sv.time_hist(msk), sv.ypr_act_hist(1, msk),'bs')
+        plot(sv.time_hist(msk), sv.ypr_hist(1, msk),'r-', 'LineWidth', 2); 
+        plot(sv.time_hist(msk), sv.ypr_act_hist(1, msk),'b-', 'LineWidth', 2)
         ylim([min_ang, max_ang])
 
         subplot(3,1,2); ylabel('pitch (deg)'); hold on; grid on; xlabel('time (s)'); 
-        plot(sv.time_hist(msk), sv.ypr_hist(2, msk),'rs'); 
-        plot(sv.time_hist(msk), sv.ypr_act_hist(2, msk),'bs')
+        plot(sv.time_hist(msk), sv.ypr_hist(2, msk),'r-', 'LineWidth', 2); 
+        plot(sv.time_hist(msk), sv.ypr_act_hist(2, msk),'b-', 'LineWidth', 2)
         ylim([min_ang, max_ang])
 
         subplot(3,1,3); ylabel('roll (deg)'); hold on; grid on; xlabel('time (s)'); 
-        plot(sv.time_hist(msk), sv.ypr_hist(3, msk),'rs'); 
-        plot(sv.time_hist(msk), sv.ypr_act_hist(3, msk),'bs')
+        plot(sv.time_hist(msk), sv.ypr_hist(3, msk),'r-', 'LineWidth', 2); 
+        plot(sv.time_hist(msk), sv.ypr_act_hist(3, msk),'b-', 'LineWidth', 2)
         ylim([min_ang, max_ang])
         sgtitle("UKF - red     Ground Truth - blue")
     end

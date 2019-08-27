@@ -9,7 +9,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     % line 3 prob rob ( Predict ) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sps_pred = zeros(dim, num_sp);
     for sp_ind = 1:num_sp
-        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), model, u);
+        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), model, u, yukf.dt);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -43,6 +43,9 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         mu_out(10:12) = mu_bar(10:12) + innovation(10:12);
         q_tmp = quatmultiply( complete_unit_quat(mu_bar(7:9))', axang_to_quat(innovation(7:9))' );
         mu_out(7:9) = q_tmp(2:4);
+        if yukf.prms.b_enforce_0_yaw
+            mu_out(9) = 0; % can probably do a better job forcing yaw to 0 (convert to eul, zero yaw, convert back)
+        end
     end
     sigma_out = sigma_bar - K * S * K';
     

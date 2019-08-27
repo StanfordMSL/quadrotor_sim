@@ -1,11 +1,12 @@
 clear; clc; 
+global t_tmp flight k_act yukf
 addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
 tf = 10;
 
-est_hz = 500;       % State Estimator Time Counter
+est_hz = 1000;       % State Estimator Time Counter
 lqr_hz = 1;        % Low Rate Controller Sample Rate
 con_hz = 200;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
@@ -31,8 +32,8 @@ flight = flight_init(model,tf,wp);                      % Initialize Flight Vari
 
 % %%%%%%%%%%%%%%%%%%%%
 % %%% YOLO UKF Test Initialization
-[sv, yukf, initial_bb, camera] = yolo_ukf_init(flight);
-prev_m_cmd = []; u_est = [];
+[sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_est);
+u_est = []; 
 % %%%%%%%%%%%%%%%%%%%%
 
 %%% Time Counters Initialization
@@ -50,7 +51,7 @@ tol = 1e-5;         % Tolerance to trigger various processes
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
 disp('[main]: Warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
-pause;
+% pause;
 
 for k = 1:sim_N
     sim_time = (k-1)*sim_dt;
@@ -60,15 +61,18 @@ for k = 1:sim_N
         % Perfect Sensing (used for flight control)
         t_now = t_est(k_est);
         x_now = flight.x_act(:,k_act);
-        flight.x_fc(:,k_est)  = x_now;
+        flight.x_fc(:,k_est) = x_now;
 
         %%%%%%%%%%%%%%%%%%%%
         % YOLO UKF Test
-        t_now = t_est(k_est);
-        if( yukf.prms.b_use_control )
-            u_est = prev_m_cmd;
+        if(k_act > 1)
+            if( yukf.prms.b_use_control )
+                u_est = flight.m_cmd(:, max(k_con - 1, 1));
+            end
+            yukf.dt = t_now - t_est(k_est - 1);
+            t_tmp = t_now;
+            [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camera, model, u_est);
         end
-        [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camera, model, u_est);
         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
@@ -89,7 +93,7 @@ for k = 1:sim_N
         curr_m_cmd = wrench2m_controller(u,model);
         
         % Log State Estimation and Control
-        flight.m_cmd(:,k_con) = curr_m_cmd;       
+        flight.m_cmd(:,k_con) = curr_m_cmd;
         
         k_con = k_con + 1;
     end

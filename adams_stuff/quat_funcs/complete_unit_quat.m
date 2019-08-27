@@ -8,7 +8,7 @@ function quat = complete_unit_quat(quat_vec)
     end
     
     % currently quat is a column vector
-    quat = [sqrt(1 - quat_vec(:)' * quat_vec(:)); quat_vec(:)];
+    quat = [real(sqrt(1 - quat_vec(:)' * quat_vec(:))); quat_vec(:)];
     
     % return quat as row or col vector depending on how it came in
     if(size(quat_vec, 1) < size(quat_vec, 1))
