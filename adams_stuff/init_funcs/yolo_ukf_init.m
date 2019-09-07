@@ -1,10 +1,11 @@
 function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     %%% PARAMS %%%
-    yukf.prms.b_use_control = true;  % whether to use the control in our estimate
+    yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     b_offset_at_t0 = false;
+    dyn_weight = 1;
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
@@ -64,7 +65,7 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, camera, initial_bb, yukf));
 
     yukf.prms.R = yukf.sigma/10;  % process noise
-    yukf.prms.Q = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; 
+    yukf.prms.Q = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5*dyn_weight; 
     
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);

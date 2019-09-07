@@ -42,6 +42,6 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
     nom.l(:,:,n:end) = l;
     nom.L(:,:,n:end) = L;
     
-    disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
+%     disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
 end
 

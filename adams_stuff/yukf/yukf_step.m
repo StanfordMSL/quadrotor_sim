@@ -1,5 +1,5 @@
 function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
-    global flight k_act
+    global flight k_act t_tmp k
     dim = length(yukf.mu);
     num_sp = 2*dim + 1;
     
@@ -48,6 +48,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
             mu_out(9) = 0; % can probably do a better job forcing yaw to 0 (convert to eul, zero yaw, convert back)
         end
     end
+%     mu_out = mu_bar; % DEBUG1
     sigma_out = sigma_bar - K * S * K';
     
     % project sigma to pos. def. cone to avoid numeric issues
@@ -56,6 +57,9 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     sigma_out = V * D * V';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+    if isempty(k_act)
+        k_act = k;
+    end
     err = flight.x_act(:, k_act) - mu_out(:);
     [y1, p1, r1] = quat2angle(complete_unit_quat(flight.x_act(7:9, k_act))');
     [y2, p2, r2] = quat2angle(complete_unit_quat(mu_out(7:9))');

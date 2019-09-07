@@ -1,5 +1,5 @@
 function ang_dist = quat_dist(q1, q2)
-%     % computes the angle between from q1 to q2 in degrees 
+%     % computes the angle between from q1 to q2 in DEGREES 
 %     a = dot(q1(:), q2(:))^2 ;
 %     if a < 0
 %         a = 0;
