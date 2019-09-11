@@ -32,7 +32,9 @@ flight = flight_init(model,tf,wp);                      % Initialize Flight Vari
 
 % %%%%%%%%%%%%%%%%%%%%
 % %%% YOLO UKF Test Initialization
-[sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_est);
+[sv, yukf] = yolo_ukf_init(flight, t_est);
+initial_bb = init_quad_bounding_box();
+camera = init_camera(yukf);
 u_est = []; 
 % %%%%%%%%%%%%%%%%%%%%
 

@@ -1,4 +1,5 @@
 function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initial_bb, yukf)
+    % basic output is [r_center, c_center, width, height, ...]
     % quad is z up, x forward (and y left)
     % camera is z out, x right and y down 
     % state is x_curr = [position - world; lin vel - world; quat [scal, x,
@@ -17,7 +18,7 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     wy = x_curr(11, 1);
     wz = x_curr(12, 1);
     
-    R_w_quad = quat2rotm(quat(:)'); % I confirmed this
+    R_w_quad = quat2rotm(quat(:)'); % I confirmed this is the right function
     tf_w_quad = [R_w_quad, pos_w(:); [zeros(1, 3), 1]];
     
     tf_cam_quad = camera.tf_cam_w * tf_w_quad;

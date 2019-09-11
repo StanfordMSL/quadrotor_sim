@@ -1,4 +1,4 @@
-function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
+function [sv, yukf] = yolo_ukf_init(flight, t_arr)
     %%% PARAMS %%%
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     b_offset_at_t0 = false;
@@ -28,14 +28,7 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-    initial_bb = init_quad_bounding_box();
-    camera = init_camera();
-
-%     rel_state = get_relative_state(flight.x_act(:, 1), get_camera_state_vec(camera));
-
     yukf.dt = t_arr(2) - t_arr(1);
-    
     pos0_est = [1; 2; -1] + flight.x_act(1:3, 1);
     v0_est = [0; 0; 0] + flight.x_act(4:6, 1);
     yaw0 = 0;
@@ -62,7 +55,8 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
     yukf.prms.beta = 2; % optimal choice according to prob rob
     yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
-    yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, camera, initial_bb, yukf));
+    fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
+    yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box())), yukf));
 
     yukf.prms.R = yukf.sigma/10;  % process noise
     yukf.prms.Q = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5*dyn_weight; 
@@ -72,7 +66,7 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     yukf.wi = 1 / (2*(yukf.prms.lambda + dim));
     
     
-    % yukf save variable for later plotting
+    %%%  Init yukf save variable (sv) for later plotting %%%%%%%%%
     sv.mu_hist = zeros(dim, length(flight.t_act)); sv.mu_hist(:, 1) = yukf.mu;
     sv.dyn_ol_hist = sv.mu_hist; sv.do_ind = 2;% open loop propagation of dynamics
     sv.dyn_ol_hist2 = sv.dyn_ol_hist;% open loop propagation of dynamics
@@ -93,4 +87,5 @@ function [sv, yukf, initial_bb, camera] = yolo_ukf_init(flight, t_arr)
     sv.ang_err = zeros(length(flight.t_act), 1); sv.ang_err(1) = quat_dist(qa, qm);
     sv.ang = zeros(length(flight.t_act), 1); sv.ang(1) = 0;
     sv.ang_act = zeros(length(flight.t_act), 1); sv.ang_act(1) = 0;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

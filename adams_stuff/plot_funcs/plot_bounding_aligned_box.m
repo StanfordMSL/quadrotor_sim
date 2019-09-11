@@ -52,7 +52,7 @@ function plot_bounding_aligned_box(center_rc, delta_rc, bb_rc_list, pos_w, quat,
     plot(bb_box(:,1), bb_box(:,2), 'k-', 'LineWidth', 1)
 
 
-    xlim([0, 2*camera.K_3x3(1,3)]); ylim([0, 2*camera.K_3x3(2,3)]); set(gca,'Ydir','reverse')
+    xlim([0, 2*camera.K(1,3)]); ylim([0, 2*camera.K(2,3)]); set(gca,'Ydir','reverse')
     [yaw, pitch, roll] = quat2angle(quat(:)');
     text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
         pos_w(1), pos_w(2), pos_w(2), ...

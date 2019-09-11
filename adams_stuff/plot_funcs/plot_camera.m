@@ -12,12 +12,12 @@ function [lims, plt_h] = plot_camera(camera, fig_h)
 %     % show camera field of view 
 %     full_range = ceil(xlim * [-1; 1] - camera.draw_len);
 %     draw_period = 4;
-%     K_inv = inv(camera.K_3x3);
+%     K_inv = inv(camera.K);
 %     for d = (camera.draw_len + draw_period) : draw_period : full_range
 %        corners = d * K_inv * [0, 0, 1;
-%                               0, 2*camera.K_3x3(2, 3), 1;
-%                               2 * camera.K_3x3(1, 3), 2 * camera.K_3x3(2, 3), 1;
-%                               2*camera.K_3x3(1, 3), 0, 1]';
+%                               0, 2*camera.K(2, 3), 1;
+%                               2 * camera.K(1, 3), 2 * camera.K(2, 3), 1;
+%                               2*camera.K(1, 3), 0, 1]';
 %        corners = camera.tf_w_cam * [corners; ones(1, 4)];
 %        corners = [corners(1:(end-1), :), corners(1:(end-1), 1)]';
 %        plot3(corners(:, 1), corners(:, 2), corners(:, 3), 'b-');

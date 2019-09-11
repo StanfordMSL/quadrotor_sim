@@ -5,8 +5,7 @@ function plot_ukf_hist(sv, flight)
     
     max_disp = ceil(max(max([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
     min_disp = floor(min(min([sv.mu_hist(1:3, msk), flight.x_act(1:3, :)]')));
-    min_disp = -3;
-    max_disp = 5;
+    
     figure(1234); clf; sgtitle("UKF - red     Ground Truth - blue")
     subplot(3,2,1); ylabel('X [m]'); hold on; grid on; xlabel('time (s)'); 
     plot(sv.time_hist(msk), sv.mu_hist(1, msk),'r-', 'LineWidth', 2); 
