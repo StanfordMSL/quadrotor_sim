@@ -11,7 +11,7 @@ function quat = complete_unit_quat(quat_vec)
     quat = [real(sqrt(1 - quat_vec(:)' * quat_vec(:))); quat_vec(:)];
     
     % return quat as row or col vector depending on how it came in
-    if(size(quat_vec, 1) < size(quat_vec, 1))
+    if(size(quat_vec, 1) < size(quat_vec, 2))
         % make it a row vec
         quat = quat(:)';
     end

@@ -62,7 +62,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     end
     err = flight.x_act(:, k_act) - mu_out(:);
     [y1, p1, r1] = quat2angle(complete_unit_quat(flight.x_act(7:9, k_act))');
-    [y2, p2, r2] = quat2angle(complete_unit_quat(mu_out(7:9))');
+    [y2, p2, r2] = quat2angle(complete_unit_quat(mu_out(7:9)));
     err_ypr = [y1 - y2, p1 - p2, r1 - r2] * 180/pi;
     
     yukf.mu_prev = yukf.mu;

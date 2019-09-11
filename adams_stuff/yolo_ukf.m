@@ -20,24 +20,6 @@ function [sv, yukf] = yolo_ukf(yukf, sv, flight, k_act, t_now, initial_bb, camer
     end
     
     % Save values for plotting %%%%%%%%%%%%%%%%%%
-    sv.mu_hist(:, k_act) = yukf.mu;
-    sv.mu_act(:, k_act) = flight.x_act(:, k_act);
-    
-    sv.sig_hist(:, :, k_act) = yukf.sigma;
-    sv.sig_trace_hist(k_act) = trace(yukf.sigma);
-    sv.time_hist(k_act) = t_now;
-    sv.hist_mask(k_act) = true;
-
-    qm = complete_unit_quat(yukf.mu(7:9)); 
-    [yaw, pitch, roll] = quat2angle(qm(:)');
-    sv.ypr_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
-
-    qa = complete_unit_quat(flight.x_act(7:9, k_act)); 
-    [yaw, pitch, roll] = quat2angle(qa(:)');
-    sv.ypr_act_hist(:, k_act) = [yaw; pitch; roll]*180/pi;
-
-    sv.ang_err(k_act) = quat_dist(qa, qm);
-    sv.ang(k_act) = 2*acosd(qm(1));
-    sv.ang_act(k_act) = 2*acosd(qa(1));
+    sv = update_save_var(sv, k_act, yukf, flight, t_now);
     disp('')
 end
