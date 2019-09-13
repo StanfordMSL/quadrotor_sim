@@ -10,9 +10,9 @@ function post_process_yukf()
     hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, hdwr_prms.datetime_str);
     
-    b_use_perfect_bb = true;
+    b_use_perfect_bb = false;
     
-    conf_thresh = 0.75; % value below which we decide we did not detect the image
+    conf_thresh = 0.5; % value below which we decide we did not detect the image
     b_animate = true;
     b_view_from_camera_perspective = false; % show animation from point of view of camera
     animation_pause = 0.05; % [seconds] amound of extra time to pause between animation frames

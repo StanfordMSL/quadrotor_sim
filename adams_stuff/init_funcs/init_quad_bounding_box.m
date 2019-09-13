@@ -4,9 +4,9 @@ function bb = init_quad_bounding_box(varargin)
     if ~isempty(varargin) && (strcmpi(varargin{1}, 'old') || strcmpi(varargin{1}, 'large'))
         % Q's original values: (used for camera scenarios 1-3)
         fprintf("CAREFUL: Using Large Bounding Box!\n");
-        l = 0.44*1.2;
-        w = 0.44*1.2;
-        h = 0.2*1.2;
+        l = 0.44*1.;
+        w = 0.44*1.;
+        h = 0.2*1.;
     else
         l = 0.27*1.2;
         w = 0.27*1.2;

@@ -67,9 +67,9 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
         z_mat_fil = z_mat;
         z_mat_fil(:, 3) = lowpass(z_mat(:, 3), fpass, fs);
         z_mat_fil(:, 4) = lowpass(z_mat(:, 4), fpass, fs);
-        figure(34453434); clf; hold on; 
-        plot(1:length(t_diff), t_diff, 'b.'); 
-        plot(1:length(t_diff), dt_ave*ones(length(t_diff), 1), 'r-'); 
+%         figure(34453434); clf; hold on; 
+%         plot(1:length(t_diff), t_diff, 'b.'); 
+%         plot(1:length(t_diff), dt_ave*ones(length(t_diff), 1), 'r-'); 
         z_mat = z_mat_fil;
     end
 end
