@@ -55,13 +55,17 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
         end
         
         if yukf.prms.b_measure_aspect_ratio
-            output = [output; output(4)/output(3)];
+            output = [output; output(3)/output(4)];
         end
         if yukf.prms.b_measure_x
             output = [output; pos_act(1)];
         end
         if yukf.prms.b_measure_yaw
-            output = [output; yaw_act];
+            if yukf.prms.b_enforce_0_yaw
+                output = [output; 0];
+            else
+                output = [output; yaw_act];
+            end
         end
         if yukf.prms.b_measure_pitch
             output = [output; pitch_act];

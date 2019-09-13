@@ -14,11 +14,14 @@ function [sv, yukf] = yolo_ukf_init(flight, t_arr)
     yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = true; % adds the "true" yaw measurement as output of the sensor
-    yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
+    yukf.prms.b_enforce_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
+    yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
     % ___extra A
-    yukf.prms.b_measure_pitch = false;
+    yukf.prms.b_measure_pitch = true;
+    yukf.prms.b_enforce_pitch= true; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     % ___extra A
-    yukf.prms.b_measure_roll = false;
+    yukf.prms.b_measure_roll = true;
+    yukf.prms.b_enforce_roll = true; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
     % ___extra B
     yukf.prms.b_measure_x = false;
     % ___extra C

@@ -1,5 +1,8 @@
 function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     global flight k_act t_tmp k
+    if isempty(k_act)
+        k_act = k;
+    end
     dim = length(yukf.mu);
     num_sp = 2*dim + 1;
     
@@ -44,22 +47,23 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         mu_out(10:12) = mu_bar(10:12) + innovation(10:12);
         q_tmp = quatmultiply( complete_unit_quat(mu_bar(7:9))', axang_to_quat(innovation(7:9))' );
         mu_out(7:9) = q_tmp(2:4);
-        if yukf.prms.b_enforce_0_yaw
-            mu_out(9) = 0; % can probably do a better job forcing yaw to 0 (convert to eul, zero yaw, convert back)
+        
+        if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
+            q_tmp = cheat_with_angles(q_tmp);
+            q_tmp = normalize_quat(q_tmp);
+            mu_out(7:9) = q_tmp(2:4);
         end
     end
 %     mu_out = mu_bar; % DEBUG1
     sigma_out = sigma_bar - K * S * K';
     
     % project sigma to pos. def. cone to avoid numeric issues
+    sigma_out = (sigma_out + sigma_out')/2;
     [V, D] = eig(sigma_out);
     D(D < 0) = 0.000001;
     sigma_out = V * D * V';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if isempty(k_act)
-        k_act = k;
-    end
     err = flight.x_act(:, k_act) - mu_out(:);
     [y1, p1, r1] = quat2angle(complete_unit_quat(flight.x_act(7:9, k_act))');
     [y2, p2, r2] = quat2angle(complete_unit_quat(mu_out(7:9)));

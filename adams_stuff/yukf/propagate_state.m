@@ -1,5 +1,5 @@
 function est_next_state = propagate_state(state, model, u, dt)
-    global yukf
+    global yukf flight k
     est_next_state = zeros(size(state));
     
     % Predict Positions
@@ -39,20 +39,10 @@ function est_next_state = propagate_state(state, model, u, dt)
                  wz  wy -wx   0 ];
 
         q_hat = quat + 0.5 * Omega * quat * dt;
-        % zero yaw
-        if yukf.prms.b_enforce_0_yaw
-            [~, pitch, roll] = quat2angle(q_hat(:)');
-            q_hat = angle2quat(0, pitch, roll)';
+        if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
+            q_hat = cheat_with_angles(q_hat);
         end
-        %%%%%%%%%%%%%%
-        if( norm(q_hat(2:4)) <= 1 )
-            q_hat = complete_unit_quat(q_hat(2:4)); % normalize quaternion    
-        elseif( norm(q_hat(2:4)) <= 1.001 )
-            q_hat = q_hat / norm(q_hat); % no warning needed - close enough
-        else
-            warning("invalid quaternion - crude normalization")
-            q_hat = q_hat / norm(q_hat);
-        end
+        q_hat = normalize_quat(q_hat);
     end
     est_next_state(7:9) = q_hat(2:4);
     vec_norm = norm( est_next_state(7:9) );

@@ -1,4 +1,4 @@
-function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, datetime_str, conf_thresh)
+function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, datetime_str, conf_thresh, frame_cutoff)
     % load in data specified by the date/time string
     
     fileID = fopen(sprintf('%s/results_%s.txt', data_dir, datetime_str));
@@ -30,11 +30,17 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
             frame_prefix_len = length(tokens{1}) + 1;
         end
         frame_ind = str2double(frame_name(frame_prefix_len + 1:end));
+        
+        if frame_ind > frame_cutoff
+            skipped_outputs(ind:end) = true;
+            break;
+        end
+        
         x_min = C{3}(ind); % x is col
         y_min = C{4}(ind); % y is row
         x_max = C{5}(ind);
         y_max = C{6}(ind);
-        z_mat(ind, :) = [(y_max + y_min)/2, (x_max + x_min)/2, x_max - x_min, y_max - y_min]; % [r_center, c_center, width, height]
+        z_mat(ind, :) = [(y_max + y_min)/2, (x_max + x_min)/2, x_max - x_min, y_max - y_min,]; % [r_center, c_center, width, height]
         
         fileID2 = fopen(sprintf('%s/pose_gtboxes_and_time/pose_gtboxes_and_time_%d.txt', data_dir, frame_ind));
         D = textscan(fileID2,'%f %f %f %f %f %f %f %f %f %f %f %f %f'); % x, y, z, qw, qx, qy, qz, max_coords (c/x_max, r/y_max), min_coords (c/x_min, r/y_min)
@@ -52,4 +58,18 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
     position_mat(skipped_outputs, :) = [];
     quat_mat(skipped_outputs, :) = [];
     gt_bb(skipped_outputs, :) = [];
+    
+    b_filter_data = true;
+    if b_filter_data
+        t_diff = t_rbg_arr(2:end) - t_rbg_arr(1:end-1);
+        dt_ave = mean(t_diff); fs = 1/dt_ave; fpass = 0.5; % i just made this up!
+        fprintf("Average time delta is %.4f seconds\n", dt_ave)
+        z_mat_fil = z_mat;
+        z_mat_fil(:, 3) = lowpass(z_mat(:, 3), fpass, fs);
+        z_mat_fil(:, 4) = lowpass(z_mat(:, 4), fpass, fs);
+        figure(34453434); clf; hold on; 
+        plot(1:length(t_diff), t_diff, 'b.'); 
+        plot(1:length(t_diff), dt_ave*ones(length(t_diff), 1), 'r-'); 
+        z_mat = z_mat_fil;
+    end
 end

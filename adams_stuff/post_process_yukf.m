@@ -10,7 +10,7 @@ function post_process_yukf()
     hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, hdwr_prms.datetime_str);
     
-    b_use_perfect_bb = false;
+    b_use_perfect_bb = true;
     
     conf_thresh = 0.75; % value below which we decide we did not detect the image
     b_animate = true;
@@ -19,7 +19,7 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% READ IN PROCESSED DATA %%%%%%%%%
-    [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, hdwr_prms.datetime_str, conf_thresh);
+    [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, hdwr_prms.datetime_str, conf_thresh, hdwr_prms.end_img_ind);
     num_img = length(t_pose_arr);
     fprintf("%d images remaining after discarding confidences < %.0f%%\n", num_img, conf_thresh*100);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +34,9 @@ function post_process_yukf()
     
     [sv, yukf] = yolo_ukf_init(flight, t_rbg_arr);
     yukf.hdwr_prms = hdwr_prms;  % save hardware params in yukf struct
+    if yukf.prms.b_measure_aspect_ratio
+        z_mat = [z_mat, z_mat(:, 3)./z_mat(:, 4)];
+    end
     camera = init_camera(yukf);
     initial_bb = init_quad_bounding_box('large'); % what size bb are we using? (leave blank for small)
 %     initial_bb = init_quad_bounding_box();
@@ -58,9 +61,22 @@ function post_process_yukf()
             
             if b_use_perfect_bb
                 yolo_output = predict_quad_bounding_box(flight.x_act(:, k), camera, initial_bb, yukf); %"perfect" prediction
-                % [gt_bb(k, :)'; 0];
             else
-                yolo_output = [z_mat(k, :)'; 0]; 
+                yolo_output = z_mat(k, :)';
+                [yaw_act, pitch_act, roll_act] = quat2angle(quat_mat(k, :));
+                if yukf.prms.b_measure_yaw
+                    if yukf.prms.b_enforce_0_yaw
+                        yolo_output = [yolo_output; 0];
+                    else
+                        yolo_output = [yolo_output; yaw_act];
+                    end
+                end
+                if yukf.prms.b_measure_pitch
+                    yolo_output = [yolo_output; pitch_act];
+                end
+                if yukf.prms.b_measure_roll
+                    yolo_output = [yolo_output; roll_act];
+                end
             end
             yukf = yukf_step(yukf, [], yolo_output, [], camera, initial_bb);
 
