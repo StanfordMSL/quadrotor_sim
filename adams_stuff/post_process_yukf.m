@@ -63,11 +63,18 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     
     %%% YUKF %%%%%%%%%
+    t_diff = t_rbg_arr(2:end) - t_rbg_arr(1:end-1);
+    dt_ave = mean(t_diff);
+    mv_ave_buff = zeros(yukf.prms.mv_ave_len, 2);
+    mv_ave_counter = 1;
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
             t_now = t_rbg_arr(k);
             yukf.dt = t_now - t_rbg_arr(k - 1);
+            if yukf.dt > dt_ave*10
+                warning('skipped frames!! dt is %.3f seconds (ave dt = %.3f)', yukf.dt, dt_ave);
+            end
             
             if yukf.prms.b_predicted_bb
                 yolo_output = predict_quad_bounding_box(flight.x_act(:, k), camera, initial_bb, yukf); %"perfect" prediction
@@ -88,6 +95,15 @@ function post_process_yukf()
                     yolo_output = [yolo_output; roll_act];
                 end
             end
+            
+            if yukf.prms.b_filter_data
+                % only filter width/height of bb
+                mv_counter_index = mod(mv_ave_counter - 1, yukf.prms.mv_ave_len) + 1;
+                mv_ave_buff(mv_counter_index, :) = yolo_output(3:4)';
+                yolo_output(3:4) = mean(mv_ave_buff(1:min(mv_counter_index, yukf.prms.mv_ave_len), :), 1)';
+                mv_ave_counter = mv_ave_counter + 1;
+            end
+            
             yukf = yukf_step(yukf, [], yolo_output, [], camera, initial_bb);
 
             % Save values for plotting %%%%%%%%%%%%%%%%%%

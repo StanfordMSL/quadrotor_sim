@@ -59,7 +59,7 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
     quat_mat(skipped_outputs, :) = [];
     gt_bb(skipped_outputs, :) = [];
     
-    if yukf.prms.b_filter_data
+    if false
         t_diff = t_rbg_arr(2:end) - t_rbg_arr(1:end-1);
         dt_ave = mean(t_diff); fs = 1/dt_ave; fpass = 0.5; % i just made this up!
         fprintf("Average time delta is %.4f seconds\n", dt_ave)
