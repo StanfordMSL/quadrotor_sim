@@ -2,6 +2,7 @@ function post_process_yukf()
     close all; clear all; clc; format compact; rng(42);
     global flight k yukf
     fprintf("NOTE: consider using quad offset!!\n")
+    
     %%% Initialize YUKF %%%
     num_dims = 12; % length of state
     flight.x_act = zeros(num_dims, 1);  % this is a placeholder that needs to happen before yolo_yukf_init()

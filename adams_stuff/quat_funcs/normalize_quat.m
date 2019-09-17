@@ -2,9 +2,9 @@ function quat = normalize_quat(quat_vec)
     % normalize quaternion but modifying scalar component
     
     if length(quat_vec) == 3
-        quat = complete_unit_quat(quat_vec);
+        quat = complete_unit_quat(quat_vec); % this handles the case when the norm of the 3 elements is <0
     else
-        if( norm(quat_vec) <= 1 )
+        if( norm(quat_vec) <= 1 ) % this is our preferred normalization method
             sn = sign(quat_vec(1));
             quat = complete_unit_quat(quat_vec(2:4));
             quat(1) = sn * quat(1); % maintain the same sign on first element!   

@@ -7,7 +7,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     dyn_weight = 1;
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
     yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
-    yukf.prms.b_filter_data = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data)
+    yukf.prms.b_filter_data = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
     yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
@@ -44,7 +44,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     dv = 0.005; % [m/s]
     dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
     dw = 0.0005; % [rad/s]
-    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, 0.000001]);
+    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
     yukf.prms.alpha = 1; % scaling param - how far sig. points are from mean
     yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
     yukf.prms.beta = 2; % optimal choice according to prob rob

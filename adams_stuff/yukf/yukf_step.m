@@ -48,7 +48,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         q_tmp = quatmultiply( complete_unit_quat(mu_bar(7:9))', axang_to_quat(innovation(7:9))' );
         mu_out(7:9) = q_tmp(2:4);
         
-        if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
+        if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
             q_tmp = cheat_with_angles(q_tmp);
             q_tmp = normalize_quat(q_tmp);
             mu_out(7:9) = q_tmp(2:4);
