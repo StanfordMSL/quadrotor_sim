@@ -39,16 +39,39 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
     
-    % these values are used for stepping along sigma directions
-    dp = 0.1; % [m]
-    dv = 0.005; % [m/s]
-    dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-    dw = 0.0005; % [rad/s]
-    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
-    yukf.prms.alpha = 1; % scaling param - how far sig. points are from mean
-    yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
-    yukf.prms.beta = 2; % optimal choice according to prob rob
+    b_use_crazy_params = false;
+    if ~b_use_crazy_params
+        % these values are in part from prob rob, in part from me choosing
+        % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
+        % points the same as the mean one
+        yukf.prms.alpha = 1; % scaling param - how far sig. points are from mean
+        yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
+        yukf.prms.beta = 2; % optimal choice according to prob rob
+        
+        % these values are used for stepping along sigma directions
+        dp = 0.1; % [m]
+        dv = 0.005; % [m/s]
+        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.0005; % [rad/s]
+    else
+        % these values are from
+        % https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf
+        % (also from the original ukf paper)
+        yukf.prms.alpha = 0.001; % scaling param - how far sig. points are from mean
+        yukf.prms.kappa = 0; % scaling param - how far sig. points are from mean
+        yukf.prms.beta = 2; 
+        
+        % these values are used for stepping along sigma directions
+        dp = 1; % [m]
+        dv = 0.05; % [m/s]
+        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.0005; % [rad/s]
+    end
     yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
+    
+    
+    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
+    
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box())), yukf));
 

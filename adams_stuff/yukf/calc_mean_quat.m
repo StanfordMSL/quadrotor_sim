@@ -1,6 +1,6 @@
 function [mu_bar, ei_quat_set] = calc_mean_quat(sps, yukf)
     % see https://kodlab.seas.upenn.edu/uploads/Arun/UKFpaper.pdf, sec 3.4
-    max_itr = 20;
+    max_itr = 40;
     thresh = 0.1 * pi/180;
     
     % calculate the mean of the vector parts
