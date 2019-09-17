@@ -9,6 +9,9 @@ function sps = calc_sigma_points(mu, sigma, yukf)
 %     [U, S, V] = svd(sigma);
 %     sig_sqrt = U * S.^0.5 * V';
     sigma_point_step = sqrt(dim + yukf.prms.lambda) * sig_sqrt; 
+    if yukf.prms.b_enforce_0_yaw
+        sigma_point_step(12, :) = 0;
+    end
     
     q_mean = complete_unit_quat(mu(7:9)); 
     for i = 1:dim

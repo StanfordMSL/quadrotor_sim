@@ -146,10 +146,10 @@ function camera = init_camera(varargin)
         camera.K = camera.K_3x3;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     else
-        if ~isfield(yukf.hdwr_prms, 'camera_scenario')
+        if exist('yukf', 'var') ~= 1 || ~isfield(yukf, 'hdwr_prms') || ~isfield(yukf.hdwr_prms, 'camera_scenario')
             % default (and sim-only) scenario
             warning("using default camera settings - dont use with real data!");
-            camera_position_w = [-8, 0, 0]; % world frame
+            camera_position_w = [-8, 0, 1]; % world frame
             ang_x = 90; ang_y = 0; ang_z = 90;
             Rx = [ 1.  , 0.          ,     0.       ; 0.  , cosd(ang_x) ,-sind(ang_x)  ; 0.  , sind(ang_x) , cosd(ang_x)  ];
             Ry = [cosd(ang_y) , 0.    , sind(ang_y)  ;  0.  ,         1.       , 0            ; -sind(ang_y) , 0.   , cosd(ang_y)  ];

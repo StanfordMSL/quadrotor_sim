@@ -10,7 +10,7 @@ function post_process_yukf()
     hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, hdwr_prms.datetime_str);
     
-    b_use_perfect_bb = false;
+    b_use_perfect_bb = true;
     
     conf_thresh = 0.5; % value below which we decide we did not detect the image
     b_animate = true;

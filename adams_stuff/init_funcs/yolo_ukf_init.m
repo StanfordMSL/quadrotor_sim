@@ -17,11 +17,11 @@ function [sv, yukf] = yolo_ukf_init(flight, t_arr)
     yukf.prms.b_enforce_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
     yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
     % ___extra A
-    yukf.prms.b_measure_pitch = true;
-    yukf.prms.b_enforce_pitch= true; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
+    yukf.prms.b_measure_pitch = false;
+    yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     % ___extra A
-    yukf.prms.b_measure_roll = true;
-    yukf.prms.b_enforce_roll = true; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
+    yukf.prms.b_measure_roll = false;
+    yukf.prms.b_enforce_roll = false; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
     % ___extra B
     yukf.prms.b_measure_x = false;
     % ___extra C
@@ -50,10 +50,10 @@ function [sv, yukf] = yolo_ukf_init(flight, t_arr)
     
     % these values are used for stepping along sigma directions
     dp = 0.1; % [m]
-    dv = 0.05; % [m/s]
+    dv = 0.005; % [m/s]
     dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-    dw = 0.005; % [rad/s]
-    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, 0.0001]);
+    dw = 0.0005; % [rad/s]
+    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, 0.000001]);
     yukf.prms.alpha = 1; % scaling param - how far sig. points are from mean
     yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
     yukf.prms.beta = 2; % optimal choice according to prob rob

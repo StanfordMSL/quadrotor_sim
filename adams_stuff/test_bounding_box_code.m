@@ -9,11 +9,10 @@ function test_bounding_box_code(varargin)
         clc; format compact; rng(42);
 
         % angle defining R_w_quad
-        r = 0;
-        p = 7.5 * pi/180;
-        y = 0;
-        R_test = eul2rotm([r, p, y]); % == R_w_quad
-        q_test = angle2quat(r, p, y)';
+        r = 10 * pi/180;
+        p = 1*7.5 * pi/180;
+        y = 3 * pi/180;
+        q_test = angle2quat(y, p, r)';
 
         x_curr = [0; 0; 1; 0; 0; 0; q_test(2:4); 0; 0; 0];
     end

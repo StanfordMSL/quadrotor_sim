@@ -42,44 +42,43 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
             output = x_curr;
         else
             output = get_aligned_bounding_box(bb_rc_list, x_curr, b_draw_box, camera);
-        end
-        
-        if isempty(k_act)
-            quat_act = complete_unit_quat(flight.x_act(7:9, 1));
-            [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
-            pos_act = flight.x_act(1:3, 1);
-        else
-            quat_act = complete_unit_quat(flight.x_act(7:9, k_act));
-            [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
-            pos_act = flight.x_act(1:3, k_act);
-        end
-        
-        if yukf.prms.b_measure_aspect_ratio
-            output = [output; output(3)/output(4)];
-        end
-        if yukf.prms.b_measure_x
-            output = [output; pos_act(1)];
-        end
-        if yukf.prms.b_measure_yaw
-            if yukf.prms.b_enforce_0_yaw
-                output = [output; 0];
-            else
-                output = [output; yaw_act];
+            if yukf.prms.b_measure_aspect_ratio
+                output = [output; output(3)/output(4)];
             end
         end
-        if yukf.prms.b_measure_pitch
-            output = [output; pitch_act];
-        end
-        if yukf.prms.b_measure_roll
-            output = [output; roll_act];
-        end
-        if yukf.prms.b_measure_quat
-            output = [output; quat_act(2:4)];
-        end
-        if yukf.prms.b_measure_pos
-            output = [output; pos_act];
-        end
 %         output = output + (rand(size(output))-0.5)*3;
+    end
+    if isempty(k_act)
+        quat_act = complete_unit_quat(flight.x_act(7:9, 1));
+        [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
+        pos_act = flight.x_act(1:3, 1);
+    else
+        quat_act = complete_unit_quat(flight.x_act(7:9, k_act));
+        [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
+        pos_act = flight.x_act(1:3, k_act);
+    end
+
+    if yukf.prms.b_measure_x
+        output = [output; pos_act(1)];
+    end
+    if yukf.prms.b_measure_yaw
+        if yukf.prms.b_enforce_0_yaw
+            output = [output; 0];
+        else
+            output = [output; yaw_act];
+        end
+    end
+    if yukf.prms.b_measure_pitch
+        output = [output; pitch_act];
+    end
+    if yukf.prms.b_measure_roll
+        output = [output; roll_act];
+    end
+    if yukf.prms.b_measure_quat
+        output = [output; quat_act(2:4)];
+    end
+    if yukf.prms.b_measure_pos
+        output = [output; pos_act];
     end
         
 end
