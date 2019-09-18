@@ -5,7 +5,7 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     % state is x_curr = [position - world; lin vel - world; quat [scal, x,
     %   y, z] - body frame; ang_vel - body frame] 
     %   note: R_w_quad = quat2rotm(quat(:)');     
-    global flight k_act
+    global flight k_act k
     
     output = [];
     b_draw_box = false; % setting to true slows it down considerably, but shows the prediction vs. true state & how the sigma points vary around the mean
@@ -38,47 +38,14 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     if yukf.prms.b_angled_bounding_box
         output = get_angled_bounding_box(bb_rc_list, x_curr, b_draw_box, camera);
     else
-        if yukf.prms.b_measure_everything
-            output = x_curr;
-        else
-            output = get_aligned_bounding_box(bb_rc_list, x_curr, b_draw_box, camera);
-            if yukf.prms.b_measure_aspect_ratio
-                output = [output; output(3)/output(4)];
-            end
-        end
-%         output = output + (rand(size(output))-0.5)*3;
+        output = get_aligned_bounding_box(bb_rc_list, x_curr, b_draw_box, camera);
     end
-    if isempty(k_act)
-        quat_act = complete_unit_quat(flight.x_act(7:9, 1));
-        [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
-        pos_act = flight.x_act(1:3, 1);
+    if isempty(k_act) && isempty(k)
+        state_gt = flight.x_act(:, 1);
+    elseif isempty(k)
+        state_gt = flight.x_act(:, k_act);
     else
-        quat_act = complete_unit_quat(flight.x_act(7:9, k_act));
-        [yaw_act, pitch_act, roll_act] = quat2angle(quat_act(:)');
-        pos_act = flight.x_act(1:3, k_act);
+        state_gt = flight.x_act(:, k);
     end
-
-    if yukf.prms.b_measure_x
-        output = [output; pos_act(1)];
-    end
-    if yukf.prms.b_measure_yaw
-        if yukf.prms.b_enforce_0_yaw
-            output = [output; 0];
-        else
-            output = [output; yaw_act];
-        end
-    end
-    if yukf.prms.b_measure_pitch
-        output = [output; pitch_act];
-    end
-    if yukf.prms.b_measure_roll
-        output = [output; roll_act];
-    end
-    if yukf.prms.b_measure_quat
-        output = [output; quat_act(2:4)];
-    end
-    if yukf.prms.b_measure_pos
-        output = [output; pos_act];
-    end
-        
+    output = augment_measurement(output, yukf, state_gt);
 end

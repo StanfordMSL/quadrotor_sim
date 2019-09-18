@@ -4,7 +4,6 @@ function yukf = yolo_ukf_init(num_dims, dt)
     %%% PARAMS %%%
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     yukf.b_offset_at_t0 = false;  % whether to add noise to the initial starting location
-    dyn_weight = 1;
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
     yukf.prms.b_predicted_bb = false; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
@@ -16,27 +15,19 @@ function yukf = yolo_ukf_init(num_dims, dt)
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
     yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
-    % Option 2 %%%%%%%   z = [state]
+    % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 3  %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    yukf.prms.b_measure_aspect_ratio = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = true; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
     yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
-    % ___extra A
     yukf.prms.b_measure_pitch = false;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
-    % ___extra A
     yukf.prms.b_measure_roll = false;
     yukf.prms.b_enforce_roll = false; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
-    % ___extra B
-    yukf.prms.b_measure_x = false;
-    % ___extra C
-    yukf.prms.b_measure_quat = false;
-    % ___extra D
-    yukf.prms.b_measure_pos = false;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -74,15 +65,14 @@ function yukf = yolo_ukf_init(num_dims, dt)
     end
     yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
     
-    
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
     
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box())), yukf));
-
-    yukf.prms.R = yukf.sigma/10;  % process noise
-    yukf.prms.Q = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5*dyn_weight; 
+    yukf.prms.Q = yukf.sigma/10;  % Process Noise
+    yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
     
+
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);
     yukf.wi = 1 / (2*(yukf.prms.lambda + dim));

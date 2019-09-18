@@ -18,7 +18,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 4 & 5 - predict new mean & cov %%%%%%%%%%%%%%%%%%%%%%%
-    [mu_bar, sigma_bar, Wprime] = predict_mean_and_cov_state(sps_pred, yukf, yukf.prms.R);
+    [mu_bar, sigma_bar, Wprime] = predict_mean_and_cov_state(sps_pred, yukf, yukf.prms.Q);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 6 - update sigma points 
@@ -27,7 +27,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     
     % line 7 - 9 - predict observation & uncertainty for each sigma point
     pred_obs = predict_obs(sps_updated, camera, initial_bb, yukf);
-    [z_hat, S, S_inv] = predict_mean_and_cov_obs(pred_obs, yukf, yukf.prms.Q);
+    [z_hat, S, S_inv] = predict_mean_and_cov_obs(pred_obs, yukf, yukf.prms.R);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 10 - calc cross correlation
@@ -54,7 +54,6 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
             mu_out(7:9) = q_tmp(2:4);
         end
     end
-%     mu_out = mu_bar; % DEBUG1
     sigma_out = sigma_bar - K * S * K';
     
     % project sigma to pos. def. cone to avoid numeric issues

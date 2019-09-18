@@ -72,7 +72,7 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
         z_mat = z_mat_fil;
     end
     
-    if yukf.prms.b_measure_aspect_ratio
+    if false && yukf.prms.b_measure_aspect_ratio
         z_mat = [z_mat, z_mat(:, 3)./z_mat(:, 4)];
     end
 end

@@ -76,24 +76,12 @@ function post_process_yukf()
                 warning('skipped frames!! dt is %.3f seconds (ave dt = %.3f)', yukf.dt, dt_ave);
             end
             
+%             yolo_output = querry_sensor(z_mat(k, :), yukf, flight.x_act(:, k), camera, initial_bb);
             if yukf.prms.b_predicted_bb
                 yolo_output = predict_quad_bounding_box(flight.x_act(:, k), camera, initial_bb, yukf); %"perfect" prediction
             else
                 yolo_output = z_mat(k, :)';
-                [yaw_act, pitch_act, roll_act] = quat2angle(quat_mat(k, :));
-                if yukf.prms.b_measure_yaw
-                    if yukf.prms.b_enforce_0_yaw
-                        yolo_output = [yolo_output; 0];
-                    else
-                        yolo_output = [yolo_output; yaw_act];
-                    end
-                end
-                if yukf.prms.b_measure_pitch
-                    yolo_output = [yolo_output; pitch_act];
-                end
-                if yukf.prms.b_measure_roll
-                    yolo_output = [yolo_output; roll_act];
-                end
+                yolo_output = augment_measurement(yolo_output, yukf, flight.x_act(:, k));
             end
             
             if yukf.prms.b_filter_data

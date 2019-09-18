@@ -6,6 +6,7 @@ function [mu_bar, ei_quat_set] = calc_mean_quat(sps, yukf)
     % calculate the mean of the vector parts
     mu_bar = (yukf.w0_m * sps(:,1)) + (yukf.wi*sum(sps(:,2:end), 2));
     
+    
     % now deal with the quaterion...
     num_sps = size(sps, 2);
     q_bar = complete_unit_quat(sps(7:9, 1));
