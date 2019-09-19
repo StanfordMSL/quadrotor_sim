@@ -1,6 +1,6 @@
 function post_process_yukf()   
-    close all; clear all; clc; format compact; rng(42);
-    global flight k yukf
+    close all; clear all; clc; format compact; rng(42); addpath(genpath(pwd));
+    global flight k yukf t_tmp
     fprintf("NOTE: consider using quad offset!!\n")
     
     %%% Initialize YUKF %%%
@@ -51,11 +51,7 @@ function post_process_yukf()
     end
     sv = initialize_variable_for_recording_data(x0_gt, yukf.mu(:), yukf, num_dims, length(flight.t_act)); 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %%% plot ground truth vs yolo vs predicted bounding boxes %%%
-    compare_yolo_predictions_and_gt(z_mat, gt_bb, position_mat, quat_mat, camera, initial_bb, yukf);
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+        
     %%% Init animation plot %%%
     if b_animate
         [traj_est_h, h_persp, h_persp_est] = init_iterative_animation_plot(position_mat(1,:), quat_mat(1,:), camera, position_mat, quat_mat, b_view_from_camera_perspective);
@@ -65,12 +61,15 @@ function post_process_yukf()
     %%% YUKF %%%%%%%%%
     t_diff = t_rbg_arr(2:end) - t_rbg_arr(1:end-1);
     dt_ave = mean(t_diff);
-    mv_ave_buff = zeros(yukf.prms.mv_ave_len, 2);
+    mv_ave_in_buff = zeros(yukf.prms.mv_ave_len_in, 2);
+    mv_ave_out_buff = zeros(yukf.prms.mv_ave_len_out, 3);
     mv_ave_counter = 1;
+    yolo_hist = zeros(yukf.prms.meas_len, num_img);
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
             t_now = t_rbg_arr(k);
+            t_tmp = t_now;
             yukf.dt = t_now - t_rbg_arr(k - 1);
             if yukf.dt > dt_ave*10
                 warning('skipped frames!! dt is %.3f seconds (ave dt = %.3f)', yukf.dt, dt_ave);
@@ -84,15 +83,24 @@ function post_process_yukf()
                 yolo_output = augment_measurement(yolo_output, yukf, flight.x_act(:, k));
             end
             
-            if yukf.prms.b_filter_data
+            if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb
                 % only filter width/height of bb
-                mv_counter_index = mod(mv_ave_counter - 1, yukf.prms.mv_ave_len) + 1;
-                mv_ave_buff(mv_counter_index, :) = yolo_output(3:4)';
-                yolo_output(3:4) = mean(mv_ave_buff(1:min(mv_counter_index, yukf.prms.mv_ave_len), :), 1)';
+                mv_counter_index = mod(mv_ave_counter - 1, yukf.prms.mv_ave_len_in) + 1;
+                mv_ave_in_buff(mv_counter_index, :) = yolo_output(3:4)';
+                yolo_output(3:4) = mean(mv_ave_in_buff(1:min(mv_counter_index, yukf.prms.mv_ave_len_in), :), 1)';
                 mv_ave_counter = mv_ave_counter + 1;
             end
             
+            yolo_hist(:, k) = yolo_output;  % record piltered/augmented yolo output
             yukf = yukf_step(yukf, [], yolo_output, [], camera, initial_bb);
+            
+            if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb
+                % only filter x/y/z
+                mv_counter_index = mod(mv_ave_counter - 1, yukf.prms.mv_ave_len_out) + 1;
+                mv_ave_out_buff(mv_counter_index, :) = yukf.mu(1:3)';
+                yukf.mu(1:3) = mean(mv_ave_out_buff(1:min(mv_counter_index, yukf.prms.mv_ave_len_out), :), 1)';
+                mv_ave_counter = mv_ave_counter + 1;
+            end
 
             % Save values for plotting %%%%%%%%%%%%%%%%%%
             sv = update_save_var(sv, k, yukf, flight, t_now);
@@ -105,7 +113,14 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % plot history of filter vs ground truth
     disp('')
+    [prct_crt_1, prct_crt_5, prct_crt_10, err_vec, err_ave, err_min, err_max] = metric1_6dof(sv.mu_hist, sv.mu_act, initial_bb);
+    [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(sv.mu_hist, sv.mu_act);
     plot_ukf_hist(sv, flight);
+    
+    % plot ground truth vs yolo vs predicted bounding boxes 
+    if ~yukf.prms.b_predicted_bb
+        compare_yolo_predictions_and_gt(yolo_hist, gt_bb, position_mat, quat_mat, camera, initial_bb, yukf);
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp('')
 end

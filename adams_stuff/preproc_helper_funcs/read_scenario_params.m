@@ -50,6 +50,9 @@ function prm = read_scenario_params(run_dir, scenario)
     if size(line{1}, 1) > 11
         output = strsplit(line{1}{12}, ' ');
         prm.end_img_ind = str2double(output{3});
+        if prm.end_img_ind < 1
+            prm.end_img_ind = Inf;
+        end
     else
         prm.end_img_ind = Inf;
     end

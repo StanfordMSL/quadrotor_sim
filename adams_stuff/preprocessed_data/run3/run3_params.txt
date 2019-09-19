@@ -7,6 +7,6 @@ camera_optitrack_quat = -0.998921394348, 0.00403045583516, -0.0443414188921, -0.
 camera_shift = 0.026, 0.03, -0.019
 camera_rot_x = 83.8
 camera_rot_y = 0
-camera_rot_z = 89.2
+camera_rot_z = 89.3
 quad_shift = 0, 0, 0.03
 end_image_ind = 4050

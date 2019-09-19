@@ -31,7 +31,7 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
         end
         frame_ind = str2double(frame_name(frame_prefix_len + 1:end));
         
-        if frame_ind > yukf.hdwr_prms.end_img_ind
+        if yukf.hdwr_prms.end_img_ind> 0 && frame_ind > yukf.hdwr_prms.end_img_ind
             skipped_outputs(ind:end) = true;
             break;
         end
@@ -59,20 +59,4 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
     quat_mat(skipped_outputs, :) = [];
     gt_bb(skipped_outputs, :) = [];
     
-    if false
-        t_diff = t_rbg_arr(2:end) - t_rbg_arr(1:end-1);
-        dt_ave = mean(t_diff); fs = 1/dt_ave; fpass = 0.5; % i just made this up!
-        fprintf("Average time delta is %.4f seconds\n", dt_ave)
-        z_mat_fil = z_mat;
-        z_mat_fil(:, 3) = lowpass(z_mat(:, 3), fpass, fs);
-        z_mat_fil(:, 4) = lowpass(z_mat(:, 4), fpass, fs);
-%         figure(34453434); clf; hold on; 
-%         plot(1:length(t_diff), t_diff, 'b.'); 
-%         plot(1:length(t_diff), dt_ave*ones(length(t_diff), 1), 'r-'); 
-        z_mat = z_mat_fil;
-    end
-    
-    if false && yukf.prms.b_measure_aspect_ratio
-        z_mat = [z_mat, z_mat(:, 3)./z_mat(:, 4)];
-    end
 end

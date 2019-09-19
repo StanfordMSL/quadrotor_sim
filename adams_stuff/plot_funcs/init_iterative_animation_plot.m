@@ -83,4 +83,5 @@ function [traj_est_h, h_persp, h_persp_est] = init_iterative_animation_plot(init
     % set the labels & legend  
     xlabel('x-axis'); ylabel('y-axis'); zlabel('z-axis');
     legend([cmr_h; traj_h; traj_est_h; h_persp; h_persp_est], {'camera', 'traj._{gt}', 'traj._{est}', 'X_{gt}','Y_{gt}','Z_{gt}', 'X_{est}','Y_{est}','Z_{est}'});
+    axis equal
 end
