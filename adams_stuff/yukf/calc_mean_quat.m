@@ -36,11 +36,13 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         
         if(norm(e_vec) < thresh)
             if(itr == 1); continue; end % so quick its worth taking another step
-            % we have converged
             mu_bar(7:9) = q_bar(2:4);
-            quatAverage = meanrot(quaternion(quat_arr));
-            if abs(quat_dist(quatAverage, q_bar)) > 2 * 180/pi
-                warning('Built-in Function for quat mean disagrees with us!')
+            % we have converged
+            if strcmpi(version('-release'), '2019b' )
+                quatAverage = meanrot(quaternion(quat_arr));
+                if abs(quat_dist(quatAverage, q_bar)) > 2 * 180/pi
+                    warning('Built-in Function for quat mean disagrees with us!')
+                end
             end
             return
         end
