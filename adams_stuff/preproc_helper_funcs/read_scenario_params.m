@@ -47,8 +47,20 @@ function prm = read_scenario_params(run_dir, scenario)
     output = strsplit(line{1}{11}, ' ');
     prm.quad_shift_w = [str2double(output{3}), str2double(output{4}), str2double(output{5})];
     
+    output = strsplit(line{1}{12}, ' ');
+    prm.bb_l =str2double(output{3});
+    
+    output = strsplit(line{1}{13}, ' ');
+    prm.bb_w = str2double(output{3});
+    
+    output = strsplit(line{1}{14}, ' ');
+    prm.bb_h = str2double(output{3});
+    
+    output = strsplit(line{1}{15}, ' ');
+    prm.bb_mult = str2double(output{3});
+    
     if size(line{1}, 1) > 11
-        output = strsplit(line{1}{12}, ' ');
+        output = strsplit(line{1}{16}, ' ');
         prm.end_img_ind = str2double(output{3});
         if prm.end_img_ind < 1
             prm.end_img_ind = Inf;

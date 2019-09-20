@@ -7,14 +7,14 @@ function post_process_yukf()
     num_dims = 12; % length of state
     flight.x_act = zeros(num_dims, 1);  % this is a placeholder that needs to happen before yolo_yukf_init()
     yukf = yolo_ukf_init(num_dims, NaN); % this sets most of the filter parameters, the rest are loaded from a file
-    initial_bb = init_quad_bounding_box('large'); % what size bb are we using? (leave blank for small)
-%     initial_bb = init_quad_bounding_box();
 
     %%% SCENARIO - Choose to specifiy data & camera position/calibration %%%
     scenario = 3; 
     run_dir = sprintf('adams_stuff/preprocessed_data/run%d', scenario);
     yukf.hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, yukf.hdwr_prms.datetime_str);
+    
+    initial_bb = init_quad_bounding_box(yukf.hdwr_prms.bb_l, yukf.hdwr_prms.bb_w, yukf.hdwr_prms.bb_h, yukf.hdwr_prms.bb_mult);
     
     conf_thresh = 0.5; % value below which we decide we did not detect the image
     b_animate = true;

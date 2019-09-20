@@ -5,7 +5,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     yukf.b_offset_at_t0 = false;  % whether to add noise to the initial starting location
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
-    yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
+    yukf.prms.b_predicted_bb = false; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
     %%% options for filtering input data
     yukf.prms.b_filter_data = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
@@ -70,7 +70,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
     
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
-    yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box())), yukf));
+    yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
     yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
     
