@@ -13,11 +13,13 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
     q_bar_inv = quatinv(q_bar(:)');
 %     ei_quat_set = zeros(4, num_sps);
     ei_vec_set = zeros(3, num_sps);
+    quat_arr = zeros(num_sps, 4);
     for itr = 1:max_itr
         W = yukf.w0_m;
         e_vec = zeros(3,1);
         for sp_ind = 1:num_sps
             qi = complete_unit_quat(sps(7:9, sp_ind)); % quaternion from sigma point
+            quat_arr(itr, :) = qi(:)';
             ei_quat = quatmultiply(qi(:)' , q_bar_inv(:)'); % quaternion differnce between sigma point and our current estimate of average quat
             ei_vec = quat_to_axang(ei_quat(:)'); % that difference, now in ax ang form
             ei_vec_set(:, sp_ind) = ei_vec; % storing ax ang difference for later use
@@ -36,6 +38,10 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
             if(itr == 1); continue; end % so quick its worth taking another step
             % we have converged
             mu_bar(7:9) = q_bar(2:4);
+            quatAverage = meanrot(quat_arr);
+            if abs(quat_dist(quatAverage, q_bar)) > 2 * 180/pi
+                warning('Built-in Function for quat mean disagrees with us!')
+            end
             return
         end
     end
