@@ -1,4 +1,4 @@
-function [sig_bar, Wprime] = calc_covar_quat(sps, mu_bar, yukf, ei_vec_set, cov_add_noise)
+function sig_bar = calc_covar_quat(sps, mu_bar, yukf, ei_vec_set, cov_add_noise)
     % see https://kodlab.seas.upenn.edu/uploads/Arun/UKFpaper.pdf for quat stuff (sec. 4.5)
     dim = size(sps, 1);
     num_sps = size(sps, 2);

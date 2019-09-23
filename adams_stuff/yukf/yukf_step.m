@@ -18,7 +18,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 4 & 5 - predict new mean & cov %%%%%%%%%%%%%%%%%%%%%%%
-    [mu_bar, sigma_bar, Wprime] = predict_mean_and_cov_state(sps_pred, yukf, yukf.prms.Q);
+    [mu_bar, sigma_bar] = predict_mean_and_cov_state(sps_pred, yukf, yukf.prms.Q);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 6 - update sigma points 
@@ -31,7 +31,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 10 - calc cross correlation
-    sigma_xz = calc_cross_correlation(Wprime, z_hat, pred_obs, yukf);
+    sigma_xz = calc_cross_correlation(sps_updated, mu_bar, z_hat, pred_obs, yukf);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % line 11 - 13: kalman gain & update

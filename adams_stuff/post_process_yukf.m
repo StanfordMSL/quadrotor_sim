@@ -9,7 +9,7 @@ function post_process_yukf()
     yukf = yolo_ukf_init(num_dims, NaN); % this sets most of the filter parameters, the rest are loaded from a file
 
     %%% SCENARIO - Choose to specifiy data & camera position/calibration %%%
-    scenario = 3; 
+    scenario = 5; 
     run_dir = sprintf('adams_stuff/preprocessed_data/run%d', scenario);
     yukf.hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, yukf.hdwr_prms.datetime_str);
