@@ -1,0 +1,16 @@
+run = 4
+date_str = 20190910
+date_time_str = 2019-09-10-16-58-50
+camera_scenario = 4
+camera_optitrack_pos = -5.6799, -0.24773, 1.2035
+camera_optitrack_quat = 0.9993, -0.017549, 0.0275, -0.0170
+camera_shift = 0.026, 0.03, -0.019
+camera_rot_x = 83.5
+camera_rot_y = 0
+camera_rot_z = 89.2
+quad_shift = 0, 0, 0.03
+target_bound_box_l = 0.27
+target_bound_box_w = 0.27
+target_bound_box_h = 0.13
+target_bound_box_mult = 1.0
+end_image_ind = -1
