@@ -1,4 +1,4 @@
-function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, yukf, conf_thresh)
+function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb, kept_frame_ids] = load_preprocessed_data(data_dir, yukf, conf_thresh)
     % load in data specified by the date/time string
     
     fileID = fopen(sprintf('%s/results_%s.txt', data_dir, yukf.hdwr_prms.datetime_str));
@@ -14,10 +14,25 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
     quat_mat = zeros(num_yolo_outputs, 4);
     gt_bb = zeros(num_yolo_outputs, 4);
     skipped_outputs = false(1, num_yolo_outputs);
+    kept_frame_ids = false(1, num_yolo_outputs);
     
     % load the data
     frame_prefix_len = -1;  % # of characters before index (e.g. rbg_03.png --> length(rbg_) = 4)
+    count = 0;
+    frame_ind_list = [];
     for ind = 1:num_yolo_outputs
+        frame_name = C{1}{ind};
+        if frame_prefix_len < 0
+            tokens = strsplit(frame_name, '_');
+            frame_prefix_len = length(tokens{1}) + 1;
+        end
+        frame_ind = str2double(frame_name(frame_prefix_len + 1:end));
+        if ~any(frame_ind_list==frame_ind)
+            frame_ind_list = [frame_ind_list; frame_ind];
+            count = count + 1;
+        end
+        
+        
         conf = C{2}(ind);
         if conf < conf_thresh
             % fprintf("Discarding confidence of %.3f\n", conf);
@@ -30,9 +45,11 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
             frame_prefix_len = length(tokens{1}) + 1;
         end
         frame_ind = str2double(frame_name(frame_prefix_len + 1:end));
+        kept_frame_ids(frame_ind + 1) = true;
         
         if yukf.hdwr_prms.end_img_ind> 0 && frame_ind > yukf.hdwr_prms.end_img_ind
             skipped_outputs(ind:end) = true;
+            kept_frame_ids(ind:end) = [];
             break;
         end
         
