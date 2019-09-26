@@ -53,7 +53,7 @@ function post_process_yukf()
     else
         yukf.mu = x0_gt(:);
     end
-    initialize(pf,1000,x0_gt(:),yukf.sigma);
+    initialize(pf,3000,x0_gt(:),yukf.sigma);
     sv = initialize_variable_for_recording_data(x0_gt, yukf.mu(:), yukf, num_dims, length(flight.t_act)); 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -99,7 +99,7 @@ function post_process_yukf()
             yolo_hist(:, k) = yolo_output;  % record piltered/augmented yolo output
             %yukf = yukf_step(yukf, [], yolo_output, [], camera, initial_bb);
             [robotPred,robotCov] = predict(pf,[],[],yukf.dt, yukf.prms.Q);
-            [robotCorrected,robotCov] = correct(pf,yolo_output,yukf.prms.R*0.4,camera, initial_bb,yukf);
+            [robotCorrected,robotCov] = correct(pf,yolo_output,yukf.prms.R,camera, initial_bb,yukf);
             
             if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb
                 % only filter x/y/z

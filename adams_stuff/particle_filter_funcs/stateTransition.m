@@ -6,6 +6,8 @@ function predictParticles = stateTransition(pf,prevParticles,model,u,dt,process_
         predictParticles(part_ind,:) = propagate_state(prevParticles(part_ind,:), model, u, dt);
         predictParticles(part_ind,:) = normrnd(predictParticles(part_ind,:)',diag(process_noise));
     end
+    % Keep the best particle
+    predictParticles(1,:) = propagate_state(pf.State, model, u, dt);
 
 end
 
