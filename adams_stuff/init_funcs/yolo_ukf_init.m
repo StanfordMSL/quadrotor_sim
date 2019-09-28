@@ -15,7 +15,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     
     %%% Options for augmenting our measurement vector
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
@@ -47,10 +47,10 @@ function yukf = yolo_ukf_init(num_dims, dt)
         yukf.prms.beta = 2; % optimal choice according to prob rob
         
         % these values are used for stepping along sigma directions
-        dp = 0.1; % [m]
+        dp = 0.2; % [m]
         dv = 0.005; % [m/s]
-        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.0005; % [rad/s]
+        dq = 0.00001; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.00005; % [rad/s]
     else
         % these values are from
         % https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf
@@ -62,8 +62,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
         % these values are used for stepping along sigma directions
         dp = 1; % [m]
         dv = 0.05; % [m/s]
-        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.005; % [rad/s]
+        dq = 0.0001; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.0005; % [rad/s]
     end
     yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
     
@@ -72,8 +72,17 @@ function yukf = yolo_ukf_init(num_dims, dt)
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
-    yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
-    
+    %yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
+%     measurement_cov = eye(5)*5;
+%     measurement_cov(5,5) = 0.02;
+%     measurement_cov(1,1) = 2;
+%     measurement_cov(2,2) = 2;
+    yukf.prms.R = eye(yukf.prms.meas_len)*2;
+    yukf.prms.R(3,3) = 5;
+    yukf.prms.R(4,4) = 5;
+    if length(yukf.prms.meas_len) == 5
+        yukf.prms.R(5,5) = 0.02;
+    end
 
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);

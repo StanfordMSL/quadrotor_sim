@@ -53,13 +53,14 @@ function post_process_yukf()
     else
         yukf.mu = x0_gt(:);
     end
-    initialize(pf,3000,x0_gt(:),yukf.sigma);
+    initialize(pf,2000,x0_gt(:),yukf.sigma*0.5);
     sv = initialize_variable_for_recording_data(x0_gt, yukf.mu(:), yukf, num_dims, length(flight.t_act)); 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     %%% Init animation plot %%%
     if b_animate
         [traj_est_h, h_persp, h_persp_est] = init_iterative_animation_plot(position_mat(1,:), quat_mat(1,:), camera, position_mat, quat_mat, b_view_from_camera_perspective);
+        scatter_plot = scatter3(pf.Particles(:,1),pf.Particles(:,2),pf.Particles(:,3),'.');
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     
@@ -116,6 +117,9 @@ function post_process_yukf()
         %%%%%%%%%%%%%%%%%%%
         if b_animate
             [h_persp, h_persp_est] = update_animation_plot(h_persp, traj_est_h, h_persp_est, position_mat(k, :), quat_mat(k, :), sv, k, animation_pause);
+            scatter_plot.XData = pf.Particles(:,1);
+            scatter_plot.YData = pf.Particles(:,2);
+            scatter_plot.ZData = pf.Particles(:,3);
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,6 +128,7 @@ function post_process_yukf()
     [prct_crt_1, prct_crt_5, prct_crt_10, err_vec, err_ave, err_min, err_max] = metric1_6dof(sv.mu_hist, sv.mu_act, initial_bb);
     [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(sv.mu_hist, sv.mu_act);
     plot_ukf_hist(sv, flight);
+   
     
     % plot ground truth vs yolo vs predicted bounding boxes 
     if ~yukf.prms.b_predicted_bb

@@ -1,5 +1,6 @@
 function predictParticles = stateTransition(pf,prevParticles,model,u,dt,process_noise)
 %STATETRANSITION Summary of this function goes here
+
 %   Detailed explanation goes here
     predictParticles = zeros(pf.NumParticles,pf.NumStateVariables);
     for part_ind = 1:pf.NumParticles
@@ -15,6 +16,7 @@ function predictParticles = stateTransition(pf,prevParticles,model,u,dt,process_
     end
     % Keep the best particle
     predictParticles(1,:) = propagate_state(pf.State, model, u, dt);
+    predictParticles(2,:) = pf.State;
 
 end
 
