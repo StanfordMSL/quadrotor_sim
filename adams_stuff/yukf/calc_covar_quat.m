@@ -16,4 +16,7 @@ function sig_bar = calc_covar_quat(sps, mu_bar, yukf, ei_vec_set, cov_add_noise)
     
     % lastly, add noise (need to confirm this is ok for quat parts too)    
     sig_bar = sig_bar + cov_add_noise;
+    
+    % project sig_bar to pos. def. cone to avoid numeric issues
+    sig_bar = enforce_pos_def_sym_mat(sig_bar);
 end
