@@ -15,7 +15,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     
     %%% Options for augmenting our measurement vector
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
@@ -73,7 +73,9 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
     yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
-    
+    if yukf.prms.b_angled_bounding_box
+        yukf.prms.R(5,5) = 0.5;
+    end
 
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);
