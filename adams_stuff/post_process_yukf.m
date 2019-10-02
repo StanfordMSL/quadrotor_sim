@@ -24,7 +24,7 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% READ IN PROCESSED DATA %%%%%%%%%
-    [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb, kept_frame_ids] = load_preprocessed_data(data_dir, yukf, conf_thresh);
+    [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, yukf, conf_thresh);
     num_img = length(t_pose_arr);
     fprintf("%d images remaining after discarding confidences < %.0f%%\n", num_img, conf_thresh*100);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,11 +38,11 @@ function post_process_yukf()
     yukf.dt = flight.t_act(2) - flight.t_act(1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    if 1
+    if 0
         fn = 'adams_stuff/preprocessed_data/thor_results_tracking.txt';
         fid = fopen(fn,'rt');
         line = textscan(fid,'%s','Delimiter','\n');
-        N = size(line{1}, 1);
+        N = min(yukf.hdwr_prms.end_img_ind + 1, size(line{1}, 1));
         thor_data = zeros(N, 4);
 
         for ii = 1:N
