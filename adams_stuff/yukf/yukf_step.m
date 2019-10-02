@@ -55,7 +55,6 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         end
     end
     sigma_out = sigma_bar - K * S * K';
-    
     % project sigma to pos. def. cone to avoid numeric issues
     sigma_out = (sigma_out + sigma_out')/2;
     [V, D] = eig(sigma_out);

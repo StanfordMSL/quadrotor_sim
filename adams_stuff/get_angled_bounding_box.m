@@ -39,7 +39,7 @@ function output = get_angled_bounding_box(bb_rc_list, x_curr, b_draw_box, camera
         angs(p_ind) = wrapToPi(atan2(ur(1) - ul(1), ur(2) - ul(2))); 
         signs(p_ind) = sign(angs(p_ind));
         angs(p_ind) = abs(angs(p_ind));
-        angs(p_ind) = min(angs(p_ind), 180 - angs(p_ind));
+        angs(p_ind) = min(angs(p_ind), pi - angs(p_ind));
     end
     [min_val, min_ind] = min(angs);
     box_ang = signs(min_ind) * min_val;
