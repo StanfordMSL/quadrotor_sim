@@ -4,7 +4,7 @@ function sigma_xz = calc_cross_correlation(sps_updated, mu_bar, z_hat, pred_obs,
     dim_covar = length(yukf.sigma);
     num_sps = size(sps_updated, 2);
     
-    quat_ave_inv = quatinv(axang_to_quat(mu_bar(7:9))');
+    quat_ave_inv = quatinv(mu_bar(7:10)');
     
     Wprime = zeros(dim_covar, num_sps);
     for sp_ind = 1:num_sps
