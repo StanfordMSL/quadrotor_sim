@@ -1,8 +1,18 @@
 function test_bounding_box_code(varargin)
     global yukf
 
-    initial_bb = init_quad_bounding_box();
-    camera = init_camera();
+    num_dims = 12; % length of state
+    flight.x_act = zeros(num_dims, 1);  % this is a placeholder that needs to happen before yolo_yukf_init()
+    yukf = yolo_ukf_init(num_dims, NaN); % this sets most of the filter parameters, the rest are loaded from a file
+
+    scenario = 5; 
+    run_dir = sprintf('adams_stuff/preprocessed_data/run%d', scenario);
+    yukf.hdwr_prms = read_scenario_params(run_dir, scenario);
+    data_dir = sprintf('%s/results_%s', run_dir, yukf.hdwr_prms.datetime_str);
+    
+    initial_bb = init_quad_bounding_box(yukf.hdwr_prms.bb_l, yukf.hdwr_prms.bb_w, yukf.hdwr_prms.bb_h, yukf.hdwr_prms.bb_mult);
+    camera = init_camera(yukf);
+
     if ~isempty(varargin)
         x_curr = varargin{1};
     else
@@ -21,7 +31,7 @@ function test_bounding_box_code(varargin)
     % unpack state
     pos_w = x_curr(1:3, 1);
     vel = x_curr(4:6, 1);
-    quat = x_curr(7:10, 1);
+    quat = x_curr(7:10, 1); % [y,p,r] = quat2angle(quat(:)')
     wx = x_curr(11, 1);
     wy = x_curr(12, 1);
     wz = x_curr(13, 1);
@@ -36,8 +46,7 @@ function test_bounding_box_code(varargin)
     bb_cam = bb_cam(:, 1:3);
     
     %%% plot 3D box
-    plot_3D_bb_world(initial_bb, tf_w_quad, pos_w)
-    set(gca, 'CameraPosition', camera.tf_w_cam(1:3, 4)); % set plot camera to be where actual camera is
+    plot_3D_bb_world(initial_bb, tf_w_quad, pos_w, camera.tf_w_cam(1:3, 4))
     
     [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initial_bb, yukf);
     [yaw, pitch, roll] = quat2angle(quat(:)');

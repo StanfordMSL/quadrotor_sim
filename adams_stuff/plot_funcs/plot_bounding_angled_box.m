@@ -6,7 +6,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
     rot_mat = [ cos(box_ang), -sin(box_ang);
                 sin(box_ang),  cos(box_ang) ];
     bb_box = [center_rc(2), center_rc(1)] + ...
-       ( rot_mat * ...
+       ( rot_mat' * ...  % NOTE: transpose here is because we are flipping the y axis
         [-width_pixel/2,   -height_pixel/2;
           width_pixel/2, -height_pixel/2;
           width_pixel/2,  height_pixel/2;
