@@ -36,8 +36,9 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.mu = zeros(num_dims, 1);
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
-    
-    b_use_crazy_params = true;
+    dim_sigma = length(yukf.mu)-1;
+
+    b_use_crazy_params = false;
     if ~b_use_crazy_params
         % these values are in part from prob rob, in part from me choosing
         % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
@@ -65,7 +66,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
         dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
         dw = 0.005; % [rad/s]
     end
-    yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
+    yukf.prms.lambda = yukf.prms.alpha^2*(dim_sigma + yukf.prms.kappa) - dim_sigma;
     
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
     
