@@ -5,7 +5,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     yukf.b_offset_at_t0 = false;  % whether to add noise to the initial starting location
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
-    yukf.prms.b_predicted_bb = false; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
+    yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
     %%% options for filtering input data
     yukf.prms.b_filter_data = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
@@ -15,7 +15,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     
     %%% Options for augmenting our measurement vector
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
@@ -37,7 +37,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
     
-    b_use_crazy_params = false;
+    b_use_crazy_params = true;
     if ~b_use_crazy_params
         % these values are in part from prob rob, in part from me choosing
         % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma

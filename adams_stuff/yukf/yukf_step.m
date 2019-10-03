@@ -56,17 +56,10 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         end
     end
     sigma_out = sigma_bar - K * S * K';
-    % project sigma to pos. def. cone to avoid numeric issues
-    sigma_out = (sigma_out + sigma_out')/2;
-    [V, D] = eig(sigma_out);
-    D(D < 0) = 0.000001;
-    sigma_out = V * D * V';
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    err = flight.x_act(:, k_act) - mu_out(:);
-    [y1, p1, r1] = quat2angle(flight.x_act(7:10, k_act)');
-    [y2, p2, r2] = quat2angle(mu_out(7:10));
-    err_ypr = [y1 - y2, p1 - p2, r1 - r2] * 180/pi;
+    % project sigma to pos. def. cone to avoid numeric issues
+    sigma_out = enforce_pos_def_sym_mat(sigma_out);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     yukf.mu_prev = yukf.mu;
     yukf.mu = mu_out(:);

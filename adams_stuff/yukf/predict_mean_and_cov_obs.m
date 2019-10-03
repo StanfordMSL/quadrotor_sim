@@ -14,5 +14,9 @@ function [z_hat, S, S_inv] = predict_mean_and_cov_obs(pred_obs, yukf, cov_add_no
         S = S + yukf.wi * (pred_obs(:, dim_covar + obs_ind + 1) - z_hat) * (pred_obs(:, dim_covar + obs_ind + 1) - z_hat)';
     end
     S = S + cov_add_noise;
+    
+    % project sig_bar to pos. def. cone to avoid numeric issues
+    S = enforce_pos_def_sym_mat(S);
+
     S_inv = inv(S);
 end

@@ -1,7 +1,7 @@
 function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat, camera, initial_bb, yukf)
     %%% plot yolo vs prediction vs gt %%%
-    num_img = size(yolo_bb, 2);
-    bb_yolo = yolo_bb';
+    num_img = size(position_mat, 1);
+    bb_yolo = yolo_bb;
     bb_pred = zeros(num_img, length(yukf.prms.R));
     bb_gt = gt_bb;
     dim_state = length(yukf.mu);
