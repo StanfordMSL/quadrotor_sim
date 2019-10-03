@@ -7,8 +7,8 @@ function [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(states_est, states_
     err_ang_vec = zeros(n, 1);
     err_pos_vec = sum((states_est(1:3, :) - states_gt(1:3, :)).^2, 1).^0.5';
     for state_ind = 1:n
-            q_est = complete_unit_quat(states_est(7:9, state_ind)); 
-            q_gt = complete_unit_quat(states_gt(7:9, state_ind)); 
+            q_est = states_est(7:10, state_ind); 
+            q_gt = states_gt(7:10, state_ind); 
             err_ang_vec(state_ind) = quat_dist(q_gt, q_est);
     end
     prct_crt = 100 * sum(err_pos_vec <= thresh_pos & err_ang_vec <= thresh_ang) / n;

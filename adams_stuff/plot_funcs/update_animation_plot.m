@@ -18,7 +18,7 @@ function [h_persp, h_persp_est] = update_animation_plot(h_persp, traj_est_h, h_p
                     'zdata', sv.mu_hist(3, sv.hist_mask) );
 
     % update estimated quad pose
-    quat_est = complete_unit_quat(sv.mu_hist(7:9, k));
+    quat_est = sv.mu_hist(7:10, k);
     bRw_est = quat2rotm(quat_est');
     pos_est = sv.mu_hist(1:3, k);
 

@@ -7,11 +7,11 @@ function sv = update_save_var(sv, save_index, yukf, flight, t_now)
     sv.time_hist(save_index) = t_now;
     sv.hist_mask(save_index) = true;
 
-    qm = complete_unit_quat(yukf.mu(7:9)); 
+    qm = yukf.mu(7:10); 
     [yaw, pitch, roll] = quat2angle(qm(:)');
     sv.ypr_hist(:, save_index) = [yaw; pitch; roll]*180/pi;
 
-    qa = complete_unit_quat(flight.x_act(7:9, save_index)); 
+    qa = flight.x_act(7:10, save_index); 
     [yaw, pitch, roll] = quat2angle(qa(:)');
     sv.ypr_act_hist(:, save_index) = [yaw; pitch; roll]*180/pi;
 

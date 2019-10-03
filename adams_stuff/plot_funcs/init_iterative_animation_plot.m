@@ -58,7 +58,7 @@ function [traj_est_h, h_persp, h_persp_est] = init_iterative_animation_plot(init
 
     % Construct Rotation Matrix
     quat_est = complete_unit_quat(init_quat(end-2:end));
-    bRw_est = quat2rotm(quat_est(:)');
+    bRw_est = quat2rotm(quat_est);
 
     % Determine World Frame Pose of Craft Axes
     pos_est = init_pos(:);
