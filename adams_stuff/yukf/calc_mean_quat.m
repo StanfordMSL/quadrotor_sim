@@ -9,7 +9,7 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
     
     % now deal with the quaterion...
     num_sps = size(sps, 2);
-    q_bar = complete_unit_quat(sps(7:9, 1));
+    q_bar = sps(7:10, 1);
     q_bar_inv = quatinv(q_bar(:)');
 %     ei_quat_set = zeros(4, num_sps);
     ei_vec_set = zeros(3, num_sps);
@@ -18,7 +18,7 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         W = yukf.w0_m;
         e_vec = zeros(3,1);
         for sp_ind = 1:num_sps
-            qi = complete_unit_quat(sps(7:9, sp_ind)); % quaternion from sigma point
+            qi = sps(7:10, sp_ind); % quaternion from sigma point
             quat_arr(sp_ind, :) = qi(:)';
             ei_quat = quatmultiply(qi(:)' , q_bar_inv(:)'); % quaternion differnce between sigma point and our current estimate of average quat
             ei_vec = quat_to_axang(ei_quat(:)'); % that difference, now in ax ang form
@@ -36,7 +36,7 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         
         if(norm(e_vec) < thresh)
             if(itr == 1); continue; end % so quick its worth taking another step
-            mu_bar(7:9) = q_bar(2:4);
+            mu_bar(7:10) = q_bar;
             % we have converged
             if strcmpi(version('-release'), '2019b' )
                 quatAverage = meanrot(quaternion(quat_arr));
@@ -48,5 +48,5 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         end
     end
     warning('orientation mean calculation did not converge!')
-    mu_bar(7:9) = q_bar(2:4);
+    mu_bar(7:10) = q_bar;
 end

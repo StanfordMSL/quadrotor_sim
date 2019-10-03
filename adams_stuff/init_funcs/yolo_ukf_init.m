@@ -49,8 +49,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
         % these values are used for stepping along sigma directions
         dp = 0.1; % [m]
         dv = 0.005; % [m/s]
-        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.0005; % [rad/s]
+        dq = 0.1; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.005; % [rad/s]
     else
         % these values are from
         % https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf

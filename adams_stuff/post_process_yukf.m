@@ -4,12 +4,12 @@ function post_process_yukf()
     fprintf("NOTE: consider using quad offset!!\n")
     
     %%% Initialize YUKF %%%
-    num_dims = 12; % length of state
+    num_dims = 13; % length of state
     flight.x_act = zeros(num_dims, 1);  % this is a placeholder that needs to happen before yolo_yukf_init()
     yukf = yolo_ukf_init(num_dims, NaN); % this sets most of the filter parameters, the rest are loaded from a file
 
     %%% SCENARIO - Choose to specifiy data & camera position/calibration %%%
-    scenario = 5; 
+    scenario = 4; 
     run_dir = sprintf('adams_stuff/preprocessed_data/run%d', scenario);
     yukf.hdwr_prms = read_scenario_params(run_dir, scenario);
     data_dir = sprintf('%s/results_%s', run_dir, yukf.hdwr_prms.datetime_str);
@@ -32,9 +32,9 @@ function post_process_yukf()
     %%% overwrite placeholder value of flight.x_act/t_act with ground truth data %%%
     flight.x_act = zeros(num_dims, num_img); 
     flight.x_act(1:3, :) = position_mat';
-    flight.x_act(7:9, :) = quat_mat(:, 2:4)';
+    flight.x_act(7:10, :) = quat_mat(:, :)';
     flight.t_act = t_pose_arr;
-    x0_gt = [position_mat(1, :)'; zeros(3, 1); quat_mat(1, 2:4)'; zeros(3 ,1)];
+    x0_gt = [position_mat(1, :)'; zeros(3, 1); quat_mat(1, :)'; zeros(3 ,1)];
     yukf.dt = flight.t_act(2) - flight.t_act(1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -43,9 +43,9 @@ function post_process_yukf()
         pos0_est = [1; 2; -1] + x0_gt(1);
         v0_est = [0; 0; 0] + x0_gt(4:6);
         yaw0 = 0;   pitch0 = 1*pi/180;   roll0 = 3*pi/180;
-        quat0_est = quatmultiply(complete_unit_quat(x0_gt(7:9))', angle2quat(yaw0, pitch0, roll0))';
-        w0_est = [0; 0; 0] + x0_gt(10:12);
-        yukf.mu = [pos0_est(:); v0_est(:); quat0_est(2:4); w0_est(:)];
+        quat0_est = quatmultiply(x0_gt(7:10)', angle2quat(yaw0, pitch0, roll0))';
+        w0_est = [0; 0; 0] + x0_gt(11:13);
+        yukf.mu = [pos0_est(:); v0_est(:); quat0_est(:); w0_est(:)];
     else
         yukf.mu = x0_gt(:);
     end

@@ -2,16 +2,16 @@ function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat,
     %%% plot yolo vs prediction vs gt %%%
     num_img = size(yolo_bb, 2);
     bb_yolo = yolo_bb';
-    bb_pred = zeros(num_img, 4);
+    bb_pred = zeros(num_img, length(yukf.prms.R));
     bb_gt = gt_bb;
-    
-    state_tmp = zeros(12, num_img);
+    dim_state = length(yukf.mu);
+    state_tmp = zeros(dim_state, num_img);
     state_tmp(1:3, :) = position_mat';
-    state_tmp(7:9, :) = quat_mat(:, 2:4)';
+    state_tmp(7:10, :) = quat_mat';
     
     for k = 1:num_img
-        bb_pred_tmp = predict_quad_bounding_box(state_tmp(:, k), camera, initial_bb, yukf)'; 
-        bb_pred(k, :) = bb_pred_tmp(1:4); % might have a 0 yaw tacked on at end depending on settings
+        bb_pred(k,:) = predict_quad_bounding_box(state_tmp(:, k), camera, initial_bb, yukf)'; 
+        %bb_pred(k, :) = bb_pred_tmp(1:4); % might have a 0 yaw tacked on at end depending on settings
     end
     figure(4545); clf; xx = 0:(num_img-1);
     ylabs = {'row', 'col', 'width', 'height'};
@@ -24,5 +24,17 @@ function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat,
         legend([a,b,c], {"yolo", "predicted", "truth"});
     end
     
+    [y,p,r] = quat2angle(quat_mat);
+    if yukf.prms.b_angled_bounding_box
+        figure
+        a = plot(xx,bb_yolo(:,5), 'r-');
+        hold on
+        b = plot(xx,bb_pred(:,5), 'g-');
+        title('angle');
+        c = plot(xx,r, 'b-');
+        title('angle');
+        legend([a,b,c], {"yolo", "predicted","roll"});
+        ylabel('rad');
+    end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
