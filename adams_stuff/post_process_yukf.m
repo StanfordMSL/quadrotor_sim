@@ -26,7 +26,6 @@ function post_process_yukf()
     %%% READ IN PROCESSED DATA %%%%%%%%%
     [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_preprocessed_data(data_dir, yukf, conf_thresh);
     num_img = length(t_pose_arr);
-    fprintf("%d images remaining after discarding confidences < %.0f%%\n", num_img, conf_thresh*100);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% overwrite placeholder value of flight.x_act/t_act with ground truth data %%%
