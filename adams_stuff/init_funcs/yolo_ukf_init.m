@@ -73,9 +73,9 @@ function yukf = yolo_ukf_init(num_dims, dt)
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
-    yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
+    yukf.prms.R = diag([2, 2, 10*ones(1, yukf.prms.meas_len - 2)]); % Measurement Noise
     if yukf.prms.b_angled_bounding_box
-        yukf.prms.R(5,5) = 0.5;
+        yukf.prms.R(5,5) = 0.08;
     end
 
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim_sigma);
