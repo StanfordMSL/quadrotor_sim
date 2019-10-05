@@ -5,7 +5,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     yukf.b_offset_at_t0 = false;  % whether to add noise to the initial starting location
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
-    yukf.prms.b_predicted_bb = false; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
+    yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
     %%% options for filtering input data
     yukf.prms.b_filter_data = false; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
@@ -24,8 +24,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
-    yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
-    yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
+    yukf.prms.b_enforce_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
+    yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
     yukf.prms.b_measure_pitch = false;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     yukf.prms.b_measure_roll = false;

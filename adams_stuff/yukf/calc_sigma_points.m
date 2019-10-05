@@ -21,7 +21,8 @@ function sps = calc_sigma_points(mu, sigma, yukf)
         sps(11:13, 2 + 2*(i-1)) = mu(11:13) + sigma_point_step(10:12, i);
         
         q_perturb = axang_to_quat(sigma_point_step(7:9, i));
-        q_new = quatmultiply(q_mean(:)', q_perturb(:)');
+%         q_new = quatmultiply(q_mean(:)', q_perturb(:)');
+        q_new = quatmultiply(q_perturb(:)', q_mean(:)');
         sps(7:10, 2 + 2*(i-1)) = q_new;
         
         % now the - peturb
@@ -29,7 +30,8 @@ function sps = calc_sigma_points(mu, sigma, yukf)
         sps(11:13, 2 + 2*(i-1) + 1) = mu(11:13) - sigma_point_step(10:12, i);
         
         q_perturb = axang_to_quat(-sigma_point_step(7:9, i));
-        q_new = quatmultiply(q_mean(:)', q_perturb(:)');
+%         q_new = quatmultiply(q_mean(:)', q_perturb(:)');
+        q_new = quatmultiply(q_perturb(:)', q_mean(:)');
         sps(7:10, 2 + 2*(i-1) + 1) = q_new;
     end
 end

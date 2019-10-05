@@ -25,7 +25,9 @@ function est_next_state = propagate_state(state, model, u, dt)
         ax = w_vec / nrm;
         quat_delta = axang_to_quat(ax*ang);
 %         quat_delta = axang_to_quat(w_vec);
-        q_hat = quatmultiply(quat(:)', quat_delta(:)')';
+%         q_hat = quatmultiply(quat(:)', quat_delta(:)')';
+        q_hat = quatmultiply(quat_delta(:)', quat(:)')';
+        disp('')
     else
         % omegas
         wx = state(11);

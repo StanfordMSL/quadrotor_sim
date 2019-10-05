@@ -69,7 +69,8 @@ function post_process_yukf()
         pos0_est = [1; 2; -1] + x0_gt(1);
         v0_est = [0; 0; 0] + x0_gt(4:6);
         yaw0 = 0;   pitch0 = 1*pi/180;   roll0 = 3*pi/180;
-        quat0_est = quatmultiply(x0_gt(7:10)', angle2quat(yaw0, pitch0, roll0))';
+%         quat0_est = quatmultiply(x0_gt(7:10)', angle2quat(yaw0, pitch0, roll0))';
+        quat0_est = quatmultiply(angle2quat(yaw0, pitch0, roll0), x0_gt(7:10)')';
         w0_est = [0; 0; 0] + x0_gt(11:13);
         yukf.mu = [pos0_est(:); v0_est(:); quat0_est(:); w0_est(:)];
     else

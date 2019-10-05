@@ -45,8 +45,8 @@ function plot_ukf_hist(sv, flight)
     ylim([min_ang, max_ang])
 
     subplot(4,2,4); ylabel('pitch (deg)'); hold on; grid on; xlabel('time (s)'); 
-    plot(sv.time_hist(msk), sv.ypr_hist(2, msk),'r-', 'LineWidth', 2); 
-    plot(sv.time_hist(msk), sv.ypr_act_hist(2, msk),'b-', 'LineWidth', 2)
+    plot(sv.time_hist(msk), abs(sv.ypr_hist(2, msk)),'r-', 'LineWidth', 2); 
+    plot(sv.time_hist(msk), abs(sv.ypr_act_hist(2, msk)),'b-', 'LineWidth', 2)
     ylim([min_ang, max_ang])
 
     subplot(4,2,6); ylabel('roll (deg)'); hold on; grid on; xlabel('time (s)'); 

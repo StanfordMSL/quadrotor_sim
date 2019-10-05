@@ -46,7 +46,8 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         innovation = K * (z - z_hat);
         mu_out(1:6) = mu_bar(1:6) + innovation(1:6);
         mu_out(11:13) = mu_bar(11:13) + innovation(10:12);
-        q_tmp = quatmultiply(mu_bar(7:10)', axang_to_quat(innovation(7:9))' );
+%         q_tmp = quatmultiply(mu_bar(7:10)', axang_to_quat(innovation(7:9))' );
+        q_tmp = quatmultiply(axang_to_quat(innovation(7:9))', mu_bar(7:10)');
         mu_out(7:10) = q_tmp;
         
         if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
