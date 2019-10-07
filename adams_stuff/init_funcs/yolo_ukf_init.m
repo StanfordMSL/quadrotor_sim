@@ -24,8 +24,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
-    yukf.prms.b_enforce_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
-    yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
+    yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
+    yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
     yukf.prms.b_measure_pitch = false;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     yukf.prms.b_measure_roll = false;
@@ -73,6 +73,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
+    %yukf.prms.Q(9,9) = 0.0001;
     yukf.prms.R = diag([2, 2, 10*ones(1, yukf.prms.meas_len - 2)]); % Measurement Noise
     if yukf.prms.b_angled_bounding_box
         yukf.prms.R(5,5) = 0.08;
