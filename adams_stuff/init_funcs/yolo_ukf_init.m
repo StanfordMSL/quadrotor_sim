@@ -25,7 +25,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
-    yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
+    yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
     yukf.prms.b_measure_pitch = false;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     yukf.prms.b_measure_roll = false;

@@ -1,8 +1,8 @@
 function q_hat = cheat_with_angles(q_hat)
     global yukf flight k
     
-    [yaw, pitch, roll] = quat2angle(q_hat(:)');
-    [yaw_act, pitch_act, roll_act] = quat2angle(flight.x_act(7:10, k)');
+    [roll, pitch, yaw] = quat2angle(q_hat(:)', 'XYZ');
+    [roll_act, pitch_act, yaw_act] = quat2angle(flight.x_act(7:10, k)', 'XYZ');
     if yukf.prms.b_enforce_yaw
         yaw = yaw_act;
     end
@@ -15,5 +15,5 @@ function q_hat = cheat_with_angles(q_hat)
     if yukf.prms.b_enforce_roll
         roll = roll_act;
     end
-    q_hat = angle2quat(yaw, pitch, roll)';
+    q_hat = angle2quat(roll, pitch, yaw, 'XYZ')';
 end

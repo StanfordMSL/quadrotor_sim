@@ -24,7 +24,7 @@ function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat,
         legend([a,b,c], {"yolo", "predicted", "truth"});
     end
     
-    [y,p,r] = quat2angle(quat_mat);
+    [r,p,y] = quat2angle(quat_mat, 'XYZ');
     if yukf.prms.b_angled_bounding_box
         figure
         a = plot(xx,bb_yolo(:,5), 'r-');

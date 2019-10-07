@@ -22,7 +22,7 @@ function test_bounding_box_code(varargin)
         r = 10 * pi/180;
         p = 1*7.5 * pi/180;
         y = 3 * pi/180;
-        q_test = angle2quat(y, p, r)';
+        q_test = angle2quat(r, p, y, 'XYZ')';
 
         x_curr = [0; 0; 1; 0; 0; 0; q_test(2:4); 0; 0; 0];
     end
@@ -49,7 +49,7 @@ function test_bounding_box_code(varargin)
     plot_3D_bb_world(initial_bb, tf_w_quad, pos_w, camera.tf_w_cam(1:3, 4))
     
     [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initial_bb, yukf);
-    [yaw, pitch, roll] = quat2angle(quat(:)');
+    [roll, pitch, yaw] = quat2angle(quat(:)', 'XYZ');
     
     disp('')
     % plot 2D projection of 3D box AND 2D BB

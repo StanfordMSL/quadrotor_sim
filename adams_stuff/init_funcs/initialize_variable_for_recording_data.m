@@ -12,11 +12,11 @@ function sv = initialize_variable_for_recording_data(x0_gt, x0_est, yukf, num_di
     sv.hist_mask = false(num_timesteps, 1); sv.hist_mask(1) = true;
 
     qm = yukf.mu(7:10, 1);
-    [yaw, pitch, roll] = quat2angle(qm(:)');
+    [roll, pitch, yaw] = quat2angle(qm(:)', 'XYZ');
     sv.ypr_hist = zeros(3, num_timesteps); sv.ypr_hist(:, 1) = [yaw; pitch; roll]*180/pi;
 
     qa = x0_gt(7:10); 
-    [yaw, pitch, roll] = quat2angle(qa(:)');
+    [roll, pitch, yaw] = quat2angle(qa(:)', 'XYZ');
     sv.ypr_act_hist = zeros(3, num_timesteps); sv.ypr_act_hist(:, 1) = [yaw; pitch; roll]*180/pi;
 
     sv.ang_err = zeros(num_timesteps, 1); sv.ang_err(1) = quat_dist(qa, qm);
