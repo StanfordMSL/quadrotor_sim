@@ -15,7 +15,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     
     %%% Options for augmenting our measurement vector
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box

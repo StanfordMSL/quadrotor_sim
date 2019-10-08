@@ -42,13 +42,13 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
         end
 
         if yukf.prms.b_angled_bounding_box
-            z_mat(ind,:) = bb_corners_to_angle(C{3}(ind),C{4}(ind),C{5}(ind),C{6}(ind),C{7}(ind),C{8}(ind),C{9}(ind),C{10}(ind));
+            z_mat(ind,1:5) = bb_corners_to_angle(C{3}(ind),C{4}(ind),C{5}(ind),C{6}(ind),C{7}(ind),C{8}(ind),C{9}(ind),C{10}(ind));
         else
             x_min = C{3}(ind); % x is col
             y_min = C{4}(ind); % y is row
             x_max = C{5}(ind);
             y_max = C{6}(ind);
-            z_mat(ind, :) = [(y_max + y_min)/2, (x_max + x_min)/2, x_max - x_min, y_max - y_min,]; % [r_center, c_center, width, height]
+            z_mat(ind, 1:4) = [(y_max + y_min)/2, (x_max + x_min)/2, x_max - x_min, y_max - y_min,]; % [r_center, c_center, width, height]
 
         end
         
