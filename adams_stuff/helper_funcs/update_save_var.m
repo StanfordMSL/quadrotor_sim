@@ -17,7 +17,7 @@ function sv = update_save_var(sv, save_index, yukf, flight, t_now)
 
     ang_err = quat_dist(qa, qm);
     q_mod = qa;
-    if yukf.prms.b_enforce_yaw
+    if yukf.prms.b_enforce_0_yaw
         q_mod = angle2quat(roll, pitch, 0, 'XYZ'); % zero out the yaw (note 'XYZ' is important)
         ang_err = quat_dist(q_mod, qm);
     end
