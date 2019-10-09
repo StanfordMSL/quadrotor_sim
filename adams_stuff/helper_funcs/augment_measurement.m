@@ -8,7 +8,7 @@ function output_modified = augment_measurement(output, yukf, state_gt)
     if yukf.prms.b_measure_aspect_ratio
         output_modified = [output_modified; output_modified(3)/output_modified(4)];
     end
-    [yaw_act, pitch_act, roll_act] = quat2angle(complete_unit_quat(state_gt(7:9))');
+    [roll_act, pitch_act, yaw_act] = quat2angle(state_gt(7:10)', 'XYZ');
     if yukf.prms.b_measure_yaw
         if yukf.prms.b_enforce_0_yaw
             output_modified = [output_modified; 0];

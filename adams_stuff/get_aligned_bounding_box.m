@@ -3,10 +3,10 @@ function output = get_aligned_bounding_box(bb_rc_list, x_curr, b_draw_box, camer
     % unpack state
     pos_w = x_curr(1:3, 1);
     vel = x_curr(4:6, 1);
-    quat = complete_unit_quat(x_curr(7:9, 1));
-    wx = x_curr(10, 1);
-    wy = x_curr(11, 1);
-    wz = x_curr(12, 1);
+    quat = x_curr(7:10, 1);
+    wx = x_curr(11, 1);
+    wy = x_curr(12, 1);
+    wz = x_curr(13, 1);
     
     max_rc = max(bb_rc_list);
     min_rc = min(bb_rc_list);

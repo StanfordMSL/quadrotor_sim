@@ -4,7 +4,8 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         k_act = k;
     end
     dim = length(yukf.mu);
-    num_sp = 2*dim + 1;
+    dim_cov = length(yukf.sigma);
+    num_sp = 2*dim_cov + 1;
     
     % line 2 prob rob
     sps = calc_sigma_points(yukf.mu, yukf.sigma, yukf); 
@@ -44,29 +45,22 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
         % this is what would make sense to me
         innovation = K * (z - z_hat);
         mu_out(1:6) = mu_bar(1:6) + innovation(1:6);
-        mu_out(10:12) = mu_bar(10:12) + innovation(10:12);
-        q_tmp = quatmultiply( complete_unit_quat(mu_bar(7:9))', axang_to_quat(innovation(7:9))' );
-        mu_out(7:9) = q_tmp(2:4);
+        mu_out(11:13) = mu_bar(11:13) + innovation(10:12);
+%         q_tmp = quatmultiply(mu_bar(7:10)', axang_to_quat(innovation(7:9))' );
+        q_tmp = quatmultiply(axang_to_quat(innovation(7:9))', mu_bar(7:10)');
+        mu_out(7:10) = q_tmp;
         
         if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
             q_tmp = cheat_with_angles(q_tmp);
             q_tmp = normalize_quat(q_tmp);
-            mu_out(7:9) = q_tmp(2:4);
+            mu_out(7:10) = q_tmp;
         end
     end
     sigma_out = sigma_bar - K * S * K';
     
     % project sigma to pos. def. cone to avoid numeric issues
-    sigma_out = (sigma_out + sigma_out')/2;
-    [V, D] = eig(sigma_out);
-    D(D < 0) = 0.000001;
-    sigma_out = V * D * V';
+    sigma_out = enforce_pos_def_sym_mat(sigma_out);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    err = flight.x_act(:, k_act) - mu_out(:);
-    [y1, p1, r1] = quat2angle(complete_unit_quat(flight.x_act(7:9, k_act))');
-    [y2, p2, r2] = quat2angle(complete_unit_quat(mu_out(7:9)));
-    err_ypr = [y1 - y2, p1 - p2, r1 - r2] * 180/pi;
     
     yukf.mu_prev = yukf.mu;
     yukf.mu = mu_out(:);

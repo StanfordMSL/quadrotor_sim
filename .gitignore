@@ -7,4 +7,8 @@
 *.mat
 
 # Mac stuff
+<<<<<<< HEAD
 *DS_Store
+=======
+*.DS_Store
+>>>>>>> b3d4db4491b5773eef1b0bcc56d0822e621b7584

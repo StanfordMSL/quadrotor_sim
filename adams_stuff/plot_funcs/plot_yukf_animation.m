@@ -62,7 +62,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         vect_z = [0.0 0.0 0.1]';
 
         % Construct Rotation Matrix
-        quat = complete_unit_quat(x_act(7:9, 1));
+        quat = x_act(7:10, 1);
         bRw = quat2rotm(quat');
 
         % Determine World Frame Pose of Craft Axes
@@ -91,7 +91,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         vect_z_est = [0.0 0.0 0.1]';
 
         % Construct Rotation Matrix
-        quat_est = complete_unit_quat(sv.mu_hist(7:9, 1));
+        quat_est = sv.mu_hist(7:10, 1);
         bRw_est = quat2rotm(quat_est');
 
         % Determine World Frame Pose of Craft Axes
@@ -128,7 +128,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             tic
             k = ceil(curr_time / dt);
 
-            quat = complete_unit_quat(x_act(7:9, k));
+            quat = x_act(7:10, k);
             bRw = quat2rotm(quat');
             pos = x_act(1:3, k);
 
@@ -138,7 +138,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             h_persp = reassign(h_persp, x_arrow, y_arrow, z_arrow);
 
             if(sv.hist_mask(k))
-                quat_est = complete_unit_quat(sv.mu_hist(7:9, k));
+                quat_est =sv.mu_hist(7:10, k);
                 bRw_est = quat2rotm(quat_est');
                 pos_est = sv.mu_hist(1:3, k);
 
@@ -155,7 +155,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
         dt_replay = 0.01;
         for curr_time = linspace(t_act(1), t_act(end), (t_act(end) - t_act(1)) / dt_replay)
             k = ceil( max(curr_time, 0.0000001) / dt);
-            quat = complete_unit_quat(x_act(7:9, k));
+            quat = x_act(7:10, k);
             bRw = quat2rotm(quat');
             pos = x_act(1:3, k);
 
@@ -166,7 +166,7 @@ function plot_yukf_animation(flight, wp, camera, sv, varargin)
             
             most_recent_state_ind = k + 1 - find(sv.hist_mask(k:-1:1), 1);
 %             if(sv.hist_mask(k))
-            quat_est = complete_unit_quat(sv.mu_hist(7:9, most_recent_state_ind));
+            quat_est = sv.mu_hist(7:10, most_recent_state_ind);
             bRw_est = quat2rotm(quat_est');
             pos_est = sv.mu_hist(1:3, most_recent_state_ind);
 

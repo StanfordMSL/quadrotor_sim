@@ -6,7 +6,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
     rot_mat = [ cos(box_ang), -sin(box_ang);
                 sin(box_ang),  cos(box_ang) ];
     bb_box = [center_rc(2), center_rc(1)] + ...
-       ( rot_mat * ...
+       ( rot_mat' * ...  % NOTE: transpose here is because we are flipping the y axis
         [-width_pixel/2,   -height_pixel/2;
           width_pixel/2, -height_pixel/2;
           width_pixel/2,  height_pixel/2;
@@ -14,7 +14,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
          -width_pixel/2, -height_pixel/2]')';
     plot(bb_box(:,1), bb_box(:,2), 'b-')
     xlim([0, 2*camera.K(1,3)]); ylim([0, 2*camera.K(2,3)]); set(gca,'Ydir','reverse')
-    [yaw, pitch, roll] = quat2angle(quat(:)');
+    [roll, pitch, yaw] = quat2angle(quat(:)', 'XYZ');
     text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
         pos_w(1), pos_w(2), pos_w(2), ...
         yaw*180/pi, pitch*180/pi, roll*180/pi), 'VerticalAlignment','top');
@@ -47,7 +47,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
 
 
     xlim([0, 2*camera.K(1,3)]); ylim([0, 2*camera.K(2,3)]); set(gca,'Ydir','reverse')
-    [yaw, pitch, roll] = quat2angle(quat(:)');
+    [roll, pitch, yaw] = quat2angle(quat(:)', 'XYZ');
     text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
         pos_w(1), pos_w(2), pos_w(2), ...
         yaw*180/pi, pitch*180/pi, roll*180/pi), 'VerticalAlignment','top');

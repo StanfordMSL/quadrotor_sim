@@ -14,8 +14,8 @@ function [pos_err, ang_err] = mean_err(ground_truth, yukf_output)
     ang_err_array = zeros(N, 1);
     if M > 8
         for i = 1:N
-            q1 = complete_unit_quat(ground_truth(7:9, i));
-            q2 = complete_unit_quat(yukf_output(7:9, i));
+            q1 = ground_truth(7:10, i);
+            q2 = yukf_output(7:10, i);
             ang_err_array(i) = quat_dist(q1, q2);
         end
         ang_err = mean(ang_err_array);

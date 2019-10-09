@@ -14,23 +14,25 @@ function est_next_state = propagate_state(state, model, u, dt)
     end
 
     % Predict Quaternions
-    quat = complete_unit_quat(state(7:9));
+    quat =state(7:10);
     
     b_use_paper_method = true;
     if b_use_paper_method
-        w_vec = state(10:12);
+        w_vec = state(11:13);
         % convert omega to angle axis
         nrm = norm(w_vec);
         ang = nrm * dt;
         ax = w_vec / nrm;
         quat_delta = axang_to_quat(ax*ang);
 %         quat_delta = axang_to_quat(w_vec);
-        q_hat = quatmultiply(quat(:)', quat_delta(:)')';
+%         q_hat = quatmultiply(quat(:)', quat_delta(:)')';
+        q_hat = quatmultiply(quat_delta(:)', quat(:)')';
+        disp('')
     else
         % omegas
-        wx = state(10);
-        wy = state(11);
-        wz = state(12);
+        wx = state(11);
+        wy = state(12);
+        wz = state(13);
 
         % Setup Some Useful Stuff for Pred 
         Omega = [ 0 -wx -wy -wz ;...
@@ -46,19 +48,19 @@ function est_next_state = propagate_state(state, model, u, dt)
     end
     disp('')
     q_hat = normalize_quat(q_hat);
-    est_next_state(7:9) = q_hat(2:4);
-    vec_norm = norm( est_next_state(7:9) );
-    if( vec_norm > 1 && vec_norm < 1.001 )
-        % just a numerical thing
-        est_next_state(7:9) = est_next_state(7:9) / vec_norm;
-    end
+    est_next_state(7:10) = q_hat;
+%     vec_norm = norm( est_next_state(7:9) );
+%     if( vec_norm > 1 && vec_norm < 1.001 )
+%         % just a numerical thing
+%         est_next_state(7:9) = est_next_state(7:9) / vec_norm;
+%     end
 
     % Predict Angular Velocities
     if(~isempty(u))
-        omega_dot = ang_acc(u, state(10:12), model, [0 0 0]', 'actual');
-        est_next_state(10:12) = state(10:12) + dt * omega_dot;
+        omega_dot = ang_acc(u, state(11:13), model, [0 0 0]', 'actual');
+        est_next_state(11:13) = state(11:13) + dt * omega_dot;
     else
-        est_next_state(10:12) = state(10:12);
+        est_next_state(11:13) = state(11:13);
     end
     
 end

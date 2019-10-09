@@ -1,4 +1,4 @@
-function plot_3D_bb_world(initial_bb, tf_w_quad, pos_w)
+function plot_3D_bb_world(initial_bb, tf_w_quad, pos_w, varargin)
     % red lines are front, black are back, cyan are side. Solid lines are
     % top (top vertices have square markers)
     ax_len = 0.06;
@@ -8,6 +8,9 @@ function plot_3D_bb_world(initial_bb, tf_w_quad, pos_w)
     bb_w = bb_w(:, 1:3);
     
     figure(9098); clf; hold on; axis equal; grid on; xlabel('X'); ylabel('Y'); zlabel('Z')
+    if ~isempty(varargin)
+        set(gca, 'CameraPosition', varargin{1}); % set plot camera to be where actual camera is
+    end
     plot3(pos_w(1), pos_w(2), pos_w(3), 'b*', 'MarkerSize', 4)
     plot3(bb_w([1, 2], 1), bb_w([1, 2], 2), bb_w([1, 2], 3), 'rs', 'MarkerSize', 10)
     plot3(bb_w([3, 4], 1), bb_w([3, 4], 2), bb_w([3, 4], 3), 'ks', 'MarkerSize', 10)

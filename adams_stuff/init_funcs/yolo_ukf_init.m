@@ -8,9 +8,9 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
     %%% options for filtering input data
-    yukf.prms.b_filter_data = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
+    yukf.prms.b_filter_data = false; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
     yukf.prms.mv_ave_len_in = 5; % number of samples we use for our moving average filter
-    yukf.prms.b_filter_output = true; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
+    yukf.prms.b_filter_output = false; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
     yukf.prms.mv_ave_len_out = 5; % number of samples we use for our moving average filter
     
     %%% Options for augmenting our measurement vector
@@ -25,7 +25,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
-    yukf.prms.b_enforce_0_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at 0
+    yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
     yukf.prms.b_measure_pitch = false;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     yukf.prms.b_measure_roll = false;
@@ -36,7 +36,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.mu = zeros(num_dims, 1);
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
-    
+    dim_sigma = length(yukf.mu)-1;
+
     b_use_crazy_params = false;
     if ~b_use_crazy_params
         % these values are in part from prob rob, in part from me choosing
@@ -49,8 +50,13 @@ function yukf = yolo_ukf_init(num_dims, dt)
         % these values are used for stepping along sigma directions
         dp = 0.2; % [m]
         dv = 0.005; % [m/s]
+<<<<<<< HEAD
         dq = 0.00001; % hard to say... steps of the vector portion of the quaternion - do this differently??
         dw = 0.00005; % [rad/s]
+=======
+        dq = 0.1; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.005; % [rad/s]
+>>>>>>> b3d4db4491b5773eef1b0bcc56d0822e621b7584
     else
         % these values are from
         % https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf
@@ -65,13 +71,14 @@ function yukf = yolo_ukf_init(num_dims, dt)
         dq = 0.0001; % hard to say... steps of the vector portion of the quaternion - do this differently??
         dw = 0.0005; % [rad/s]
     end
-    yukf.prms.lambda = yukf.prms.alpha^2*(dim + yukf.prms.kappa) - dim;
+    yukf.prms.lambda = yukf.prms.alpha^2*(dim_sigma + yukf.prms.kappa) - dim_sigma;
     
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
     
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
+<<<<<<< HEAD
     %yukf.prms.R = diag([0.02, 0.02, ones(1, yukf.prms.meas_len - 2)])*5; % Measurement Noise
 %     measurement_cov = eye(5)*5;
 %     measurement_cov(5,5) = 0.02;
@@ -82,9 +89,15 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.R(4,4) = 5;
     if length(yukf.prms.meas_len) == 5
         yukf.prms.R(5,5) = 0.02;
+=======
+    %yukf.prms.Q(9,9) = 0.0001;
+    yukf.prms.R = diag([2, 2, 10*ones(1, yukf.prms.meas_len - 2)]); % Measurement Noise
+    if yukf.prms.b_angled_bounding_box
+        yukf.prms.R(5,5) = 0.08;
+>>>>>>> b3d4db4491b5773eef1b0bcc56d0822e621b7584
     end
 
-    yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim);
+    yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim_sigma);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);
-    yukf.wi = 1 / (2*(yukf.prms.lambda + dim));
+    yukf.wi = 1 / (2*(yukf.prms.lambda + dim_sigma));
 end
