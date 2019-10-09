@@ -1,4 +1,4 @@
-function test_bounding_box_code(varargin)
+function output = test_bounding_box_code(varargin)
     global yukf
 
     num_dims = 12; % length of state
@@ -15,6 +15,8 @@ function test_bounding_box_code(varargin)
 
     if ~isempty(varargin)
         x_curr = varargin{1};
+        x_curr2 = varargin{2};
+        x_curr3 = varargin{3};
     else
         clc; format compact; rng(42);
 
@@ -51,14 +53,64 @@ function test_bounding_box_code(varargin)
     [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initial_bb, yukf);
     [roll, pitch, yaw] = quat2angle(quat(:)', 'XYZ');
     
+    % unpack state
+    pos_w = x_curr2(1:3, 1);
+    vel = x_curr2(4:6, 1);
+    quat = x_curr2(7:10, 1); % [y,p,r] = quat2angle(quat(:)')
+    wx = x_curr2(11, 1);
+    wy = x_curr2(12, 1);
+    wz = x_curr2(13, 1);
+    
+    R_w_quad = quat2rotm(quat(:)'); % I confirmed this
+    tf_w_quad = [R_w_quad, pos_w(:); [zeros(1, 3), 1]];
+    
+    tf_cam_quad = camera.tf_cam_w * tf_w_quad;
+    
+    num_verts = size(initial_bb, 1);
+    bb_cam = (tf_cam_quad * [initial_bb, ones(num_verts, 1)]')';
+    bb_cam = bb_cam(:, 1:3);
+    
+    %%% plot 3D box
+    plot_3D_bb_world(initial_bb, tf_w_quad, pos_w, camera.tf_w_cam(1:3, 4))
+    
+    [output2, bb_rc_list2] = predict_quad_bounding_box(x_curr2, camera, initial_bb, yukf);
+    
+    
+    % unpack state
+    pos_w = x_curr3(1:3, 1);
+    vel = x_curr3(4:6, 1);
+    quat = x_curr3(7:10, 1); % [y,p,r] = quat2angle(quat(:)')
+    wx = x_curr3(11, 1);
+    wy = x_curr3(12, 1);
+    wz = x_curr3(13, 1);
+    
+    R_w_quad = quat2rotm(quat(:)'); % I confirmed this
+    tf_w_quad = [R_w_quad, pos_w(:); [zeros(1, 3), 1]];
+    
+    tf_cam_quad = camera.tf_cam_w * tf_w_quad;
+    
+    num_verts = size(initial_bb, 1);
+    bb_cam = (tf_cam_quad * [initial_bb, ones(num_verts, 1)]')';
+    bb_cam = bb_cam(:, 1:3);
+    
+    %%% plot 3D box
+    plot_3D_bb_world(initial_bb, tf_w_quad, pos_w, camera.tf_w_cam(1:3, 4))
+    
+    [output3, bb_rc_list3] = predict_quad_bounding_box(x_curr3, camera, initial_bb, yukf);
+    
     disp('')
     % plot 2D projection of 3D box AND 2D BB
     if yukf.prms.b_angled_bounding_box
+        figure(3433); clf;
+        output'
+        output2'
+        output3'
         plot_bounding_angled_box(output(1:2), output(3), output(4), output(5), bb_rc_list, pos_w, quat, camera)
+        plot_bounding_angled_box(output2(1:2), output2(3), output2(4), output2(5), bb_rc_list2, pos_w, quat, camera, 'r-')
+        plot_bounding_angled_box(output3(1:2), output3(3), output3(4), output3(5), bb_rc_list3, pos_w, quat, camera, 'g-')
     else
         plot_bounding_aligned_box(output(1:2), [output(4), output(3)], bb_rc_list, pos_w, quat, camera);
     end
-    
     disp('')
 end
     

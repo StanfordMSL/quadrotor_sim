@@ -15,13 +15,13 @@ function yukf = yolo_ukf_init(num_dims, dt)
     
     %%% Options for augmenting our measurement vector
     % Option 1 %%%%%%%   z = [row, col, width, height, angle]
-    yukf.prms.b_angled_bounding_box = false; % will include a 5th value thats an angle that is rotating the bounding box
+    yukf.prms.b_angled_bounding_box = true; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 2 (DEBUG ONLY) %%%%%%%   z = [state]
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 3  %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    yukf.prms.b_measure_aspect_ratio = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
@@ -43,7 +43,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
         % these values are in part from prob rob, in part from me choosing
         % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
         % points the same as the mean one
-        yukf.prms.alpha = 1; % scaling param - how far sig. points are from mean
+        yukf.prms.alpha = .1; % scaling param - how far sig. points are from mean
         yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
         yukf.prms.beta = 2; % optimal choice according to prob rob
         
@@ -77,6 +77,13 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.R = diag([2, 2, 10*ones(1, yukf.prms.meas_len - 2)]); % Measurement Noise
     if yukf.prms.b_angled_bounding_box
         yukf.prms.R(5,5) = 0.08;
+    	if yukf.prms.b_measure_aspect_ratio
+            yukf.prms.R(6,6) = 0.03;
+        end
+    else
+        if yukf.prms.b_measure_aspect_ratio
+            yukf.prms.R(5,5) = 0.03;
+        end
     end
 
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim_sigma);
