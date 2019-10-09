@@ -19,7 +19,7 @@ function post_process_yukf()
     conf_thresh = 0.5; % value below which we decide we did not detect the image
     b_animate = true;
     b_view_from_camera_perspective = false; % show animation from point of view of camera
-    animation_pause = 0.05; % [seconds] amound of extra time to pause between animation frames
+    animation_pause = 0.00000005; % [seconds] amound of extra time to pause between animation frames
     camera = init_camera(yukf);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -130,7 +130,25 @@ function post_process_yukf()
             end
 
             % Save values for plotting %%%%%%%%%%%%%%%%%%
+            if k - 1 > 0 && k + 1 <= length(t_rbg_arr)
+                flight.x_act(4, k) = (flight.x_act(1, k + 1) - flight.x_act(1, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(5, k) = (flight.x_act(2, k + 1) - flight.x_act(2, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(6, k) = (flight.x_act(3, k + 1) - flight.x_act(3, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                [r1, p1, y1] = quat2angle(flight.x_act(7:10, k - 1)', 'XYZ');
+                [r2, p2, y2] = quat2angle(flight.x_act(7:10, k + 1)', 'XYZ');
+                flight.x_act(11, k) = (r2 - r1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(12, k) = (p2 - p1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(13, k) = (y2 - y1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+            elseif k + 1 > length(t_rbg_arr) % last one, duplicate prev.
+                flight.x_act(4, k) = flight.x_act(4, k - 1);
+                flight.x_act(5, k) = flight.x_act(5, k - 1);
+                flight.x_act(6, k) = flight.x_act(6, k - 1);
+                flight.x_act(11, k) = flight.x_act(11, k - 1);
+                flight.x_act(12, k) = flight.x_act(12, k - 1);
+                flight.x_act(13, k) = flight.x_act(13, k - 1);
+            end
             sv = update_save_var(sv, k, yukf, flight, t_now);
+            disp('')
         end
         %%%%%%%%%%%%%%%%%%%
         if b_animate

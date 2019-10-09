@@ -1,7 +1,12 @@
-function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang, bb_rc_list, pos_w, quat, camera)
+function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang, bb_rc_list, pos_w, quat, camera, varargin)
+    if ~isempty(varargin)
+        bb_style = varargin{1};
+    else
+        bb_style = 'b-';
+    end
     % red lines are front, black are back, cyan are side. Solid lines are
     % top (top vertices have square markers)
-    figure(3433); clf; axis equal;  hold on;
+    figure(3433); axis equal;  hold on;
     plot(center_rc(2), center_rc(1), 'b*');
     rot_mat = [ cos(box_ang), -sin(box_ang);
                 sin(box_ang),  cos(box_ang) ];
@@ -12,7 +17,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
           width_pixel/2,  height_pixel/2;
          -width_pixel/2,  height_pixel/2;
          -width_pixel/2, -height_pixel/2]')';
-    plot(bb_box(:,1), bb_box(:,2), 'b-')
+%     plot(bb_box(:,1), bb_box(:,2), bb_style)
     xlim([0, 2*camera.K(1,3)]); ylim([0, 2*camera.K(2,3)]); set(gca,'Ydir','reverse')
     [roll, pitch, yaw] = quat2angle(quat(:)', 'XYZ');
     text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
@@ -21,29 +26,29 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
     
     
     
-    plot(bb_rc_list([1, 2], 2), bb_rc_list([1, 2], 1), 'rs', 'MarkerSize', 10) % mark the "front top" of the quad
-    plot(bb_rc_list([3, 4], 2), bb_rc_list([3, 4], 1), 'ks', 'MarkerSize', 10) % mark the "back top" of the quad
+%     plot(bb_rc_list([1, 2], 2), bb_rc_list([1, 2], 1), 'rs', 'MarkerSize', 10) % mark the "front top" of the quad
+%     plot(bb_rc_list([3, 4], 2), bb_rc_list([3, 4], 1), 'ks', 'MarkerSize', 10) % mark the "back top" of the quad
+%     
+%     % front of the quad
+%     plot(bb_rc_list([1, 2], 2), bb_rc_list([1, 2], 1), 'r-', 'LineWidth', 3)
+%     plot(bb_rc_list([2, 6], 2), bb_rc_list([2, 6], 1), 'r:', 'LineWidth', 3)
+%     plot(bb_rc_list([6, 5], 2), bb_rc_list([6, 5], 1), 'r:', 'LineWidth', 3)
+%     plot(bb_rc_list([5, 1], 2), bb_rc_list([5, 1], 1), 'r:', 'LineWidth', 3)
+%     
+%     % back of the quad
+%     plot(bb_rc_list([4, 3], 2), bb_rc_list([4, 3], 1), 'k-', 'LineWidth', 3)
+%     plot(bb_rc_list([3, 7], 2), bb_rc_list([3, 7], 1), 'k:', 'LineWidth', 3)
+%     plot(bb_rc_list([7, 8], 2), bb_rc_list([7, 8], 1), 'k:', 'LineWidth', 3)
+%     plot(bb_rc_list([8, 4], 2), bb_rc_list([8, 4], 1), 'k:', 'LineWidth', 3)
+%     
+%     % sides of the quad
+%     plot(bb_rc_list([1, 4], 2), bb_rc_list([1, 4], 1), 'c-', 'LineWidth', 3)
+%     plot(bb_rc_list([2, 3], 2), bb_rc_list([2, 3], 1), 'c-', 'LineWidth', 3)
+%     plot(bb_rc_list([5, 8], 2), bb_rc_list([5, 8], 1), 'c:', 'LineWidth', 3)
+%     plot(bb_rc_list([6, 7], 2), bb_rc_list([6, 7], 1), 'c:', 'LineWidth', 3)
     
-    % front of the quad
-    plot(bb_rc_list([1, 2], 2), bb_rc_list([1, 2], 1), 'r-', 'LineWidth', 3)
-    plot(bb_rc_list([2, 6], 2), bb_rc_list([2, 6], 1), 'r:', 'LineWidth', 3)
-    plot(bb_rc_list([6, 5], 2), bb_rc_list([6, 5], 1), 'r:', 'LineWidth', 3)
-    plot(bb_rc_list([5, 1], 2), bb_rc_list([5, 1], 1), 'r:', 'LineWidth', 3)
     
-    % back of the quad
-    plot(bb_rc_list([4, 3], 2), bb_rc_list([4, 3], 1), 'k-', 'LineWidth', 3)
-    plot(bb_rc_list([3, 7], 2), bb_rc_list([3, 7], 1), 'k:', 'LineWidth', 3)
-    plot(bb_rc_list([7, 8], 2), bb_rc_list([7, 8], 1), 'k:', 'LineWidth', 3)
-    plot(bb_rc_list([8, 4], 2), bb_rc_list([8, 4], 1), 'k:', 'LineWidth', 3)
-    
-    % sides of the quad
-    plot(bb_rc_list([1, 4], 2), bb_rc_list([1, 4], 1), 'c-', 'LineWidth', 3)
-    plot(bb_rc_list([2, 3], 2), bb_rc_list([2, 3], 1), 'c-', 'LineWidth', 3)
-    plot(bb_rc_list([5, 8], 2), bb_rc_list([5, 8], 1), 'c:', 'LineWidth', 3)
-    plot(bb_rc_list([6, 7], 2), bb_rc_list([6, 7], 1), 'c:', 'LineWidth', 3)
-    
-    
-    plot(bb_box(:,1), bb_box(:,2), 'b-', 'LineWidth', 1)
+    plot(bb_box(:,1), bb_box(:,2), bb_style, 'LineWidth', 1)
 
 
     xlim([0, 2*camera.K(1,3)]); ylim([0, 2*camera.K(2,3)]); set(gca,'Ydir','reverse')
