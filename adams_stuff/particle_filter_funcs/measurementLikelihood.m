@@ -7,8 +7,12 @@ function likelihood = measurementLikelihood(pf,predictParticles,measurement,meas
 %     measurement_cov(2,2) = 2;
 %   
     pred_obs = zeros(pf.NumParticles,length(measurement));
-    for i = 1:pf.NumParticles
-        pred_obs(i,:) = predict_obs(predictParticles(i,:)', camera, initial_bb, yukf);
+    axang_3_dim = predictParticles(:,7:9);
+    ang_val = sqrt(sum(axang_3_dim.^2,2));
+    predictParticles_quat = [predictParticles(:,1:6) axang2quat([axang_3_dim./ang_val ang_val]) predictParticles(:,10:12)];
+    num = pf.NumParticles;
+    parfor i = 1:num
+        pred_obs(i,:) = predict_obs(predictParticles_quat(i,:)', camera, initial_bb, yukf);
     end
     
     likelihood = mvnpdf(pred_obs,measurement',measurement_cov);

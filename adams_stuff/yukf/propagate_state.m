@@ -43,9 +43,9 @@ function est_next_state = propagate_state(state, model, u, dt)
         q_hat = quat + 0.5 * Omega * quat * dt;
     end
     disp('')
-    if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
-        q_hat = cheat_with_angles(q_hat);
-    end
+%     if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
+%         q_hat = cheat_with_angles(q_hat);
+%     end
     disp('')
     q_hat = normalize_quat(q_hat);
     est_next_state(7:10) = q_hat;

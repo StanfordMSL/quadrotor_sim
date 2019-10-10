@@ -29,12 +29,13 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     else
         output = get_aligned_bounding_box(bb_rc_list, x_curr, b_draw_box, camera);
     end
-    if isempty(k_act) && isempty(k)
-        state_gt = flight.x_act(:, 1);
-    elseif isempty(k)
-        state_gt = flight.x_act(:, k_act);
-    else
-        state_gt = flight.x_act(:, k);
-    end
-    output = augment_measurement(output, yukf, state_gt);
+%     
+%     if isempty(k_act) && isempty(k)
+%         state_gt = flight.x_act(:, 1);
+%     elseif isempty(k)
+%         state_gt = flight.x_act(:, k_act);
+%     else
+%         state_gt = flight.x_act(:, k);
+%     end
+%     output = augment_measurement(output, yukf, state_gt);
 end
