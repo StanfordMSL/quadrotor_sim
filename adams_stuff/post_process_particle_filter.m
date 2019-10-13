@@ -57,7 +57,7 @@ function post_process_yukf()
     x0_gt_axang(1:6) = x0_gt(1:6);
     x0_gt_axang(7:9) = quat_to_axang(x0_gt(7:10));
     x0_gt_axang(10:12) = x0_gt(11:13);
-    initialize(pf,6000,x0_gt_axang(:),yukf.sigma*0.5);
+    initialize(pf,6000,x0_gt_axang(:),yukf.sigma*0.05);
     %axang_3_dim = pf.Particles(:,7:9);
     %ang_val = sqrt(sum(axang_3_dim.^2,2));
     % Convert to 4 dimensions axang to extract quat
@@ -121,6 +121,7 @@ function post_process_yukf()
             % Save values for plotting %%%%%%%%%%%%%%%%%%
             yulf.mu = zeros(13,1);
             yukf.mu(1:6) = robotCorrected(1:6);
+            robotCorrected(4:6)
             yukf.mu(7:10) = axang_to_quat(robotCorrected(7:9));
             yukf.mu(11:13) = robotCorrected(10:12);
             sv = update_save_var(sv, k, yukf, flight, t_now);

@@ -61,10 +61,10 @@ function yukf = yolo_ukf_init(num_dims, dt)
         yukf.prms.beta = 2; 
         
         % these values are used for stepping along sigma directions
-        dp = 1; % [m]
+        dp = 0.1; % [m]
         dv = 0.05; % [m/s]
-        dq = 0.0001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.0005; % [rad/s]
+        dq = 0.01; % hard to say... steps of the vector portion of the quaternion - do this differently??
+        dw = 0.05; % [rad/s]
     end
     yukf.prms.lambda = yukf.prms.alpha^2*(dim_sigma + yukf.prms.kappa) - dim_sigma;
     

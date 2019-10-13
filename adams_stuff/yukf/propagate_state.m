@@ -7,8 +7,8 @@ function est_next_state = propagate_state(state, model, u, dt)
 
     % Predict Velocities
     if(~isempty(u))
-        vel_dot = lin_acc(state, u, model,[0 0 0]', 0, 'actual');
-        est_next_state(4:6) = state(4:6) + dt * vel_dot;
+        vel_dot = lin_acc(state', u, model,[0 0 0]', 0, 'actual');
+        est_next_state(4:6) = state(4:6) + dt * vel_dot';
     else
         est_next_state(4:6) = state(4:6); 
     end
@@ -58,7 +58,7 @@ function est_next_state = propagate_state(state, model, u, dt)
     % Predict Angular Velocities
     if(~isempty(u))
         omega_dot = ang_acc(u, state(11:13), model, [0 0 0]', 'actual');
-        est_next_state(11:13) = state(11:13) + dt * omega_dot;
+        est_next_state(11:13) = state(11:13) + dt * omega_dot';
     else
         est_next_state(11:13) = state(11:13);
     end

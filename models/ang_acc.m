@@ -37,6 +37,6 @@ function omega_dot = ang_acc(u,omega,model,tau_ext,mode)
 
     tau = tau + tau_ext;
 
-    omega_dot = inv_I*(tau - cross(omega,I*omega));
+    omega_dot = inv_I*(tau - cross(omega,I*omega')');
 
 end

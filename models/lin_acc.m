@@ -1,6 +1,5 @@
 function vel_dot = lin_acc(states,u,model,F_ext,frame,mode)
-    q0 = sqrt(1-states(7:9,1)'*states(7:9,1));
-    quat = [q0 ; states(7:9,1)];
+    quat = states(7:10,1);
     
     k2 = model.kt_act(1,1);
     k1 = model.kt_act(2,1);
