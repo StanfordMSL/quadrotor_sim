@@ -92,5 +92,6 @@ function plot_ukf_hist(sv, flight)
     plot(sv.time_hist(msk), sv.mu_hist(13, msk),'r-', 'LineWidth', 2); 
     plot(flight.t_act, flight.x_act(13, :),'b-', 'LineWidth', 2)
 %     ylim([min_ang_vel, max_ang_vel])
+
     disp('')
 end

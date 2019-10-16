@@ -92,6 +92,7 @@ function post_process_yukf()
     mv_ave_out_buff = zeros(yukf.prms.mv_ave_len_out, 3);
     mv_ave_counter = 1;
     yolo_hist = zeros(yukf.prms.meas_len, num_img);
+    acc_hist = zeros(3, num_img);
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
@@ -131,21 +132,14 @@ function post_process_yukf()
 
             % Save values for plotting %%%%%%%%%%%%%%%%%%
             if k - 1 > 0 && k + 1 <= length(t_rbg_arr)
-                flight.x_act(4, k) = (flight.x_act(1, k + 1) - flight.x_act(1, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
-                flight.x_act(5, k) = (flight.x_act(2, k + 1) - flight.x_act(2, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
-                flight.x_act(6, k) = (flight.x_act(3, k + 1) - flight.x_act(3, k - 1)) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                dt2 = (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(4:6, k) = (flight.x_act(1:3, k + 1) - flight.x_act(1:3, k - 1)) / dt2;
                 [r1, p1, y1] = quat2angle(flight.x_act(7:10, k - 1)', 'XYZ');
                 [r2, p2, y2] = quat2angle(flight.x_act(7:10, k + 1)', 'XYZ');
-                flight.x_act(11, k) = (r2 - r1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
-                flight.x_act(12, k) = (p2 - p1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
-                flight.x_act(13, k) = (y2 - y1) / (t_rbg_arr(k + 1) - t_rbg_arr(k - 1 ));
+                flight.x_act(11:13, k) = ([r2, p2, y2] - [r1, p1, y1]) / dt2;
             elseif k + 1 > length(t_rbg_arr) % last one, duplicate prev.
-                flight.x_act(4, k) = flight.x_act(4, k - 1);
-                flight.x_act(5, k) = flight.x_act(5, k - 1);
-                flight.x_act(6, k) = flight.x_act(6, k - 1);
-                flight.x_act(11, k) = flight.x_act(11, k - 1);
-                flight.x_act(12, k) = flight.x_act(12, k - 1);
-                flight.x_act(13, k) = flight.x_act(13, k - 1);
+                flight.x_act(4:6, k) = flight.x_act(4:6, k - 1);
+                flight.x_act(11:13, k) = flight.x_act(11:13, k - 1);
             end
             sv = update_save_var(sv, k, yukf, flight, t_now);
             disp('')
@@ -158,9 +152,11 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % plot history of filter vs ground truth
     disp('')
-    [prct_crt_1, prct_crt_5, prct_crt_10, err_vec, err_ave, err_min, err_max] = metric1_6dof(sv.mu_hist, sv.mu_act, initial_bb);
-    [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(sv.mu_hist, sv.mu_act);
+%     [prct_crt_1, prct_crt_5, prct_crt_10, err_vec, err_ave, err_min, err_max] = metric1_6dof(sv.mu_hist, sv.mu_act, initial_bb);
+%     [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(sv.mu_hist, sv.mu_act);
     plot_ukf_hist(sv, flight);
+    plot_acc_and_pitch(flight, sv, t_rbg_arr);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % plot ground truth vs yolo vs predicted bounding boxes 
     if ~yukf.prms.b_predicted_bb
