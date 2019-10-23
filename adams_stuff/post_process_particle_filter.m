@@ -58,7 +58,7 @@ function post_process_yukf()
     x0_gt_axang(7:9) = quat_to_axang(x0_gt(7:10));
     x0_gt_axang(10:12) = x0_gt(11:13);
     initialize(pf,6000,x0_gt_axang(:),yukf.sigma*0.05);
-    pf.ResamplingPolicy.SamplingInterval=5;
+    pf.ResamplingPolicy.SamplingInterval=3;
     pf.ResamplingPolicy.TriggerMethod='interval';
     %axang_3_dim = pf.Particles(:,7:9);
     %ang_val = sqrt(sum(axang_3_dim.^2,2));
@@ -81,6 +81,7 @@ function post_process_yukf()
     mv_ave_out_buff = zeros(yukf.prms.mv_ave_len_out, 3);
     mv_ave_counter = 1;
     yolo_hist = zeros(yukf.prms.meas_len, num_img);
+    counter = 0;
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
@@ -109,7 +110,14 @@ function post_process_yukf()
             
             yolo_hist(:, k) = yolo_output;  % record piltered/augmented yolo output
             %yukf = yukf_step(yukf, [], yolo_output, [], camera, initial_bb);
-            [robotPred,robotCov] = predict(pf,[],[],yukf.dt, yukf.prms.Q);
+            counter = counter + 1;
+            if counter == pf.ResamplingPolicy.SamplingInterval
+                reset_acc = 1;
+                counter = 0;
+            else
+                reset_acc = 0;
+            end
+            [robotPred,robotCov] = predict(pf,[],[],yukf.dt, yukf.prms.Q, reset_acc);
             [robotCorrected,robotCov] = correct(pf,yolo_output,yukf.prms.R,camera, initial_bb,yukf);
             
             if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb
