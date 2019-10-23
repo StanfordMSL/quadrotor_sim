@@ -21,7 +21,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 3  %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
