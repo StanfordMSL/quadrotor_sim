@@ -24,9 +24,7 @@ rnn = RNN(len(inputs[0]), n_hidden, 1)
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
-    inputs = inputs.to_device()
-    targets = targets.to_device()
-    rnn.to_device()
+    rnn.to(device)
 
 
 
@@ -40,7 +38,8 @@ learning_rate = 0.005
 
 def train(pitches, boxes):
     hidden = rnn.initHidden()
-
+    if torch.cuda.is_available():
+        hidden = hidden.to(device)
     rnn.zero_grad()
     loss = 0
     outputs_saved = []
@@ -58,7 +57,7 @@ def train(pitches, boxes):
 
 
 n_iters = 100000
-print_every = 5000
+print_every = 1000
 plot_every = 1000
 
 
@@ -83,6 +82,9 @@ for iter in range(1, n_iters + 1):
     (pitches_samples, boxes_samples) = (np.array(targets)[random_ids], np.array(inputs)[random_ids])
     pitches_samples = torch.FloatTensor(pitches_samples)
     boxes_samples = torch.FloatTensor(boxes_samples)
+    if torch.cuda.is_available():
+        pitches_samples = pitches_samples.to(device)
+        boxes_samples = boxes_samples.to(device)
     output, loss = train(pitches_samples, boxes_samples)
     current_loss += loss
 
@@ -104,7 +106,8 @@ for iter in range(1, n_iters + 1):
 # Plotting the historical loss from ``all_losses`` shows the network
 # learning:
 #
-
+torch.save(rnn.state_dict(), 'basic_rnn.pt')
 
 plt.figure()
 plt.plot(all_losses)
+plt.show()
