@@ -41,6 +41,5 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         end
     end
     warning('orientation mean calculation did not converge, using alt mean-quat method! (%.5f)', norm(e_vec))
-%     mu_bar(7:10) = q_bar;
     mu_bar(7:10) = quatAverage;
 end

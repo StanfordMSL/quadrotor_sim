@@ -36,5 +36,5 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     else
         state_gt = flight.x_act(:, k);
     end
-    output = augment_measurement(output, yukf, state_gt);
+    output = augment_measurement(output, yukf, x_curr, state_gt);
 end
