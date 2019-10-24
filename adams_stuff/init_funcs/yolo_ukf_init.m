@@ -21,7 +21,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_everything = false; % will include a 5th value thats an angle that is rotating the bounding box
     %%%%%%%%%%%%%%%%%%%%
     % Option 3  %%%%%%%   z = [[row, col, width, height, <extra1>, <extra2>, ...]
-    yukf.prms.b_measure_aspect_ratio = true; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
+    yukf.prms.b_measure_aspect_ratio = false; % when not angled, this will include a 5th value (ratio of height to width of bounding box)
     % ___extra A
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
@@ -38,34 +38,18 @@ function yukf = yolo_ukf_init(num_dims, dt)
     dim = length(yukf.mu);
     dim_sigma = length(yukf.mu)-1;
 
-    b_use_crazy_params = false;
-    if ~b_use_crazy_params
-        % these values are in part from prob rob, in part from me choosing
-        % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
-        % points the same as the mean one
-        yukf.prms.alpha = .1; % scaling param - how far sig. points are from mean
-        yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
-        yukf.prms.beta = 2; % optimal choice according to prob rob
-        
-        % these values are used for stepping along sigma directions
-        dp = 0.1; % [m]
-        dv = 0.005; % [m/s]
-        dq = 0.1; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.005; % [rad/s]
-    else
-        % these values are from
-        % https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf
-        % (also from the original ukf paper)
-        yukf.prms.alpha = 0.001; % scaling param - how far sig. points are from mean
-        yukf.prms.kappa = 0; % scaling param - how far sig. points are from mean
-        yukf.prms.beta = 2; 
-        
-        % these values are used for stepping along sigma directions
-        dp = 1; % [m]
-        dv = 0.05; % [m/s]
-        dq = 0.001; % hard to say... steps of the vector portion of the quaternion - do this differently??
-        dw = 0.005; % [rad/s]
-    end
+    % these values are in part from prob rob, in part from me choosing
+    % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
+    % points the same as the mean one
+    yukf.prms.alpha = .1; % scaling param - how far sig. points are from mean
+    yukf.prms.kappa = 2; % scaling param - how far sig. points are from mean
+    yukf.prms.beta = 2; % optimal choice according to prob rob
+
+    % these values are used for stepping along sigma directions
+    dp = 0.1; % [m]
+    dv = 0.005; % [m/s]
+    dq = 0.1; % [rad] in ax ang 
+    dw = 0.005; % [rad/s]
     yukf.prms.lambda = yukf.prms.alpha^2*(dim_sigma + yukf.prms.kappa) - dim_sigma;
     
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
@@ -73,8 +57,9 @@ function yukf = yolo_ukf_init(num_dims, dt)
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
-    %yukf.prms.Q(9,9) = 0.0001;
+    
     yukf.prms.R = diag([2, 2, 10*ones(1, yukf.prms.meas_len - 2)]); % Measurement Noise
+    
     if yukf.prms.b_angled_bounding_box
         yukf.prms.R(5,5) = 0.08;
     	if yukf.prms.b_measure_aspect_ratio

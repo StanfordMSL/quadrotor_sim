@@ -103,12 +103,11 @@ function post_process_yukf()
                 warning('skipped frames!! dt is %.3f seconds (ave dt = %.3f)', yukf.dt, dt_ave);
             end
             
-%             yolo_output = querry_sensor(z_mat(k, :), yukf, flight.x_act(:, k), camera, initial_bb);
             if yukf.prms.b_predicted_bb
                 yolo_output = predict_quad_bounding_box(flight.x_act(:, k), camera, initial_bb, yukf); %"perfect" prediction
             else
                 yolo_output = z_mat(k, :)';
-                yolo_output = augment_measurement(yolo_output, yukf, flight.x_act(:, k));
+                yolo_output = augment_measurement(yolo_output, yukf, flight.x_act(:, k), flight.x_act(:, k));
             end
             
             if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb
@@ -152,8 +151,6 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % plot history of filter vs ground truth
     disp('')
-%     [prct_crt_1, prct_crt_5, prct_crt_10, err_vec, err_ave, err_min, err_max] = metric1_6dof(sv.mu_hist, sv.mu_act, initial_bb);
-%     [prct_crt, err_pos_vec, err_ang_vec] = metric2_6dof(sv.mu_hist, sv.mu_act);
     plot_ukf_hist(sv, flight);
     plot_acc_and_pitch(flight, sv, t_rbg_arr);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
