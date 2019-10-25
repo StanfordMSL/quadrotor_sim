@@ -56,6 +56,7 @@ function plot_bounding_angled_box(center_rc, width_pixel, height_pixel, box_ang,
     text(10, 10, sprintf('pos (world frame): %.2f, %.2f, %.2f\nyaw, pitch, roll = %.1f, %.1f, %.1f\n', ...
         pos_w(1), pos_w(2), pos_w(2), ...
         yaw*180/pi, pitch*180/pi, roll*180/pi), 'VerticalAlignment','top');
+    hold off;
 end
 
     
