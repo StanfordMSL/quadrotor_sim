@@ -50,12 +50,12 @@ def chunks(l, n):
 class BoundingBoxPitchDataset(Dataset):
     """Bounding Box - Pitch dataset."""
 
-    def __init__(self, bounding_boxes_file, pose_files_folder, poses_files_prefix, sequence_length, img_height=480, img_width = 640):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, sequence_length, img_height=480, img_width = 640):
 
         # Load boxes and pitch
-        self.bounding_boxes = load_bounding_boxes(bounding_boxes_file)
+        self.bounding_boxes = load_bounding_boxes(bounding_boxes_path)
         self.bounding_boxes = preprocess_inputs(self.bounding_boxes)
-        self.pitches = load_pitches(pose_files_folder, poses_files_prefix)
+        self.pitches = load_pitches(pose_files_path, poses_files_prefix)
 
         # Pad with 0s at the beginning
         nb_to_add = sequence_length - len(self.bounding_boxes)%sequence_length
@@ -100,8 +100,8 @@ class BoundingBoxPitchDataLoader(BaseDataLoader):
     MNIST data loading demo using BaseDataLoader
     """
 
-    def __init__(self, bounding_boxes_file, pose_files_folder, poses_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=True):
         self.dataset = BoundingBoxPitchDataset(
-            bounding_boxes_file, pose_files_folder, poses_files_prefix, sequence_length)
+            bounding_boxes_path, pose_files_path, poses_files_prefix, sequence_length)
         print(self.dataset)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

@@ -11,9 +11,10 @@
     "data_loader": {
         "type": "BoundingBoxPitchDataLoader",
         "args":{
-            "bounding_boxes_file": "../adams_stuff/preprocessed_data/run4/results_2019-09-10-16-58-50/results_2019-09-10-16-58-50_angle.txt",
-            "pose_files_folder": "../adams_stuff/preprocessed_data/run4/results_2019-09-10-16-58-50/pose_gtboxes_and_time/",
-            "poses_files_prefix": "pose_gtboxes_and_time_",
+            "bounding_boxes_path": "data/raw/bb/",
+            "pose_files_path": "data/raw/poses/",
+            "poses_files_prefix": "poses_t",
+            "bbs_files_prefix": "bb_t",
             "batch_size": 64,
             "shuffle": true,
             "validation_split": 0.1,
