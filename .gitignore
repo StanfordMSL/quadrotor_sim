@@ -8,3 +8,6 @@
 
 # Mac stuff
 *.DS_Store
+
+# Python stuff
+*.pyc

@@ -1,0 +1,55 @@
+{
+    "name": "PitchNet",
+    "n_gpu": 1,
+
+    "arch": {
+        "type": "PitchModel",
+        "args": {
+            "sequence_length": 20
+        }
+    },
+    "data_loader": {
+        "type": "BoundingBoxPitchDataLoader",
+        "args":{
+            "bounding_boxes_file": "../adams_stuff/preprocessed_data/run4/results_2019-09-10-16-58-50/results_2019-09-10-16-58-50_angle.txt",
+            "pose_files_folder": "../adams_stuff/preprocessed_data/run4/results_2019-09-10-16-58-50/pose_gtboxes_and_time/",
+            "poses_files_prefix": "pose_gtboxes_and_time_",
+            "batch_size": 64,
+            "shuffle": true,
+            "validation_split": 0.1,
+            "num_workers": 2,
+            "sequence_length": 20
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args":{
+            "lr": 0.001,
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "loss": "mse_loss",
+    "metrics": [
+        "mse","std"
+    ],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 50,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "epochs": 100,
+
+        "save_dir": "saved/",
+        "save_period": 1,
+        "verbosity": 2,
+        
+        "monitor": "min val_loss",
+        "early_stop": 10,
+
+        "tensorboard": true
+    }
+}
