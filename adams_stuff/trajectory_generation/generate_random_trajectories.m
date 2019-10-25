@@ -35,7 +35,7 @@ function generate_random_trajectories()
     if(exist(pose_dir, 'dir')~=7); mkdir(pose_dir); end
     if(exist(bb_dir, 'dir')~=7); mkdir(bb_dir); end
     
-    num_traj = 3;
+    num_traj = 100;
     bb_cell_arr = cell(num_traj, 1);
     traj_cell_arr = cell(num_traj, 1);
     t_cell_arr = cell(num_traj, 1);
