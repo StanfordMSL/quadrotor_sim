@@ -30,9 +30,9 @@
             "amsgrad": true
         }
     },
-    "loss": "mse_loss",
+    "loss": "mse_loss_deg",
     "metrics": [
-        "mse","std"
+        "mse_deg","std_deg"
     ],
     "lr_scheduler": {
         "type": "StepLR",

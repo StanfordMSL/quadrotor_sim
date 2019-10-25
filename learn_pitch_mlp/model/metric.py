@@ -1,5 +1,5 @@
 import torch
-
+import math
 
 def accuracy(output, target):
     with torch.no_grad():
@@ -19,8 +19,12 @@ def top_k_acc(output, target, k=3):
             correct += torch.sum(pred[:, i] == target).item()
     return correct / len(target)
 
-def mse(output,target):
+def mse_deg(output,target):
+    output = output*180/math.pi
+    target = target*180/math.pi
     return torch.mean((output-target)*(output-target))
 
-def std(output,target):
+def std_deg(output,target):
+    output = output*180/math.pi
+    target = target*180/math.pi
     return torch.std(output-target)
