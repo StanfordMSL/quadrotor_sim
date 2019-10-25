@@ -6,28 +6,34 @@ from pyquaternion import Quaternion
 import torch
 import os
 
-def load_bounding_boxes(bb_path):
-    bb_file = open(bb_path, 'r')
+def get_ids_in_path(path, prefix):
+    files = os.listdir(path)
+    ids = [int(file.split('.')[0][len(prefix):])
+           for file in files]
+    ids.sort()
+    return ids
+
+def load_bounding_boxes(bb_file_path):
+    bb_file = open(bb_file_path, 'r')
     lines = bb_file.readlines()
-    bounding_boxes = [line.split()[2:] for line in lines]
-    bounding_boxes = [[float(i) for i in line] for line in bounding_boxes]
+    # Has to handle the inconsistency with spaces and commas in our files
+    bounding_boxes = [line.split(' ')[3:] for line in lines]
+    bounding_boxes = [[float(i[:-1]) for i in line] for line in bounding_boxes]
     return bounding_boxes
 
 
-def load_pitches(poses_path, file_name_prefix):
-    pose_files = os.listdir(poses_path)
-    # pose_files.sort()
-    ids = [int(pose_file.split('.')[0][len(file_name_prefix):])
-           for pose_file in pose_files]
-    ids.sort()
+def load_pitches(pose_file_path):
+    poses_file = open(pose_file_path, 'r')
+    lines = poses_file.readlines()
+    # Has to handle the inconsistency with spaces and commas in our files
+    poses = [line.split(' ')[3:] for line in lines]
+    poses = [[float(i[:-1]) for i in line] for line in poses]
     pitches = []
-    for id in ids:
-        filepath = poses_path+file_name_prefix+str(id)+'.txt'
-        pose_file = open(filepath, 'r')
-        q = Quaternion(pose_file.readlines()[0].split()[3:7])
-        (y, p, r) = q.yaw_pitch_roll
+    for pose in poses:
+        q = Quaternion(pose[3:7])
+        (y,p,r) = q.yaw_pitch_roll
         pitches.append(p)
-    return pitches  # inputs
+    return pitches
 
 
 def preprocess_inputs(boxes):
@@ -50,24 +56,39 @@ def chunks(l, n):
 class BoundingBoxPitchDataset(Dataset):
     """Bounding Box - Pitch dataset."""
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, sequence_length, img_height=480, img_width = 640):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, img_height=480, img_width = 640):
 
         # Load boxes and pitch
-        self.bounding_boxes = load_bounding_boxes(bounding_boxes_path)
-        self.bounding_boxes = preprocess_inputs(self.bounding_boxes)
-        self.pitches = load_pitches(pose_files_path, poses_files_prefix)
+        bb_ids = get_ids_in_path(bounding_boxes_path,bbs_files_prefix)
+        pose_ids = get_ids_in_path(pose_files_path,poses_files_prefix)
+        assert bb_ids == pose_ids, print("Ids of pose and bounding boxes don't match")
 
-        # Pad with 0s at the beginning
-        nb_to_add = sequence_length - len(self.bounding_boxes)%sequence_length
+        self.bounding_boxes = []
+        self.pitches = []
 
-        for i in np.arange(nb_to_add):
-            self.bounding_boxes.insert(0,np.array([0.,0.,0.,0.,0.,0.,0.,0.]))
-            self.pitches.insert(0,0.0)
-        # Gather into blocks of sequences
-        self.bounding_boxes = torch.FloatTensor(list(
-            chunks(self.bounding_boxes, sequence_length))).reshape(-1,8*sequence_length)
-        self.pitches = torch.FloatTensor(list(
-            chunks(self.pitches, sequence_length)))
+        for id in bb_ids:
+            bb_file = bounding_boxes_path+bbs_files_prefix+str(id)+'.txt'
+            poses_file = pose_files_path+poses_files_prefix+str(id)+'.txt'
+            bounding_boxes = load_bounding_boxes(bb_file)
+            bounding_boxes = preprocess_inputs(bounding_boxes)
+            pitches = load_pitches(poses_file)
+
+            assert len(bounding_boxes) == len(pitches), print("Not as many bounding boxes as poses for id "+str(id))
+
+            # Pad with 0s at the beginning
+            nb_to_add = sequence_length - len(bounding_boxes)%sequence_length
+
+            for i in np.arange(nb_to_add):
+                bounding_boxes.insert(0,np.array([0.,0.,0.,0.,0.,0.,0.,0.]))
+                pitches.insert(0,0.0)
+
+            # Gather into blocks of sequences
+            self.bounding_boxes.extend(list(chunks(bounding_boxes, sequence_length)))
+            self.pitches.extend(list(chunks(pitches, sequence_length)))
+
+        self.bounding_boxes = torch.FloatTensor(self.bounding_boxes).reshape(-1,8*sequence_length)
+        self.pitches = torch.FloatTensor(self.pitches).reshape(-1,sequence_length)
+
 
     def __len__(self):
         return len(self.bounding_boxes)
@@ -100,8 +121,8 @@ class BoundingBoxPitchDataLoader(BaseDataLoader):
     MNIST data loading demo using BaseDataLoader
     """
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=True):
         self.dataset = BoundingBoxPitchDataset(
-            bounding_boxes_path, pose_files_path, poses_files_prefix, sequence_length)
+            bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length)
         print(self.dataset)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
