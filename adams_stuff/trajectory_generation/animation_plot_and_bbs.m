@@ -1,4 +1,4 @@
-function animation_plot(flight,wp,view_point)
+function animation_plot_and_bbs(flight, wp, traj_mat, bb_mat, t_mat, bb_rc_list_mat, camera, view_point)
 
     map = wp.map;
     
@@ -74,9 +74,10 @@ function animation_plot(flight,wp,view_point)
     legend('X','Y','Z','trajectory');
     
     
-    figure(3343); clf; hold on; axis([])
+    figure(3433); axis equal; hold on;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
+    k_est = 1;
     curr_time = dt;
     while (curr_time <= t_act(end))
         tic
@@ -94,9 +95,15 @@ function animation_plot(flight,wp,view_point)
         z_arrow = [pos pos+(bRw*vect_z)];
 
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
-
-        drawnow
         
+        while k_est <= length(t_mat) && (t_mat(k_est) + 0.00001) < curr_time
+            k_est = k_est + 1;
+        end
+        if k_est <= size(bb_mat, 2)
+            figure(3433); clf;
+            plot_bounding_angled_box(bb_mat(1:2, k_est), bb_mat(3, k_est), bb_mat(4, k_est), bb_mat(5, k_est), bb_rc_list_mat(:, :, k_est), traj_mat(1:3, k_est), traj_mat(7:10, k_est), camera)
+        end
+        drawnow
         curr_time = curr_time + toc;
     end
 end
