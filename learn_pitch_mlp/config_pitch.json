@@ -23,7 +23,10 @@
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
-            "sequence_length": 300
+            "sequence_length": 300,
+            "downsample_rate": 10,
+            "filter_pitch" : true,
+            "pitch_threshold": 0.05
         }
     },
     "optimizer": {
