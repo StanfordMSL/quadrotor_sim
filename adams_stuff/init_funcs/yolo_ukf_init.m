@@ -31,6 +31,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_roll = false;
     yukf.prms.b_enforce_roll = false; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    yukf.prms.b_perfect_ego = false;  % "cheat" for quad's own position
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     yukf.mu = zeros(num_dims, 1);
@@ -74,4 +75,6 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.w0_m = yukf.prms.lambda / (yukf.prms.lambda + dim_sigma);
     yukf.w0_c = yukf.w0_m + (1 - yukf.prms.alpha^2 + yukf.prms.beta);
     yukf.wi = 1 / (2*(yukf.prms.lambda + dim_sigma));
+    
+    yukf.model = model_init('simple vII', 1/yukf.dt, 200, 1000);
 end

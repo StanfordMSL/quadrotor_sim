@@ -1,4 +1,4 @@
-function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
+function yukf = yukf_step(yukf, u_ego, z, camera, initial_bb)
     global flight k_act t_tmp k
     if isempty(k_act)
         k_act = k;
@@ -14,7 +14,7 @@ function yukf = yukf_step(yukf, u, z, model, camera, initial_bb)
     % line 3 prob rob ( Predict ) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sps_pred = zeros(dim, num_sp);
     for sp_ind = 1:num_sp
-        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), model, u, yukf.dt);
+        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), yukf.model, u_eg, yukf.dt);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     

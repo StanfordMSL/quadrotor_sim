@@ -60,8 +60,8 @@ function [yukf, initial_bb, camera, wp] = get_random_traj(tf)
             wp_z = x(3, last_ind) + 2*delta_z*(rand - 0.5 - center_bias_z);
         end
         
-        rand_roll = max(min(pi/4, randn*30*pi/180), -pi/4);
-        rand_pitch = max(min(pi/4, randn*30*pi/180), -pi/4);
+        rand_roll = 0;%max(min(pi/4, randn*30*pi/180), -pi/4);
+        rand_pitch = 0;%max(min(pi/4, randn*30*pi/180), -pi/4);
         
         x(1:3, wind) = [wp_x; wp_y; wp_z];
         quat = eul2quat([rand_roll, rand_pitch, 0], 'XYZ');

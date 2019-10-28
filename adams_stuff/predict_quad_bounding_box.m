@@ -9,8 +9,13 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     
     b_draw_box = false; % setting to true slows it down considerably, but shows the prediction vs. true state & how the sigma points vary around the mean
     
-    tf_w_quad = state_to_tf(x_curr);
-    tf_cam_quad = camera.tf_cam_w * tf_w_quad;
+    tf_w_quad = state_to_tf(x_curr(1:13));
+    if length(x_curr) > 13
+        tf_cam_w = inv_tf(state_to_tf(x_curr(14:26)));
+    else
+        tf_cam_w = camera.tf_cam_w;
+    end
+    tf_cam_quad = tf_cam_w * tf_w_quad;
     
     num_verts = size(initial_bb, 1);
     bb_cam = (tf_cam_quad * [initial_bb, ones(num_verts, 1)]')';

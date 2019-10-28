@@ -2,6 +2,8 @@ function generate_random_trajectories()
     clear; clc; close all; rng(42); warning('');
     addpath(genpath(pwd));
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    num_traj = 10;
+    first_traj_num = 1;
     %%% Time and Simulation Rate
     downsample_rate = 30; % hz
     tf = 15;
@@ -35,7 +37,6 @@ function generate_random_trajectories()
     if(exist(pose_dir, 'dir')~=7); mkdir(pose_dir); end
     if(exist(bb_dir, 'dir')~=7); mkdir(bb_dir); end
     
-    num_traj = 100;
     bb_cell_arr = cell(num_traj, 1);
     traj_cell_arr = cell(num_traj, 1);
     t_cell_arr = cell(num_traj, 1);
@@ -43,7 +44,7 @@ function generate_random_trajectories()
     traj_successful = true(num_traj, 1);
     flight_cell_arr = cell(num_traj, 1);
     wp_cell_arr = cell(num_traj, 1);
-    traj_count = 1;
+    traj_count = first_traj_num;
     for tind = 1:num_traj
         
         [yukf, initial_bb, camera, wp] = get_random_traj(tf);
@@ -124,7 +125,7 @@ function generate_random_trajectories()
             fn_bb = sprintf("%s/bb_t%d.txt", bb_dir, traj_count);
             fh_pose = fopen(fn_pose, 'w');
             fh_bb = fopen(fn_bb, 'w');
-            if traj_count == 1
+            if traj_count == first_traj_num
                 cleanupObj = onCleanup(@()fclose(fh_pose));
                 cleanupObj2 = onCleanup(@()fclose(fh_bb));
             end
