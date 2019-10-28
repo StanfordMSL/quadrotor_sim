@@ -5,7 +5,11 @@
     "arch": {
         "type": "PitchModel",
         "args": {
-            "sequence_length": 20
+            "sequence_length": 300,
+            "hidden_units_per_layer": 15,
+            "levels" : 7,
+            "kernel_size": 5,
+            "dropout_value": 0.1
         }
     },
     "data_loader": {
@@ -19,7 +23,7 @@
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
-            "sequence_length": 20
+            "sequence_length": 300
         }
     },
     "optimizer": {

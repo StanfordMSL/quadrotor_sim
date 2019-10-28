@@ -98,7 +98,7 @@ class BoundingBoxPitchDataset(Dataset):
             idx = idx.tolist()
         # sample = {'bounding_box': np.array(self.bounding_boxes[idx]), 'pitch': np.array(self.pitches[idx])}
         # return sample
-        return self.bounding_boxes[idx], self.pitches[idx][-1]
+        return self.bounding_boxes[idx], self.pitches[idx]
 
 
 class MnistDataLoader(BaseDataLoader):
