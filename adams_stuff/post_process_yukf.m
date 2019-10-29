@@ -93,6 +93,11 @@ function post_process_yukf()
     mv_ave_counter = 1;
     yolo_hist = zeros(yukf.prms.meas_len, num_img);
     acc_hist = zeros(3, num_img);
+    
+    if yukf.prms.b_measure_pitch_neural_net
+        neural_net_pitches = importdata(sprintf('%s/measured_pitches.txt', run_dir));
+    end
+    
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
@@ -108,6 +113,9 @@ function post_process_yukf()
             else
                 yolo_output = z_mat(k, :)';
                 yolo_output = augment_measurement(yolo_output, yukf, flight.x_act(:, k), flight.x_act(:, k));
+                if yukf.prms.b_measure_pitch_neural_net
+                   yolo_output(6) = neural_net_pitches(k);
+                end
             end
             
             if yukf.prms.b_filter_data && ~yukf.prms.b_predicted_bb

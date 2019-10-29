@@ -5,7 +5,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_use_control = false;  % whether to use the control in our estimate
     yukf.b_offset_at_t0 = false;  % whether to add noise to the initial starting location
     %%%% OPTIONS FOR SENSOR %%%%%%%%%%%%%%%%%%%%%%%%
-    yukf.prms.b_predicted_bb = true; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
+    yukf.prms.b_predicted_bb = false; % true means sensing data comes from predict_quad_bounding_box() instead of from actual yolo data
     
     %%% options for filtering input data
     yukf.prms.b_filter_data = false; % decide if we want to filter data output from yolo (only has an effect if we are using real data, i.e. if b_predicted_bb = false)
@@ -26,7 +26,8 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.prms.b_measure_yaw = false; % adds the "true" yaw measurement as output of the sensor
     yukf.prms.b_enforce_yaw = false; % this overwrites any dynamics / incorrect update to keep yaw at ground truth value
     yukf.prms.b_enforce_0_yaw = true; % this overwrites any dynamics / incorrect update to keep yaw at 0
-    yukf.prms.b_measure_pitch = false;
+    yukf.prms.b_measure_pitch = true;
+    yukf.prms.b_measure_pitch_neural_net = true;
     yukf.prms.b_enforce_pitch= false; % this overwrites any dynamics / incorrect update to keep pitch at ground truth value
     yukf.prms.b_measure_roll = false;
     yukf.prms.b_enforce_roll = false; % this overwrites any dynamics / incorrect update to keep roll at ground truth value
@@ -64,10 +65,15 @@ function yukf = yolo_ukf_init(num_dims, dt)
         yukf.prms.R(5,5) = 0.08;
     	if yukf.prms.b_measure_aspect_ratio
             yukf.prms.R(6,6) = 0.03;
+        elseif yukf.prms.b_measure_pitch
+            yukf.prms.R(6,6) = 6*pi/180;
         end
     else
         if yukf.prms.b_measure_aspect_ratio
             yukf.prms.R(5,5) = 0.03;
+            if yukf.prms.b_measure_pitch
+                yukf.prms.R(6,6) = 6*pi/180
+            end
         end
     end
 

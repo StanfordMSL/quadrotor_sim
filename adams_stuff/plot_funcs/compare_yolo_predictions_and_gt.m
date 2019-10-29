@@ -1,7 +1,7 @@
 function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat, camera, initial_bb, yukf)
     %%% plot yolo vs prediction vs gt %%%
     num_img = size(position_mat, 1);
-    bb_yolo = yolo_bb;
+    bb_yolo = yolo_bb';
     bb_pred = zeros(num_img, length(yukf.prms.R));
     bb_gt = gt_bb;
     dim_state = length(yukf.mu);
@@ -36,5 +36,18 @@ function compare_yolo_predictions_and_gt(yolo_bb, gt_bb, position_mat, quat_mat,
         legend([a,b,c], {"yolo", "predicted","roll"});
         ylabel('rad');
     end
+    
+    if yukf.prms.b_measure_pitch_neural_net
+        figure
+        a = plot(xx,bb_yolo(:,end), 'r-');
+        hold on
+        b = plot(xx,bb_pred(:,end), 'g-');
+        title('angle');
+        c = plot(xx,p, 'b-');
+        title('angle');
+        legend([a,b,c], {"yolo", "predicted","pitch"});
+        ylabel('rad');
+    end
+        
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -17,8 +17,8 @@ function output_modified = augment_measurement(output, yukf, state_est, state_gt
         end
     end
     
-%     [roll, pitch, yaw] = quat2angle(state_est(7:10)', 'XYZ');
-%     if yukf.prms.b_measure_pitch
-%         output_modified = [output_modified; pitch];
-%     end
+    [roll, pitch, yaw] = quat2angle(state_est(7:10)', 'XYZ');
+    if yukf.prms.b_measure_pitch
+        output_modified(6) = pitch;
+    end
 end
