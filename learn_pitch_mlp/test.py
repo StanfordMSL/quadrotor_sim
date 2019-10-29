@@ -12,14 +12,7 @@ def main(config):
     logger = config.get_logger('test')
 
     # setup data_loader instances
-    data_loader = getattr(module_data, config['data_loader']['type'])(
-        config['data_loader']['args']['data_dir'],
-        batch_size=512,
-        shuffle=False,
-        validation_split=0.0,
-        training=False,
-        num_workers=2
-    )
+    data_loader = config.init_obj('real_data_loader', module_data)
 
     # build model architecture
     model = config.init_obj('arch', module_arch)
@@ -44,10 +37,13 @@ def main(config):
     total_loss = 0.0
     total_metrics = torch.zeros(len(metric_fns))
 
+    detected_pitches = []
+
     with torch.no_grad():
         for i, (data, target) in enumerate(tqdm(data_loader)):
             data, target = data.to(device), target.to(device)
             output = model(data)
+            detected_pitches.extend(output.tolist())
 
             #
             # save sample images, or do something with output here
@@ -66,6 +62,10 @@ def main(config):
         met.__name__: total_metrics[i].item() / n_samples for i, met in enumerate(metric_fns)
     })
     logger.info(log)
+
+    with open('/'.join(str(config.resume).split('/')[:-1])+'/real_pitches.txt', 'w') as f:
+        for item in detected_pitches:
+            f.write("%s\n" % item[-1])
 
 
 if __name__ == '__main__':

@@ -13,20 +13,34 @@
         }
     },
     "data_loader": {
-        "type": "BoundingBoxPitchDataLoader",
+        "type": "SimBoundingBoxPitchDataLoader",
         "args":{
-            "bounding_boxes_path": "data/raw/bb/",
-            "pose_files_path": "data/raw/poses/",
+            "bounding_boxes_path": "data/raw/sim/bb/",
+            "pose_files_path": "data/raw/sim/poses/",
             "poses_files_prefix": "poses_t",
             "bbs_files_prefix": "bb_t",
             "batch_size": 64,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
-            "sequence_length": 300,
+            "sequence_length": 30,
             "downsample_rate": 10,
             "filter_pitch" : true,
             "pitch_threshold": 0.05
+        }
+    },
+    "real_data_loader": {
+        "type": "RealBoundingBoxPitchDataLoader",
+        "args": {
+            "bounding_boxes_path": "data/raw/real/results_2019-09-10-16-58-50_angle.txt",
+            "pose_files_path": "data/raw/real/pose_gtboxes_and_time/",
+            "poses_files_prefix": "pose_gtboxes_and_time_",
+            "bbs_files_prefix": "bb_t",
+            "batch_size": 512,
+            "shuffle": false,
+            "validation_split": 0.0,
+            "num_workers": 2,
+            "sequence_length": 300
         }
     },
     "optimizer": {
