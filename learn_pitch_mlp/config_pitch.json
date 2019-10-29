@@ -5,7 +5,7 @@
     "arch": {
         "type": "PitchModel",
         "args": {
-            "sequence_length": 30,
+            "sequence_length": 200,
             "hidden_units_per_layer": 15,
             "levels" : 7,
             "kernel_size": 5,
@@ -23,9 +23,9 @@
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
-            "sequence_length": 30,
+            "sequence_length": 200,
             "downsample_rate": 1,
-            "filter_pitch" : true,
+            "filter_pitch" : false,
             "pitch_threshold": 0.05
         }
     },
@@ -40,7 +40,7 @@
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 2,
-            "sequence_length": 30
+            "sequence_length": 200
         }
     },
     "optimizer": {
@@ -63,7 +63,7 @@
         }
     },
     "trainer": {
-        "epochs": 100,
+        "epochs": 50,
 
         "save_dir": "saved/",
         "save_period": 1,

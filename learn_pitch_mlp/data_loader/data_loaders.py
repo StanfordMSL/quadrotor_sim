@@ -124,7 +124,7 @@ class SimBoundingBoxPitchDataset(Dataset):
                 "Not as many bounding boxes as poses for id "+str(id))
 
             # Pad with 0s at the beginning
-            nb_to_add = sequence_length - 1
+            nb_to_add = 0#sequence_length - 1
 
             for i in np.arange(nb_to_add):
                 bounding_boxes.insert(0, np.array(

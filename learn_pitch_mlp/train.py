@@ -44,7 +44,8 @@ def main(config):
                       valid_data_loader=valid_data_loader,
                       lr_scheduler=lr_scheduler)
 
-    trainer.train()
+    result = trainer.train()
+    return result
 
 
 if __name__ == '__main__':
