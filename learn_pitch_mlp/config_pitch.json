@@ -5,7 +5,7 @@
     "arch": {
         "type": "PitchModel",
         "args": {
-            "sequence_length": 300,
+            "sequence_length": 30,
             "hidden_units_per_layer": 15,
             "levels" : 7,
             "kernel_size": 5,
@@ -24,7 +24,7 @@
             "validation_split": 0.1,
             "num_workers": 2,
             "sequence_length": 30,
-            "downsample_rate": 10,
+            "downsample_rate": 1,
             "filter_pitch" : true,
             "pitch_threshold": 0.05
         }
@@ -40,7 +40,7 @@
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 2,
-            "sequence_length": 300
+            "sequence_length": 30
         }
     },
     "optimizer": {
@@ -51,7 +51,7 @@
             "amsgrad": true
         }
     },
-    "loss": "mse_loss_deg",
+    "loss": "mse_loss",
     "metrics": [
         "mse_deg","std_deg"
     ],

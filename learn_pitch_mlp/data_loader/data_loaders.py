@@ -7,6 +7,11 @@ import torch
 import os
 
 
+def downsample_list(list, rate):
+    indexes_to_keep = np.arange(0,len(list),rate)
+    return [list[i] for i in indexes_to_keep]
+
+
 def filter_data(bounding_boxes, pitches, pitch_thresh):
     ret_pitches = pitches.copy()
     nb_removed = 0
@@ -20,8 +25,7 @@ def filter_data(bounding_boxes, pitches, pitch_thresh):
 
 def get_ids_in_path(path, prefix):
     files = os.listdir(path)
-    ids = [int(file.split('.')[0][len(prefix):])
-           for file in files]
+    ids = [int(file.split('.')[0][len(prefix):]) for file in files if file[:len(prefix)] == prefix]
     ids.sort()
     return ids
 
@@ -108,20 +112,19 @@ class SimBoundingBoxPitchDataset(Dataset):
         self.pitches = []
 
         for id in bb_ids:
-            # Downsample
-            if id % downsample_rate != 0:
-                continue
             bb_file = bounding_boxes_path+bbs_files_prefix+str(id)+'.txt'
             poses_file = pose_files_path+poses_files_prefix+str(id)+'.txt'
             bounding_boxes = load_sim_bounding_boxes(bb_file)
+            bounding_boxes = downsample_list(bounding_boxes, downsample_rate)
             bounding_boxes = preprocess_inputs(bounding_boxes)
-            pitches = load_sim_pitches(poses_file)
 
+            pitches = load_sim_pitches(poses_file)
+            pitches = downsample_list(pitches, downsample_rate)
             assert len(bounding_boxes) == len(pitches), print(
                 "Not as many bounding boxes as poses for id "+str(id))
 
             # Pad with 0s at the beginning
-            nb_to_add = sequence_length -1
+            nb_to_add = sequence_length - 1
 
             for i in np.arange(nb_to_add):
                 bounding_boxes.insert(0, np.array(
@@ -209,7 +212,8 @@ class RealBoundingBoxPitchDataset(Dataset):
 
         # Gather into blocks of sequences
 
-        self.bounding_boxes = list(chunks(self.bounding_boxes, sequence_length))
+        self.bounding_boxes = list(
+            chunks(self.bounding_boxes, sequence_length))
         self.pitches = list(chunks(self.pitches, sequence_length))
 
         self.bounding_boxes = torch.FloatTensor(
