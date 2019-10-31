@@ -48,7 +48,7 @@ def load_real_pitches(poses_path, file_name_prefix):
     for id in ids:
         filepath = poses_path+file_name_prefix+str(id)+'.txt'
         pose_file = open(filepath, 'r')
-        q = Quaternion(pose_file.readlines()[0].split()[3:7])
+        q = Quaternion(pose_file.readlines()[0].split()[5:9])
         (y, p, r) = q.yaw_pitch_roll
         pitches.append(p)
     return pitches  # input

@@ -1,2 +1,0 @@
-seq_len hidden_units levels kernel_size mse_deg std_deg val_mse_deg val_std_deg
-15 5 1 3 55.08562469482422 7.184013366699219 43.05157470703125 6.4683918952941895

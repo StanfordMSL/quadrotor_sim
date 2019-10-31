@@ -5,9 +5,9 @@
     "arch": {
         "type": "PitchModel",
         "args": {
-            "sequence_length": 200,
+            "sequence_length": 15,
             "hidden_units_per_layer": 15,
-            "levels" : 7,
+            "levels" : 3,
             "kernel_size": 5,
             "dropout_value": 0.1
         }
@@ -19,11 +19,11 @@
             "pose_files_path": "data/raw/sim/poses/",
             "poses_files_prefix": "poses_t",
             "bbs_files_prefix": "bb_t",
-            "batch_size": 64,
+            "batch_size": 1,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 2,
-            "sequence_length": 200,
+            "sequence_length": 15,
             "downsample_rate": 1,
             "filter_pitch" : false,
             "pitch_threshold": 0.05
@@ -40,7 +40,7 @@
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 2,
-            "sequence_length": 200
+            "sequence_length": 15
         }
     },
     "optimizer": {
@@ -70,7 +70,7 @@
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 10,
+        "early_stop": 5,
 
         "tensorboard": true
     }
