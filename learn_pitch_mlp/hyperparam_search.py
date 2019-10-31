@@ -13,7 +13,7 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 with open('hyperparam_search_results.txt', 'w') as f:
-    f.write("seq_len hidden_units levels kernel_size mse_deg std_deg val_mse_deg val_std_deg\n")
+    f.write("# seq_len hidden_units levels kernel_size mse_deg std_deg val_mse_deg val_std_deg\n")
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser(description='PyTorch Template')
