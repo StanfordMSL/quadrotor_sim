@@ -47,8 +47,7 @@
         "type": "Adam",
         "args":{
             "lr": 0.001,
-            "weight_decay": 0,
-            "amsgrad": true
+            "weight_decay": 0
         }
     },
     "loss": "mse_loss",
@@ -72,6 +71,6 @@
         "monitor": "min val_loss",
         "early_stop": 5,
 
-        "tensorboard": true
+        "tensorboard": false
     }
 }
