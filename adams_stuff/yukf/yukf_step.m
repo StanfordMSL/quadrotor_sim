@@ -14,7 +14,7 @@ function yukf = yukf_step(yukf, u_ego, z, camera, initial_bb)
     % line 3 prob rob ( Predict ) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sps_pred = zeros(dim, num_sp);
     for sp_ind = 1:num_sp
-        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), yukf.model, u_eg, yukf.dt);
+        sps_pred(:, sp_ind) = propagate_state(sps(:, sp_ind), yukf.model, u_ego, yukf.dt);
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -37,24 +37,21 @@ function yukf = yukf_step(yukf, u_ego, z, camera, initial_bb)
     
     % line 11 - 13: kalman gain & update
     K = sigma_xz * S_inv;
-    b_add_all = false;
-    if b_add_all
-        % this is how the paper I am following does it
-        mu_out = mu_bar + K * (z - z_hat);
-    else
-        % this is what would make sense to me
-        innovation = K * (z - z_hat);
-        mu_out(1:6) = mu_bar(1:6) + innovation(1:6);
-        mu_out(11:13) = mu_bar(11:13) + innovation(10:12);
-%         q_tmp = quatmultiply(mu_bar(7:10)', axang_to_quat(innovation(7:9))' );
-        q_tmp = quatmultiply(axang_to_quat(innovation(7:9))', mu_bar(7:10)');
+    innovation = K * (z - z_hat);
+    mu_out(1:6) = mu_bar(1:6) + innovation(1:6);
+    mu_out(11:13) = mu_bar(11:13) + innovation(10:12);
+    q_tmp = quatmultiply(axang_to_quat(innovation(7:9))', mu_bar(7:10)');
+    mu_out(7:10) = q_tmp;
+    
+    mu_out(14:19) = mu_bar(14:19) + innovation(13:18);
+    mu_out(24:26) = mu_bar(24:26) + innovation(22:24);
+    q_tmp = quatmultiply(axang_to_quat(innovation(19:21))', mu_bar(20:23)');
+    mu_out(20:23) = q_tmp;
+
+    if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
+        q_tmp = cheat_with_angles(q_tmp);
+        q_tmp = normalize_quat(q_tmp);
         mu_out(7:10) = q_tmp;
-        
-        if any([yukf.prms.b_enforce_0_yaw, yukf.prms.b_enforce_yaw, yukf.prms.b_enforce_pitch, yukf.prms.b_enforce_roll])
-            q_tmp = cheat_with_angles(q_tmp);
-            q_tmp = normalize_quat(q_tmp);
-            mu_out(7:10) = q_tmp;
-        end
     end
     sigma_out = sigma_bar - K * S * K';
     

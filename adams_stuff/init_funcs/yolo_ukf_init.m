@@ -37,7 +37,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.mu = zeros(num_dims, 1);
     yukf.mu_prev = yukf.mu;
     dim = length(yukf.mu);
-    dim_sigma = length(yukf.mu)-1;
+    dim_sigma = length(yukf.mu)-2;
 
     % these values are in part from prob rob, in part from me choosing
     % them so 1 - alpha^2 + beta = 0, which weight the non-mean sigma
@@ -51,9 +51,15 @@ function yukf = yolo_ukf_init(num_dims, dt)
     dv = 0.005; % [m/s]
     dq = 0.1; % [rad] in ax ang 
     dw = 0.005; % [rad/s]
+    frac = 0.1;
+    dp_e = frac*dp; % [m]
+    dv_e = frac*dv; % [m/s]
+    dq_e = frac*dq; % [rad] in ax ang 
+    dw_e = frac*dw; % [rad/s]
     yukf.prms.lambda = yukf.prms.alpha^2*(dim_sigma + yukf.prms.kappa) - dim_sigma;
     
-    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw]);
+    yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw, dp_e, dp_e, dp_e, dv_e, dv_e, dv_e, dq_e, dq_e, dq_e, dw_e, dw_e, dw_e]);
+    assert(length(yukf.sigma) == dim_sigma)
     
     fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));

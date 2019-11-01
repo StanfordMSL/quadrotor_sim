@@ -81,7 +81,7 @@ function post_process_yukf()
             % update model's est dt & est hz %%%%%%
             yukf.model.est_dt = yukf.dt; yukf.model.est_hz = 1/yukf.model.est_dt; 
             
-            u_ego = yukf.model.hover_u;
+            u_ego = yukf.model.hover_wrench;
             
             % Get sensor reading
             if yukf.prms.b_predicted_bb
