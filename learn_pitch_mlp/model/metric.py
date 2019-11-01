@@ -9,6 +9,6 @@ def mse_deg(output,target):
     return torch.mean((output-target)*(output-target))
 
 def std_deg(output,target):
-    output = output*180/math.pi
-    target = target*180/math.pi
+    output = output[:, -1]*180/math.pi
+    target = target[:, -1]*180/math.pi
     return torch.std(output-target)

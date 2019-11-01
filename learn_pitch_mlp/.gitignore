@@ -109,3 +109,6 @@ datasets/
 .vscode/
 .idea/
 __MACOSX/
+
+# Hyperparameters search logs
+hyperparam*.txt

@@ -9,7 +9,8 @@
             "hidden_units_per_layer": 15,
             "levels" : 3,
             "kernel_size": 5,
-            "dropout_value": 0.1
+            "dropout_value": 0.1,
+            "dilation_factor": 2
         }
     },
     "data_loader": {

@@ -48,12 +48,12 @@ class TemporalBlock(nn.Module):
 
 
 class TemporalConvNet(nn.Module):
-    def __init__(self, num_inputs, num_channels, kernel_size=2, dropout=0.2):
+    def __init__(self, num_inputs, num_channels, kernel_size=2, dropout=0.2, dilation_factor = 2):
         super(TemporalConvNet, self).__init__()
         layers = []
         num_levels = len(num_channels)
         for i in range(num_levels):
-            dilation_size = 2 ** i
+            dilation_size = dilation_factor ** i
             in_channels = num_inputs if i == 0 else num_channels[i-1]
             out_channels = num_channels[i]
             layers += [TemporalBlock(in_channels, out_channels, kernel_size, stride=1, dilation=dilation_size,
@@ -80,12 +80,12 @@ class TemporalConvNet(nn.Module):
 #         return x
 
 class PitchModel(BaseModel):
-    def __init__(self, sequence_length, hidden_units_per_layer, levels, kernel_size, dropout_value):
+    def __init__(self, sequence_length, hidden_units_per_layer, levels, kernel_size, dropout_value, dilation_factor):
         super().__init__()
         self.input_dim = 8 # 8 values to describe a bounding box
         self.channel_sizes = [hidden_units_per_layer] * levels
         self.tcn = TemporalConvNet(
-            self.input_dim, self.channel_sizes, kernel_size, dropout_value)
+            self.input_dim, self.channel_sizes, kernel_size, dropout_value, dilation_factor)
         self.linear = nn.Linear(self.channel_sizes[-1], sequence_length)
         self.sequence_length = sequence_length
 

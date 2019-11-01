@@ -14,7 +14,7 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 with open('hyperparam_rand_search_results.txt', 'w') as f:
-    f.write("# seq_len hidden_units levels kernel_size lr batch_size optimizer mse_deg std_deg val_mse_deg val_std_deg\n")
+    f.write("# seq_len hidden_units levels kernel_size lr batch_size optimizer dilation_factor mse_deg std_deg val_mse_deg val_std_deg\n")
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser(description='PyTorch Template')
@@ -36,12 +36,13 @@ if __name__ == '__main__':
     config = ConfigParser.from_args(args, options)
 
     seq_len = [15, 30, 60, 150,300]
-    hidden_units = [5, 15, 30,50,100]
-    levels = [1, 3,5,7,10]
+    hidden_units = [5, 15, 30,50]
+    levels = [1,3,5,7,10]
     kernel_size = [3,5,7,10]
     lr = [0.1,0.01,0.001,0.0001,0.00001]
-    batch_size = [128,64,32,16,8]
+    batch_size = [128,64,32,16]
     optimizer = [0,1] # 0 for Adam, 1 for SGD
+    dilation_factor = [1,2]
 
     nb_iters = 1000
     for i in range(nb_iters):
@@ -52,10 +53,12 @@ if __name__ == '__main__':
         batch_size_i = random.choice(batch_size)
         lr_i = random.choice(lr)
         optimizer_i = random.choice(optimizer)
+        dilation_factor_i = random.choice(dilation_factor)
         config['arch']['args']['sequence_length'] = seq_len_i
         config['arch']['args']['hidden_units_per_layer'] = hidden_units_i
         config['arch']['args']['levels'] = levels_i
         config['arch']['args']['kernel_size'] = kernel_size_i
+        config['arch']['args']['dilation_factor'] = dilation_factor_i
         config['data_loader']['args']['batch_size'] = batch_size_i
         config['data_loader']['args']['sequence_length'] = seq_len_i
         config['optimizer']['args']['lr'] = lr_i
@@ -72,5 +75,5 @@ if __name__ == '__main__':
         res = main(config)
         print(res)
         with open('hyperparam_rand_search_results.txt', 'a') as f:
-            f.write(str(seq_len_i)+' '+str(hidden_units_i)+' '+str(levels_i)+' '+str(kernel_size_i)+' '+str(lr_i)+' '+str(batch_size_i)+' '+str(optimizer_i)+' '+str(
+            f.write(str(seq_len_i)+' '+str(hidden_units_i)+' '+str(levels_i)+' '+str(kernel_size_i)+' '+str(lr_i)+' '+str(batch_size_i)+' '+str(optimizer_i)+' '+str(dilation_factor_i)+' '+str(
                 res['mse_deg'].item())+' '+str(res['std_deg'].item())+' '+str(res['val_mse_deg'].item())+' '+str(res['val_std_deg'].item())+'\n')
