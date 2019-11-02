@@ -10,7 +10,8 @@
             "levels" : 3,
             "kernel_size": 5,
             "dropout_value": 0.1,
-            "dilation_factor": 2
+            "dilation_factor": 2,
+            "use_width_height": true
         }
     },
     "data_loader": {
@@ -27,7 +28,8 @@
             "sequence_length": 15,
             "downsample_rate": 1,
             "filter_pitch" : false,
-            "pitch_threshold": 0.05
+            "pitch_threshold": 0.05,
+            "use_width_height" : true
         }
     },
     "real_data_loader": {
@@ -41,7 +43,8 @@
             "shuffle": false,
             "validation_split": 0.0,
             "num_workers": 2,
-            "sequence_length": 15
+            "sequence_length": 15,
+            "use_width_height": true
         }
     },
     "optimizer": {

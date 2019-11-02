@@ -5,7 +5,16 @@ import numpy as np
 from pyquaternion import Quaternion
 import torch
 import os
+from convert_bb_corners_to_angle import bb_corners_to_angle
+def reorder_sim_bb(bb):
+    tmp_bb = np.array(bb)
+    reordered_bb = np.zeros(tmp_bb.shape)
+    order = [2, 3, 0, 1]
+    for i in range(len(order)):
+        reordered_bb[:, 2*i] = tmp_bb[:, 2*order[i]]
+        reordered_bb[:, 2*i+1] = tmp_bb[:, 2*order[i]+1]
 
+    return list(reordered_bb)
 
 def downsample_list(list, rate):
     indexes_to_keep = np.arange(0,len(list),rate)
@@ -77,15 +86,20 @@ def load_sim_pitches(pose_file_path):
     return pitches
 
 
-def preprocess_inputs(boxes):
+def preprocess_inputs(boxes,use_width_height):
     # Bring between 0 and 1
     img_height = 480
     img_width = 640
-    np_boxes = np.array(boxes)
-    x_pos = [0, 2, 4, 6]
-    y_pos = [1, 3, 5, 7]
-    np_boxes[:, x_pos] = np_boxes[:, x_pos]/img_width
-    np_boxes[:, y_pos] = np_boxes[:, y_pos]/img_height
+    if use_width_height:
+        np_boxes = np.array(boxes)
+        np_boxes[:,[0,3]] = np_boxes[:,[0,3]]/img_height
+        np_boxes[:,[1,2]] = np_boxes[:,[0,3]]/img_width
+    else:
+        np_boxes = np.array(boxes)
+        x_pos = [0, 2, 4, 6]
+        y_pos = [1, 3, 5, 7]
+        np_boxes[:, x_pos] = np_boxes[:, x_pos]/img_width
+        np_boxes[:, y_pos] = np_boxes[:, y_pos]/img_height
     return list(np_boxes)
 
 # From https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
@@ -100,7 +114,7 @@ def chunks(l, n):
 class SimBoundingBoxPitchDataset(Dataset):
     """Bounding Box - Pitch dataset."""
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate=1, filter_pitch=False, pitch_threshold=3.14159, img_height=480, img_width=640):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate=1, filter_pitch=False, pitch_threshold=3.14159, img_height=480, img_width=640, use_width_height=True):
 
         # Load boxes and pitch
         bb_ids = get_ids_in_path(bounding_boxes_path, bbs_files_prefix)
@@ -110,13 +124,20 @@ class SimBoundingBoxPitchDataset(Dataset):
 
         self.bounding_boxes = []
         self.pitches = []
+        if use_width_height:
+            input_size = 5
+        else:
+            input_size = 8
 
         for id in bb_ids:
             bb_file = bounding_boxes_path+bbs_files_prefix+str(id)+'.txt'
             poses_file = pose_files_path+poses_files_prefix+str(id)+'.txt'
             bounding_boxes = load_sim_bounding_boxes(bb_file)
             bounding_boxes = downsample_list(bounding_boxes, downsample_rate)
-            bounding_boxes = preprocess_inputs(bounding_boxes)
+            bounding_boxes = reorder_sim_bb(bounding_boxes)
+            if use_width_height:
+                bounding_boxes = bb_corners_to_angle(bounding_boxes)
+            bounding_boxes = preprocess_inputs(bounding_boxes, use_width_height)
 
             pitches = load_sim_pitches(poses_file)
             pitches = downsample_list(pitches, downsample_rate)
@@ -140,8 +161,9 @@ class SimBoundingBoxPitchDataset(Dataset):
             (self.bounding_boxes, self.pitches) = filter_data(
                 self.bounding_boxes, self.pitches, pitch_threshold)
 
+
         self.bounding_boxes = torch.FloatTensor(
-            self.bounding_boxes).reshape(-1, 8*sequence_length)
+            self.bounding_boxes).reshape(-1, input_size*sequence_length)
         self.pitches = torch.FloatTensor(
             self.pitches).reshape(-1, sequence_length)
 
@@ -176,9 +198,9 @@ class SimBoundingBoxPitchDataLoader(BaseDataLoader):
     MNIST data loading demo using BaseDataLoader
     """
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, batch_size, sequence_length, downsample_rate, filter_pitch, pitch_threshold, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, batch_size, sequence_length, downsample_rate, filter_pitch, pitch_threshold, shuffle=True, validation_split=0.0, num_workers=1, training=True, use_width_height=True):
         self.dataset = SimBoundingBoxPitchDataset(
-            bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate, filter_pitch, pitch_threshold)
+            bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate, filter_pitch, pitch_threshold, use_width_height)
         print(self.dataset)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
@@ -186,22 +208,14 @@ class SimBoundingBoxPitchDataLoader(BaseDataLoader):
 class RealBoundingBoxPitchDataset(Dataset):
     """Bounding Box - Pitch dataset."""
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate=1, filter_pitch=False, pitch_threshold=3.14159, img_height=480, img_width=640):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate=1, filter_pitch=False, pitch_threshold=3.14159, img_height=480, img_width=640, use_width_height=True):
 
         self.bounding_boxes = load_real_bounding_boxes(bounding_boxes_path)
-        self.bounding_boxes = preprocess_inputs(self.bounding_boxes)
+        if use_width_height:
+                bounding_boxes = bb_corners_to_angle(bounding_boxes)
+        self.bounding_boxes = preprocess_inputs(self.bounding_boxes, use_width_height)
 
         self.pitches = load_real_pitches(pose_files_path, poses_files_prefix)
-
-        # Remap
-        tmp_bb = np.array(self.bounding_boxes)
-        reordered_bb = np.zeros(tmp_bb.shape)
-        order = [2, 3, 0, 1]
-        for i in range(len(order)):
-            reordered_bb[:, 2*i] = tmp_bb[:, 2*order[i]]
-            reordered_bb[:, 2*i+1] = tmp_bb[:, 2*order[i]+1]
-
-        self.bounding_boxes = list(reordered_bb)
 
         nb_to_add = sequence_length - 1
 
@@ -235,8 +249,8 @@ class RealBoundingBoxPitchDataLoader(BaseDataLoader):
     MNIST data loading demo using BaseDataLoader
     """
 
-    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=False):
+    def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, batch_size, sequence_length, shuffle=True, validation_split=0.0, num_workers=1, training=False, use_width_height=True):
         self.dataset = RealBoundingBoxPitchDataset(
-            bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length)
+            bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, use_width_height)
         print(self.dataset)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

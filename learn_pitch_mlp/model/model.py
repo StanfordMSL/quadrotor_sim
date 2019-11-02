@@ -80,9 +80,12 @@ class TemporalConvNet(nn.Module):
 #         return x
 
 class PitchModel(BaseModel):
-    def __init__(self, sequence_length, hidden_units_per_layer, levels, kernel_size, dropout_value, dilation_factor):
+    def __init__(self, sequence_length, hidden_units_per_layer, levels, kernel_size, dropout_value, dilation_factor,use_width_height):
         super().__init__()
-        self.input_dim = 8 # 8 values to describe a bounding box
+        if use_width_height:
+            self.input_dim = 5 # 5 values to describe a bounding box (y center, x center, width, height, angle)
+        else:
+            self.input_dim = 8 # 2 positions for each of the 4 corners
         self.channel_sizes = [hidden_units_per_layer] * levels
         self.tcn = TemporalConvNet(
             self.input_dim, self.channel_sizes, kernel_size, dropout_value, dilation_factor)
