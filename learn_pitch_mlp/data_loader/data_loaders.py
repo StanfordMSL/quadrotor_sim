@@ -148,8 +148,7 @@ class SimBoundingBoxPitchDataset(Dataset):
             nb_to_add = 0#sequence_length - 1
 
             for i in np.arange(nb_to_add):
-                bounding_boxes.insert(0, np.array(
-                    [0., 0., 0., 0., 0., 0., 0., 0.]))
+                bounding_boxes.insert(0, np.zeros((input_size)))
                 pitches.insert(0, 0.0)
 
             # Gather into blocks of sequences
@@ -209,10 +208,13 @@ class RealBoundingBoxPitchDataset(Dataset):
     """Bounding Box - Pitch dataset."""
 
     def __init__(self, bounding_boxes_path, pose_files_path, poses_files_prefix, bbs_files_prefix, sequence_length, downsample_rate=1, filter_pitch=False, pitch_threshold=3.14159, img_height=480, img_width=640, use_width_height=True):
-
+        if use_width_height:
+            input_size = 5
+        else:
+            input_size = 8
         self.bounding_boxes = load_real_bounding_boxes(bounding_boxes_path)
         if use_width_height:
-                bounding_boxes = bb_corners_to_angle(bounding_boxes)
+                self.bounding_boxes = bb_corners_to_angle(self.bounding_boxes)
         self.bounding_boxes = preprocess_inputs(self.bounding_boxes, use_width_height)
 
         self.pitches = load_real_pitches(pose_files_path, poses_files_prefix)
@@ -220,8 +222,7 @@ class RealBoundingBoxPitchDataset(Dataset):
         nb_to_add = sequence_length - 1
 
         for _ in range(nb_to_add):
-            self.bounding_boxes.insert(0, np.array(
-                [0., 0., 0., 0., 0., 0., 0., 0.]))
+            self.bounding_boxes.insert(0, np.zeros((input_size)))
             self.pitches.insert(0, 0.0)
 
         # Gather into blocks of sequences
@@ -231,7 +232,7 @@ class RealBoundingBoxPitchDataset(Dataset):
         self.pitches = list(chunks(self.pitches, sequence_length))
 
         self.bounding_boxes = torch.FloatTensor(
-            self.bounding_boxes).reshape(-1, 8*sequence_length)
+            self.bounding_boxes).reshape(-1, input_size*sequence_length)
         self.pitches = torch.FloatTensor(
             self.pitches).reshape(-1, sequence_length)
 
