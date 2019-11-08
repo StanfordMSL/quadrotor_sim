@@ -144,13 +144,6 @@ class SimBoundingBoxPitchDataset(Dataset):
             assert len(bounding_boxes) == len(pitches), print(
                 "Not as many bounding boxes as poses for id "+str(id))
 
-            # Pad with 0s at the beginning
-            nb_to_add = 0#sequence_length - 1
-
-            for i in np.arange(nb_to_add):
-                bounding_boxes.insert(0, np.zeros((input_size)))
-                pitches.insert(0, 0.0)
-
             # Gather into blocks of sequences
             self.bounding_boxes.extend(
                 list(chunks(bounding_boxes, sequence_length)))
@@ -218,12 +211,6 @@ class RealBoundingBoxPitchDataset(Dataset):
         self.bounding_boxes = preprocess_inputs(self.bounding_boxes, use_width_height)
 
         self.pitches = load_real_pitches(pose_files_path, poses_files_prefix)
-
-        nb_to_add = sequence_length - 1
-
-        for _ in range(nb_to_add):
-            self.bounding_boxes.insert(0, np.zeros((input_size)))
-            self.pitches.insert(0, 0.0)
 
         # Gather into blocks of sequences
 
