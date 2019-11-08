@@ -1,6 +1,6 @@
 
 # data files
-*.zip
+.zip
 
 # matlab extra files
 *.m~
