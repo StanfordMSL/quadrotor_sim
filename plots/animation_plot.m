@@ -16,8 +16,10 @@ map = wp.map;
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
-    xlim(wp.x_lim);
-    ylim(wp.y_lim);
+%     xlim(wp.x_lim);
+%     ylim(wp.y_lim);
+    xlim([-2.5 2.5]);
+    ylim([-2.5 2.5]);
     zlim(wp.z_lim);
     grid on
     
@@ -27,9 +29,11 @@ map = wp.map;
     switch view_point
         case 'persp'
             view(320,20);
-%             zoom(1.8)
+%              zoom(1.8)
         case 'back'
             view(-90,0);
+        case 'side'
+            view(0,0);
     end
     
     hold on
@@ -71,7 +75,7 @@ map = wp.map;
     xlabel('x-axis');
     ylabel('y-axis');
     zlabel('z-axis');
-    legend('X','Y','Z','trajectory');
+%     legend('X','Y','Z','trajectory','Location','southeast');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;
