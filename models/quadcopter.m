@@ -2,9 +2,11 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
     % Unpack
     switch type
         case 'actual'
-          dt = model.act_dt;  
+          dt = model.act_dt; 
+          wt = model.Q*randn(6,1);
         case 'fc'
           dt = model.con_dt;
+          wt = zeros(6,1);
     end
     
     pos   = x_curr(1:3,1);
@@ -16,9 +18,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
     wy = x_curr(11,1);
     wz = x_curr(12,1);
     w_all = x_curr(10:12,1);
-
-    % Generate Noise
-    wt = model.Q*randn(6,1);
     
     % Unpack External Force/Torques
     F_ext = FT_ext(1:3,1);

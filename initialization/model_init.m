@@ -72,7 +72,7 @@ switch mode
         model.L_act  = 0.0885;
         
         % Model Noise
-        model.Q = 0.0*eye(6);
+        model.Q = 1*eye(6);
 end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');
