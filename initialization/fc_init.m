@@ -56,7 +56,7 @@ switch type
         Q_xy     = 0*ones(2,1);
         Q_z      = 0*ones(1,1);
         Q_vel    = 0*ones(3,1);
-        Q_q      = 0*[1 1 1]';
+        Q_q      = 1*[1 1 1]';
         Q_omg_xy = 0*ones(2,1);
         Q_omg_z  = 0*ones(1,1);
         
@@ -110,10 +110,10 @@ switch type
         % Pose Weighted Q
         Q_xy     = 100*ones(2,1);
         Q_z      = 100*ones(1,1);
-        Q_vel    = 10*ones(3,1);
+        Q_vel    = 100*ones(3,1);
         Q_q      = 100*[1 1 1]';
-        Q_omg_xy = 10*ones(2,1);
-        Q_omg_z  = 10*ones(1,1);
+        Q_omg_xy = 100*ones(2,1);
+        Q_omg_z  = 100*ones(1,1);
         
         Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
         fc.Q(:,:,6) = diag(Q_vect);

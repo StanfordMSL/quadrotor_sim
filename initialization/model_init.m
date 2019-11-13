@@ -56,8 +56,8 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [7.52e-6 0.00 0.00]';
-        model.b_est  = 0.05; 
+        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_est  = 0.0011; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
         
@@ -66,16 +66,19 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [7.52e-6 0.00 0.00]';
-        model.b_act  = 0.05;
+        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_act  = 0.0011;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
-        
         % Model Noise
         model.Q = 1*eye(6);
+    disp('[model init]: TODO resolve the difference between simple and simple vII. seems like inertia axis in solidworks was different?');    
 end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');
+
+model.leg_l = 0.15;
+disp('[model init]: Leg length set to 0.2m');
 
 model.inv_I_est = inv(model.I_est);
 model.inv_I_act = inv(model.I_act);
