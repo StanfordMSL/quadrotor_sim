@@ -84,8 +84,9 @@ for k = 1:sim_N
         u  = nom.u_bar(:,k_con) + del_u;
         curr_m_cmd = wrench2m_controller(u,model);
         
-        % Log State Estimation and Control
-        flight.m_cmd(:,k_con) = curr_m_cmd;       
+        % Log State Control Commands
+        flight.m_cmd(:,k_con) = curr_m_cmd;  
+        flight.u(:,k_con)     = u; 
         
         k_con = k_con + 1;
     end
@@ -118,9 +119,4 @@ end
 
 %% Plot the States and Animate
 % state_plot(flight)
-animation_plot(flight,wp,targ,'side');
-
-% ukf_state_plot(sv, flight);
-% state_plot(flight)
-% fig_h_ani = animation_plot(flight, wp, camera);
-% presentation_plot(time,x_act,quat,mu_ekf,mu_ukf);
+animation_plot(flight,wp,targ,'persp');

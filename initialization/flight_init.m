@@ -18,3 +18,4 @@ flight.sigma = zeros(12,12,length(flight.t_fc));
 % Flight Motor Inputs
 flight.m_cmd = zeros(4,length(flight.t_fc)-1);
 flight.m_cmd(:,1) = wrench2m_controller(model.hover_wrench,model);
+flight.u = zeros(4,length(flight.t_fc)-1);

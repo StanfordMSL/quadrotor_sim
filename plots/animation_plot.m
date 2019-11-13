@@ -18,8 +18,8 @@ map = wp.map;
     gate_h.LineWidth = 3;
 %     xlim(wp.x_lim);
 %     ylim(wp.y_lim);
-    xlim([-2.5 2.5]);
-    ylim([-1.0 1.0]);
+%     xlim([-2.5 2.5]);
+%     ylim([-1.0 1.0]);
     zlim(wp.z_lim);
     grid on
     hold on
