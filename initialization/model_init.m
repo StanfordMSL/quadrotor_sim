@@ -77,6 +77,9 @@ end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');
 
+model.leg_l = 0.15;
+disp('[model init]: Leg length set to 0.2m');
+
 model.inv_I_est = inv(model.I_est);
 model.inv_I_act = inv(model.I_act);
 

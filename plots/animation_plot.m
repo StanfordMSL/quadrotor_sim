@@ -1,4 +1,4 @@
-function animation_plot(flight,wp,view_point)
+function animation_plot(flight,wp,targ,view_point)
 
 map = wp.map;
     
@@ -19,11 +19,14 @@ map = wp.map;
 %     xlim(wp.x_lim);
 %     ylim(wp.y_lim);
     xlim([-2.5 2.5]);
-    ylim([-2.5 2.5]);
+    ylim([-1.0 1.0]);
     zlim(wp.z_lim);
     grid on
     hold on
 
+    % Plot the target
+    h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+    
     % Plot the Waypoints
     for k = 1:size(wp.x,2)
         [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
@@ -84,7 +87,13 @@ map = wp.map;
         
         [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
-
+        
+        if t_act(k) > targ.t_capture
+            h_targ.XData = x_act(1,k);
+            h_targ.YData = x_act(2,k);
+            h_targ.ZData = x_act(3,k)-0.1;
+        end
+        
         drawnow
         
         curr_time = curr_time + toc;
