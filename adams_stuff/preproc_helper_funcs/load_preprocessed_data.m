@@ -59,7 +59,12 @@ function [t_pose_arr, t_rbg_arr, z_mat, position_mat, quat_mat, gt_bb] = load_pr
         t_rbg_arr(frame_ind + 1) = D{1}(1);
         t_pose_arr(frame_ind + 1) = D{2}(1);
         position_mat(frame_ind + 1, :) = [D{3}(1), D{4}(1), D{5}(1)];
-        quat_mat(frame_ind + 1, :) = [D{6}(1), D{7}(1), D{8}(1), D{9}(1)];
+        s = sign(D{6}(1)); % scalar portion of quaternion
+        if s < 0
+            quat_mat(frame_ind + 1, :) = [D{6}(1), D{7}(1), D{8}(1), D{9}(1)] * s;
+        else
+            quat_mat(frame_ind + 1, :) = [D{6}(1), D{7}(1), D{8}(1), D{9}(1)];
+        end
         gt_bb(frame_ind + 1, :) = max_min_coords_to_yolo_bb([D{10}(1), D{11}(1)], [D{12}(1), D{13}(1)]);
     end
     t_pose_arr(frame_ind + 1:end) = [];

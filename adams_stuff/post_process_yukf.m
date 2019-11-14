@@ -29,12 +29,14 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% overwrite placeholder value of flight.x_act/t_act with ground truth data %%%
+    x0_ego_gt = [camera.pose(1:3)'; zeros(3, 1); camera.pose(4:7)'; zeros(3, 1)];
+    x0_gt = [position_mat(1, :)'; zeros(3, 1); quat_mat(1, :)'; zeros(3 ,1); x0_ego_gt];
     flight.x_act = zeros(num_dims, num_img); 
     flight.x_act(1:3, :) = position_mat';
     flight.x_act(7:10, :) = quat_mat(:, :)';
     flight.t_act = t_pose_arr;
-    x0_ego_gt = [camera.pose(1:3)'; zeros(3, 1); camera.pose(4:7)'; zeros(3, 1)];
-    x0_gt = [position_mat(1, :)'; zeros(3, 1); quat_mat(1, :)'; zeros(3 ,1); x0_ego_gt];
+    flight.x_act(14:16, :) = repmat(x0_gt(14:16), 1, size(flight.x_act, 2));
+    flight.x_act(20:23, :) = repmat(x0_gt(20:23), 1, size(flight.x_act, 2));
     yukf.dt = flight.t_act(2) - flight.t_act(1);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
