@@ -1,0 +1,8 @@
+prefix=/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/install
+
+Name: sim2real
+Description: Description of sim2real
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/install/lib 
+Requires: 

@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/install/setup.sh
