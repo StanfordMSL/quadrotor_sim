@@ -1,18 +1,21 @@
-function nom = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn)
-    tic
+function [nom, fs_trig] = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn)
+    t_solve = tic;
+    fs_trig = 0;
+    
     % Determine where we are along the nominal trajectory.
-    [~,n] = min(vecnorm(nom.x_bar - x_now));
+    n = model.con_hz*model.lqr_dt;
     N = nom.total;
 
     % Unpack the Terms
     t_bar = linspace(0,t_hzn,N);
     x_bar = [nom.x_bar(:,n:end) repmat(nom.x_bar(:,end),1,(n-1))];
     u_bar = [nom.u_bar(:,n:end) repmat(nom.u_bar(:,end),1,(n-1))];  
-    
+%     u_bar = [nom.u_bar(:,n:end) zeros(4,(n-1))];  
+
     % Convergence Variables
     itrs = 1;
-    u_diff_avg = 10;
-    while u_diff_avg > 1e-1
+    x_diff = 999;
+    while x_diff > 1e-3
         % Determine A and B matrices for this step
         [A,B] = dynamics_linearizer(x_bar,u_bar,model);
         
@@ -20,18 +23,23 @@ function nom = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn)
         [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,fc);
         
         % Forward Pass
-        [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,nom.alpha,model,fc);
-
+        [x_bar,u_bar,~] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,nom.alpha,model,fc);
+        
+        % Detect Singularities
+        [~,msgid] = lastwarn;
+        if strcmp(msgid,'MATLAB:nearlySingularMatrix') 
+            fs_trig = 1;
+            disp('[hzn_ilqr]: Near singularity detected. Commands cut)');
+            break;
+        end
+        
         % Check for Convergence
         if itrs < 100
-            u_diff_avg = u_diff/N;
-%             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_u difference: ',num2str(u_diff_avg)]);
+            x_diff = norm(x_bar(:,end) - wp.x(:,end));
 
             itrs = itrs + 1;
         else
-%             x_bar = nom.x_bar(:,n:end);
-%             u_bar = nom.u_bar(:,n:end);
-            disp('[ilqr]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
+            disp('[hzn_ilqr]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
             break;
         end
     end
@@ -42,6 +50,6 @@ function nom = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn)
     nom.l = l;
     nom.L = L;
     
-    disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
+    disp(['[ilqr]: iLQR Compute Exited on Iteration ',num2str(itrs),' and taking ',num2str(toc(t_solve)),' seconds.']);
 end
 

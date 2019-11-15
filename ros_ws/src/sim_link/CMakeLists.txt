@@ -132,6 +132,9 @@ include_directories(
 add_executable(sim_link src/sim_link.cpp)
 target_link_libraries(sim_link ${catkin_LIBRARIES})
 
+add_executable(dir_ctrl src/dir_ctrl.cpp)
+target_link_libraries(dir_ctrl ${catkin_LIBRARIES})
+
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide

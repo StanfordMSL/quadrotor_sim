@@ -1,23 +1,19 @@
 #include "ros/ros.h"
-#include <sensor_msgs/Joy.h>
-#include <std_msgs/Float32.h>
-#include <geometry_msgs/PointStamped.h>
+#include <std_msgs/Float32MultiArray.h>
+#include "mavros_msgs/ActuatorControl.h"
+#include <eigen3/Eigen/Dense>
 
-std::vector<float> joy_cmd(4);
-geometry_msgs::PointStamped pos_cmd;
+std_msgs::Float32MultiArray l;
+std_msgs::Float32MultiArray L;
 
-static float hz = 20.0; // Hz
-static float deadband = 0.05;
-static float reset_cmd = 0;
-static float x_lim[] = {-2, 2};
-static float y_lim[] = {-1, 1};
-static float z_lim[] = {0, 2};
-bool fs_trigger = 0;
-
-void js_cb(const sensor_msgs::Joy msg)
+void l_cb(const std_msgs::Float32MultiArrayConstPtr& msg)
 {
-  joy_cmd = msg.axes;
-  reset_cmd = msg.buttons[0];
+  l = *msg;
+}
+
+void L_cb(const std_msgs::Float32MultiArrayConstPtr& msg)
+{
+  L = *msg;
 }
 
 float deadband_check(float cmd,float deadband) {

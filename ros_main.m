@@ -1,16 +1,13 @@
 clear; clc; 
 addpath(genpath(pwd));
+lastwarn('');
+
+%     rosshutdown
+%     setenv('ROS_MASTER_URI','http://localhost:11311')
+%     rosinit('http://localhost:11311');
+%     pause(1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% ROS Initialization
-rosshutdown
-pause(1)
-
-setenv('ROS_MASTER_URI','http://localhost:11311')
-rosinit
-js = rossubscriber('/gquad/pos_cmd');
-pause(1);
-
-hz = 20;
+%% Plot Initialization
 
 figure(1)
 clf
@@ -25,12 +22,13 @@ grid on
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
-t_hzn = 5;
+t_hzn = 3;
 
 est_hz = 100;      % State Estimator Time Counter
 lqr_hz = 2;        % Low Rate Controller Sample Rate
-con_hz = 20;       % High Rate Controller Sample Rate
-act_hz = 100;      % Actual Dynamics Sample Rate
+con_hz = 40;       % High Rate Controller Sample Rate (lqr_dt*con_hz needs to be whole)
+act_hz = 1000;      % Actual Dynamics Sample Rate
+plot_hz = 10;      % Fast Plotting Sample Rate
 
 sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
 
@@ -43,11 +41,14 @@ t_act = 0:1/act_hz:t_hzn;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple vII',est_hz,con_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple vII',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
 wp     = wp_init('horizon',0,t_hzn,'no plot');         % Initialize timestamped keyframes
 flight = flight_init(model,t_hzn,wp);                   % Initialize Flight Variables
 targ   = targ_init("pigeon");                           % Iitialize target
+
+%%% ROS Initialization
+[l_pub,l_msg,L_pub,L_msg,js_sub] = ros_init(t_hzn,con_hz,flight.x_act(:,1),flight.u(:,1));
 
 %%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter
@@ -66,6 +67,7 @@ N_ct  = round(dt_ct*act_hz);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
 
+fs_trig = 0;       % Trigger for motor cut;
 % Cold Start the nominal trajectory for the iLQR
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
 disp('[main]: Warm start complete! Ready to launch!');
@@ -85,38 +87,45 @@ while true
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Low Rate Controller    
-    if (mod(sim_time,1/lqr_hz) < tol)
+    if (mod(sim_time,1/lqr_hz) < tol) && (fs_trig == 0)
         
         % Update Active Trajectory
-        data = receive(js,1);
+        data = receive(js_sub,1);
     
         wp.x(1,2) = data.Point.X;
         wp.x(2,2) = data.Point.Y;
         wp.x(3,2) = data.Point.Z;
     
-        des.XData = wp.x(1,2);
-        des.YData = wp.x(2,2);
-        des.ZData = wp.x(3,2);
-    
-        act.XData = flight.x_act(1,k_act);
-        act.YData = flight.x_act(2,k_act);
-        act.ZData = flight.x_act(3,k_act);
-    
+        wp.x(1,3) = data.Point.X;
+        wp.x(2,3) = data.Point.Y;
+        wp.x(3,3) = data.Point.Z;
+      
         % Update LQR params
-        nom = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn);
+        [nom, fs_trig] = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn);
         k_lqr = k_lqr + 1;
         k_con = 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (mod(sim_time,1/con_hz) < tol)
-        % Draw Out Motor Commands from u_bar computed by iLQR
-        del_x = x_now-nom.x_bar(:,k_con);
-        del_u = nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
-        u  = nom.u_bar(:,k_con) + del_u;
-        curr_m_cmd = wrench2m_controller(u,model);
+        if (fs_trig == 0)
+            % Draw Out Motor Commands from u_bar computed by iLQR
+            del_x = x_now-nom.x_bar(:,k_con);
+            del_u = nom.alpha*nom.l(:,:,k_con) + nom.L(:,:,k_con)*del_x;
+            u  = nom.u_bar(:,k_con) + del_u;
+            curr_m_cmd = wrench2m_controller(u,model);
+
+            k_con = k_con + 1;
+        else
+            curr_m_cmd = zeros(4,1);
+        end
+
+        l_msg.Data = nom.l(:);
+        send(l_pub,l_msg);
         
-        k_con = k_con + 1;
+        L_msg.Data = nom.L(:);
+        send(L_pub,L_msg);
+        
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
@@ -142,5 +151,16 @@ while true
         flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext,'actual');
         
         k_act = k_act + 1;
+    end
+     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Fast Plot
+    if (mod(sim_time,1/plot_hz) < tol)   
+        des.XData = wp.x(1,2);
+        des.YData = wp.x(2,2);
+        des.ZData = wp.x(3,2);
+    
+        act.XData = flight.x_act(1,k_act);
+        act.YData = flight.x_act(2,k_act);
+        act.ZData = flight.x_act(3,k_act);
     end
 end

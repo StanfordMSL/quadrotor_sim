@@ -50,7 +50,7 @@ switch type
         R_vect = [R_f ; R_tau];
         fc.R = diag(R_vect);   
         
-        fc.Q = zeros(12,12,4);
+        fc.Q = zeros(12,12,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%               
         % Empty Cost
         Q_xy     = 0*ones(2,1);

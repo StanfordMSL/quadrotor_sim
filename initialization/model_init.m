@@ -1,4 +1,4 @@
-function model = model_init(mode,est_hz,con_hz,act_hz)
+function model = model_init(mode,est_hz,lqr_hz,con_hz,act_hz)
 
 model.g = 9.81;
 
@@ -71,7 +71,7 @@ switch mode
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
         % Model Noise
-        model.Q = 1*eye(6);
+        model.Q = 0.4*eye(6);
     disp('[model init]: TODO resolve the difference between simple and simple vII. seems like inertia axis in solidworks was different?');    
 end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
@@ -101,6 +101,9 @@ model.con_dt = 1/con_hz;
 
 model.act_hz = act_hz;
 model.act_dt = 1/act_hz;
+
+model.lqr_hz = lqr_hz;
+model.lqr_dt = 1/lqr_hz;
 
 model.hover_u = sqrt((model.m_act*model.g)/(4*model.kt_act(1,1)));
 model.hover_wrench = [model.g*model.m_act ; 0 ; 0 ; 0];
