@@ -1,6 +1,6 @@
 
 # data files
-*.zip
+.zip
 
 # matlab extra files
 *.m~
@@ -11,3 +11,6 @@
 
 # Python stuff
 *.pyc
+
+learn_pose/data/
+learn_pitch_fcn/data/
