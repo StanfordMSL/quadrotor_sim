@@ -12,6 +12,10 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
     q_bar_inv = quatinv(q_bar(:)');
     ei_vec_set = zeros(3, num_sps);
     quat_arr = zeros(num_sps, 4);
+    
+    % construct weight vector for alternate quat-mean calc
+    ws = ones(size(quat_arr, 1), 1) * yukf.wi;
+    ws(1) = yukf.w0_m;
     for itr = 1:max_itr
         W = yukf.w0_m;
         e_vec = zeros(3,1);
@@ -28,8 +32,6 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         q_bar = quatmultiply(e_quat(:)', q_bar(:)');
         q_bar_inv = quatinv( q_bar(:)' );
         
-        ws = ones(size(quat_arr, 1)) * yukf.wi;
-        ws(1) = yukf.w0_m;
         quatAverage = wavg_quaternion_markley(quat_arr, ws)';
         if abs(quat_dist(quatAverage, q_bar)) > 0.5 * 180/pi
             warning('Built-in Function for quat mean disagrees with us!')
