@@ -6,7 +6,7 @@ import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
 from parse_config import ConfigParser
-
+import numpy as np
 
 def main(config):
     logger = config.get_logger('test')
@@ -37,13 +37,13 @@ def main(config):
     total_loss = 0.0
     total_metrics = torch.zeros(len(metric_fns))
 
-    detected_pitches = []
+    detected_poses = []
 
     with torch.no_grad():
         for i, (data, target) in enumerate(tqdm(data_loader)):
             data, target = data.to(device), target.to(device)
             output = model(data)
-            detected_pitches.extend(output.tolist())
+            detected_poses.append(output.tolist())
 
             #
             # save sample images, or do something with output here
@@ -63,9 +63,11 @@ def main(config):
     })
     logger.info(log)
 
-    with open('/'.join(str(config.resume).split('/')[:-1])+'/real_pitches.txt', 'w') as f:
-        for item in detected_pitches:
-            f.write("%s\n" % item[-1])
+    with open('/'.join(str(config.resume).split('/')[:-1])+'/real_poses.txt', 'w') as f:
+        for batch in detected_poses:
+            for pose in batch:
+                q = pose[3:]/np.linalg.norm(pose[3:])
+                f.write(str(pose[0])+' '+str(pose[1])+' '+str(pose[2])+ ' '+str(q[0])+' '+str(q[1])+' '+str(q[2])+' '+str(q[3])+'\n')
 
 
 if __name__ == '__main__':

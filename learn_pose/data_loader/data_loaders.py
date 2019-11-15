@@ -57,10 +57,12 @@ def load_real_poses(poses_path, file_name_prefix):
     for id in ids:
         filepath = poses_path+file_name_prefix+str(id)+'.txt'
         pose_file = open(filepath, 'r')
-        (x,y,z,q0,q1,q2,q3) = pose_file.readlines()[0].split()[2:9]
+        (x,y,z,q0,q1,q2,q3) = [float(i) for i in pose_file.readlines()[0].split()[2:9]]
+        if q0 < 0:
+            (q0,q1,q2,q3) = (-q0,-q1,-q2,-q3)
         # q = Quaternion([q0,q1,q2,q3])
         # (y, p, r) = q.yaw_pitch_roll
-        poses.append([float(x),float(y),float(z),float(q0),float(q1),float(q2),float(q3)])
+        poses.append([x,y,z,q0,q1,q2,q3])
     return poses  # input
 
 
@@ -148,6 +150,7 @@ class SimBoundingBoxPitchDataset(Dataset):
                 "Not as many bounding boxes as poses for id "+str(id))
 
             # Gather into blocks of sequences
+
             self.bounding_boxes.extend(
                 list(chunks(bounding_boxes, sequence_length)))
             self.poses.extend(list(chunks(poses, sequence_length)))
@@ -161,7 +164,6 @@ class SimBoundingBoxPitchDataset(Dataset):
             self.bounding_boxes).reshape(-1, input_size*sequence_length)
         self.poses = torch.FloatTensor(
             self.poses).reshape(-1, output_size*sequence_length)
-
     def __len__(self):
         return len(self.bounding_boxes)
 
@@ -221,11 +223,11 @@ class RealBoundingBoxPitchDataset(Dataset):
         self.bounding_boxes = list(
             chunks(self.bounding_boxes, sequence_length))
         self.poses = list(chunks(self.poses, sequence_length))
-
         self.bounding_boxes = torch.FloatTensor(
             self.bounding_boxes).reshape(-1, input_size*sequence_length)
         self.poses = torch.FloatTensor(
             self.poses).reshape(-1, output_size*sequence_length)
+        
 
     def __len__(self):
         return len(self.bounding_boxes)
