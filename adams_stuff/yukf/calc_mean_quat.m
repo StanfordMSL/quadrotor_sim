@@ -12,6 +12,11 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
     q_bar_inv = quatinv(q_bar(:)');
     ei_vec_set = zeros(3, num_sps);
     quat_arr = zeros(num_sps, 4);
+    % construct weights used for alternate quat-mean calc
+    ws = ones(size(quat_arr, 1)) * yukf.wi;
+    ws(1) = yukf.w0_m;
+    quatAverage = wavg_quaternion_markley(quat_arr, ws)';
+    return;
     for itr = 1:max_itr
         W = yukf.w0_m;
         e_vec = zeros(3,1);
@@ -28,11 +33,10 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
         q_bar = quatmultiply(e_quat(:)', q_bar(:)');
         q_bar_inv = quatinv( q_bar(:)' );
         
-        ws = ones(size(quat_arr, 1)) * yukf.wi;
-        ws(1) = yukf.w0_m;
         quatAverage = wavg_quaternion_markley(quat_arr, ws)';
-        if abs(quat_dist(quatAverage, q_bar)) > 0.5 * 180/pi
-            warning('Built-in Function for quat mean disagrees with us!')
+        q_dist = abs(quat_dist(quatAverage, q_bar)); %  THIS IS IN DEGREES
+        if q_dist > 0.5 
+            warning('Built-in Function for quat mean disagrees with us!(%.5f deg)', q_dist)
         end
         if(norm(e_vec) < thresh)
             if(itr == 1); continue; end % so quick its worth taking another step
@@ -40,6 +44,6 @@ function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
             return  % we have converged
         end
     end
-    warning('orientation mean calculation did not converge, using alt mean-quat method! (%.5f)', norm(e_vec))
+    warning('orientation mean calculation did not converge, using alt mean-quat method! (%.5f deg)', norm(e_vec)*180/pi)
     mu_bar(7:10) = quatAverage;
 end
