@@ -1,22 +1,40 @@
-function [mu_bar, ei_vec_set] = calc_mean_quat(sps, yukf)
+function [quat_mean, ei_vec_set] = calc_mean_quat(quat_arr, yukf)
+    num_quats = size(quat_arr, 1);
+    ei_vec_set = zeros(3, num_quats);
+    
+    % construct weights used for alternate quat-mean calc
+    ws = ones(num_quats, 1) * yukf.wi;
+    ws(1) = yukf.w0_m;
+    
+    
+    % TEMP - only use simple method %%%%%%%%%%%%%%%
+    q_bar = wavg_quaternion_markley(quat_arr, ws)';
+    if q_bar(1) < 0
+        q_bar = q_bar * sign(q_bar(1));
+    end
+    q_bar_inv = quatinv(q_bar(:)');
+    for i = 1:num_quats
+        qi = quat_arr(i, :);
+        ei_quat = quatmultiply(qi(:)', q_bar_inv(:)');
+        ei_vec = quat_to_axang(ei_quat(:)');
+        ei_vec_set(:, i) = ei_vec;
+    end
+    quat_mean = q_bar;
+    return;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+
     % see https://kodlab.seas.upenn.edu/uploads/Arun/UKFpaper.pdf, sec 3.4
     max_itr = 50;
     thresh = 0.05 * pi/180;
     
-    % calculate the mean of the vector parts
-    mu_bar = (yukf.w0_m * sps(:,1)) + (yukf.wi*sum(sps(:,2:end), 2));
     
     % now deal with the quaterion...
     num_sps = size(sps, 2);
     q_bar = sps(7:10, 1);
     q_bar_inv = quatinv(q_bar(:)');
-    ei_vec_set = zeros(3, num_sps);
     quat_arr = zeros(num_sps, 4);
-    % construct weights used for alternate quat-mean calc
-    ws = ones(size(quat_arr, 1)) * yukf.wi;
-    ws(1) = yukf.w0_m;
-    quatAverage = wavg_quaternion_markley(quat_arr, ws)';
-    return;
+    
     for itr = 1:max_itr
         W = yukf.w0_m;
         e_vec = zeros(3,1);
