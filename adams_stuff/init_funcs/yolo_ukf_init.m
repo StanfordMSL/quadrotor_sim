@@ -49,7 +49,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     % these values are used for stepping along sigma directions
     dp = 0.1; % [m]
     dv = 0.005; % [m/s]
-    dq = 0.1; % [rad] in ax ang 
+    dq = 0.01; % [rad] in ax ang 
     dw = 0.005; % [rad/s]
     frac = 0.1;
     dp_e = frac*dp; % [m]
