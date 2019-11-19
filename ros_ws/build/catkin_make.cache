@@ -1,2 +1,0 @@
-sim_link
--DCATKIN_DEVEL_PREFIX=/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/devel -DCMAKE_INSTALL_PREFIX=/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/install -G Unix Makefiles

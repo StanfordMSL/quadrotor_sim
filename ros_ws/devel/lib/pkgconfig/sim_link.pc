@@ -1,8 +1,0 @@
-prefix=/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/devel
-
-Name: sim_link
-Description: Description of sim_link
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/lowjunen/StanfordMSL/quadrotor_sim/ros_ws/devel/lib 
-Requires: 
