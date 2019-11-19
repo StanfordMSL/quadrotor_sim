@@ -11,7 +11,8 @@ function [output, bb_rc_list] = predict_quad_bounding_box(x_curr, camera, initia
     
     tf_w_quad = state_to_tf(x_curr(1:13));
     if length(x_curr) > 13
-        tf_cam_w = inv_tf(state_to_tf(x_curr(14:26)));
+        tf_w_quadego = state_to_tf(x_curr(14:26));
+        tf_cam_w = camera.tf_cam_quadego * inv_tf(tf_w_quadego);
     else
         tf_cam_w = camera.tf_cam_w;
     end

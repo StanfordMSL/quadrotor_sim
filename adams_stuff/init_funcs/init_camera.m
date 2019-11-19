@@ -63,4 +63,7 @@ function camera = init_camera(varargin)
                      cam_width/2, -cam_height/2, len; cam_width/2, cam_height/2, len; NaN, NaN, NaN;  ...
                      -cam_width/2, -cam_height/2, len; cam_width/2, -cam_height/2, len; NaN, NaN, NaN;  ...
                      -cam_width/2, cam_height/2, len; cam_width/2, cam_height/2, len];
+                 
+   camera.tf_cam_quadego = eye(4);
+   camera.tf_quadego_cam = eye(4);
 end

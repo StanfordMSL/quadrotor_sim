@@ -7,8 +7,8 @@ function [mu_bar, sig_bar] = predict_mean_and_cov_state(sps, yukf, cov_add_noise
     mu_bar = (yukf.w0_m * sps(:, 1)) + (yukf.wi*sum(sps(:, 2:end), 2)); % calculate the mean of the vector parts
     [quat_mean, ei_vec_set] = calc_mean_quat(sps(7:10, :)', yukf); % now the quaternion parts
     [quat_mean_ego, ei_vec_set_ego] = calc_mean_quat(sps(20:23, :)', yukf); % now the quaternion parts
-    [sps(20:23, :)'; quat_mean_ego]
-    [sps(7:10, :)'; quat_mean]
+%     [sps(20:23, :)'; quat_mean_ego]
+%     [sps(7:10, :)'; quat_mean]
     mu_bar(7:10) = quat_mean;
     mu_bar(20:23) = quat_mean_ego;
     

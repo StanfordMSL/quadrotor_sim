@@ -10,7 +10,7 @@ function yukf = yukf_step(yukf, u_ego, z, camera, initial_bb)
     % line 2 prob rob
     sps = calc_sigma_points(yukf.mu, yukf.sigma, yukf); 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    quat2eul([yukf.mu(7:10)'; sps(7:10, 13:18)'])*180/pi
+%     quat2eul([yukf.mu(7:10)'; sps(7:10, 13:18)'])*180/pi
     % line 3 prob rob ( Predict ) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     sps_pred = zeros(dim, num_sp);
     for sp_ind = 1:num_sp

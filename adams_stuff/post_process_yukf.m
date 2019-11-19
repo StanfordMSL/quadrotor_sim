@@ -29,7 +29,13 @@ function post_process_yukf()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% overwrite placeholder value of flight.x_act/t_act with ground truth data %%%
-    x0_ego_gt = [camera.pose(1:3)'; zeros(3, 1); camera.pose(4:7)'; zeros(3, 1)];
+    x0_ego_gt = [camera.pose(1:3)'; zeros(3, 1); 1; 0; 0; 0; zeros(3, 1)]; % camera.pose(4:7)'
+    camera.pose(1:3) = [0, 0, 0]; % THIS IS NOW RELATIVE TO THE STATE!!
+    
+    tf_w_quadego = state_to_tf(x0_ego_gt);
+    camera.tf_cam_quadego = camera.tf_cam_w * tf_w_quadego;
+    camera.tf_quadego_cam = inv_tf(camera.tf_cam_quadego);
+    
     x0_gt = [position_mat(1, :)'; zeros(3, 1); quat_mat(1, :)'; zeros(3 ,1); x0_ego_gt];
     flight.x_act = zeros(num_dims, num_img); 
     flight.x_act(1:3, :) = position_mat';
@@ -73,6 +79,7 @@ function post_process_yukf()
     for k = 1:num_img
         % YOLO UKF %%%%%%
         if(k > 1)
+%             [yukf.mu(14:17); quat2eul(yukf.mu(20:23)')'*180/pi]' % printego quad's state
             t_now = t_rbg_arr(k);
             t_tmp = t_now;
             yukf.dt = t_now - t_prev;
@@ -83,7 +90,8 @@ function post_process_yukf()
             % update model's est dt & est hz %%%%%%
             yukf.model.est_dt = yukf.dt; yukf.model.est_hz = 1/yukf.model.est_dt; 
             
-            u_ego = yukf.model.hover_wrench;
+%             u_ego = yukf.model.hover_wrench;
+            u_ego = yukf.model.hover_u*ones(4,1);
             
             % Get sensor reading
             if yukf.prms.b_predicted_bb

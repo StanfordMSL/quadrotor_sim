@@ -61,7 +61,7 @@ function yukf = yolo_ukf_init(num_dims, dt)
     yukf.sigma = diag([dp, dp, dp, dv, dv, dv, dq, dq, dq, dw, dw, dw, dp_e, dp_e, dp_e, dv_e, dv_e, dv_e, dq_e, dq_e, dq_e, dw_e, dw_e, dw_e]);
     assert(length(yukf.sigma) == dim_sigma)
     
-    fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3);
+    fake_cam.tf_cam_w = eye(4); fake_cam.K = eye(3); fake_cam.tf_cam_quadego = eye(4);
     yukf.prms.meas_len = length(predict_quad_bounding_box(yukf.mu, fake_cam, rand(size(init_quad_bounding_box(1,1,1,1))), yukf));
     yukf.prms.Q = yukf.sigma/10;  % Process Noise
     
