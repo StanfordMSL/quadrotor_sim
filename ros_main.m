@@ -6,7 +6,7 @@ lastwarn('');
 %     setenv('ROS_MASTER_URI','http://localhost:11311')
 %     rosinit('http://localhost:11311');
 %     pause(1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot Initialization
 
 figure(1)
@@ -48,7 +48,7 @@ flight = flight_init(model,t_hzn,wp);                   % Initialize Flight Vari
 targ   = targ_init("pigeon");                           % Iitialize target
 
 %%% ROS Initialization
-[l_pub,l_msg,L_pub,L_msg,js_sub] = ros_init(t_hzn,con_hz,flight.x_act(:,1),flight.u(:,1));
+[l_pub,l_msg,L_pub,L_msg,js_sub,pose_sub,twist_sub] = ros_init(t_hzn,con_hz,flight.x_act(:,1),flight.u(:,1));
 
 %%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter
@@ -66,8 +66,9 @@ N_ct  = round(dt_ct*act_hz);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
-
 fs_trig = 0;       % Trigger for motor cut;
+sim_key = 1;       % If true (1), we run as a simulation, else we are running in ROS
+
 % Cold Start the nominal trajectory for the iLQR
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
 disp('[main]: Warm start complete! Ready to launch!');
@@ -80,8 +81,29 @@ while true
     % State Estimator
     if (mod(sim_time,1/est_hz) < tol)
         % Perfect Sensing (used for flight control)
-        x_now = flight.x_act(:,k_act);
-        flight.x_fc(:,k_est)  = x_now;
+        if sim_key == 0
+            x_now = flight.x_act(:,k_act);
+            flight.x_fc(:,k_est)  = x_now;
+        else
+            data_pose   = receive(pose_sub,1);
+            data_twist  = receive(twist_sub,1);
+
+            x_now(1,1) = data_pose.Pose.Position.x;
+            x_now(2,1) = data_pose.Pose.Position.y;
+            x_now(3,1) = data_pose.Pose.Position.z;
+            x_now(7,1) = data_pose.Pose.Quarternion.x;
+            x_now(8,1) = data_pose.Pose.Quarternion.y;
+            x_now(9,1) = data_pose.Pose.Quarternion.z;
+            
+            x_now(4,1)  = data_twist.Twist.Linear.x;
+            x_now(5,1)  = data_twist.Twist.Linear.y;
+            x_now(6,1)  = data_twist.Twist.Linear.z;
+            x_now(10,1) = data_twist.Twist.Angular.x;
+            x_now(11,1) = data_twist.Twist.Angular.y;
+            x_now(12,1) = data_twist.Twist.Angular.z;
+            
+            flight.x_fc(:,k_est)  = x_now;
+        end
         
         k_est = k_est + 1;
     end
@@ -90,15 +112,15 @@ while true
     if (mod(sim_time,1/lqr_hz) < tol) && (fs_trig == 0)
         
         % Update Active Trajectory
-        data = receive(js_sub,1);
+        data_pose = receive(js_sub,1);
     
-        wp.x(1,2) = data.Point.X;
-        wp.x(2,2) = data.Point.Y;
-        wp.x(3,2) = data.Point.Z;
+        wp.x(1,2) = data_pose.Point.X;
+        wp.x(2,2) = data_pose.Point.Y;
+        wp.x(3,2) = data_pose.Point.Z;
     
-        wp.x(1,3) = data.Point.X;
-        wp.x(2,3) = data.Point.Y;
-        wp.x(3,3) = data.Point.Z;
+        wp.x(1,3) = data_pose.Point.X;
+        wp.x(2,3) = data_pose.Point.Y;
+        wp.x(3,3) = data_pose.Point.Z;
       
         % Update LQR params
         [nom, fs_trig] = hzn_ilqr(x_now,wp,nom,fc,model,t_hzn);
@@ -130,25 +152,12 @@ while true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     if (mod(sim_time,1/act_hz) < tol)
-%         check_ct = targ.pos - flight.x_act(1:3,k_act);
-%         
-%         if (norm(check_ct) < model.leg_l) && (st_ct == 0)
-%             [FT_ext_arr,model,targ] = contact_func(model,targ,t_act(k_act),flight.x_act(:,k_act),check_ct,N_ct);
-%             
-%             FT_ext = FT_ext_arr(:,k_ct);
-%             k_ct = k_ct + 1;
-% 
-%             st_ct = 1;
-%             
-%             disp('[main]: Contact triggered!');
-%         elseif (k_ct <= N_ct) && (st_ct == 1)
-%             FT_ext = FT_ext_arr(:,k_ct);
-%             k_ct = k_ct + 1;
-%         else
-%             FT_ext = zeros(6,1);
-%         end
-        FT_ext = zeros(6,1);
-        flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext,'actual');
+        if sim_key == 0
+            % Carry On
+        else
+            FT_ext = zeros(6,1);
+            flight.x_act(:,k_act+1) = quadcopter(flight.x_act(:,k_act),curr_m_cmd,model,FT_ext,'actual');
+        end
         
         k_act = k_act + 1;
     end

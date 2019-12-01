@@ -1,10 +1,12 @@
-function [l_pub,l_msg,L_pub,L_msg,js_sub] = ros_init(t_hzn,con_hz,x,u)
+function [l_pub,l_msg,L_pub,L_msg,js_sub,pose_sub,twist_sub] = ros_init(t_hzn,con_hz,x,u)
     states  = size(x,1);
     outputs = size(u,1);
     time    = t_hzn*con_hz;
 
     js_sub    = rossubscriber('/sim_link/pos_cmd');
-
+    pose_sub  = rossubscriber("/gquad/mavros/local_position/pose");
+    twist_sub = rossubscriber("/gquad/mavros/local_position/velocity");
+    
     l_pub = rospublisher('/sim_link/l_ff','std_msgs/Float32MultiArray');
     l_msg = rosmessage(l_pub);
     L_pub = rospublisher('/sim_link/l_fb','std_msgs/Float32MultiArray');
