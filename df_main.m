@@ -6,7 +6,7 @@ addpath(genpath(pwd));
 tf = 3;
 
 est_hz = 200;       % State Estimator Time Counter
-lqr_hz = 2;        % Low Rate Controller Sample Rate
+lqr_hz = 2;         % Low Rate Controller Sample Rate
 con_hz = 200;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
 
@@ -26,7 +26,7 @@ model  = model_init('simple vII',est_hz,lqr_hz,con_hz,act_hz); % Initialize Phys
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
 wp     = wp_init('targeted',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
-targ   = targ_init("soft toy");                           % Iitialize target
+targ   = targ_init("soft toy");                           % Initialize target
 
 %%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter
@@ -46,9 +46,10 @@ N_ct  = round(dt_ct*act_hz);
 %% Simulation
 
 % Cold Start the nominal trajectory for the iLQR
-nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
+nom = df_init(wp,model);
+% nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
 nominal_plot(wp,nom,'side',10);
-disp('[main]: Warm start complete! Ready to launch!');
+disp('[main]: Diff. Flat. based warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
 pause;
 
@@ -79,8 +80,9 @@ for k = 1:sim_N
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
+%         [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'df');
         [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr');
-        
+
         % Log State Control Commands
         flight.m_cmd(:,k_con) = curr_m_cmd;  
         flight.u(:,k_con)     = u; 
@@ -117,3 +119,4 @@ end
 %% Plot the States and Animate
 % state_plot(flight)
 animation_plot(flight,wp,targ,'persp');
+

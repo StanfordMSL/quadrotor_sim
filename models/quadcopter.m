@@ -24,8 +24,8 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
     tau_ext = FT_ext(4:6,1);
     
     % Compute the Linear and Angular Accelerations
-    vel_dot   = lin_acc(x_curr,u_curr,model,F_ext,0,'actual') + wt(1:3,1);
-    omega_dot = ang_acc(u_curr,w_all,model,tau_ext,'actual') + wt(4:6,1);
+    vel_dot   = lin_acc(x_curr,u_curr,model,F_ext,0,type) + wt(1:3,1);
+    omega_dot = ang_acc(u_curr,w_all,model,tau_ext,type) + wt(4:6,1);
     
     % State Updates   
     x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ

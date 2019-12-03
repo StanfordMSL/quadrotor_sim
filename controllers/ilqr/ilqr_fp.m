@@ -50,7 +50,7 @@ Q = fc.Q(:,:,Q_key(wp_fw,2));
 err_x = x_fp(:,N)-x_targ;
 cost_curr = cost_curr + 0.5* err_x'*Q*err_x;
 
-disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
+% disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
 
 % If cost goes down, we know it's feasible. Update x_bar.
 u_diff = sum(vecnorm(u_bar-u_fp));

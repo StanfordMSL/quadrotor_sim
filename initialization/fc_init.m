@@ -50,7 +50,7 @@ switch type
         R_vect = [R_f ; R_tau];
         fc.R = diag(R_vect);   
         
-        fc.Q = zeros(12,12,4);
+        fc.Q = zeros(12,12,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%               
         % Empty Cost
         Q_xy     = 0*ones(2,1);
@@ -161,6 +161,4 @@ switch type
     otherwise
         % Do Nothing
 end
-
-disp('[controller_init]: Controller uses a kw^2 estimate. Could be better (LS).');
 end
