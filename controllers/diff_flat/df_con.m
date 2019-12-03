@@ -1,11 +1,9 @@
 function u_wrench = df_con(f_out,model,angle_axis)
-tic
 
 % Unpack Items
 g = model.g;
 m = model.m_act;
 I = model.I_act;
-% u1 = u_curr(1,1);
 
 sigma    = f_out(:,1);
 sigma_d1 = f_out(:,2);

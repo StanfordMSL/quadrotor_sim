@@ -16,8 +16,8 @@ map = wp.map;
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
-%     xlim(wp.x_lim);
-%     ylim(wp.y_lim);
+    xlim(wp.x_lim);
+    ylim(wp.y_lim);
 %     xlim([-2.5 2.5]);
 %     ylim([-1.0 1.0]);
     zlim(wp.z_lim);

@@ -161,6 +161,4 @@ switch type
     otherwise
         % Do Nothing
 end
-
-disp('[controller_init]: Controller uses a kw^2 estimate. Could be better (LS).');
 end

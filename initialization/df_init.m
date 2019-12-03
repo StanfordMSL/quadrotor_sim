@@ -23,3 +23,9 @@ nom.t_bar = t_out;
 nom.x_bar = x_bar;
 nom.u_bar = u_bar;
 nom.f_out = f_out;
+
+N =  wp.tf*model.con_hz+1;
+nom.total = N;
+nom.alpha = 1;
+nom.l = zeros(4,1,N-1);
+nom.L = zeros(4,12,N-1);

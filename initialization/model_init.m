@@ -27,12 +27,12 @@ switch mode
         
         % Model Noise
         model.Q = 0.1*eye(6);
-    case 'simple'
-        % Estimate %%%
+    case 'simple vI'
+        % Estimate %%%          % simple motor, no noise, no drag
         model.m_est = 0.650;
-        model.I_est = 0.0001.*[ 2.14   0.00   0.00;...
-                                 0.00  32.40   0.00;...
-                                 0.00   0.00  10.52];    
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];  
         model.kt_est = [7.52e-6 0.00 0.00]';
         model.b_est  = 0.05; 
         model.kd_est = 0.0;
@@ -40,9 +40,9 @@ switch mode
         
         % Actual %%%
         model.m_act = 0.650;
-        model.I_act = 0.0001.*[ 2.14   0.00   0.00;...
-                                 0.00  32.40   0.00;...
-                                 0.00   0.00  10.52];               
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];            
         model.kt_act = [7.52e-6 0.00 0.00]';
         model.b_act  = 0.05;
         model.kd_act = 0.0;
@@ -50,7 +50,7 @@ switch mode
         
         % Model Noise
         model.Q = 0.0*eye(6);
-    case 'simple vII'
+    case 'simple vII'               % quadratic motor, with noise, no drag
         % Estimate %%%
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
@@ -71,10 +71,36 @@ switch mode
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
         % Model Noise
-        model.Q = 0.4*eye(6);
-    disp('[model init]: TODO resolve the difference between simple and simple vII. seems like inertia axis in solidworks was different?');    
+        Q_lin_acc = 0.3*ones(3,1);
+        Q_ang_acc = 0.03*ones(3,1);
+        model.Q = diag([Q_lin_acc ; Q_ang_acc]);
+    case 'simple vIII'              % quadratic motor, with noise, with drag
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_est  = 0.0011; 
+        model.kd_est = 0.1;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_act  = 0.0011;
+        model.kd_act = 0.1;
+        model.L_act  = 0.0885;
+        % Model Noise
+        Q_lin_acc = 0.3*ones(3,1);
+        Q_ang_acc = 0.03*ones(3,1);
+        model.Q = diag([Q_lin_acc ; Q_ang_acc]);
 end
 disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
+disp('[model init]: Angular acceleration noise assumed to be 1/10th of linear acceleration noise.');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');
 
 model.leg_l = 0.15;
