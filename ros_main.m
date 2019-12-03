@@ -81,7 +81,7 @@ while true
     % State Estimator
     if (mod(sim_time,1/est_hz) < tol)
         % Perfect Sensing (used for flight control)
-        if sim_key == 0
+        if sim_key == 1
             x_now = flight.x_act(:,k_act);
             flight.x_fc(:,k_est)  = x_now;
         else
