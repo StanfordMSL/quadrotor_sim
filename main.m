@@ -47,7 +47,7 @@ N_ct  = round(dt_ct*act_hz);
 
 % Cold Start the nominal trajectory for the iLQR
 nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
-nom_plot = nom;
+nominal_plot(wp,nom,'persp',10);
 disp('[main]: Warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
 pause;
@@ -121,4 +121,3 @@ end
 %% Plot the States and Animate
 % state_plot(flight)
 animation_plot(flight,wp,targ,'persp');
-nominal_plot(wp,nom_plot,'persp',10);
