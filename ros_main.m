@@ -41,7 +41,7 @@ t_act = 0:1/act_hz:t_hzn;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple vII',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
 wp     = wp_init('horizon',0,t_hzn,'no plot');         % Initialize timestamped keyframes
 flight = flight_init(model,t_hzn,wp);                   % Initialize Flight Variables

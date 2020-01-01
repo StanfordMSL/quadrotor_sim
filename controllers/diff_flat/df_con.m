@@ -47,12 +47,13 @@ u_d2 = dot(z_B,m.*a_d2)-dot(z_B,vec2);
 h_alpha = (m.*a_d2 - u_d2.*z_B - 2.*cross(omega,u_d1.*z_B)-vec2)./u1;
 p_dot = -dot(h_alpha,y_B);
 q_dot = dot(h_alpha,x_B);
-r_dot =  sigma_d2(4,1);
+r_dot = sigma_d2(4,1);
 alpha = [p_dot ; q_dot ; r_dot];
 % acc_des(4:6,1) = alpha;
 
 u_wrench = zeros(4,1);
 u_wrench(1,1)   = u1;
 u_wrench(2:4,1) = I*alpha + cross(omega,I*omega);
+
 end
 
