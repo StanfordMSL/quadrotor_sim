@@ -22,9 +22,9 @@ t_act = 0:1/act_hz:tf;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple v0.2',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('flip',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('line',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 targ   = targ_init("none");                           % Initialize target
 

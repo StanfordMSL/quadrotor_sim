@@ -8,7 +8,7 @@ count = model.con_hz*wp.tf+1;
 x_bar = zeros(13,count);
 x_bar(:,1) = wp.x(:,1);
 
-u_bar = zeros(4,count);
+u_bar = zeros(4,count-1);
 u_bar(:,1) = model.hover_wrench;
 
 for k = 1:count-1
@@ -31,4 +31,10 @@ nom.alpha = 1;
 nom.l = zeros(4,1,N-1);
 nom.L = zeros(4,13,N-1);
 
+nom.wp_fr = zeros(1,size(wp.t,2));
+for k = 1:size(wp.t,2)
+    nom.wp_fr(1,k) = (wp.t(k)*model.con_hz) + 1;
+end
+nom.wp_curr = 1;
+    
 disp(['[df_init]: Diff. Flat Compute Completed in: ',num2str(toc),' seconds.']);

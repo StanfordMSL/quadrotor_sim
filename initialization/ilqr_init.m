@@ -20,7 +20,7 @@ end
 nom.l = zeros(4,1,N-1);
 nom.L = zeros(4,13,N-1);
 
-nom.alpha = 1;
+nom.alpha = 0.5;
 % Initialize the Cost Variable
 % nom.cost = -1;
 

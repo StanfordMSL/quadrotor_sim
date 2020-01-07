@@ -34,7 +34,7 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];  
-        model.kt_est = [7.52e-6 0.00 0.00]';
+        model.kt_est = [1.5683e-6 0.00 0.00]';
         model.b_est  = 0.05; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
@@ -44,7 +44,7 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];            
-        model.kt_act = [7.52e-6 0.00 0.00]';
+        model.kt_act = [1.5683e-6 0.00 0.00]';
         model.b_act  = 0.05;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
@@ -58,7 +58,7 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [2.2398e-06 ; 0 ; 0];
+        model.kt_est = [1.5683-06 ; 0 ; 0];
         model.b_est  = 0.0011; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
@@ -68,7 +68,7 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [2.2398e-06 ; 0 ; 0];
+        model.kt_act = [1.5683e-06 ; 0 ; 0];
         model.b_act  = 0.0011;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
@@ -83,7 +83,7 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_est  = 0.0011; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
@@ -93,7 +93,7 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_act  = 0.0011;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
@@ -108,7 +108,7 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_est  = 0.0011; 
         model.kd_est = 0.1;
         model.L_est  = 0.0885;
@@ -118,7 +118,7 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_act  = 0.0011;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
@@ -133,7 +133,7 @@ switch mode
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_est  = 0.0011; 
         model.kd_est = 0.1;
         model.L_est  = 0.0885;
@@ -143,7 +143,7 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_act  = 0.0011;
         model.kd_act = 0.1;
         model.L_act  = 0.0885;
