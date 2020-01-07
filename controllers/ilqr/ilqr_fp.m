@@ -1,4 +1,4 @@
-function [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,alpha,model,fc)
+function [x_bar,u_bar] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,alpha,model,fc)
 
 % Unpack some terms
 t_wp = wp.t;
@@ -10,7 +10,7 @@ wp_fw = find((t_wp > t_bar(1)),1)-1;       % This is the waypoint we are seeking
 R = fc.R;
 
 % Initialize some terms
-x_fp = zeros(12,N);
+x_fp = zeros(13,N);
 x_fp(:,1) = x_now;
 u_fp = u_bar; 
 cost_curr =  0;
@@ -45,15 +45,12 @@ for k = 1:N-1
 end
 
 % Add terminal cost   
-Q = fc.Q(:,:,Q_key(wp_fw,2));
-
-err_x = x_fp(:,N)-x_targ;
-cost_curr = cost_curr + 0.5* err_x'*Q*err_x;
-
+% Q = fc.Q(:,:,Q_key(wp_fw,2));
+% err_x = x_fp(:,N)-x_targ;
+% cost_curr = cost_curr + 0.5* err_x'*Q*err_x;
 % disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
 
 % If cost goes down, we know it's feasible. Update x_bar.
-u_diff = sum(vecnorm(u_bar-u_fp));
 x_bar = x_fp;
 u_bar = u_fp;
 

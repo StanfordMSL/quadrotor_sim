@@ -1,4 +1,4 @@
-function nom = ilqr(t_now,x_now,wp,nom,fc,model)
+function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     tic
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
@@ -11,8 +11,8 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
     
     % Convergence Variables
     itrs = 1;
-    u_diff_avg = 10;
-    while u_diff_avg > 1e-1
+    x_diff = 1000;
+    while x_diff > 1e-2
         % Determine A and B matrices for this step
         [A,B] = dynamics_linearizer(x_bar,u_bar,model);
         
@@ -20,11 +20,13 @@ function nom = ilqr(t_now,x_now,wp,nom,fc,model)
         [l,L] = ilqr_bp(t_bar,x_bar,u_bar,wp,A,B,N,fc);
         
         % Forward Pass
-        [x_bar,u_bar,u_diff] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,nom.alpha,model,fc);
-
+        x_bar_old = x_bar(:,n:end);
+        [x_bar,u_bar] = ilqr_fp(t_bar,x_bar,u_bar,x_now,wp,l,L,N,nom.alpha,model,fc);
+        x_bar_now = x_bar(:,n:end);
+        
         % Check for Convergence
-        if itrs < 100
-            u_diff_avg = u_diff/N;
+        if itrs < 10
+            x_diff = sum(vecnorm(x_bar_now-x_bar_old))/(N-n);
 %             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_u difference: ',num2str(u_diff_avg)]);
 
             itrs = itrs + 1;

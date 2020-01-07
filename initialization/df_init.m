@@ -5,7 +5,7 @@ sigma = wp2sigma(wp,angle_axis,n_p);
 [t_out, f_out] = traj_planner(sigma,model.con_hz,n_p);
 count = model.con_hz*wp.tf+1;
 
-x_bar = zeros(12,count);
+x_bar = zeros(13,count);
 x_bar(:,1) = wp.x(:,1);
 
 u_bar = zeros(4,count);
@@ -29,6 +29,6 @@ N =  wp.tf*model.con_hz+1;
 nom.total = N;
 nom.alpha = 1;
 nom.l = zeros(4,1,N-1);
-nom.L = zeros(4,12,N-1);
+nom.L = zeros(4,13,N-1);
 
 disp(['[df_init]: Diff. Flat Compute Completed in: ',num2str(toc),' seconds.']);

@@ -5,7 +5,7 @@ N = wp.tf*model.con_hz+1;
 
 % Initialized Time and Trajectory and Input Variables
 nom.t_bar = linspace(t_now,t_now+wp.tf,N);
-nom.x_bar = zeros(12,N);
+nom.x_bar = zeros(13,N);
 nom.x_bar(:,1) = x_now;
 nom.u_bar = model.hover_wrench.*ones(4,N-1);
 
@@ -18,7 +18,7 @@ end
 
 % Initialize the Control Law Feedforward and Feedback Variables
 nom.l = zeros(4,1,N-1);
-nom.L = zeros(4,12,N-1);
+nom.L = zeros(4,13,N-1);
 
 nom.alpha = 1;
 % Initialize the Cost Variable
@@ -29,5 +29,5 @@ nom.index = 1;
 nom.total = N;
 
 % Run a First Pass of the iLQR
-nom = ilqr(t_now,x_now,wp,nom,fc,model);
+nom = ilqr_x(t_now,x_now,wp,nom,fc,model);
 % fast_plot(nom.x_bar);

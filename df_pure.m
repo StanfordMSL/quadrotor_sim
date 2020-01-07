@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple v0.2',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('half-square',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('flip',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 targ   = targ_init("none");                           % Initialize target
 
@@ -47,7 +47,6 @@ N_ct  = round(dt_ct*act_hz);
 
 % Cold Start the nominal trajectory for the iLQR
 nom = df_init(wp,model,'yaw');
-% nom = ilqr_init(flight.t_act(:,1),flight.x_act(:,1),wp,fc,model);
 nominal_plot(wp,nom,'persp',10);
 disp('[main]: Diff. Flat. based warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
@@ -80,7 +79,7 @@ for k = 1:sim_N
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
-        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'df');
+        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'df','ideal');
 %         [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr');
 
         % Log State Control Commands
@@ -119,4 +118,4 @@ end
 %% Plot the States and Animate
 % state_plot(flight)
 animation_plot(flight,wp,targ,'persp');
-
+motor_plot(flight,model);

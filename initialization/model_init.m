@@ -77,7 +77,7 @@ switch mode
         Q_ang_acc = 0.8*ones(3,1);
         model.Q = diag([Q_lin_acc ; Q_ang_acc]);
     case 'simple v0.6'               % quadratic motor, with noise, no drag
-        disp('[model init]: || [*] Quadratic Motor Model || [*] Process Noise || [ ] Drag ||');
+        disp('[model init]: || [*] Quadratic Motor Model || [ ] Process Noise || [ ] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
@@ -98,10 +98,35 @@ switch mode
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
         % Model Noise
+        Q_lin_acc = 0.0*ones(3,1);
+        Q_ang_acc = 0.0*ones(3,1);
+        model.Q = diag([Q_lin_acc ; Q_ang_acc]);
+    case 'simple v0.8'              % quadratic motor, with noise, with drag
+        disp('[model init]: || [*] Quadratic Motor Model || [*] Process Noise || [ ] Drag ||');
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_est  = 0.0011; 
+        model.kd_est = 0.1;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.b_act  = 0.0011;
+        model.kd_act = 0.0;
+        model.L_act  = 0.0885;
+        % Model Noise
         Q_lin_acc = 0.8*ones(3,1);
         Q_ang_acc = 0.8*ones(3,1);
         model.Q = diag([Q_lin_acc ; Q_ang_acc]);
-    case 'simple v0.8'              % quadratic motor, with noise, with drag
+    case 'simple v1.0'              % quadratic motor, with noise, with drag
         disp('[model init]: || [*] Quadratic Motor Model || [*] Process Noise || [*] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;

@@ -79,7 +79,7 @@ for k = 1:sim_N
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
-        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr');
+        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr','ideal');
         
         % Log State Control Commands
         flight.m_cmd(:,k_con) = curr_m_cmd;  
@@ -87,12 +87,6 @@ for k = 1:sim_N
         
         k_con = k_con + 1;
     end
-% %     model.g = 0;
-% %     if k < 10
-% %         curr_m_cmd = [400 ; 0 ; 0 ; 0];
-% %     else
-% %         curr_m_cmd = [100 ; 100 ; 100 ; 100];
-% %     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     if (abs(t_act(k_act)-sim_time) < tol)

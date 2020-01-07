@@ -39,20 +39,18 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     
     pos   = x_curr(1:3,1);
     vel   = x_curr(4:6,1);
-    q  = x_curr(7:9,1);
-    q0 = sqrt(1-q'*q);
-    quat  = [q0 ; q];
-    wx = x_curr(10,1);
-    wy = x_curr(11,1);
-    wz = x_curr(12,1);
-    w_all = x_curr(10:12,1);
+    quat  = x_curr(7:10,1);
+    wx = x_curr(11,1);
+    wy = x_curr(12,1);
+    wz = x_curr(13,1);
+    w_all = x_curr(11:13,1);
     
     % Unpack External Force/Torques
     F_ext = FT_ext(1:3,1);
     tau_ext = FT_ext(4:6,1);
     
     % Calculate Motor Forces
-    f = zeros(4,1);
+    f = zeros(4,1);    
     for k = 1:4
         f(k,1) = k2*(curr_m_cmd(k,1)^2)+k1*curr_m_cmd(k,1)+k0;
     end
@@ -64,7 +62,7 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     % State Updates   
     x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ
     x_upd(4:6,1)   = vel   + dt*vel_dot;    % World Frame Vel XYZ
-    x_upd(10:12,1) = w_all + dt*omega_dot;  % Body Frame Angular Vel XYZ
+    x_upd(11:13,1) = w_all + dt*omega_dot;  % Body Frame Angular Vel XYZ
     
     % Do Our Quaternion Business 
     Omega = [ 0 -wx -wy -wz ;...
@@ -74,5 +72,5 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     
     q_hat = quat + 0.5*Omega*quat*dt;
     q_norm = q_hat./norm(q_hat); 
-    x_upd(7:9,1) = q_norm(2:4,1); 
+    x_upd(7:10,1) = q_norm; 
 end

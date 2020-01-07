@@ -15,12 +15,6 @@ for k = 1:4
         m_cmd(k,1) = 0;     % Command not feasible, zero-ing the motor command.
     else
         m_cmd(k,1) = (-k2 + sqrt(interior))/(2*k1);
-        
-        if m_cmd(k,1) < model.motor_min
-            m_cmd(k,1) = model.motor_min;
-        elseif m_cmd(k,1) > model.motor_max
-            m_cmd(k,1) = model.motor_max;
-        end
     end
 end
 

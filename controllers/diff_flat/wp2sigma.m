@@ -12,10 +12,9 @@ kf_k = wp.N_wp+1;
 sigma.kf = zeros(4,n_p,kf_k);
 sigma.t  = zeros(1,kf_k);
 for k = 1:wp.N_wp+1
-    index = 10+(3-ax_t);
+    index = 11+(3-ax_t);
 
-    q0 = sqrt(1-wp.x(7:9,k)'*wp.x(7:9,k));
-    quat = [q0 ; wp.x(7:9,k)];
+    quat = wp.x(7:10,k);
     angles = quat2eul(quat');
     sigma.kf(:,:,k) = [wp.x(1:3,k)   wp.x(4:6,k)   zeros(3,n_p-2);...
                        angles(ax_t)  wp.x(index,k) zeros(1,n_p-2)];

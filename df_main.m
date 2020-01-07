@@ -3,11 +3,11 @@ addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
-tf = 3;
+tf = 6;
 
-est_hz = 200;       % State Estimator Time Counter
+est_hz = 20;       % State Estimator Time Counter
 lqr_hz = 2;         % Low Rate Controller Sample Rate
-con_hz = 200;       % High Rate Controller Sample Rate
+con_hz = 20;       % High Rate Controller Sample Rate
 act_hz = 1000;      % Actual Dynamics Sample Rate
 
 sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
@@ -24,9 +24,9 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('targeted',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('line',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
-targ   = targ_init("soft toy");                           % Initialize target
+targ   = targ_init("none");                           % Initialize target
 
 %%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter
@@ -73,14 +73,13 @@ for k = 1:sim_N
     % Low Rate Controller    
     if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
         % Update LQR params
-        nom = ilqr(t_now,x_now,wp,nom,fc,model);
+        nom = ilqr_x(t_now,x_now,wp,nom,fc,model);
         k_lqr = k_lqr + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Rate Controller    
     if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
-%         [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'df');
-        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr');
+        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr','ideal');
 
         % Log State Control Commands
         flight.m_cmd(:,k_con) = curr_m_cmd;  
@@ -116,6 +115,6 @@ for k = 1:sim_N
 end
 
 %% Plot the States and Animate
-% state_plot(flight)
-animation_plot(flight,wp,targ,'side');
-
+%state_plot(flight)
+animation_plot(flight,wp,targ,'persp');
+% motor_plot(flight,model);
