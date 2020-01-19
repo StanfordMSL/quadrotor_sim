@@ -5,8 +5,8 @@ switch type
         fc.type = 'ilqr';
         
         % Stagewise R
-        R_f = 0*ones(1,1);
-        R_tau = 0*ones(3,1);
+        R_f = 1e-6*ones(1,1);
+        R_tau = 1e-6*ones(3,1);
         R_vect = [R_f ; R_tau];
         fc.R = diag(R_vect);   
         
@@ -27,7 +27,7 @@ switch type
         Q_xy     = 1*ones(2,1);
         Q_z      = 1*ones(1,1);
         Q_vel    = 0*ones(3,1);
-        Q_q      = 1*[1 1 1 1]';
+        Q_q      = 0*[1 1 1 1]';
         Q_omg_xy = 0*ones(2,1);
         Q_omg_z  = 0*ones(1,1);
         
@@ -82,7 +82,7 @@ switch type
         Q_xy     = 10*ones(2,1);
         Q_z      = 10*ones(1,1);
         Q_vel    = 10*ones(3,1);
-        Q_q      = 10*[1 1 1 1]';
+        Q_q      = 1000*[1 1 1 1]';
         Q_omg_xy = 10*ones(2,1);
         Q_omg_z  = 10*ones(1,1);
         

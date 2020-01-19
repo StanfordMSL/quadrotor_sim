@@ -6,9 +6,9 @@ addpath(genpath(pwd));
 tf = 3;
 
 est_hz = 200;       % State Estimator Time Counter
-lqr_hz = 2;        % Low Rate Controller Sample Rate
+lqr_hz = 2;         % Low Rate Controller Sample Rate
 con_hz = 200;       % High Rate Controller Sample Rate
-act_hz = 1000;     % Actual Dynamics Sample Rate
+act_hz = 1000;      % Actual Dynamics Sample Rate
 
 sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
 sim_N  = tf/sim_dt;
@@ -26,7 +26,7 @@ model  = model_init('simple v0.8',est_hz,lqr_hz,con_hz,act_hz); % Initialize Phy
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
 wp     = wp_init('dive',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
-targ   = targ_init("none");                           % Initialize target
+targ   = targ_init("soft toy");                           % Initialize target
 
 %%% Time Counters Initialization
 k_est = 1;          % State Estimator Time Counter

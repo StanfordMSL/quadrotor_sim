@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('line',0,tf,'no plot');              % Initialize timestamped keyframes
+wp     = wp_init('dive',0,tf,'no plot');              % Initialize timestamped keyframes
 flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
 targ   = targ_init("none");                           % Initialize target
 
@@ -117,5 +117,5 @@ end
 
 %% Plot the States and Animate
 % state_plot(flight)
-animation_plot(flight,wp,targ,'persp');
+animation_plot(flight,wp,targ,'side');
 motor_plot(flight,model);

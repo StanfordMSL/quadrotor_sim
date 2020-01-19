@@ -19,13 +19,15 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     Q_f = fc.Q(:,:,idx);
     
     R = fc.R;
-        
+    
+    x_feed = wp.x(:,nom.wp_curr);
     % Convergence Variables
     itrs = 1;
     x_diff = 1000;
     while x_diff > 1e-1
         % Initialize x_bar variable
         x_itr = x_bar;
+        x_itr(:,end) = x_feed;
         u_itr = u_bar;
 
         % Determine A and B matrices for this step
