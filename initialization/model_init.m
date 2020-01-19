@@ -27,13 +27,14 @@ switch mode
         
         % Model Noise
         model.Q = 0.1*eye(6);
-    case 'simple vI'
-        % Estimate %%%          % simple motor, no noise, no drag
+    case 'simple v0.2'              % simple motor, no noise, no drag
+        disp('[model init]: || [ ] Quadratic Motor Model || [ ] Process Noise || [ ] Drag ||');
+        % Estimate %%%          
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];  
-        model.kt_est = [7.52e-6 0.00 0.00]';
+        model.kt_est = [1.5683e-6 0.00 0.00]';
         model.b_est  = 0.05; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
@@ -43,20 +44,21 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];            
-        model.kt_act = [7.52e-6 0.00 0.00]';
+        model.kt_act = [1.5683e-6 0.00 0.00]';
         model.b_act  = 0.05;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
         
         % Model Noise
         model.Q = 0.0*eye(6);
-    case 'simple vII'               % quadratic motor, with noise, no drag
+    case 'simple v0.4'               % simple motor, with noise, no drag
+        disp('[model init]: || [ ] Quadratic Motor Model || [*] Process Noise || [ ] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_est = [1.5683-06 ; 0 ; 0];
         model.b_est  = 0.0011; 
         model.kd_est = 0.0;
         model.L_est  = 0.0885;
@@ -66,21 +68,47 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_act = [1.5683e-06 ; 0 ; 0];
         model.b_act  = 0.0011;
         model.kd_act = 0.0;
         model.L_act  = 0.0885;
         % Model Noise
-        Q_lin_acc = 0.3*ones(3,1);
-        Q_ang_acc = 0.03*ones(3,1);
+        Q_lin_acc = 0.8*ones(3,1);
+        Q_ang_acc = 0.8*ones(3,1);
         model.Q = diag([Q_lin_acc ; Q_ang_acc]);
-    case 'simple vIII'              % quadratic motor, with noise, with drag
+    case 'simple v0.6'               % quadratic motor, with noise, no drag
+        disp('[model init]: || [*] Quadratic Motor Model || [ ] Process Noise || [ ] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];    
-        model.kt_est = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
+        model.b_est  = 0.0011; 
+        model.kd_est = 0.0;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
+        model.b_act  = 0.0011;
+        model.kd_act = 0.0;
+        model.L_act  = 0.0885;
+        % Model Noise
+        Q_lin_acc = 0.0*ones(3,1);
+        Q_ang_acc = 0.0*ones(3,1);
+        model.Q = diag([Q_lin_acc ; Q_ang_acc]);
+    case 'simple v0.8'              % quadratic motor, with noise, with drag
+        disp('[model init]: || [*] Quadratic Motor Model || [*] Process Noise || [ ] Drag ||');
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_est  = 0.0011; 
         model.kd_est = 0.1;
         model.L_est  = 0.0885;
@@ -90,16 +118,41 @@ switch mode
         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
                                  0.00   2.14   0.00;...
                                  0.00   0.00  42.00];             
-        model.kt_act = [1.6987e-6 ; 1.9046e-4 ; 1.1542];
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
+        model.b_act  = 0.0011;
+        model.kd_act = 0.0;
+        model.L_act  = 0.0885;
+        % Model Noise
+        Q_lin_acc = 0.8*ones(3,1);
+        Q_ang_acc = 0.8*ones(3,1);
+        model.Q = diag([Q_lin_acc ; Q_ang_acc]);
+    case 'simple v1.0'              % quadratic motor, with noise, with drag
+        disp('[model init]: || [*] Quadratic Motor Model || [*] Process Noise || [*] Drag ||');
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
+        model.b_est  = 0.0011; 
+        model.kd_est = 0.1;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [1.8512e-6 ; -5.6076e-4 ; 0.2210];
         model.b_act  = 0.0011;
         model.kd_act = 0.1;
         model.L_act  = 0.0885;
         % Model Noise
-        Q_lin_acc = 0.3*ones(3,1);
-        Q_ang_acc = 0.03*ones(3,1);
+        Q_lin_acc = 0.8*ones(3,1);
+        Q_ang_acc = 0.8*ones(3,1);
         model.Q = diag([Q_lin_acc ; Q_ang_acc]);
 end
-disp('[model init]: wrench2omega works uses kw2 assumption. change when you switch to complex');
+disp('[model init]: A_calc and B_calc are still using kw2 approx.');
 disp('[model init]: Angular acceleration noise assumed to be 1/10th of linear acceleration noise.');
 disp('[model init]: Similarly, we are using L_est, b_est and kt_est for wrench');
 
@@ -116,8 +169,8 @@ model.wrench = [ 1  1  1  1;...
                 -L  L -L  L;...
                 -c -c  c  c];
 
-model.motor_min = 0;        % Motor Min rad/s
-model.motor_max = 2200;     % Motor Max rad/s
+model.motor_min = 400;      % Motor Min rad/s
+model.motor_max = 4800;     % Motor Max rad/s
 
 model.est_hz = est_hz;
 model.est_dt = 1/est_hz;

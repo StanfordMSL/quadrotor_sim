@@ -6,7 +6,7 @@ switch target_type
         target.pos = [0.0 ; 0.0 ; 0.3];
         target.t_capture = 999;
     case "soft toy"
-        target.m_act = 0.1;
+        target.m_act = 0.2;
         target.pos = [0.0 ; 0.0 ; 0.3];
         target.t_capture = 999;
     case "none"        

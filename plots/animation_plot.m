@@ -1,6 +1,6 @@
 function animation_plot(flight,wp,targ,view_point)
 
-map = wp.map;
+    map = wp.map;
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -18,7 +18,7 @@ map = wp.map;
     gate_h.LineWidth = 3;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
-%     xlim([-2.5 2.5]);
+    xlim([-3 3]);
 %     ylim([-1.0 1.0]);
     zlim(wp.z_lim);
     grid on

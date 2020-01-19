@@ -8,12 +8,11 @@ function state_plot(flight)
     
     quat = zeros(4,length(flight.t_act));
     for k = 1:length(flight.t_act)
-        q0 = sqrt(1-flight.x_act(7:9,k)'*flight.x_act(7:9,k));
-        quat(:,k) = [q0 ; flight.x_act(7:9,k)];
+        quat(:,k) = flight.x_act(7:10,k);
     end
     pos = flight.x_act(1:3,:);
     vel = flight.x_act(4:6,:);
-    omega = flight.x_act(10:12,:);
+    omega = flight.x_act(11:13,:);
     
     angle = zeros(3,size(quat,2));
     for k = 2:size(quat,2)

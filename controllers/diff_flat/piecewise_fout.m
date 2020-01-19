@@ -1,7 +1,7 @@
 function f_out_full = piecewise_fout(tf,sig_set,hz,n_p)
 
 mu_r = 1;
-mu_psi = 1;
+mu_angle = 1;
 k_r = 4;
 
 OPTIONS = optimoptions('fmincon','Algorithm','sqp','Display','off');
@@ -28,14 +28,19 @@ for i = 1:4
     Aeq = [A_start ; A_end];
     Beq = [B_start ; B_end];
     
+    % Motor Min/Max Constraint
+%     [A,B] = simple_motor_constraint(0,tf,100,-2.4,60.0);
+    A = zeros(1,15);
+    B = zeros(1,1);
+    
     f = @min_func;
     if k == 4
-        FUN = @(x)integral(@(t) mu_psi*(f(t,x,n_p))^2,0,tf,'ArrayValued',true);
+        FUN = @(x)integral(@(t) mu_angle*(f(t,x,n_p))^2,0,tf,'ArrayValued',true);
     else
         FUN = @(x)integral(@(t) mu_r*(f(t,x,n_p))^2,0,tf,'ArrayValued',true);
     end
         
-    A_sigma(i,:) = fmincon(FUN,sig_set(i,:,1)',[],[],Aeq,Beq,[],[],[],OPTIONS);
+    A_sigma(i,:) = fmincon(FUN,sig_set(i,:,1)',A,B,Aeq,Beq,[],[],[],OPTIONS);
 end
 
 count = hz*tf+1;

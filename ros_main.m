@@ -41,7 +41,7 @@ t_act = 0:1/act_hz:t_hzn;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple vII',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
 fc     = fc_init(model,'ilqr');                         % Initialize Controller
 wp     = wp_init('horizon',0,t_hzn,'no plot');         % Initialize timestamped keyframes
 flight = flight_init(model,t_hzn,wp);                   % Initialize Flight Variables
@@ -91,16 +91,17 @@ while true
             x_now(1,1) = data_pose.Pose.Position.x;
             x_now(2,1) = data_pose.Pose.Position.y;
             x_now(3,1) = data_pose.Pose.Position.z;
-            x_now(7,1) = data_pose.Pose.Quarternion.x;
-            x_now(8,1) = data_pose.Pose.Quarternion.y;
-            x_now(9,1) = data_pose.Pose.Quarternion.z;
+            x_now(7,1) = data_pose.Pose.Quarternion.w;
+            x_now(8,1) = data_pose.Pose.Quarternion.x;
+            x_now(9,1) = data_pose.Pose.Quarternion.y;
+            x_now(10,1) = data_pose.Pose.Quarternion.z;
             
             x_now(4,1)  = data_twist.Twist.Linear.x;
             x_now(5,1)  = data_twist.Twist.Linear.y;
             x_now(6,1)  = data_twist.Twist.Linear.z;
-            x_now(10,1) = data_twist.Twist.Angular.x;
-            x_now(11,1) = data_twist.Twist.Angular.y;
-            x_now(12,1) = data_twist.Twist.Angular.z;
+            x_now(11,1) = data_twist.Twist.Angular.x;
+            x_now(12,1) = data_twist.Twist.Angular.y;
+            x_now(13,1) = data_twist.Twist.Angular.z;
             
             flight.x_fc(:,k_est)  = x_now;
         end

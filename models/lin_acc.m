@@ -1,28 +1,5 @@
-function vel_dot = lin_acc(states,u,model,F_ext,frame,mode)
-    q0 = sqrt(1-states(7:9,1)'*states(7:9,1));
-    quat = [q0 ; states(7:9,1)];
-    
-    f = zeros(4,1);
-    switch mode
-        case 'actual'
-            k2 = model.kt_act(1,1);
-            k1 = model.kt_act(2,1);
-            k0 = model.kt_act(3,1);
-            
-            F_drag = -model.kd_act .* states(4:6,1);
-            m = model.m_act;
-        case 'fc'
-            k2 = model.kt_est(1,1);
-            k1 = model.kt_est(2,1);
-            k0 = model.kt_est(3,1);
-
-            F_drag = zeros(3,1);
-            m = model.m_est;
-    end
-    
-    for k = 1:4
-        f(k,1) = k2*(u(k,1)^2)+k1*u(k,1)+k0;
-    end
+function vel_dot = lin_acc(states,m,f,F_drag,F_ext,model,frame)
+    quat = states(7:10,1);  
     
     F_grav   = [ 0 ; 0 ; -m*model.g];
     F_thrust = [ 0 ; 0 ; sum(f)];

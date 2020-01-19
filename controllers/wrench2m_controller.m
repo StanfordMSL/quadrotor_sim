@@ -9,23 +9,13 @@ k3 = model.kt_est(3,1);
 m_force = lsqnonneg(model.wrench,u);
 
 for k = 1:4
-    m_cmd(k,1) = (-k2 + sqrt(k2^2-(4*k1*(k3-m_force(k,1)))))/(2*k1);
+    interior = k2^2-(4*k1*(k3-m_force(k,1)));
+    
+    if interior < 0
+        m_cmd(k,1) = 0;     % Command not feasible, zero-ing the motor command.
+    else
+        m_cmd(k,1) = (-k2 + sqrt(interior))/(2*k1);
+    end
 end
 
-for k = 1:4
-    if m_cmd(k,1) < model.motor_min
-        m_cmd(k,1) = model.motor_min;
-
-        if m_cmd(k,1) <  (model.motor_min - 1e-6)
-            disp('[ilqr]: Exceeded Motor Min');
-        end
-
-    elseif m_cmd(k,1) > model.motor_max
-        m_cmd(k,1) = model.motor_max;
-
-        if m_cmd(k,1) > (model.motor_max + 1e-6)
-            disp('[ilqr]: Exceeded Motor Max');
-        end
-
-    end
 end

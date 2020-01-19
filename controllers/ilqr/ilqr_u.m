@@ -1,4 +1,4 @@
-function nom = ilqr(t_now,x_now,wp,nom,fc,model)
+function nom = ilqr_u(t_now,x_now,wp,nom,fc,model)
     tic
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
