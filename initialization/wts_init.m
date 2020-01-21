@@ -11,12 +11,12 @@ wts.R = diag(R_vect);
 %% State-Cost Weight Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Q_xy     = 0.01*ones(2,1);
-Q_z      = 0.01*ones(1,1);
-Q_vel    = 0.01*ones(3,1);
-Q_q      = 0.01*[1 1 1 1]';
-Q_omg_xy = 0.01*ones(2,1);
-Q_omg_z  = 0.01*ones(1,1);
+Q_xy     = 0.001*ones(2,1);
+Q_z      = 0.001*ones(1,1);
+Q_vel    = 0.001*ones(3,1);
+Q_q      = 0.001*[1 1 1 1]';
+Q_omg_xy = 0.001*ones(2,1);
+Q_omg_z  = 0.001*ones(1,1);
 
 Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,1) = diag(Q_vect);
