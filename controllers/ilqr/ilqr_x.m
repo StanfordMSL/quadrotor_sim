@@ -43,7 +43,7 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
         if itrs < 100
             x_diff = sum(vecnorm(x_bar-x_itr))/(N-n);
             u_diff = sum(vecnorm(u_bar-u_itr))/(N-n);
-            disp(['[ilqr]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff),'  del_u difference: ',num2str(u_diff)]);
+%             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff),'  del_u difference: ',num2str(u_diff)]);
 
             itrs = itrs + 1;
         else
@@ -60,6 +60,7 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     nom.l(:,:,n:N-1) = l;
     nom.L(:,:,n:N-1) = L;
     
-    disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
+    comp_pcnt = 100*toc/model.ctl_dt;
+    disp(['[ilqr]: iLQR Converged on Iteration ',num2str(itrs),' in ',num2str(toc),' seconds using ',num2str(comp_pcnt), '% of available time']);
 end
 
