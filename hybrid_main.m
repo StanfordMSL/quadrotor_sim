@@ -24,7 +24,7 @@ t_act = 0:1/act_hz:tf;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple v0.0',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple v0.8',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
 wts    = wts_init();                     % Initialize Controller
 wp     = wp_init('flip',tf,'no plot'); % Initialize timestamped keyframes
 flight = logger_init(tf,wp,act_hz,fbc_hz);     % Initialize Flight Variables
@@ -51,7 +51,7 @@ N_ct  = round(dt_ct*act_hz); % Number of actual dynamics frames
 % Cold Start the nominal trajectory for the iLQR
 nom = df_init(wp,model,'yaw');
 % nom = ilqr_x(0,wp.x(:,1),wp,nom,wts,model);
-% nominal_plot(wp,nom,'persp',10);
+nominal_plot(wp,nom,'persp',10);
 disp('[main]: Diff. Flat. based warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
 pause;
@@ -132,4 +132,4 @@ end
 %% Plot the States and Animate
 %state_plot(flight)
 animation_plot(flight,wp,targ,'persp');
-% motor_plot(flight,model);
+motor_plot(flight,model);
