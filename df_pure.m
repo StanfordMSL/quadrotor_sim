@@ -3,44 +3,45 @@ addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
-tf = 3;
+tf = 4.0;
 
-est_hz = 200;       % State Estimator Time Counter
-lqr_hz = 2;         % Low Rate Controller Sample Rate
-con_hz = 200;       % High Rate Controller Sample Rate
-act_hz = 1000;      % Actual Dynamics Sample Rate
+lqr_hz = 0;         % iLQR Update Rate
+ctl_hz = 200;       % Control Law Switch Rate
+fbc_hz = 0;         % Feedback Controller Rate
+est_hz = ctl_hz;    % State Estimator Sample Rate
+act_hz = 1000;      % Actual Dynamics Update Rate
 
-sim_dt = 1/lcm(lcm(est_hz,con_hz),lcm(lqr_hz,act_hz));
+sim_dt = 1/act_hz;
 sim_N  = tf/sim_dt;
 
 t_est = 0:1/est_hz:tf;
 t_lqr = 0:1/lqr_hz:tf;
-t_con = 0:1/con_hz:tf;
-t_act = 0:1/act_hz:tf; 
+t_ctl = 0:1/ctl_hz:tf;
+t_act = 0:1/act_hz:tf;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple v0.6',est_hz,lqr_hz,con_hz,act_hz); % Initialize Physics Model
-fc     = fc_init(model,'ilqr');                         % Initialize Controller
-wp     = wp_init('dive',0,tf,'no plot');              % Initialize timestamped keyframes
-flight = flight_init(model,tf,wp);                      % Initialize Flight Variables
-targ   = targ_init("none");                           % Initialize target
+model  = model_init('simple v0.0',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
+wts    = wts_init();                            % Initialize Controller
+wp     = wp_init('dive',tf,'no plot');                       % Initialize timestamped keyframes
+flight = logger_init(tf,wp,act_hz,ctl_hz);     % Initialize Flight Variables
+targ   = targ_init("none");          % Initialize target
 
 %%% Time Counters Initialization
-k_est = 1;          % State Estimator Time Counter
-k_lqr = 1;          % Low Rate Controller Time Counter
-k_con = 1;          % High Rate Controller Time Counter
-k_act = 1;          % Actual Dynamics Time Counter
-k_wp  = 1;          % Waypoint Time Counter
-tol = 1e-5;         % Tolerance to trigger various processes
+k_est = 1;              % State Estimator Time Counter
+k_lqr = 1;              % iLQR Update Time Counter
+k_ctl = 1;              % Control Law Switch Time Counter
+k_act = 1;              % Actual Dynamics Time Counter
+k_wp  = 1;              % Waypoint Time Counter
+tol   = 1e-1*sim_dt;    % Tolerance to trigger various processes
 
 %%% Contact Parameter Initialization
-k_ct  = 1;
-st_ct = 0;
-dt_ct = 0.2;
-N_ct  = round(dt_ct*act_hz); 
+k_ct  = 1;                   % Contact Force Time Counter
+st_ct = 0;                   % Contact state (0 = no contact, 1 = contact/post-contact)
+dt_ct = 0.2;                 % Duration of Contact Force
+N_ct  = round(dt_ct*act_hz); % Number of actual dynamics frames
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
@@ -62,31 +63,18 @@ for k = 1:sim_N
         x_now = flight.x_act(:,k_act);
         flight.x_fc(:,k_est)  = x_now;
 
-%         %%%%%%%%%%%%%%%%%%%%
-%         % YOLO UKF Test
-%         t_now = t_est(k_est);
-%         [sv,mu_prev] = yolo_ukf(sv,flight,k_est,t_now,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr,model);
-%         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     % Low Rate Controller    
-%     if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
-%         % Update LQR params
-%         nom = ilqr(t_now,x_now,wp,nom,fc,model);
-%         k_lqr = k_lqr + 1;
-%     end
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % High Rate Controller    
-    if (abs(t_con(k_con)-sim_time) < tol) && (k_con <= tf*con_hz)
-        [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'df','ideal');
-%         [u,curr_m_cmd] = controller(x_now,k_con,nom,model,'ilqr');
-
-        % Log State Control Commands
-        flight.m_cmd(:,k_con) = curr_m_cmd;  
-        flight.u(:,k_con)     = u; 
+    % Open Loop Control Updater    
+    if (abs(t_ctl(k_ctl)-sim_time) < tol) && (k_ctl <= tf*ctl_hz)
+        [u,curr_m_cmd] = df_ol_con(k_ctl,nom,model,'ideal');
         
-        k_con = k_con + 1;
+        % Log State Control Commands
+        flight.m_cmd(:,k_ctl) = curr_m_cmd;  
+        flight.u(:,k_ctl)     = u; 
+        
+        k_ctl = k_ctl + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
@@ -116,6 +104,6 @@ for k = 1:sim_N
 end
 
 %% Plot the States and Animate
-% state_plot(flight)
-animation_plot(flight,wp,targ,'side');
-motor_plot(flight,model);
+%state_plot(flight)
+animation_plot(flight,wp,targ,'persp');
+% motor_plot(flight,model);

@@ -8,9 +8,9 @@ for k = 1:N-1
     A(:,:,k) = A_calc_wrench(x(:,k),u(:,k),model);
     B(:,:,k) = B_calc_wrench(x(:,k),model);
     
-    A_test = sum(isnan(A(:,:,k)),'all');
-    B_test = sum(isnan(B(:,:,k)),'all');
-    if (A_test > 0) || (B_test > 0)
-        disp("oh no")
-    end    
+%     A_test = sum(isnan(A(:,:,k)),'all');
+%     B_test = sum(isnan(B(:,:,k)),'all');
+%     if (A_test > 0) || (B_test > 0)
+%         disp("[dynamics linearizer]: A and/or B matrices no longer valid")
+%     end    
 end

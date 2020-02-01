@@ -18,8 +18,25 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           m = model.m_act;
          
           tau_yaw = 0;
-        case 'fc'
-          dt = model.con_dt;
+        case 'ctl'
+          dt = model.ctl_dt;
+          wt = zeros(6,1);
+          
+          I = model.I_est;
+          inv_I = model.inv_I_est;
+          L = model.L_est;
+          b = model.b_est;
+          
+          k2 = model.kt_est(1,1);
+          k1 = model.kt_est(2,1);
+          k0 = model.kt_est(3,1);
+          
+          F_drag = zeros(3,1);
+          m = model.m_est;
+          
+          tau_yaw = 0;
+        case 'fbc'
+          dt = model.fbc_dt;
           wt = zeros(6,1);
           
           I = model.I_est;

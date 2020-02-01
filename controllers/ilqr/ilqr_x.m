@@ -1,4 +1,4 @@
-function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
+function nom = ilqr_x(t_now,x_now,wp,nom,wts,model)
     tic
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
@@ -14,11 +14,11 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     u_bar = nom.u_bar(:,n:N-1); 
     
     idx = wp.Q_key(nom.wp_curr-1,1);
-    Q_t = fc.Q(:,:,idx);
+    Q_t = wts.Q(:,:,idx);
     idx = wp.Q_key(nom.wp_curr-1,2);
-    Q_f = fc.Q(:,:,idx);
+    Q_f = wts.Q(:,:,idx);
     
-    R = fc.R;
+    R = wts.R;
     
     x_feed = wp.x(:,nom.wp_curr);
     % Convergence Variables
@@ -43,7 +43,7 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
         if itrs < 100
             x_diff = sum(vecnorm(x_bar-x_itr))/(N-n);
             u_diff = sum(vecnorm(u_bar-u_itr))/(N-n);
-            disp(['[ilqr]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff),'  del_u difference: ',num2str(u_diff)]);
+%             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff),'  del_u difference: ',num2str(u_diff)]);
 
             itrs = itrs + 1;
         else
@@ -60,6 +60,7 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     nom.l(:,:,n:N-1) = l;
     nom.L(:,:,n:N-1) = L;
     
-    disp(['[ilqr]: iLQR Compute Successful on Iteration ',num2str(itrs),' and taking ',num2str(toc),' seconds.']);
+    comp_pcnt = 100*toc/model.ctl_dt;
+    disp(['[ilqr]: iLQR Converged on Iteration ',num2str(itrs),' in ',num2str(toc),' seconds using ',num2str(comp_pcnt), '% of available time']);
 end
 

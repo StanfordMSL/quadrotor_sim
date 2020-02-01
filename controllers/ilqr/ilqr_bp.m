@@ -17,6 +17,12 @@ for k = N-1:-1:1
     l(:,:,k) = -(Q_uu+eye(4))\Q_u;
     L(:,:,k) = -(Q_uu+eye(4))\Q_ux;
 
+%     l_test = sum(isnan(l(:,:,k)));
+%     L_test = sum(isnan(l(:,:,k)),1:2);
+%     if (l_test > 0) || (L_test >0)
+%         disp('[ilqr_bp]: NaN detected in l and/or L.')
+%     end
+
     % Update v and V for next bp state
     v = Q_x - L(:,:,k)'*Q_uu*l(:,k);
     V = Q_xx - L(:,:,k)'*Q_uu*L(:,:,k);

@@ -1,6 +1,6 @@
 function A = A_calc_wrench(mu_curr,u_curr,model)
 
-    dt = model.con_dt;
+    dt = model.ctl_dt;
 
     % Quaternions
     q0 = mu_curr(7,1);
