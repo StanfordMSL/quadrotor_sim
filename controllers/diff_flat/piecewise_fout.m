@@ -43,7 +43,7 @@ for i = 1:4
     A_sigma(i,:) = fmincon(FUN,sig_set(i,:,1)',A,B,Aeq,Beq,[],[],[],OPTIONS);
 end
 
-count = hz*tf+1;
+count = round(hz*tf+1);
 t_out = linspace(0,tf,count);
 f_out_full = zeros(4,n_p,count);
 

@@ -5,9 +5,9 @@ addpath(genpath(pwd));
 %% Time and Simulation Rate
 tf = 3;
 
-lqr_hz = 2;         % iLQR Update Rate
-ctl_hz = 200;       % Control Law Switch Rate
-fbc_hz = 200;       % Feedback Controller Rate
+lqr_hz = 5;         % iLQR Update Rate
+ctl_hz = 100;       % Control Law Switch Rate
+fbc_hz = 100;       % Feedback Controller Rate
 est_hz = ctl_hz;    % State Estimator Sample Rate
 act_hz = 1000;      % Actual Dynamics Update Rate
 
@@ -24,9 +24,9 @@ t_act = 0:1/act_hz:tf;
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
-model  = model_init('simple v0.8',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
+model  = model_init('simple v0.6',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
 wts    = wts_init();                     % Initialize Controller
-wp     = wp_init('flip',tf,'no plot'); % Initialize timestamped keyframes
+wp     = wp_init('dive',tf,'no plot'); % Initialize timestamped keyframes
 flight = logger_init(tf,wp,act_hz,fbc_hz);     % Initialize Flight Variables
 targ   = targ_init("none");          % Initialize target
 
@@ -132,4 +132,4 @@ end
 %% Plot the States and Animate
 %state_plot(flight)
 animation_plot(flight,wp,targ,'persp');
-motor_plot(flight,model);
+% motor_plot(flight,model);

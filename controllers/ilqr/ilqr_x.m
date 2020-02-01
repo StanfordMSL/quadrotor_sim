@@ -1,4 +1,4 @@
-function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
+function nom = ilqr_x(t_now,x_now,wp,nom,wts,model)
     tic
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
@@ -14,11 +14,11 @@ function nom = ilqr_x(t_now,x_now,wp,nom,fc,model)
     u_bar = nom.u_bar(:,n:N-1); 
     
     idx = wp.Q_key(nom.wp_curr-1,1);
-    Q_t = fc.Q(:,:,idx);
+    Q_t = wts.Q(:,:,idx);
     idx = wp.Q_key(nom.wp_curr-1,2);
-    Q_f = fc.Q(:,:,idx);
+    Q_f = wts.Q(:,:,idx);
     
-    R = fc.R;
+    R = wts.R;
     
     x_feed = wp.x(:,nom.wp_curr);
     % Convergence Variables
