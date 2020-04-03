@@ -1,4 +1,4 @@
-function animation_plot(flight,wp,targ,view_point)
+function animation_plot(flight,wp,targ,view_point,wp_show)
 
     map = wp.map;
     
@@ -18,7 +18,7 @@ function animation_plot(flight,wp,targ,view_point)
     gate_h.LineWidth = 3;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
-    xlim([-3 3]);
+%     xlim([-3 3]);
 %     ylim([-1.0 1.0]);
     zlim(wp.z_lim);
     grid on
@@ -27,19 +27,23 @@ function animation_plot(flight,wp,targ,view_point)
     % Plot the target
     h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
     
-    % Plot the Waypoints
-    for k = 1:size(wp.x,2)
-        [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
-        x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-        y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-        z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
-        
-        h_wp = plot3(x,y,z,'linewidth',2);
-    
-        % Set the Correct Colors
-        h_wp(1).Color = [1 0 0];
-        h_wp(2).Color = [0 1 0];
-        h_wp(3).Color = [0 0 1];
+    switch wp_show
+        case 'show'
+            % Plot the Waypoints
+            for k = 1:size(wp.x,2)
+                [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
+                x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+                y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+                z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
+
+                h_wp = plot3(x,y,z,'linewidth',2);
+
+                % Set the Correct Colors
+                h_wp(1).Color = [1 0 0];
+                h_wp(2).Color = [0 1 0];
+                h_wp(3).Color = [0 0 1];
+            end
+        case 'hide'
     end
 
     % Set Camera Angle

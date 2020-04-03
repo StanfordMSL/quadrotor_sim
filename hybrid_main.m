@@ -131,5 +131,5 @@ end
 
 %% Plot the States and Animate
 %state_plot(flight)
-animation_plot(flight,wp,targ,'persp');
+animation_plot(flight,wp,targ,'persp','show');
 % motor_plot(flight,model);

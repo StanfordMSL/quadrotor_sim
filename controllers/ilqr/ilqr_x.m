@@ -3,11 +3,16 @@ function nom = ilqr_x(t_now,x_now,wp,nom,wts,model)
     % Determine current point along trajectory and remainder of points
     n = find(nom.t_bar > t_now,1)-1;
     
-    if (n >= nom.wp_fr(nom.wp_curr)) && (nom.wp_curr <= size(nom.wp_fr,2))
+    if (n >= nom.wp_fr(nom.wp_curr)) && (nom.wp_curr < size(nom.wp_fr,2))
         nom.wp_curr = nom.wp_curr + 1;
         %disp('[ilqr]: waypoint crossed');
     end
     N = nom.wp_fr(nom.wp_curr);
+    
+    if n == N
+        nom.wp_curr = nom.wp_curr + 1;
+        N = nom.wp_fr(nom.wp_curr);
+    end
     
     % Unpack the Terms
     x_bar = nom.x_bar(:,n:N);

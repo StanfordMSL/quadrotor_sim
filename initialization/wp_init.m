@@ -175,7 +175,7 @@ switch traj
         t = [0 tf];
 
         Q_key = [1 2];
-        R_key = [1 1];     
+        R_key = [1 1];        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     otherwise
         disp('[wp_init]: No trajectory loaded!');
