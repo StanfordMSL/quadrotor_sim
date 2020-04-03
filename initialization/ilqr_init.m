@@ -1,7 +1,7 @@
 function nom = ilqr_init(wp,wts,model)
 
 % Determine Total Number of Time Steps
-N = wp.tf*model.ctl_hz+1;
+N = int64(wp.tf*model.ctl_hz+1);
 
 % Initialized Time and Trajectory and Input Variables
 nom.t_bar = linspace(0,wp.tf,N);
@@ -21,12 +21,12 @@ wp_fr = zeros(1,size(wp.t,2));
 for k = 1:size(wp.t,2)
     wp_fr(1,k) = (wp.t(k)*model.ctl_hz) + 1;
 end
-nom.wp_fr = wp_fr;
+nom.wp_fr = int64(wp_fr);
 
 for k = 1:size(wp.t,2)-1
     t_now = wp.t(k);
     x_now = wp.x(:,k);
-    for j = wp_fr(k):wp_fr(end)
+    for j = int16(wp_fr(k)):int16(wp_fr(end))
         nom.x_bar(:,j) = wp.x(:,k+1);
     end
     nom = ilqr_x(t_now,x_now,wp,nom,wts,model);

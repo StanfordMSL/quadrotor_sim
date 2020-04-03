@@ -2,12 +2,17 @@ clear; clc;
 addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Time and Simulation Rate
-tf = 4.0;
+%% Tau Initialization
+tau_dot = 0.9;
+x0      = [-3 ; 0 ; 1 ; 1 ; 0 ; -1 ; 1 ; zeros(6,1)]; % WITH TARGET AS ORIGIN
+wp      = tau_wp_init(x0,tau_dot,0.1,'no plot');
+tf      = wp.tf;
 
-lqr_hz = 0;         % iLQR Update Rate
+%% Time and Simulation Rate
+
+lqr_hz = 2;         % iLQR Update Rate
 ctl_hz = 200;       % Control Law Switch Rate
-fbc_hz = 0;         % Feedback Controller Rate
+fbc_hz = 200;       % Feedback Controller Rate
 est_hz = ctl_hz;    % State Estimator Sample Rate
 act_hz = 1000;      % Actual Dynamics Update Rate
 
@@ -17,22 +22,23 @@ sim_N  = tf/sim_dt;
 t_est = 0:1/est_hz:tf;
 t_lqr = 0:1/lqr_hz:tf;
 t_ctl = 0:1/ctl_hz:tf;
-t_act = 0:1/act_hz:tf;
+t_fbc = 0:1/fbc_hz:tf;
+t_act = 0:1/act_hz:tf; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize Simulation
 
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple v0.0',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
-wts    = wts_init();                            % Initialize Controller
-wp     = wp_init('dive',tf,'no plot');                       % Initialize timestamped keyframes
-flight = logger_init(tf,wp,act_hz,ctl_hz);     % Initialize Flight Variables
+wts    = wts_init();                     % Initialize Controller
+flight = logger_init(tf,wp,act_hz,fbc_hz);     % Initialize Flight Variables
 targ   = targ_init("none");          % Initialize target
 
 %%% Time Counters Initialization
 k_est = 1;              % State Estimator Time Counter
 k_lqr = 1;              % iLQR Update Time Counter
 k_ctl = 1;              % Control Law Switch Time Counter
+k_fbc = 1;              % Feedback Control Time Counter
 k_act = 1;              % Actual Dynamics Time Counter
 k_wp  = 1;              % Waypoint Time Counter
 tol   = 1e-1*sim_dt;    % Tolerance to trigger various processes
@@ -47,7 +53,7 @@ N_ct  = round(dt_ct*act_hz); % Number of actual dynamics frames
 %% Simulation
 
 % Cold Start the nominal trajectory for the iLQR
-nom = df_init(wp,model,'yaw');
+nom = ilqr_init(wp,wts,model);
 nominal_plot(wp,nom,'persp',10);
 disp('[main]: Diff. Flat. based warm start complete! Ready to launch!');
 disp('--------------------------------------------------')
@@ -63,19 +69,42 @@ for k = 1:sim_N
         x_now = flight.x_act(:,k_act);
         flight.x_fc(:,k_est)  = x_now;
 
+%         %%%%%%%%%%%%%%%%%%%%
+%         % YOLO UKF Test
+%         t_now = t_est(k_est);
+%         [sv,mu_prev] = yolo_ukf(sv,flight,k_est,t_now,initial_bb,camera,qtmp,qm,ukf_prms,mu_curr,mu_prev,sig_curr,model);
+%         %%%%%%%%%%%%%%%%%%%%
         k_est = k_est + 1;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Open Loop Control Updater    
+    % LQR Updater    
+    if (abs(t_lqr(k_lqr)-sim_time) < tol) && (k_lqr <= tf*lqr_hz)
+        % Update LQR params
+        nom = ilqr_x(t_now,x_now,wp,nom,wts,model);
+        k_lqr = k_lqr + 1;
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Control Law Updater    
     if (abs(t_ctl(k_ctl)-sim_time) < tol) && (k_ctl <= tf*ctl_hz)
-        [u,curr_m_cmd] = df_ol_con(k_ctl,nom,model,'ideal');
-        
-        % Log State Control Commands
-        flight.m_cmd(:,k_ctl) = curr_m_cmd;  
-        flight.u(:,k_ctl)     = u; 
+        l = nom.l(:,:,k_ctl);
+        L = nom.L(:,:,k_ctl);
         
         k_ctl = k_ctl + 1;
     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Feedback Controller Updater
+    if (abs(t_fbc(k_fbc)-sim_time) < tol) && (k_fbc <= tf*fbc_hz)
+        x_bar = nom.x_bar(:,k_ctl-1);
+        u_bar = nom.u_bar(:,k_ctl-1);
+        alpha = nom.alpha;
+        [u,curr_m_cmd] = ilqr_fbc(x_now,x_bar,u_bar,l,L,alpha,model,'actual');
+
+        % Log State Control Commands
+        flight.m_cmd(:,k_fbc) = curr_m_cmd;  
+        flight.u(:,k_fbc)     = u;
+        
+        k_fbc = k_fbc + 1;
+    end    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     if (abs(t_act(k_act)-sim_time) < tol)
@@ -105,5 +134,5 @@ end
 
 %% Plot the States and Animate
 %state_plot(flight)
-animation_plot(flight,wp,targ,'persp','show');
+animation_plot(flight,wp,targ,'side','show');
 % motor_plot(flight,model);
