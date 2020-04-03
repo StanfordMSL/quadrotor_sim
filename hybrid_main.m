@@ -28,7 +28,7 @@ model  = model_init('simple v0.6',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initial
 wts    = wts_init();                     % Initialize Controller
 wp     = wp_init('dive',tf,'no plot'); % Initialize timestamped keyframes
 flight = logger_init(tf,wp,act_hz,fbc_hz);     % Initialize Flight Variables
-targ   = targ_init("none");          % Initialize target
+targ   = targ_init("soft toy");          % Initialize target
 
 %%% Time Counters Initialization
 k_est = 1;              % State Estimator Time Counter

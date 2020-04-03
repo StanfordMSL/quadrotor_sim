@@ -15,7 +15,7 @@ pos0  = x0(1:3,1);
 vel0  = x0(4:6,1);
 
 targ_pos   = [0 ; 0 ; 0.3];
-targ_angle = [0 0 0];
+targ_angle = [0 -pi/4 0]; %%% CHANGES THE ANGLE. in euler
 targ_quat  = eul2quat(targ_angle)';
 
 % Determine Time Variables for Trajectory
@@ -41,18 +41,20 @@ for k = 1:N
             x_dot_c(n,1) = 0;
         end
     end
-    x(1:6,k) = [x_c+targ_pos ; x_dot_c];
+    x(1:6,k) = [x_c ; x_dot_c];
 end
 
 % Determine Ang/Ang_Vel Variables for Trajectory
 for k = 1:N
-    if x_c == zeros(3,1)
+    if norm(x(1:3,k)) <= 0.1
         x(7:10,k) = targ_quat;
     else
         x(7:10,k) = [1 ; 0 ; 0 ; 0];
     end
 end
 
+% Offset the position values back to world frame
+x(1:3,:) = x(1:3,:) + targ_pos;
 
 % Determine Weights for Q and R
 n_QR  = size(x,2) - 1;

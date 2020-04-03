@@ -3,10 +3,10 @@ addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tau Initialization
-tau_dot = 0.8;
-x0    = [-3 ; 0 ; 1 ; 1 ; 0 ; -1 ; 1 ; zeros(6,1)]; % WITH TARGET AS ORIGIN
-wp = tau_wp_init(x0,tau_dot,0.5,'no plot');
-tf = wp.tf;
+tau_dot = 0.9;
+x0      = [-3 ; 0 ; 1 ; 1 ; 0 ; -1 ; 1 ; zeros(6,1)]; % WITH TARGET AS ORIGIN
+wp      = tau_wp_init(x0,tau_dot,0.1,'no plot');
+tf      = wp.tf;
 
 %% Time and Simulation Rate
 
@@ -134,5 +134,5 @@ end
 
 %% Plot the States and Animate
 %state_plot(flight)
-animation_plot(flight,wp,targ,'persp','show');
+animation_plot(flight,wp,targ,'side','show');
 % motor_plot(flight,model);
