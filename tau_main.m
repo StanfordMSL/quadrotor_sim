@@ -13,7 +13,7 @@ dt      = 0.5;
 n_td  = size(tau_dot,1);        % number of tau_dots tested
 n_x   = zeros(n_td,1);          % frame count sizes (since vary tau_dot changes total flight time)
 n_wp  = zeros(n_td,1);
-vel_f = zeros(n_td,1);          % final velocities
+vel_f = zeros(4,n_td);          % final velocities
 x_tau = zeros(13,8000,n_td);    % tau trajectories (in full state form)
 wp_tau = zeros(13,800,n_td);
 %% Simulation
@@ -23,7 +23,8 @@ for k = 1:n_td
     [x_tau_curr,wp_tau_curr] = tau_sim(tau_dot(k),x0,dt);
     
     % calculate and store final velocity
-    vel_f(k,1) = round(norm(x_tau_curr(4:6,end)),2);    
+    vel_f(1:3,k) = x_tau_curr(4:6,end);
+    vel_f(4,k)   = round(norm(vel_f(1:3,k)),2);    
     
     % store x frame count
     n_x_curr = size(x_tau_curr,2);
@@ -39,5 +40,5 @@ for k = 1:n_td
 end
 
 %% Plot
-tau_plot(x_tau,wp_tau,vel_f,n_x,n_wp,tau_dot,'show')
+tau_plot(x_tau,wp_tau,vel_f,n_x,n_wp,tau_dot,'hide','show')
 

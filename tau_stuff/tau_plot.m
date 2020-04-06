@@ -1,4 +1,4 @@
-function tau_plot(x_tau,wp_tau,vel_f,n_x,n_wp,tau_dot,wp_show)
+function tau_plot(x_tau,wp_tau,vel_f,n_x,n_wp,tau_dot,wp_show,vel_f_show)
 
 % Initialize the plotting area
 figure(1)
@@ -16,12 +16,13 @@ legend_array = strings(n,1);
 % Plot trajectories
 for k  =1:N
     n_curr = n_x(k,1);
-    plot3(x_tau(1,1:n_curr,k),x_tau(2,1:n_curr,k),x_tau(3,1:n_curr,k),'linewidth',1);
+    h = plot3(x_tau(1,1:n_curr,k),x_tau(2,1:n_curr,k),x_tau(3,1:n_curr,k),'linewidth',1);
     
     a = num2str(tau_dot(k));
-    b = num2str(vel_f(k));
+    b = num2str(vel_f(4,k));
     legend_array(k) = ['k=' a ' (v_f=' b ')'];
 end
+set(gca,'ColorOrderIndex',1)
 
 % Plot the waypoints
 for k = 1:N
@@ -45,6 +46,22 @@ for k = 1:N
     end
 end
 
+% Plot the final velocity
+for k = 1:N
+    switch vel_f_show
+        case 'show'
+            n_curr = n_x(k,1);
+            
+            vel_arrow = [x_tau(1:3,n_curr,k) x_tau(1:3,n_curr,k)+vel_f(1:3,k)];
+            x = vel_arrow(1,:);
+            y = vel_arrow(2,:);
+            z = vel_arrow(3,:);
+            
+            plot3(x,y,z,'Linewidth',2);
+        case 'hide'
+    end
+end
+
 % Labelling
 legend(legend_array,'Location','northwest');
 
@@ -52,6 +69,6 @@ xlabel('x-axis');
 ylabel('y-axis');
 zlabel('z-axis');
 
-xlim([-5 1]);
-ylim([-2 2]);
-zlim([ 0.0 3.0]);
+xlim([-3 1]);
+ylim([-1.5 1.5]);
+zlim([0.0 2.0]);
