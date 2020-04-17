@@ -17,6 +17,11 @@ nom.total = N;
 nom.alpha = 1;
 nom.wp_curr = 1;
 
+% Initialize cost_curr_array
+cc_arr_size = model.lqr_hz * t_out(end);
+cost_curr = zeros(cc_arr_size,1);
+nom.cost_curr = cost_curr;
+
 wp_fr = zeros(1,size(wp.t,2));
 for k = 1:size(wp.t,2)
     wp_fr(1,k) = (wp.t(k)*model.ctl_hz) + 1;

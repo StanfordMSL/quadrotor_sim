@@ -1,4 +1,4 @@
-function [u,curr_m_cmd] = ilqr_fbc(x_now,x_bar,u_bar,l,L,alpha,model,motor_model)
+function [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,motor_model)
 
 % Draw Out Motor Commands from u_bar computed by iLQR
 del_x = x_now-x_bar;

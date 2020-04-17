@@ -1,4 +1,4 @@
-function nom = df_init(wp,model,angle_axis)
+function nom = df_init(wp,model,angle_axis,nom_show)
 tic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6,7 +6,7 @@ tic
 n_p = 15;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Unpack Some Terms
-hz = model.ctl_hz;
+hz = model.hz_ctl;
 N = round(hz*wp.tf)+1;
 
 % Convert waypoints to flat outputs
@@ -29,8 +29,12 @@ end
 % Generate the number of ctl frames between each waypoint.
 wp_fr = zeros(1,size(wp.t,2));
 for k = 1:size(wp.t,2)
-    wp_fr(1,k) = (wp.t(k)*model.ctl_hz) + 1;
+    wp_fr(1,k) = (wp.t(k)*model.hz_ctl) + 1;
 end
+
+% Initialize cost_curr_array
+cc_arr_size = model.hz_lqr * t_out(end);
+cost_curr = zeros(cc_arr_size,1);
 
 % Save the stuff into nom.
 nom.t_bar = t_out;
@@ -46,7 +50,14 @@ nom.L = zeros(4,13,N-1);
 nom.wp_fr = wp_fr;
 nom.wp_curr = 1;
 
+nom.cost_curr = cost_curr;
+
 % Publish some diagnostics
+switch nom_show
+    case 'show'
+        nominal_plot(wp,nom,'persp',10);
+    case 'hide'
+end
 disp('[df_init]: Note, orientation data is lost in the wp2sigma step');
 disp(['[df_init]: Trajectory has ',num2str(wp.N_wp),' waypoints over ',num2str(wp.tf),' seconds']);
 disp(['[df_init]: Diff. Flat Trajectory Computed in: ',num2str(toc),' seconds.']);

@@ -2,8 +2,8 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     % Unpack
     switch type
         case 'actual'
-          dt = model.act_dt; 
-          wt = model.Q*randn(6,1);
+          dt = model.dt_act; 
+          wt = model.W*randn(13,1);
           
           I = model.I_act;
           inv_I = model.inv_I_act;
@@ -19,8 +19,8 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
          
           tau_yaw = 0;
         case 'ctl'
-          dt = model.ctl_dt;
-          wt = zeros(6,1);
+          dt = model.dt_ctl;
+          wt = zeros(13,1);
           
           I = model.I_est;
           inv_I = model.inv_I_est;
@@ -36,8 +36,8 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           
           tau_yaw = 0;
         case 'fbc'
-          dt = model.fbc_dt;
-          wt = zeros(6,1);
+          dt = model.dt_fbc;
+          wt = zeros(13,1);
           
           I = model.I_est;
           inv_I = model.inv_I_est;
@@ -73,8 +73,8 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     end
     
     % Compute the Linear and Angular Accelerations
-    vel_dot   = lin_acc(x_curr,m,f,F_drag,F_ext,model,0) + wt(1:3,1);
-    omega_dot = ang_acc(f,I,inv_I,L,b,w_all,tau_ext,tau_yaw) + wt(4:6,1);
+    vel_dot   = lin_acc(x_curr,m,f,F_drag,F_ext,model,0);
+    omega_dot = ang_acc(f,I,inv_I,L,b,w_all,tau_ext,tau_yaw);
     
     % State Updates   
     x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ
@@ -89,5 +89,7 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     
     q_hat = quat + 0.5*Omega*quat*dt;
     q_norm = q_hat./norm(q_hat); 
-    x_upd(7:10,1) = q_norm; 
+    x_upd(7:10,1) = q_norm;
+    
+    x_upd = x_upd + wt;
 end

@@ -3,9 +3,9 @@ addpath(genpath(pwd));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Time and Simulation Rate
-tf = 3.8;
+tf = 7;
 
-lqr_hz = 2;         % iLQR Update Rate
+lqr_hz = 5;         % iLQR Update Rate
 ctl_hz = 200;       % Control Law Switch Rate
 fbc_hz = 200;       % Feedback Controller Rate
 est_hz = ctl_hz;    % State Estimator Sample Rate
@@ -26,7 +26,7 @@ t_act = 0:1/act_hz:tf;
 %%% Map, Dynamics and Control Initialization
 model  = model_init('simple v0.0',est_hz,lqr_hz,ctl_hz,fbc_hz,act_hz); % Initialize Physics Model
 wts    = wts_init();                     % Initialize Controller
-wp     = wp_init('dive',tf,'no plot'); % Initialize timestamped keyframes
+wp     = wp_init('square',tf,'no plot'); % Initialize timestamped keyframes
 flight = logger_init(tf,wp,act_hz,fbc_hz);     % Initialize Flight Variables
 targ   = targ_init("none");          % Initialize target
 
@@ -93,7 +93,7 @@ for k = 1:sim_N
         x_bar = nom.x_bar(:,k_ctl-1);
         u_bar = nom.u_bar(:,k_ctl-1);
         alpha = nom.alpha;
-        [u,curr_m_cmd] = ilqr_fbc(x_now,x_bar,u_bar,l,L,alpha,model,'actual');
+        [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,'actual');
 
         % Log State Control Commands
         flight.m_cmd(:,k_fbc) = curr_m_cmd;  
@@ -130,5 +130,5 @@ end
 
 %% Plot the States and Animate
 %state_plot(flight)
-animation_plot(flight,wp,targ,'persp','hide');
+animation_plot(flight,wp,targ,'persp','show');
 % motor_plot(flight,model);
