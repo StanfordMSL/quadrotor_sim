@@ -1,5 +1,7 @@
-function log = logger_init(wp,dt_act,dt_fbc)
+function log = logger_init(wp,model)
 
+dt_act = model.dt_act;
+dt_fbc = model.dt_fbc;
 % Timestamped Actual Pose Array
 log.t_act = 0:dt_act:wp.tf;
 log.x_act = zeros(13,length(log.t_act));
@@ -15,3 +17,7 @@ log.sigma = zeros(13,13,length(log.t_fc));
 % Flight Motor Inputs
 log.m_cmd = zeros(4,length(log.t_fc)-1);
 log.u = zeros(4,length(log.t_fc)-1);
+
+% Cost Function Data
+cc_arr_size = model.hz_lqr * wp.tf;
+log.cost_curr = zeros(cc_arr_size,1);

@@ -7,11 +7,17 @@ V = Q_f;
 N = size(x_bar,2);
 for k = N-1:-1:1
     % Update the Stagewise Variables
-    Q_x  = Q_t *(x_bar(:,k)-x_itr(:,k)) + A(:,:,k)'*v;
-    Q_xx = Q_t + A(:,:,k)'*V*A(:,:,k);
-    Q_u  = R*u_bar(:,k) + B(:,:,k)'*v;
-    Q_uu = R + B(:,:,k)'*V*B(:,:,k);
-    Q_ux = B(:,:,k)'*V*A(:,:,k);
+    c_x  = Q_t *(x_bar(:,k)-x_itr(:,k));
+    c_u  = R*u_bar(:,k);
+    c_xx = Q_t;
+    c_uu = R;
+    c_ux = zeros(4,13);
+    
+    Q_x  = c_x  + A(:,:,k)'*v;
+    Q_u  = c_u  + B(:,:,k)'*v;
+    Q_xx = c_xx + A(:,:,k)'*V*A(:,:,k);
+    Q_uu = c_uu + B(:,:,k)'*V*B(:,:,k);
+    Q_ux = c_ux + B(:,:,k)'*V*A(:,:,k);
     
     % Update the feed-forward and feedback terms
     l(:,:,k) = -(Q_uu+eye(4))\Q_u;

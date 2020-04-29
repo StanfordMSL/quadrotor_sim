@@ -3,8 +3,8 @@ function wts = wts_init()
 %% Control Weight Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-R_f = 1e-6*ones(1,1);
-R_tau = 1e-3*ones(3,1);
+R_f = 1e-9*ones(1,1);
+R_tau = 1e-6*ones(3,1);
 R_vect = [R_f ; R_tau];
 wts.R = diag(R_vect);   
 
@@ -86,5 +86,16 @@ Q_omg_z  = 10*ones(1,1);
 
 Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,7) = diag(Q_vect);
+
+% Pose Extra Extra Weighted %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Q_xy     = 1000*ones(2,1);
+Q_z      = 1000*ones(1,1);
+Q_vel    = 100*ones(3,1);
+Q_q      = 10000*[1 1 1 1]';
+Q_omg_xy = 100*ones(2,1);
+Q_omg_z  = 100*ones(1,1);
+
+Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
+wts.Q(:,:,8) = diag(Q_vect);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

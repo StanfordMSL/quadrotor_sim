@@ -1,4 +1,4 @@
-function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
+function [nom, R_gamma] = ileqr_oa_x(n,x_now,wp,nom,wts,model,coeff_obs)
     tic
     % Determine current point along trajectory and remainder of points
     idx_N = find(nom.wp_fr > n,1);
@@ -16,6 +16,10 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
     R = wts.R;
     
     x_feed = wp.x(:,idx_N);
+
+    W_inv = model.W_leqr_inv;
+    gamma = model.gamma;
+    
     % Convergence Variables
     itrs = 1;
     x_diff = 1000;
@@ -29,10 +33,10 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
         [A,B] = dynamics_linearizer(x_bar,u_bar,model);
         
         % Backward Pass   
-        [l,L] = ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R);
+        [l,L] = ileqr_oa_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R,W_inv,gamma,coeff_obs);
         
         % Forward Pass
-        [x_bar,u_bar,J] = ilqr_fp(x_bar,u_bar,x_now,l,L,nom.alpha,model,Q_t,Q_f,R);
+        [x_bar,u_bar,R_gamma] = ileqr_oa_fp(x_bar,u_bar,x_now,l,L,nom.alpha,model,Q_t,Q_f,R,coeff_obs);
         
         % Check for Convergence
         if itrs < 100
@@ -44,7 +48,7 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
         else
 %             x_bar = nom.x_bar(:,n:end);
 %             u_bar = nom.u_bar(:,n:end);
-            disp('[ilqr_x]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
+            disp('[ileqr_x]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
             break;
         end
     end
@@ -54,8 +58,8 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
     nom.u_bar(:,n:N-1) = u_bar;
     nom.l(:,:,n:N-1) = l;
     nom.L(:,:,n:N-1) = L;
-    
+     
 %     comp_pcnt = 100*toc/model.dt_ctl;
-%     disp(['[ilqr_x]: iLQR Converged on Iteration ',num2str(itrs),' in ',num2str(toc),' seconds using ',num2str(comp_pcnt), '% of available time']);
+%     disp(['[ileqr_x]: iLQR Converged on Iteration ',num2str(itrs),' in ',num2str(toc),' seconds using ',num2str(comp_pcnt), '% of available time']);
 end
 

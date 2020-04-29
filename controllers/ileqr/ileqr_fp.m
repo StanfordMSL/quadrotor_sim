@@ -1,10 +1,10 @@
-function [x_bar,u_bar,cost_curr] = ileqr_fp(x_bar,u_bar,x_now,l,L,alpha,model,Q_t,Q_f,R)
+function [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,alpha,model,Q_t,Q_f,R)
     % Initialize some terms
     N = size(x_bar,2);
     x_fp = zeros(13,N);
     x_fp(:,1) = x_now;
     u_fp = u_bar; 
-    cost_curr =  0;
+    J =  0;
     
 for k = 1:N-1
     % Determine Control Command
@@ -19,12 +19,15 @@ for k = 1:N-1
     x_fp(:,k+1) = quadcopter(x_fp(:,k),m_cmd,model,FT_ext,'ctl');
 
     % Update Cost
-    cost_curr = cost_curr + 0.5*(del_x'*Q_t*del_x + u_fp(:,k)'*R*u_fp(:,k));
+    J = J + 0.5*(del_x'*Q_t*del_x + u_fp(:,k)'*R*u_fp(:,k));
 end
 
 % Add terminal cost   
 del_x = x_fp(:,N)-x_bar(:,N);
-cost_curr = cost_curr + 0.5* del_x'*Q_f*del_x;
+J = J + 0.5* del_x'*Q_f*del_x;
+
+% Convert to LEQR form
+R_gamma = (1/model.gamma).* log(exp(model.gamma .* J));
 % disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
 
 % If cost goes down, we know it's feasible. Update x_bar.

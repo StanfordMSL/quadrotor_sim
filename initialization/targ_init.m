@@ -13,4 +13,8 @@ switch target_type
         target.m_act = 0;
         target.pos = [6.0 ; 0.0 ; 0.3];
         target.t_capture = 999;
+    case "branch"        
+        target.m_act = 0;
+        target.pos = [6.0 ; 0.0 ; 0.3];
+        target.t_capture = 999;
 end

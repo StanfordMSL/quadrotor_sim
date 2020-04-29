@@ -182,8 +182,6 @@ switch mdl_type
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 end
 
-model.leg_l = 0.15;
-
 model.inv_I_est = inv(model.I_est);
 model.inv_I_act = inv(model.I_act);
 
@@ -217,6 +215,8 @@ model.dt_fbc = 1/hz_fbc;
 
 model.hz_act = hz_act;
 model.dt_act = 1/hz_act;
+
+model.p_grasp_b = [0 ; 0 ; 0];      % grasper position in body frame
 
 disp('[model init]: A_calc and B_calc uses a kw^2 approx.');
 disp('[model init]: Thrust to Wrench uses L_est and b_est');
