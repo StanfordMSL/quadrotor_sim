@@ -21,3 +21,6 @@ log.u = zeros(4,length(log.t_fc)-1);
 % Cost Function Data
 cc_arr_size = model.hz_lqr * wp.tf;
 log.cost_curr = zeros(cc_arr_size,1);
+
+% Capture time
+log.t_capture = 999;

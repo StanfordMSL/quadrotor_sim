@@ -23,7 +23,7 @@ cc_3 = 0;
 % Warm Start with either differential flatness or iLQR itself
 nom = df_init(wp,model,'yaw','hide');
 
-n_exp = 10;
+n_exp = 1;
 for k = 1:n_exp
     tic
     

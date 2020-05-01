@@ -18,7 +18,7 @@ k_ctl = 0;
 k_lqr = 0;
 
 %%% Contact Parameter Initialization
-dt_ct = 0.02;                 % Duration of Contact Force
+dt_ct = 0.2;                 % Duration of Contact Force
 n_ct  = 0;                    % Contact state (0 = no contact, 1 = contact/post-contact)
 N_ct  = round(dt_ct*model.hz_act); % Number of actual dynamics frames
 FT_ext = zeros(6,1);
@@ -77,7 +77,7 @@ for k_act = 1:sim_N
     % Dynamic Model
     
     % Simple Contact Model
-    [FT_ext,n_ct,model,targ] = contact_func(x_now,FT_ext,n_ct,model,targ,N_ct,'perch');
+    [FT_ext,n_ct,model,log] = contact_func(t_now,x_now,FT_ext,n_ct,model,targ,N_ct,log,'grasp');
 
     % Dynamic Model
     log.x_act(:,k_act+1) = quadcopter(log.x_act(:,k_act),curr_m_cmd,model,FT_ext,'actual');

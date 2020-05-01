@@ -18,11 +18,14 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     gate_h.LineWidth = 3;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
-%     xlim([-3 3]);
-%     ylim([-1.0 1.0]);
     zlim(wp.z_lim);
+%     xlim([-2.5 2.5]);
+%     ylim([-1.0 1.0]);
+%     zlim([ 0.0 2.0]);
+
     grid on
     hold on
+    set(gcf,'color','white')
 
     % Plot the target
     h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
@@ -92,7 +95,7 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
         [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
         
-        if t_act(k) > targ.t_capture
+        if t_act(k) > flight.t_capture
             h_targ.XData = x_act(1,k);
             h_targ.YData = x_act(2,k);
             h_targ.ZData = x_act(3,k)-0.1;

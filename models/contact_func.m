@@ -1,4 +1,4 @@
-function [FT_ext,n_ct,model,targ] = contact_func(x_act,FT_ext,n_ct,model,targ,N_ct,contact_type)
+function [FT_ext,n_ct,model,log] = contact_func(t_now,x_act,FT_ext,n_ct,model,targ,N_ct,log,contact_type)
 
 % Compute location of grasper (world frame)
 quat = x_act(7:10,1);  
@@ -28,7 +28,7 @@ switch contact_type
             model.m_act = model.m_act + targ.m_act;
     
             n_ct = n_ct + 1;
-            targ.t_capture = t_capture;
+            log.t_capture = t_now;
 
             disp('[main]: Contact triggered!');
         elseif (n_ct <= N_ct) && (n_ct > 0)
@@ -48,7 +48,7 @@ switch contact_type
             FT_ext = [F ; cross(check_ct,F)];
     
             n_ct = n_ct + 1;
-            targ.t_capture = t_capture;
+            log.t_capture = t_now;
 
             disp('[main]: Contact triggered!');
         end

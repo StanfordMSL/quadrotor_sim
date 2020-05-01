@@ -5,8 +5,8 @@ addpath(genpath(pwd));
 %% Initialize Simulation Parameters
 
 % Base Parameters
-wp     = wp_init('dive');                         % Initialize mission
-model  = model_init('simple v0.8','high-speed');    % Initialize quadcopter
+wp     = wp_init('bulkhead');                         % Initialize mission
+model  = model_init('simple v0.6','high-speed');    % Initialize quadcopter
 wts    = wts_init();                                % Initialize State and Input Cost Weights
 targ   = targ_init("none");                         % Initialize target
 
@@ -22,7 +22,7 @@ model.W_leqr_inv = inv(W_leqr);
 nom = df_init(wp,model,'yaw','hide');
 % nom = ilqr_init(wp,wts,model);
 
-log = simulation(nom,wp,model,wts,targ,'ilqr');
+log = simulation(nom,wp,model,wts,targ,'ileqr');
 
 %% Plot the States and Animate
 animation_plot(log,wp,targ,'persp','show');

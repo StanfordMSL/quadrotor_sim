@@ -18,13 +18,15 @@ function animation_plot_triple(f1,f2,f3,wp,targ,view_point,wp_show)
     % Generate flight room map
     gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
     gate_h.LineWidth = 3;
-    xlim(wp.x_lim);
-    ylim(wp.y_lim);
-%     xlim([-3 3]);
+%     xlim(wp.x_lim);
+%     ylim(wp.y_lim);
+%     zlim(wp.z_lim);
+    xlim([-4.0 4.0]);
 %     ylim([-1.0 1.0]);
-    zlim(wp.z_lim);
+    zlim([ 0.0 2.0]);
     grid on
     hold on
+    set(gcf,'color','white')
 
     % Plot the target
     h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
@@ -115,7 +117,7 @@ function animation_plot_triple(f1,f2,f3,wp,targ,view_point,wp_show)
     zlabel('z-axis');
 
     legend([h_persp_1(1) h_persp_2(1) h_persp_3(1)],'iLEQR_{oa}, \gamma = -3e^{-6}','iLEQR_{oa}, \gamma = 1e^{-9}','iLEQR_{oa}, \gamma = 3e^{-6}',...
-            'Location','west');
+            'Location','best');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;
@@ -127,7 +129,7 @@ function animation_plot_triple(f1,f2,f3,wp,targ,view_point,wp_show)
         [x_arrow_1, y_arrow_1, z_arrow_1] = frame_builder(x_act_1(:,k));
         h_persp_1 = reassign(h_persp_1,x_arrow_1,y_arrow_1,z_arrow_1);
                 
-        if t_act_1(k) > targ.t_capture
+        if t_act_1(k) > f1.t_capture
             h_targ.XData = x_act_1(1,k);
             h_targ.YData = x_act_1(2,k);
             h_targ.ZData = x_act_1(3,k)-0.1;
