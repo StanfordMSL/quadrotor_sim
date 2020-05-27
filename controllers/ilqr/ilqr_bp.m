@@ -20,8 +20,8 @@ for k = N-1:-1:1
     Q_ux = c_ux + B(:,:,k)'*V*A(:,:,k);
     
     % Update the feed-forward and feedback terms
-    l(:,:,k) = -(Q_uu+eye(4))\Q_u;
-    L(:,:,k) = -(Q_uu+eye(4))\Q_ux;
+    l(:,:,k) = -(Q_uu+0.1.*eye(4))\Q_u;
+    L(:,:,k) = -(Q_uu+0.1.*eye(4))\Q_ux;
 
 %     l_test = sum(isnan(l(:,:,k)));
 %     L_test = sum(isnan(l(:,:,k)),1:2);

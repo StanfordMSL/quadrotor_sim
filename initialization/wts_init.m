@@ -88,12 +88,12 @@ Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,7) = diag(Q_vect);
 
 % Pose Extra Extra Weighted %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Q_xy     = 1000*ones(2,1);
-Q_z      = 1000*ones(1,1);
-Q_vel    = 100*ones(3,1);
+Q_xy     = 10000*ones(2,1);
+Q_z      = 10000*ones(1,1);
+Q_vel    = 1000*ones(3,1);
 Q_q      = 10000*[1 1 1 1]';
-Q_omg_xy = 100*ones(2,1);
-Q_omg_z  = 100*ones(1,1);
+Q_omg_xy = 1000*ones(2,1);
+Q_omg_z  = 1000*ones(1,1);
 
 Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,8) = diag(Q_vect);

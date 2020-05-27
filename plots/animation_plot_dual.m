@@ -99,7 +99,7 @@ function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
     ylabel('y-axis');
     zlabel('z-axis');
 
-    legend([h_persp_1(1) h_persp_2(1)],'ileqr_{oa}, \gamma = 1e^{-6}','ileqr_{oa}, \gamma = 3e^{-6}');
+    legend([h_persp_1(1) h_persp_2(1)],'ilqr','al-ilqr','Location','west');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;
@@ -111,7 +111,7 @@ function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
         [x_arrow_1, y_arrow_1, z_arrow_1] = frame_builder(x_act_1(:,k));
         h_persp_1 = reassign(h_persp_1,x_arrow_1,y_arrow_1,z_arrow_1);
                 
-        if t_act_1(k) > targ.t_capture
+        if t_act_1(k) > f1.t_capture
             h_targ.XData = x_act_1(1,k);
             h_targ.YData = x_act_1(2,k);
             h_targ.ZData = x_act_1(3,k)-0.1;

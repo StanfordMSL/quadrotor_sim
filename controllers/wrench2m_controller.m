@@ -6,7 +6,7 @@ k1 = model.kt_est(1,1);
 k2 = model.kt_est(2,1);
 k3 = model.kt_est(3,1);
 
-m_force = lsqnonneg(model.motor2wrench,u);
+m_force = lsqnonneg(model.m2w,u);
 
 for k = 1:4
     interior = k2^2-(4*k1*(k3-m_force(k,1)));

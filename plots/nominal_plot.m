@@ -14,9 +14,9 @@ clf
 % Generate flight room map
 gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
 gate_h.LineWidth = 3;
-xlim(wp.x_lim);
-ylim(wp.y_lim);
-zlim(wp.z_lim);
+% xlim(wp.x_lim);
+% ylim(wp.y_lim);
+% zlim(wp.z_lim);
 grid on
 hold on
 
@@ -30,9 +30,9 @@ for k = 1:size(wp.x,2)
     h_wp = plot3(x,y,z,'linewidth',2);
     
     % Set the Correct Colors
-    h_wp(1).Color = [1 0 1];
-    h_wp(2).Color = [1 1 0];
-    h_wp(3).Color = [0 1 1];
+    h_wp(1).Color = [1 0 0];
+    h_wp(2).Color = [0 1 0];
+    h_wp(3).Color = [0 0 1];
 end
 
 t_now = 0;

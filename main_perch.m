@@ -6,7 +6,7 @@ addpath(genpath(pwd));
 
 % Base Parameters
 wp     = wp_init('perch gentle');                         % Initialize mission
-model  = model_init('simple v0.8','high-speed');    % Initialize quadcopter
+model  = model_init('v1.1.0','high-speed');    % Initialize quadcopter
 wts    = wts_init();                                % Initialize State and Input Cost Weights
 targ   = targ_init("branch");                         % Initialize target
 
@@ -22,7 +22,7 @@ model.W_leqr_inv = inv(W_leqr);
 nom = df_init(wp,model,'yaw','hide');
 % nom = ilqr_init(wp,wts,model);
 
-log = simulation(nom,wp,model,wts,targ,'ilqr');
+log = simulation(nom,wp,model,wts,targ,'ilqr','ideal');
 
 %% Plot the States and Animate
 animation_plot(log,wp,targ,'persp','show');

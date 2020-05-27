@@ -1,4 +1,4 @@
-function log = simulation(nom,wp,model,wts,targ,ctl_mode)
+function log = simulation(nom,wp,model,wts,targ,ctl_mode,mtr_mode)
 
 % Initialize Logger Variable
 log = logger_init(wp,model);     
@@ -50,14 +50,14 @@ for k_act = 1:sim_N
         x_bar = nom.x_bar(:,k_ctl);
         u_bar = nom.u_bar(:,k_ctl);
         alpha = nom.alpha;
-        [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,'actual');
+        [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,mtr_mode);
 
         % Log State Control Commands
         log.m_cmd(:,k_fbc) = curr_m_cmd;  
         log.u(:,k_fbc)     = u;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % LQR Updater    
+    % Control Updater    
     if mod(t_now,dt_lqr) == 0
         k_lqr = k_lqr + 1;
         switch ctl_mode
@@ -69,6 +69,10 @@ for k_act = 1:sim_N
                 coeff_obs = [ 1.0 0.002;
                               1.1 0.002];
                 [nom,cost] = ileqr_oa_x(k_ctl,x_now,wp,nom,wts,model,coeff_obs);    
+            case 'al_ilqr'
+                [nom,cost] = al_ilqr_x(k_ctl,x_now,wp,nom,wts,model);
+            case 'df'
+                cost = 0;
         end
         
         log.cost_curr(k_lqr,1) = cost;
