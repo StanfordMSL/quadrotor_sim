@@ -1,5 +1,9 @@
 function model = model_init(mdl_type,ctl_type)
 
+% Default Heuristic Values
+model.alpha = 1;
+model.rho   = 1;
+
 model.g = 9.81;
 
 hz_est = 200;       % State Estimator Sample Rate
@@ -70,6 +74,33 @@ switch mdl_type
         W_vel   = 0.0001*ones(3,1);
         W_quat  = 0.0001*ones(4,1);
         W_omega = 0.0001*ones(3,1);
+        model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+    case 'v1.0.1'               % simple motor, with noise, with drag
+        disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');
+        % Estimate %%%
+        model.m_est = 0.650;
+        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];    
+        model.kt_est = [1.5683e-06 ; 0 ; 0];
+        model.b_est  = 0.0011; 
+        model.kd_est = 0.25;
+        model.L_est  = 0.0885;
+        
+        % Actual %%%
+        model.m_act = 0.650;
+        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+                                 0.00   2.14   0.00;...
+                                 0.00   0.00  42.00];             
+        model.kt_act = [1.5683e-06 ; 0 ; 0];
+        model.b_act  = 0.0011;
+        model.kd_act = 0.25;
+        model.L_act  = 0.0885;
+        % Model Noise
+        W_pos   = 0.0*ones(3,1);
+        W_vel   = 0.0*ones(3,1);
+        W_quat  = 0.0*ones(4,1);
+        W_omega = 0.0*ones(3,1);
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
     case 'v1.1.1'               % simple motor, with noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');

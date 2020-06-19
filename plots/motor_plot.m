@@ -19,4 +19,12 @@ function motor_plot(flight,model)
     plot(flight.t_fc(1,1:points),flight.u(1,:));
     xlabel('Time (s)');
     ylabel('Thrust (N)');
+    hold on
+    
+%     N = size(flight.x_fc,2);
+%     theta = zero(3,N);
+%     for k = 1:n
+%         theta(:,k) = quat2eul(flight.x_fc(7:10,k));
+%     end
+%     plot(flight.t_fc(1,1:points),theta(1,:));
 end

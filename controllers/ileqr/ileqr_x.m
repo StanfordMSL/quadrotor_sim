@@ -36,7 +36,7 @@ function [nom, R_gamma] = ileqr_x(n,x_now,wp,nom,wts,model)
         [l,L] = ileqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R,W_inv,gamma);
         
         % Forward Pass
-        [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,nom.alpha,model,Q_t,Q_f,R);
+        [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
         
         % Check for Convergence
         if itrs < 100

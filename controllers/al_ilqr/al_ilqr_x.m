@@ -15,61 +15,79 @@ function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
     
     R = wts.R;
     
-    x_feed = wp.x(:,idx_N);
-    % Convergence Variables
-    itrs = 1;
-    x_diff = 1000;
+    % Target state
+    x_star = wp.x(:,idx_N);
     
-    % Initialize AL variable %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Candidate Holder
+    x_cand = x_bar;
+    u_cand = u_bar;
+    J_cand = 0;
+    
+    % Initialize AL Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     N_al = N-n;
-    A_cons = (1/model.kt_act(1,1)).*model.m2w_inv;
-    b_cons = model.motor_min.^2 * ones(4,1);
-    mu = ones(4,N_al);
-    lambda = 0.*ones(4,N_al);
-    phi = 10;
-    c_cons = zeros(4,N_al);
-    max_c_cons_diff = 9999;
-    max_c_cons = 9999;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    n_con = 12;
     
-    while max_c_cons_diff > 1
+    mu = ones(n_con,N_al);
+    lambda = 0.*ones(n_con,N_al);
+    phi = 10;
+    c_cons = zeros(n_con,N_al);
+    con_check = 999;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    while con_check > 0
+        % Convergence Variables
+        itrs = 1;
+        x_diff = 1000;
         % Run the AL_ilqr %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        while x_diff > 1e-3
+        while x_diff > 1e-1
             % Initialize x_bar variable
             x_itr = x_bar;
-            x_itr(:,end) = x_feed;
-
+            x_itr(:,end) = x_star;
+        
             % Determine A and B matrices for this step
             [A,B] = dynamics_linearizer(x_bar,u_bar,model);
 
             % Backward Pass   
-            [l,L] = al_ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R,A_cons,b_cons,mu,lambda);
+            [l,L,c_cons] = al_ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R,mu,lambda,model,wp,n_con);
 
             % Forward Pass
-            [x_bar,u_bar,J] = al_ilqr_fp(x_bar,u_bar,x_now,l,L,nom.alpha,model,Q_t,Q_f,R);
+            [x_bar,u_bar,J] = al_ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
+%             direct_plot(x_bar,wp,'debug','show');
 
 %             motor_debug(x_bar,u_bar,model);
             % Check for Convergence
-            if itrs < 100
-                x_diff = sum(vecnorm(x_bar-x_itr))/(N-n);
-                itrs = itrs + 1;
+            if itrs <= 10
+                x_diff_old = x_diff;
+                x_diff = norm(x_bar(:,end) - x_star);
+            
+                if x_diff < x_diff_old
+                    x_cand = x_bar;
+                    u_cand = u_bar;
+                    J_cand = J;
+%                     disp('[ilqr]: Candidate Improved');
+                end
+%                 disp(['[al_ilqr_x]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff)]);
+
+                itrs = itrs + 1;  
             else
-                disp('[al_ilqr_x]: Convergence Timeout. Using last compute (TODO: Switch a line-search method).');
+                % Out of Time. Take Your Best Guess
+                x_bar = x_cand;
+                u_bar = u_cand;
+                J = J_cand;
+            
+%                 disp('[al_ilqr_x]: Convergence Timeout. Using best candidate).');
                 break;
             end
         end
         % Update lambda and mu and c_con %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         for k = 1:N_al
-            lambda_cand = lambda(:,k) + mu(:,k).*(A_cons*u_bar(:,k)-b_cons);
+            lambda_cand = lambda(:,k) + mu(:,k).*c_cons(:,k);
             
-            lambda(:,k) = max(zeros(4,1),lambda_cand);
+            lambda(:,k) = max(zeros(n_con,1),lambda_cand);
             mu(:,k) = phi.*mu(:,k);
-            c_cons(:,k)   = -A_cons*u_bar(:,k) + b_cons ;
         end
-        max_c_cons_old = max_c_cons;
-        max_c_cons = max((max(c_cons)));
-        disp(['[al_ilqr_x]: Max(c): ',num2str(max_c_cons)]);
-        max_c_cons_diff = abs(max_c_cons - max_c_cons_old);
+        con_check = sum(any(c_cons > 1e-6));
+        disp(['[al_ilqr_x]: Unfulfilled constraints: ',num2str(con_check)]);
     end
     
     % Update the Nominal Values
@@ -77,8 +95,5 @@ function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
     nom.u_bar(:,n:N-1) = u_bar;
     nom.l(:,:,n:N-1) = l;
     nom.L(:,:,n:N-1) = L;
-    
-%     comp_pcnt = 100*toc/model.dt_ctl;
-%     disp(['[ilqr_x]: iLQR Converged on Iteration ',num2str(itrs),' in ',num2str(toc),' seconds using ',num2str(comp_pcnt), '% of available time']);
 end
 

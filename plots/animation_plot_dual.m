@@ -1,4 +1,4 @@
-function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
+function animation_plot_dual(f1,f2,wp,targ,ctrl_type_I,ctrl_type_II,view_point,wp_show)
 
     map = wp.map;
     
@@ -19,8 +19,8 @@ function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
     gate_h.LineWidth = 3;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
-%     xlim([-3 3]);
-%     ylim([-1.0 1.0]);
+%     xlim([-3.0 4.0]);
+%     ylim([-1.5 1.5]);
     zlim(wp.z_lim);
     grid on
     hold on
@@ -53,7 +53,9 @@ function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
     switch view_point
         case 'persp'
             view(320,20);
-%              zoom(1.8)
+        case 'debug'
+            view(280,5);
+            zoom(1.5)
         case 'back'
             view(-90,0);
         case 'side'
@@ -99,7 +101,7 @@ function animation_plot_dual(f1,f2,wp,targ,view_point,wp_show)
     ylabel('y-axis');
     zlabel('z-axis');
 
-    legend([h_persp_1(1) h_persp_2(1)],'ilqr','al-ilqr','Location','west');
+    legend([h_persp_1(1) h_persp_2(1)],ctrl_type_I,ctrl_type_II,'Location','west');
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;

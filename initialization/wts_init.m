@@ -4,19 +4,19 @@ function wts = wts_init()
 
 % Empty Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 R_f = 1e-9*ones(1,1);
-R_tau = 1e-6*ones(3,1);
+R_tau = 1e-9*ones(3,1);
 R_vect = [R_f ; R_tau];
 wts.R = diag(R_vect);   
 
 %% State-Cost Weight Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Q_xy     = 0.001*ones(2,1);
-Q_z      = 0.001*ones(1,1);
-Q_vel    = 0.001*ones(3,1);
-Q_q      = 0.001*[1 1 1 1]';
-Q_omg_xy = 0.001*ones(2,1);
-Q_omg_z  = 0.001*ones(1,1);
+Q_xy     = 0.*ones(2,1);
+Q_z      = 0.*ones(1,1);
+Q_vel    = 0.*ones(3,1);
+Q_q      = 0.*ones(4,1);
+Q_omg_xy = 0.*ones(2,1);
+Q_omg_z  = 0.*ones(1,1);
 
 Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,1) = diag(Q_vect);
@@ -25,9 +25,9 @@ wts.Q(:,:,1) = diag(Q_vect);
 Q_xy     = 1*ones(2,1);
 Q_z      = 1*ones(1,1);
 Q_vel    = 0*ones(3,1);
-Q_q      = 0*[1 1 1 1]';
-Q_omg_xy = 0*ones(2,1);
-Q_omg_z  = 0*ones(1,1);
+Q_q      = 0.*[1 1 1 1]';
+Q_omg_xy = 1*ones(2,1);
+Q_omg_z  = 1*ones(1,1);
 
 Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,2) = diag(Q_vect);
@@ -97,5 +97,17 @@ Q_omg_z  = 1000*ones(1,1);
 
 Q_vect   = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
 wts.Q(:,:,8) = diag(Q_vect);
+
+% Uniform Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Q_xy     = 1.*ones(2,1);
+Q_z      = 1.*ones(1,1);
+Q_vel    = 1.*ones(3,1);
+Q_q      = 1.*ones(4,1);
+Q_omg_xy = 1.*ones(2,1);
+Q_omg_z  = 1.*ones(1,1);
+
+Q_vect = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z ];
+wts.Q(:,:,9) = diag(Q_vect);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

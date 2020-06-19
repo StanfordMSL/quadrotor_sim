@@ -49,8 +49,7 @@ for k_act = 1:sim_N
         
         x_bar = nom.x_bar(:,k_ctl);
         u_bar = nom.u_bar(:,k_ctl);
-        alpha = nom.alpha;
-        [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,mtr_mode);
+        [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,model,mtr_mode);
 
         % Log State Control Commands
         log.m_cmd(:,k_fbc) = curr_m_cmd;  
@@ -71,6 +70,8 @@ for k_act = 1:sim_N
                 [nom,cost] = ileqr_oa_x(k_ctl,x_now,wp,nom,wts,model,coeff_obs);    
             case 'al_ilqr'
                 [nom,cost] = al_ilqr_x(k_ctl,x_now,wp,nom,wts,model);
+            case 't_ilqr'
+                [nom,cost] = t_ilqr_x(k_ctl,x_now,wp,nom,wts,model);
             case 'df'
                 cost = 0;
         end

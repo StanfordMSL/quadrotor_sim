@@ -43,7 +43,6 @@ nom.u_bar = u_bar;
 nom.f_out = f_out;
 
 nom.total = N;
-nom.alpha = 0.5;
 nom.l = zeros(4,1,N-1);
 nom.L = zeros(4,13,N-1);
 

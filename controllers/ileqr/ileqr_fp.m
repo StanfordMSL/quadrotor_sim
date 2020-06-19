@@ -1,4 +1,4 @@
-function [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,alpha,model,Q_t,Q_f,R)
+function [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R)
     % Initialize some terms
     N = size(x_bar,2);
     x_fp = zeros(13,N);
@@ -9,7 +9,7 @@ function [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,alpha,model,Q_t,
 for k = 1:N-1
     % Determine Control Command
     del_x = x_fp(:,k)-x_bar(:,k);
-    del_u = alpha*l(:,:,k) + L(:,:,k)*del_x;
+    del_u = model.alpha.*(l(:,:,k) + L(:,:,k)*del_x);
     u_fp(:,k) = u_fp(:,k) + del_u;
 
     % Predict Dynamics of Next Step

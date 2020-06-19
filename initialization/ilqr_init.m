@@ -14,7 +14,6 @@ nom.l = zeros(4,1,N-1);
 nom.L = zeros(4,13,N-1);
 
 nom.total = N;
-nom.alpha = 1;
 nom.wp_curr = 1;
 
 wp_fr = zeros(1,size(wp.t,2));

@@ -1,8 +1,8 @@
-function [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,alpha,model,motor_model)
+function [u,curr_m_cmd] = fbc(x_now,x_bar,u_bar,l,L,model,motor_model)
 
 % Draw Out Motor Commands from u_bar computed by iLQR
 del_x = x_now-x_bar;
-del_u = alpha*l + L*del_x;
+del_u = model.alpha.*(l + L*del_x);
 u  = u_bar + del_u;
 
 curr_m_cmd = wrench2m_controller(u,model);

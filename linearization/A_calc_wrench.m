@@ -21,10 +21,11 @@ function A = A_calc_wrench(mu_curr,u_curr,model)
     A_pos =   [eye(3) dt*eye(3) zeros(3,7)];
     
     vel_c = (dt/model.m_est)*u_curr(1,1);
+    vel_C = (model.kd_est.*dt./model.m_est).*eye(3);
     vel_quat = vel_c*[( 2*q2) ( 2*q3) (2*q0) ( 2*q1);...
                       (-2*q1) (-2*q0) (2*q3) ( 2*q2);...
                       ( 4*q0) (    0) (   0)  (4*q3)];
-    A_vel =   [zeros(3,3) eye(3) vel_quat zeros(3,3)];
+    A_vel =   [zeros(3,3) (eye(3)-vel_C) vel_quat zeros(3,3)];
     
     c   = 0.5*dt;
     Aq0 = c.*[1/c -wx -wy -wz -q1 -q2 -q3];
