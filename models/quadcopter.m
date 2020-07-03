@@ -31,7 +31,7 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           k1 = model.kt_est(2,1);
           k0 = model.kt_est(3,1);
           
-          F_drag = -model.kd_act .* x_curr(4:6,1);
+          F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
           
           tau_yaw = 0;

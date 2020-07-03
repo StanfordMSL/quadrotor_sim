@@ -1,4 +1,4 @@
-function nom = ilqr_init(wp,wts,model)
+function nom = ilqr_init(wp,wts,model,nom_show)
 
 % Determine Total Number of Time Steps
 N = int64(wp.tf*model.hz_ctl+1);
@@ -29,3 +29,14 @@ for k = 1:size(wp.t,2)-1
     end
     nom = ilqr_x(1,x_now,wp,nom,wts,model);
 end
+
+% Publish some diagnostics
+switch nom_show
+    case 'show'
+        nominal_plot(wp,nom,'persp',10);
+    case 'hide'
+end
+disp('[ilqr_init]: Note, orientation data is lost in the wp2sigma step');
+disp(['[ilqr_init]: Trajectory has ',num2str(wp.N_wp),' waypoints over ',num2str(wp.tf),' seconds']);
+disp(['[ilqr_init]: Diff. Flat Trajectory Computed in: ',num2str(toc),' seconds.']);
+

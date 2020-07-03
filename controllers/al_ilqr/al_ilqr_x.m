@@ -25,7 +25,7 @@ function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
     
     % Initialize AL Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     N_al = N-n;
-    n_con = 12;
+    n_con = 16;
     
     mu = ones(n_con,N_al);
     lambda = 0.*ones(n_con,N_al);
@@ -33,7 +33,8 @@ function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
     c_cons = zeros(n_con,N_al);
     con_check = 999;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    figure(1)
+    clf
     while con_check > 0
         % Convergence Variables
         itrs = 1;
@@ -52,7 +53,7 @@ function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
 
             % Forward Pass
             [x_bar,u_bar,J] = al_ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
-%             direct_plot(x_bar,wp,'debug','show');
+            direct_plot(x_bar,wp,'debug','show');
 
 %             motor_debug(x_bar,u_bar,model);
             % Check for Convergence

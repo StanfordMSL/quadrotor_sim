@@ -55,7 +55,7 @@ function animation_plot_dual(f1,f2,wp,targ,ctrl_type_I,ctrl_type_II,view_point,w
             view(320,20);
         case 'debug'
             view(280,5);
-            zoom(1.5)
+            zoom(2.0)
         case 'back'
             view(-90,0);
         case 'side'

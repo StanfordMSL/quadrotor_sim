@@ -84,7 +84,7 @@ switch mdl_type
                                  0.00   0.00  42.00];    
         model.kt_est = [1.5683e-06 ; 0 ; 0];
         model.b_est  = 0.0011; 
-        model.kd_est = 0.25;
+        model.kd_est = 0.3;
         model.L_est  = 0.0885;
         
         % Actual %%%
@@ -94,7 +94,7 @@ switch mdl_type
                                  0.00   0.00  42.00];             
         model.kt_act = [1.5683e-06 ; 0 ; 0];
         model.b_act  = 0.0011;
-        model.kd_act = 0.25;
+        model.kd_act = 0.3;
         model.L_act  = 0.0885;
         % Model Noise
         W_pos   = 0.0*ones(3,1);
@@ -111,7 +111,7 @@ switch mdl_type
                                  0.00   0.00  42.00];    
         model.kt_est = [1.5683e-06 ; 0 ; 0];
         model.b_est  = 0.0011; 
-        model.kd_est = 0.1;
+        model.kd_est = 0.3;
         model.L_est  = 0.0885;
         
         % Actual %%%
@@ -121,7 +121,7 @@ switch mdl_type
                                  0.00   0.00  42.00];             
         model.kt_act = [1.5683e-06 ; 0 ; 0];
         model.b_act  = 0.0011;
-        model.kd_act = 0.1;
+        model.kd_act = 0.3;
         model.L_act  = 0.0885;
         % Model Noise
         W_pos   = 0.001*ones(3,1);
@@ -231,8 +231,8 @@ else
     model.W_inv = inv(model.W);
 end
 
-model.motor_min = 800;      % Motor Min rad/s
-model.motor_max = 4800;     % Motor Max rad/s
+model.motor_min = 500;      % Motor Min rad/s
+model.motor_max = 3000;     % Motor Max rad/s
 
 model.hz_est = hz_est;
 model.dt_est = 1/hz_est;

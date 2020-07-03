@@ -11,7 +11,7 @@ c_con = zeros(n_con,N-1);
 % Execute the Backward Pass
 for k = N-1:-1:1
     % Generate constraint partials
-    [c_con(:,k), c_con_x, c_con_u] = compute_ineq_v2(x_bar(:,k),u_bar(:,k),model,wp,n_con);
+    [c_con(:,k), c_con_x, c_con_u] = compute_ineq_v3(x_bar(:,k),u_bar(:,k),model,wp,n_con);
     
     I_mu = zeros(n_con,n_con);
     for j = 1:n_con
