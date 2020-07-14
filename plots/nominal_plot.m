@@ -1,6 +1,6 @@
 function nominal_plot(wp,nom,view_point,hz)
 
-map = wp.map;
+p_gate = wp.p_gate;
 
 t_bar = nom.t_bar;
 x_bar = nom.x_bar;
@@ -12,11 +12,11 @@ clf
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate flight room map
-gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
+gate_h = plot3(p_gate(1,:)',p_gate(2,:)',p_gate(3,:)');
 gate_h.LineWidth = 3;
-% xlim(wp.x_lim);
-% ylim(wp.y_lim);
-% zlim(wp.z_lim);
+xlim(wp.x_lim);
+ylim(wp.y_lim);
+zlim(wp.z_lim);
 grid on
 hold on
 

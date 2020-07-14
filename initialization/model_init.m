@@ -1,22 +1,29 @@
-function model = model_init(mdl_type,ctl_type)
+function model = model_init(mdl_type)
 
 % Default Heuristic Values
 model.alpha = 1;
 model.rho   = 1;
 
+% Gravity Parameter
 model.g = 9.81;
 
-hz_est = 200;       % State Estimator Sample Rate
-hz_lqr = 5;         % iLQR Update Rate
-hz_fbc = 200;       % Feedback Controller Rate
-hz_act = 1000;      % Actual Dynamics Update Rate
+% Stagewise Limits 
+model.ctl_min = 100;
+model.ctl_max = 200;
+model.N_ctl   = 1000;
 
-switch ctl_type     % Control Law Update Rate
-    case 'high-speed'
-        hz_ctl = 200;
-    case 'low-speed'
-        hz_ctl = 20;
-end
+% Rate Parameters
+model.hz_ctl = model.ctl_min;   % iLQR Stagewise Rate
+model.hz_est = 200;             % State Estimator Sample Rate
+model.hz_lqr = 5;               % iLQR Update Rate
+model.hz_fmu = 200;             % Flight Management Unit Update Rate
+model.hz_act = 1000;            % Actual Dynamics Update Rate
+
+model.dt_ctl = 1/model.hz_ctl;
+model.dt_est = 1/model.hz_est;
+model.dt_lqr = 1/model.hz_lqr;
+model.dt_fmu = 1/model.hz_fmu;
+model.dt_act = 1/model.hz_act;
 
 switch mdl_type
     case 'v1.0.0'              % simple motor, no noise, no drag
@@ -233,21 +240,6 @@ end
 
 model.motor_min = 500;      % Motor Min rad/s
 model.motor_max = 3000;     % Motor Max rad/s
-
-model.hz_est = hz_est;
-model.dt_est = 1/hz_est;
-
-model.hz_lqr = hz_lqr;
-model.dt_lqr = 1/hz_lqr;
-
-model.hz_ctl = hz_ctl;
-model.dt_ctl = 1/hz_ctl;
-
-model.hz_fbc = hz_fbc;
-model.dt_fbc = 1/hz_fbc;
-
-model.hz_act = hz_act;
-model.dt_act = 1/hz_act;
 
 model.p_grasp_b = [0 ; 0 ; 0];      % grasper position in body frame
 

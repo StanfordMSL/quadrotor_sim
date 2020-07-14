@@ -1,21 +1,20 @@
-function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
+function [nom, J] = ilqr_x_vII(n,x_now,wp,nom,wts,model)
     tic
     % Determine current point along trajectory and remainder of points
-    idx_N = find(nom.kf > n,1);
-    N = floor(nom.kf(idx_N));
+    N = size(nom.t_bar,2);
     
     % Unpack the Terms
     x_bar = nom.x_bar(:,n:N);
     u_bar = nom.u_bar(:,n:N-1); 
     
-    idx = wp.Q_key(idx_N-1,1);
+    idx = wp.Q_key(1,1);
     Q_t = wts.Q(:,:,idx);
-    idx = wp.Q_key(idx_N-1,2);
+    idx = wp.Q_key(1,2);
     Q_f = wts.Q(:,:,idx);
     
     R = wts.R;
     
-    x_feed = wp.x(:,idx_N);
+    x_feed = wp.x(:,end);
     % Convergence Variables
     itrs = 1;
     x_diff = 1000;
@@ -30,13 +29,13 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
         x_itr(:,end) = x_feed;
 
         % Determine A and B matrices for this step
-        [A,B] = dynamics_linearizer(x_bar,u_bar,model);
+        [A,B] = dynamics_linearizer_vII(x_bar,u_bar,model);
         
         % Backward Pass   
-        [l,L] = ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R);
+        [l,L] = ilqr_bp_vII(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R);
         
         % Forward Pass
-        [x_bar,u_bar,J] = ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
+        [x_bar,u_bar,J] = ilqr_fp_vII(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
 
         % Check for Convergence
         if itrs <= 10

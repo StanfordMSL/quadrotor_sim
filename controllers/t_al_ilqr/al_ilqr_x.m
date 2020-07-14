@@ -1,8 +1,8 @@
 function [nom, J] = al_ilqr_x(n,x_now,wp,nom,wts,model)
     tic
     % Determine current point along trajectory and remainder of points
-    idx_N = find(nom.kf > n,1);
-    N = floor(nom.kf(idx_N));
+    idx_N = find(nom.wp_fr > n,1);
+    N = floor(nom.wp_fr(idx_N));
     
     % Unpack the Terms
     x_bar = nom.x_bar(:,n:N);

@@ -17,13 +17,18 @@ wp.sigma = pose2sigma(wp,angle_axis,n_p);
 x_bar = zeros(13,N);
 x_bar(:,1) = wp.x(:,1);
 u_bar = zeros(4,N-1);
+
+% tempororary hack
+model_temp  = model_init('v1.0.0','high-speed');       % Initialize quadcopter
+
 for k = 1:N-1
     u_curr = df_con(f_out(:,:,k),model,angle_axis);
     u_bar(:,k) = u_curr;
     curr_m_cmd = wrench2m_controller(u_curr,model);
     
     FT_ext = zeros(6,1);
-    x_bar(:,k+1) = quadcopter(x_bar(:,k),curr_m_cmd,model,FT_ext,'ctl');
+    
+    x_bar(:,k+1) = quadcopter(x_bar(:,k),curr_m_cmd,model_temp,FT_ext,'ctl');
 end
 
 % Generate the number of ctl frames between each waypoint.

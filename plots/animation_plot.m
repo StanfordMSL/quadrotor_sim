@@ -1,6 +1,6 @@
 function animation_plot(flight,wp,targ,view_point,wp_show)
 
-    map = wp.map;
+    p_gate = wp.p_gate;
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -14,7 +14,7 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
+    gate_h = plot3(p_gate(1,:)',p_gate(2,:)',p_gate(3,:)');
     gate_h.LineWidth = 3;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
