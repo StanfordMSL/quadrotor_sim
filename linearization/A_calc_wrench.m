@@ -1,6 +1,6 @@
 function A = A_calc_wrench(mu_curr,u_curr,model)
 
-    dt = model.dt_ctl;
+    dt = u_curr(5,1);
 
     % Quaternions
     q0 = mu_curr(7,1);
@@ -18,28 +18,36 @@ function A = A_calc_wrench(mu_curr,u_curr,model)
     Iyy = model.I_est(2,2);
     Izz = model.I_est(3,3);
 
-    A_pos =   [eye(3) dt*eye(3) zeros(3,7)];
+    % A for Position 
+    A_pos  = [eye(3) dt*eye(3) zeros(3,8)];
     
+    % A for Velocity
     vel_c = (dt/model.m_est)*u_curr(1,1);
     vel_C = (model.kd_est.*dt./model.m_est).*eye(3);
     vel_quat = vel_c*[( 2*q2) ( 2*q3) (2*q0) ( 2*q1);...
                       (-2*q1) (-2*q0) (2*q3) ( 2*q2);...
                       ( 4*q0) (    0) (   0)  (4*q3)];
-    A_vel =   [zeros(3,3) (eye(3)-vel_C) vel_quat zeros(3,3)];
+    A_vel =   [zeros(3,3) (eye(3)-vel_C) vel_quat zeros(3,4)];
     
+    % A for Quaternions
     c   = 0.5*dt;
     Aq0 = c.*[1/c -wx -wy -wz -q1 -q2 -q3];
     Aq1 = c.*[ wx 1/c  wz -wy  q0 -q3  q2];
     Aq2 = c.*[ wy -wz 1/c  wx  q3  q0 -q1];
     Aq3 = c.*[ wz  wy -wx 1/c -q2  q1  q0];
-    A_quat =  [zeros(4,6) [Aq0 ; Aq1 ; Aq2 ; Aq3]];
+    A_quat =  [zeros(4,6) [Aq0 ; Aq1 ; Aq2 ; Aq3] zeros(4,1)];
    
+    % A for Omegas
     omega_c = dt.*model.inv_I_est;
     Awx = (Izz-Iyy)*[0 wz wy];
     Awy = (Ixx-Izz)*[wz 0 wx];
     Awz = (Iyy-Ixx)*[wy wx 0];
     Aw_all = eye(3) - omega_c*[Awx ; Awy ; Awz];
-    A_omega = [zeros(3,10) Aw_all];
+    A_omega = [zeros(3,10) Aw_all zeros(3,1)];
     
-    A = [A_pos ; A_vel ; A_quat ; A_omega];
+    % A for dt
+    A_dt = zeros(1,14);
+    
+    % Combine the As
+    A = [A_pos ; A_vel ; A_quat ; A_omega ; A_dt];
  end

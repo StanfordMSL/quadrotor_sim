@@ -8,18 +8,16 @@ model.rho   = 1;
 model.g = 9.81;
 
 % Stagewise Limits 
-model.ctl_min = 100;
-model.ctl_max = 200;
+model.dt_ctl_min = 1/200;
+model.dt_ctl_max = 1/100;
 model.N_ctl   = 1000;
 
 % Rate Parameters
-model.hz_ctl = model.ctl_min;   % iLQR Stagewise Rate
 model.hz_est = 200;             % State Estimator Sample Rate
 model.hz_lqr = 5;               % iLQR Update Rate
 model.hz_fmu = 200;             % Flight Management Unit Update Rate
 model.hz_act = 1000;            % Actual Dynamics Update Rate
 
-model.dt_ctl = 1/model.hz_ctl;
 model.dt_est = 1/model.hz_est;
 model.dt_lqr = 1/model.hz_lqr;
 model.dt_fmu = 1/model.hz_fmu;
