@@ -236,6 +236,8 @@ else
     model.W_inv = inv(model.W);
 end
 
+model.hover_u = [model.m_est*model.g ; 0 ; 0 ; 0];
+
 model.motor_min = 500;      % Motor Min rad/s
 model.motor_max = 3000;     % Motor Max rad/s
 
