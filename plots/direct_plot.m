@@ -1,21 +1,16 @@
-function animation_plot(flight,wp,targ,view_point,wp_show)
+function direct_plot(x_act,wp,view_point,wp_show)
 
     map = wp.map;
-    
-    t_act = flight.t_act;
-    x_act = flight.x_act;
-    
-    dt = t_act(1,2)-t_act(1,1);
-
+ 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
-    figure(2)
-    clf
+    figure(1)
+%     clf
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    gate_h = plot3(map(1,:)',map(2,:)',map(3,:)');
-    gate_h.LineWidth = 3;
+    gate_h = plot3(map(1,:)',map(2,:)',map(3,:)','b');
+    gate_h.LineWidth = 5;
     xlim(wp.x_lim);
     ylim(wp.y_lim);
     zlim(wp.z_lim);
@@ -26,10 +21,7 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     grid on
     hold on
     set(gcf,'color','white')
-
-    % Plot the target
-    h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
-    
+   
     switch wp_show
         case 'show'
             % Plot the Waypoints
@@ -55,7 +47,9 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     switch view_point
         case 'persp'
             view(320,20);
-%              zoom(1.8)
+        case 'debug'
+            view(280,5);
+            zoom(1.5)
         case 'back'
             view(-90,0);
         case 'side'
@@ -84,25 +78,4 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     xlabel('x-axis');
     ylabel('y-axis');
     zlabel('z-axis');
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Plot the Remainder with REAL-TIME
-    curr_time = dt;
-    while (curr_time <= t_act(end))
-        tic
-        k = ceil(curr_time/dt);
-        
-        [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
-        h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
-        
-        if t_act(k) > flight.t_capture
-            h_targ.XData = x_act(1,k);
-            h_targ.YData = x_act(2,k);
-            h_targ.ZData = x_act(3,k)-0.1;
-        end
-        
-        drawnow
-        
-        curr_time = curr_time + toc;
-    end
 end

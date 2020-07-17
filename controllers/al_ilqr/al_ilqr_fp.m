@@ -1,4 +1,4 @@
-function [x_bar,u_bar,J] = ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R)
+function [x_bar,u_bar,J] = al_ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R)
     % Initialize some terms
     N = size(x_bar,2);
     x_fp = zeros(13,N);

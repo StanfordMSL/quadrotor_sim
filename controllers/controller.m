@@ -1,10 +1,10 @@
-function [u,curr_m_cmd] = controller(x_now,x_bar,l,L,alpha,model,con_type,motor_model)
+function [u,curr_m_cmd] = controller(x_now,x_bar,l,L,model,con_type,motor_model)
 
 switch con_type
     case 'ilqr'
         % Draw Out Motor Commands from u_bar computed by iLQR
         del_x = x_now-x_bar;
-        del_u = alpha*l + L*del_x;
+        del_u = l + L*del_x;
         u  = nom.u_bar(:,k_con) + del_u;
     case 'df'
         u = df_con(nom.f_out(:,:,k_con),model,'yaw');

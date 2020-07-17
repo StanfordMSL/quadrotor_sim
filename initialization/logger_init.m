@@ -1,20 +1,26 @@
-function flight = logger_init(tf,wp,act_hz,low_hz)
+function log = logger_init(wp,model)
 
-act_dt = 1/act_hz;
-low_dt = 1/low_hz;
-
+dt_act = model.dt_act;
+dt_fbc = model.dt_fbc;
 % Timestamped Actual Pose Array
-flight.t_act = 0:act_dt:tf;
-flight.x_act = zeros(13,length(flight.t_act));
-flight.x_act(:,1) = wp.x(:,1);
+log.t_act = 0:dt_act:wp.tf;
+log.x_act = zeros(13,length(log.t_act));
+log.x_act(:,1) = wp.x(:,1);
 
 % Timestamped FC Pose Array based on lowest controller
-flight.t_fc  = 0:low_dt:tf;
-flight.x_fc = zeros(13,length(flight.t_fc));
-flight.x_fc(:,1) = wp.x(:,1);
+log.t_fc  = 0:dt_fbc:wp.tf;
+log.x_fc = zeros(13,length(log.t_fc));
+log.x_fc(:,1) = wp.x(:,1);
 
-flight.sigma = zeros(13,13,length(flight.t_fc));
+log.sigma = zeros(13,13,length(log.t_fc));
 
 % Flight Motor Inputs
-flight.m_cmd = zeros(4,length(flight.t_fc)-1);
-flight.u = zeros(4,length(flight.t_fc)-1);
+log.m_cmd = zeros(4,length(log.t_fc)-1);
+log.u = zeros(4,length(log.t_fc)-1);
+
+% Cost Function Data
+cc_arr_size = model.hz_lqr * wp.tf;
+log.cost_curr = zeros(cc_arr_size,1);
+
+% Capture time
+log.t_capture = 999;

@@ -1,4 +1,4 @@
-function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
+function [nom, J] = t_ilqr_x(n,x_now,wp,nom,wts,model)
     tic
     % Determine current point along trajectory and remainder of points
     idx_N = find(nom.wp_fr > n,1);
@@ -15,7 +15,7 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
     
     R = wts.R;
     
-    x_feed = wp.x(:,idx_N);
+    x_star = wp.x(:,idx_N);
     % Convergence Variables
     itrs = 1;
     x_diff = 1000;
@@ -23,37 +23,38 @@ function [nom, J] = ilqr_x(n,x_now,wp,nom,wts,model)
     % Candidate Holder
     x_cand = x_bar;
     u_cand = u_bar;
+    J_cand = 0;
     
     while x_diff > 1e-1
-        % Initialize x_bar variable
-        x_itr = x_bar;
-        x_itr(:,end) = x_feed;
-
         % Determine A and B matrices for this step
         [A,B] = dynamics_linearizer(x_bar,u_bar,model);
         
         % Backward Pass   
-        [l,L] = ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R);
+        [l,L] = t_ilqr_bp(x_star,x_bar,u_bar,A,B,Q_t,Q_f,R);
         
         % Forward Pass
-        [x_bar,u_bar,J] = ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
+        [x_bar,u_bar,J] = t_ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
 
         % Check for Convergence
         if itrs <= 10
             x_diff_old = x_diff;
-            x_diff = sum(vecnorm(x_bar-x_itr))/(N-n);
+            x_diff = norm(x_bar(:,end) - x_star);
             
             if x_diff < x_diff_old
                 x_cand = x_bar;
                 u_cand = u_bar;
+                J_cand = J;
 %                 disp('[ilqr]: Candidate Improved');
             end
 %             disp(['[ilqr]: Iteration ',num2str(itrs),'  del_x difference: ',num2str(x_diff)]);
 
-            itrs = itrs + 1;
+            itrs = itrs + 1;  
         else
+            % Out of Time. Take Your Best Guess
             x_bar = x_cand;
             u_bar = u_cand;
+            J = J_cand;
+            
 %             disp('[ilqr_x]: Convergence Timeout. Using best candidate).');
             break;
         end

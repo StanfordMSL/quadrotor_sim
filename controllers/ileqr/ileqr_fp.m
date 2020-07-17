@@ -1,4 +1,4 @@
-function [x_bar,u_bar,J] = ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R)
+function [x_bar,u_bar,R_gamma] = ileqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R)
     % Initialize some terms
     N = size(x_bar,2);
     x_fp = zeros(13,N);
@@ -25,6 +25,9 @@ end
 % Add terminal cost   
 del_x = x_fp(:,N)-x_bar(:,N);
 J = J + 0.5* del_x'*Q_f*del_x;
+
+% Convert to LEQR form
+R_gamma = (1/model.gamma).* log(exp(model.gamma .* J));
 % disp(['[ilq_fp]: Current Cost: ',num2str(cost_curr)]);
 
 % If cost goes down, we know it's feasible. Update x_bar.

@@ -32,7 +32,7 @@ function [nom, fs_trig] = hzn_ilqr(x_now,wp,nom,wts,model)
         [l,L] = ilqr_bp(x_itr,x_bar,u_bar,A,B,Q_t,Q_f,R);
         
         % Forward Pass
-        [x_bar,u_bar] = ilqr_fp(x_bar,u_bar,x_now,l,L,nom.alpha,model,Q_t,Q_f,R);
+        [x_bar,u_bar] = ilqr_fp(x_bar,u_bar,x_now,l,L,model,Q_t,Q_f,R);
         
         % Detect Singularities
         [~,msgid] = lastwarn;
