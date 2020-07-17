@@ -63,7 +63,7 @@ function fast_animation_plot(x_act,wp,view_point)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Animate the trajectory
-    for k = 1:100:size(x_act,2)
+    for k = 1:10:size(x_act,2)
         [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
         

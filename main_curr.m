@@ -6,7 +6,7 @@ addpath(genpath(pwd));
 
 % Base Parameters
 model  = model_init('v1.0.1');  % Initialize quadcopter
-wp     = wp_init('climb');      % Initialize mission
+wp     = wp_init('line');      % Initialize mission
 wts    = wts_init();            % Initialize State and Input Cost Weights
 targ   = targ_init("none");     % Initialize target
 

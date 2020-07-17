@@ -1,26 +1,22 @@
 function [wp,wts,nom,model] = warm_start(wp,wts,model)
 
-% Unpack stuff
-N_wp   = size(wp.x,2);
-
 % Initialize iLQR variables
-nom.u_bar = [model.hover_u ; model.dt_ctl_max] .* ones(5,model.N_ctl);
-nom.x_bar = zeros(13,model.N_ctl+1); 
-nom.x_bar(:,1) = wp.x(:,1);
+nom = toc_ilqr_init(601,16,wp,model);
 
-nom.l = zeros(5,1,model.N_ctl);
-nom.L = zeros(5,13,model.N_ctl);
+% Warm start with an initial run
+x_star = wp.x(:,2);
+    
+nom = toc_ilqr(x_star,nom,wts,wp,model);
+% fast_animation_plot(nom.x_bar,wp,'persp')
 
-% Close-Enough Trajectory Plan
-x_curr = wp.x(:,1);
-for k = 2:N_wp
-    x_wp = wp.x(:,k);
-    
-    nom = ilqr_x_sp(x_curr,x_wp,nom,wts,wp,model);
-    fast_animation_plot(nom.x_bar,wp,'persp')
-    
-    x_curr = nom.x_bar(:,end);
-end
+% for k = 1:2
+%     nom = toc_ilqr(x_star,nom,wts,wp,model);
+%     fast_animation_plot(nom.x_bar,wp,'persp')
+%     
+%     n_inc = 50;
+%     nom = toc_ilqr_upd(nom,n_inc,model);
+%     total = nom.N_toc
+% end
 
 % % Publish some diagnostics
 % switch nom_show

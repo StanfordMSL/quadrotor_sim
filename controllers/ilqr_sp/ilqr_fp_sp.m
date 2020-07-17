@@ -45,15 +45,7 @@ function [x_bar,u_bar,J,c_con] = ilqr_fp_sp(x_bar,u_bar,l,L,x_star,al,wts,model,
 
             x_bar(:,k_ctl) = x_fmu;
             u_bar(:,k_ctl) = u_curr;
-            % Compute stagewise cost
-            err_x = x_bar(:,end) - x_star;
-            J_lqr = 0.5* err_x'*Q_t*err_x + 0.5*u_bar(:,k_ctl)'*R*u_bar(:,k_ctl);
-            
-            [I_mu,c_con_k,~,~] = con_builder(u_curr,u_prev,ld_curr,mu_curr,model);
-            J_al = (ld_curr + 0.5.*I_mu*c_con_k)'*c_con_k;
-            J = J + J_lqr + J_al;
-            
-            c_con(:,k_ctl) = c_con_k;
+
 
             % Update motor command
             m_cmd = wrench2m_controller(u_bar(1:4,k_ctl),model);
@@ -79,10 +71,5 @@ function [x_bar,u_bar,J,c_con] = ilqr_fp_sp(x_bar,u_bar,l,L,x_star,al,wts,model,
         k_fmu = k_fmu + 1;
     end
 
-    % Terminal Case
-    x_bar(:,k_ctl) = x_fmu;
 
-    err_x = x_bar(:,end) - x_star;
-    J_lqr = 0.5* err_x'*Q_f*err_x;
-    J = J + J_lqr;
 end

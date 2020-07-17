@@ -7,11 +7,6 @@ model.rho   = 1;
 % Gravity Parameter
 model.g = 9.81;
 
-% Stagewise Limits 
-model.dt_ctl_min = 1/200;
-model.dt_ctl_max = 1/100;
-model.N_ctl   = 1000;
-
 % Rate Parameters
 model.hz_est = 200;             % State Estimator Sample Rate
 model.hz_lqr = 5;               % iLQR Update Rate
