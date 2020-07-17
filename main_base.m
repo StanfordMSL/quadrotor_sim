@@ -5,8 +5,8 @@ addpath(genpath(pwd));
 %% Initialize Simulation Parameters
 
 % Base Parameters
-wp     = wp_init('slit v0');                         % Initialize mission
-model  = model_init('v1.0.0','high-speed');       % Initialize quadcopter
+wp     = wp_init('line');                         % Initialize mission
+model  = model_init('v1.0.1','high-speed');       % Initialize quadcopter
 wts    = wts_init();                              % Initialize State and Input Cost Weights
 targ   = targ_init("none");                       % Initialize target
 
