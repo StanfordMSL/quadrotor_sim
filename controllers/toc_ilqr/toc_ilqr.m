@@ -1,4 +1,4 @@
-function nom = toc_ilqr(x_star,nom,wts,wp,model)
+function nom = toc_ilqr(x_star,nom,wts,wp,model,reps)
     tic
         
     % Convergence Variables
@@ -12,7 +12,7 @@ function nom = toc_ilqr(x_star,nom,wts,wp,model)
         % Forward Pass
         nom = toc_ilqr_fp(nom,model);
         [J_curr,J_N_curr,c_aug] = toc_J_calc(x_star,nom,wts);
-        
+
 %         if nom.N_loop > 1
 %             fast_animation_plot(nom.x_bar,wp,'persp')
 %         end
@@ -20,9 +20,8 @@ function nom = toc_ilqr(x_star,nom,wts,wp,model)
         % Determine A and B matrices for this step
         [A,B] = dynamics_linearizer(nom.x_bar,nom.u_bar,model);
 
-        % Backward Pass   
+        % Backward Pass         
         nom = toc_ilqr_bp(x_star,nom,A,B,wts,model);
-
         % Check for improvement
         if J_N_curr <= J_N_best 
             nom_cand = nom;
@@ -33,7 +32,7 @@ function nom = toc_ilqr(x_star,nom,wts,wp,model)
             J_N_best = J_N_curr;
         end
 
-        if (itrs <= 10) && (J_curr < (10*J_curr_best))
+        if (itrs <= reps) && (J_curr < (10*J_curr_best))
             itrs = itrs + 1;
         else
             nom = nom_cand;

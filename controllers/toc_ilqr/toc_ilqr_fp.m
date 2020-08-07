@@ -19,7 +19,7 @@ function nom = toc_ilqr_fp(nom,model)
             del_u = model.alpha.*(l(:,:,k) + L(:,:,k)*del_x);
         end
         u_fp(:,k) = u_bar(:,k) + del_u;
-        m_cmd = wrench2m_controller(u_bar(1:4,k),model);
+        m_cmd = wrench2m_controller(u_fp(:,k),model);
 
         x_fp(:,k+1) = quadcopter(x_fp(:,k),m_cmd,model,FT_ext,'fmu');
     end

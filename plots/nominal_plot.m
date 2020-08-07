@@ -1,9 +1,6 @@
-function nominal_plot(wp,nom,view_point,hz)
+function nominal_plot(traj,obj,step,view_point)
 
-p_gate = wp.p_gate;
-
-t_bar = nom.t_bar;
-x_bar = nom.x_bar;
+x_bar  = traj.x_bar;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
@@ -12,17 +9,18 @@ clf
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate flight room map
-gate_h = plot3(p_gate(1,:)',p_gate(2,:)',p_gate(3,:)');
+pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+gate_h = plot3(pnts_gate_rdr(1,:)',pnts_gate_rdr(2,:)',pnts_gate_rdr(3,:)');
 gate_h.LineWidth = 3;
-xlim(wp.x_lim);
-ylim(wp.y_lim);
-zlim(wp.z_lim);
+xlim(obj.x_lim);
+ylim(obj.y_lim);
+zlim(obj.z_lim);
 grid on
 hold on
 
 % Plot the Waypoints
-for k = 1:size(wp.x,2)
-    [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
+for k = 1:size(obj.wp_arr,2)
+    [x_arrow, y_arrow, z_arrow] = frame_builder(obj.wp_arr(:,k));
     x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
     y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
     z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
@@ -35,28 +33,27 @@ for k = 1:size(wp.x,2)
     h_wp(3).Color = [0 0 1];
 end
 
-t_now = 0;
-tol = 1e-3;
-for k = 1:size(x_bar,2)
-    if (abs(t_bar(k)-t_now) < tol)
-        [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
-        x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-        y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-        z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
-        
-        h_fr = plot3(x,y,z,'linewidth',2);
-    
-        % Set the Correct Colors
-        h_fr(1).Color = [1 0 0];
-        h_fr(2).Color = [0 1 0];
-        h_fr(3).Color = [0 0 1];
-        t_now = t_now + 1/hz;
-    end
-end
+for k = 1:step:size(x_bar,2)
+    [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
+    x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+    y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+    z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
 
-% Set Camera Angle
+    h_fr = plot3(x,y,z,'linewidth',2);
+
+    % Set the Correct Colors
+    h_fr(1).Color = [1 0 0];
+    h_fr(2).Color = [0 1 0];
+    h_fr(3).Color = [0 0 1];
+end
+    
+% Plot the full trajectory
+plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:),'--k','linewidth',1);
+
+% Set Aspect Ratio
 daspect([1 1 1])
-   
+
+% Set View Point
 switch view_point
     case 'persp'
         view(320,20);
@@ -66,29 +63,8 @@ switch view_point
     case 'side'
         view(0,0);
 end
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot the full trajectory
-plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:),'--k','linewidth',1);
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot the Initial Frame  
-% [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,1));
-% x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-% y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-% z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
-% 
-% h_persp = plot3(x,y,z,'linewidth',3);
-%     
-% % Set the Correct Colors
-% h_persp(1).Color = [1 0 0];
-% h_persp(2).Color = [0 1 0];
-% h_persp(3).Color = [0 0 1];
-% 
-% % Labels and Legend
-% xlabel('x-axis');
-% ylabel('y-axis');
-% zlabel('z-axis');
+
+disp(['[nominal_plot]: Plotting at ',num2str(step),' step intervals of the FMU.']);
 
 end
 

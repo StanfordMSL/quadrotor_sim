@@ -1,4 +1,4 @@
-function fast_animation_plot(x_act,wp,view_point)
+function fast_animation_plot(x_act,obj,view_point)
     % Reset window
     figure(2)
     clf
@@ -11,17 +11,18 @@ function fast_animation_plot(x_act,wp,view_point)
     zlabel('z-axis');
     
     % Define Map Limits
-    xlim(wp.x_lim);
-    ylim(wp.y_lim);
-    zlim(wp.z_lim);
+    xlim(obj.x_lim);
+    ylim(obj.y_lim);
+    zlim(obj.z_lim);
 
     % Generate gate
-    gate_h = plot3(wp.p_gate(1,:)',wp.p_gate(2,:)',wp.p_gate(3,:)');
+    pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+    gate_h = plot3(pnts_gate_rdr(1,:)',pnts_gate_rdr(2,:)',pnts_gate_rdr(3,:)');
     gate_h.LineWidth = 3;
     
     % Generate waypoints
-    for k = 1:size(wp.x,2)
-        [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
+    for k = 1:size(obj.wp_arr,2)
+        [x_arrow, y_arrow, z_arrow] = frame_builder(obj.wp_arr(:,k));
         x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
         y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
         z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
@@ -63,6 +64,8 @@ function fast_animation_plot(x_act,wp,view_point)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Animate the trajectory
+    disp('[fast_animation]: plot is via frame steps and NOT live');
+
     for k = 1:10:size(x_act,2)
         [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);

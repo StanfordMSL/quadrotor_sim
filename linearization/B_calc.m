@@ -12,14 +12,16 @@ function B = B_calc(mu_curr,model)
     B_pos = zeros(3,4);
     
     % B for Velocity
-    vel_vect  = 2.*[(q1*q3+q2*q0) ; (q2*q3-q1*q0) ; (q3^2+q0^2+0.5)];    
-    B_vel = [(dt/model.m_est).*vel_vect zeros(3,3)];
+    vel_coeff = (dt/model.m_est);
+    vel_vect  = 2.*[(q1*q3+q2*q0) ; (q2*q3-q1*q0) ; (q3^2+q0^2+0.5)];
+    B_vel = [vel_coeff.*vel_vect zeros(3,3)];
     
     % B for Quaternions
     B_quat = zeros(4,4); 
     
     % B for Omegas
-    B_omega   = [zeros(3,1) dt*model.inv_I_est]; 
+    omega_coeff = dt*model.inv_I_est;
+    B_omega   = [zeros(3,1) omega_coeff]; 
     
     % Combine the Bs
     B = [B_pos ; B_vel ; B_quat ; B_omega];

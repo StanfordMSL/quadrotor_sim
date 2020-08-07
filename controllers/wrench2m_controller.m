@@ -7,6 +7,7 @@ k2 = model.kt_est(2,1);
 k3 = model.kt_est(3,1);
 
 m_force = lsqnonneg(model.m2w,u(1:4,1));
+% m_force = model.m2w_inv *u(1:4,1);
 
 for k = 1:4
     interior = k2^2-(4*k1*(k3-m_force(k,1)));

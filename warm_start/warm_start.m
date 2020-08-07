@@ -1,30 +1,20 @@
-function [wp,wts,nom,model] = warm_start(wp,wts,model)
+function traj = warm_start(obj,wts,N_seg,model,nom_show)
 
 % Initialize iLQR variables
-nom = toc_ilqr_init(601,16,wp,model);
+[traj,al] = msl_lqr_init(N_seg,16,obj,model);
 
 % Warm start with an initial run
-x_star = wp.x(:,2);
-    
-nom = toc_ilqr(x_star,nom,wts,wp,model);
-% fast_animation_plot(nom.x_bar,wp,'persp')
+traj = msl_lqr(traj,al,obj,wts,model);
 
-% for k = 1:2
-%     nom = toc_ilqr(x_star,nom,wts,wp,model);
-%     fast_animation_plot(nom.x_bar,wp,'persp')
-%     
-%     n_inc = 50;
-%     nom = toc_ilqr_upd(nom,n_inc,model);
-%     total = nom.N_toc
-% end
+% Publish some diagnostics
+switch nom_show
+    case 'show'
+        nominal_plot(traj,obj,50,'persp');
+    case 'hide'
+end
 
-% % Publish some diagnostics
-% switch nom_show
-%     case 'show'
-%         nominal_plot(wp,nom,'persp',10);
-%     case 'hide'
-% end
-% disp('[ilqr_init]: Note, orientation data is lost in the wp2sigma step');
-% disp(['[ilqr_init]: Trajectory has ',num2str(N_wp),' waypoints over ',num2str(tf),' seconds']);
-% disp(['[ilqr_init]: Diff. Flat Trajectory Computed in: ',num2str(toc),' seconds.']);
-% 
+disp(['[warm_start]: Total frame count per segment fixed at ',num2str(N_seg)]);
+
+% TO DO... do a creeping search for sequenced waypoints. we'll need
+% some kind of tolerance check to trigger subsequent waypoints
+
