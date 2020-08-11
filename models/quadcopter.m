@@ -1,4 +1,4 @@
-function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)   
+function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)   
     % Unpack
     switch type
         case 'actual'
@@ -10,14 +10,12 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           L = model.L_act;
           b = model.b_act;
           
-          k2 = model.kt_act(1,1);
-          k1 = model.kt_act(2,1);
-          k0 = model.kt_act(3,1);
-          
           F_drag = -model.kd_act .* x_curr(4:6,1);
           m = model.m_act;
          
           tau_yaw = 0;
+          
+          f_m_flag = 'actual';
         case 'fmu_ideal'
           dt = model.dt_fmu;
           wt = zeros(13,1);
@@ -27,14 +25,12 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           L = model.L_est;
           b = model.b_est;
           
-          k2 = model.kt_est(1,1);
-          k1 = model.kt_est(2,1);
-          k0 = model.kt_est(3,1);
-          
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
           
           tau_yaw = 0;
+          
+          f_m_flag = 'actual';
         case 'fmu_noisy'
           dt = model.dt_fmu;
           wt = model.W*randn(13,1);
@@ -44,14 +40,12 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
           L = model.L_est;
           b = model.b_est;
           
-          k2 = model.kt_est(1,1);
-          k1 = model.kt_est(2,1);
-          k0 = model.kt_est(3,1);
-          
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
           
           tau_yaw = 0;
+          
+          f_m_flag = 'actual';
     end
     
     pos   = x_curr(1:3,1);
@@ -67,14 +61,11 @@ function x_upd = quadcopter(x_curr,curr_m_cmd,model,FT_ext,type)
     tau_ext = FT_ext(4:6,1);
     
     % Calculate Motor Forces
-    f = zeros(4,1);    
-    for k = 1:4
-        f(k,1) = k2*(curr_m_cmd(k,1)^2)+k1*curr_m_cmd(k,1)+k0;
-    end
+    f_m = motor_transform(u_curr,model,f_m_flag);
     
     % Compute the Linear and Angular Accelerations
-    vel_dot   = lin_acc(x_curr,m,f,F_drag,F_ext,model,0);
-    omega_dot = ang_acc(f,I,inv_I,L,b,w_all,tau_ext,tau_yaw);
+    vel_dot   = lin_acc(x_curr,m,f_m,F_drag,F_ext,model,0);
+    omega_dot = ang_acc(f_m,I,inv_I,L,b,w_all,tau_ext,tau_yaw);
     
     % State Updates   
     x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ

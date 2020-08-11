@@ -9,5 +9,6 @@ function traj = seg_comb(n_wp,traj,traj_s)
     traj.L(:,:,fr_i:fr_f-1) = traj_s.L; 
     
     traj.J(1,n_wp) = traj_s.J;
-    traj.J_stage(1,fr_i:fr_f) = traj_s.J_stage;
+    traj.stg(1,fr_i:fr_f) = traj_s.J_stg;
+    traj.aug(1,fr_i:fr_f) = traj_s.J_aug;
 end

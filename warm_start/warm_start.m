@@ -1,10 +1,10 @@
 function traj = warm_start(obj,wts,N_seg,model,nom_show)
 
 % Initialize iLQR variables
-[traj,al] = msl_lqr_init(N_seg,16,obj,model);
+traj = msl_lqr_init(N_seg,obj,model);
 
 % Warm start with an initial run
-traj = msl_lqr(traj,al,obj,wts,model);
+traj = msl_lqr(traj,obj,wts,model);
 
 % Publish some diagnostics
 switch nom_show

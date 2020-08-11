@@ -11,14 +11,12 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
     
     % Objectives
     x_star = obj_s.x_star;
-    pnts_gate = obj_s.pnts_gate;
     
     %% Generate the necessary linear terms
     [A,B] = dynamics_linearizer(x_bar,u_bar,model);
     
     %% Generate the constraint
     lambda = al.lambda;
-    con_struct = con_compute(x_bar,u_bar,al,pnts_gate,model);
     
     %% Execute the Backward Pass
     
@@ -28,10 +26,10 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
 
     for k = N_bp-1:-1:1
         % Extract constraint partials
-        I_mu  = con_struct.I_mu(:,:,k);
-        con   = con_struct.con(:,k);
-        con_x = con_struct.con_x(:,:,k);
-        con_u = con_struct.con_u(:,:,k);
+        I_mu  = al.I_mu(:,:,k);
+        con   = al.con(:,k);
+        con_x = al.con_x(:,:,k);
+        con_u = al.con_u(:,:,k);
         
         % Update the Stagewise Variables
         c_x  = Q_t *(x_bar(:,k)-x_star);

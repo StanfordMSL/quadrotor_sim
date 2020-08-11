@@ -1,4 +1,4 @@
-function [traj,al] = msl_lqr_init(N_seg,n_con,obj,model)
+function traj = msl_lqr_init(N_seg,obj,model)
     % wp for waypoints
     % seg for segments
     % tot for total
@@ -17,11 +17,7 @@ function [traj,al] = msl_lqr_init(N_seg,n_con,obj,model)
     traj.l = zeros(4,1,N_tot-1);
     traj.L = zeros(4,13,N_tot-1);
     
-    traj.J = 1e9.*ones(1,N_wp);
-    traj.J_stage = 1e3.*ones(1,N_tot);
-    
-    al.mu     = ones(n_con,N_tot);
-    al.lambda = 0.*ones(n_con,N_tot);
-    
-    al.phi    = 10;
+    traj.J     = 99999.*ones(1,N_wp);
+    traj.J_stg = 99999.*ones(1,N_tot);
+    traj.J_aug = 99999.*ones(1,N_tot);
 end

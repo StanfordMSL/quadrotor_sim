@@ -1,4 +1,4 @@
-function [traj_s,con_struct] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
+function [traj_s,al] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
     %% Unpack and define some useful stuff
     % Forward pass assumes no external forces
     FT_ext = zeros(6,1);
@@ -27,22 +27,37 @@ function [traj_s,con_struct] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
 
     l = traj_s.l;
     L = traj_s.L;
+    
+    J_aug_refr = 99999;
+    alpha = al.alpha_init;
+    for itrs = 1:10
+        for k = 1:N_fp-1
+            del_x = x_fp(:,k) - x_bar(:,k);
+            del_u = alpha.*(l(:,:,k) + L(:,:,k)*del_x);
 
-    for k = 1:N_fp-1
-        del_x = x_fp(:,k) - x_bar(:,k);
-        del_u = l(:,:,k) + L(:,:,k)*del_x;
+            u_fp(:,k) = u_fp(:,k) + del_u;
 
-        u_fp(:,k) = u_fp(:,k) + del_u;
-        m_cmd = wrench2m_controller(u_fp(:,k),model);
+            x_fp(:,k+1) = quadcopter(x_fp(:,k),u_fp(:,k),model,FT_ext,fmu_type);
+        end
 
-        x_fp(:,k+1) = quadcopter(x_fp(:,k),m_cmd,model,FT_ext,fmu_type);
+        al = con_compute(x_fp,u_fp,al,obj_s.pnts_gate,model);
+        [J_curr,J_stg_curr,J_aug_curr] = J_calc(x_star,x_fp,u_fp,al,wts);
+        
+        J_aug_cand = sum(J_aug_curr);
+        
+        if (J_aug_cand + 1e-3) < J_aug_refr
+            traj_s.x_bar = x_fp;
+            traj_s.u_bar = u_fp;
+            traj_s.J = J_curr;
+            traj_s.J_stg = J_stg_curr;
+            traj_s.J_aug = J_aug_curr;
+            
+            J_aug_refr = J_aug_cand;
+        else
+            break
+        end
+        
+        alpha = al.alpha_updt .* alpha;
     end
-
-    [J_curr,J_stage_curr] = J_calc(x_star,x_fp,u_fp,wts);
-    con_struct = con_compute(x_fp,u_fp,al,obj_s.pnts_gate,model);
-
-    traj_s.x_bar = x_fp;
-    traj_s.u_bar = u_fp;
-    traj_s.J = J_curr;
-    traj_s.J_stage = J_stage_curr;
+    motor_debug(u_fp,model)
 end

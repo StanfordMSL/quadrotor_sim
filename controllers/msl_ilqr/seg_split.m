@@ -8,5 +8,6 @@ function traj_s = seg_split(n_wp,traj)
     traj_s.L = traj.L(:,:,fr_i:fr_f-1); 
         
     traj_s.J = traj.J(1,n_wp);
-    traj_s.J_stage = traj.J_stage(1,fr_i:fr_f);
+    traj_s.J_stg = traj.J_stg(1,fr_i:fr_f);
+    traj_s.J_aug = traj.J_aug(1,fr_i:fr_f);
 end
