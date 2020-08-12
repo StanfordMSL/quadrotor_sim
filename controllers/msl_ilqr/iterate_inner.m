@@ -1,24 +1,32 @@
-function [traj_s, al, con_check] = iterate_inner(traj_s,al,obj,wts,model)
+function [traj_s, al, con_check, J_ref] = iterate_inner(traj_s,al,obj,wts,model,itr_type)
 tol = 1e-2;
 
 % Some preparation for loop
 obj_s = obj_s_builder(traj_s.x_bar(:,1),obj);
-[traj_s,al] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');
+[traj_s,al,J_ref] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');
 
-% J_aug_prev = sum(traj_s.J_aug) + 10;
 % Run inner loop
-traj_s.J = traj_s.J * 999;
-while 1
-%     J_aug_prev = sum(traj_s.J_aug);
+itrs_max = 10;
+for itrs = 1:itrs_max
     [traj_s.l,traj_s.L]   = backward_pass(traj_s.x_bar,traj_s.u_bar,obj_s,model,wts,al);
-    [traj_s_cand,al_cand] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');    
+    [traj_s_cand,al_cand,J_cand] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');    
 
-    if traj_s_cand.J < traj_s.J
+    if J_cand.tot < J_ref.tot
         traj_s = traj_s_cand;
         al = al_cand;
+        
+        J_ref = J_cand;
     else
-        break
+        switch itr_type
+            case 'fast'
+                break
+            case 'reps'
+                % carry on
+        end
     end
+end
+if itrs == itrs_max
+    disp(['[iterate_inner]: Hit max iteration (',num2str(itrs_max),'). Taking our best candidate']);
 end
 
 % Update augmented lagrangian terms and iterator loop check
@@ -36,19 +44,12 @@ con_check_gates = sum(any(al.con(9:16,:) > tol));
 con_check_rates = sum(any(al.con(17:22,:) > tol));
 con_check = con_check_input + con_check_gates + con_check_rates;
 
-
 % Publish some useful stuff
-% mu_debug = [al.mu(1,1) al.mu(9,1) al.mu(17,1) ]; 
-% disp(['[iterate_inner]: mu (inputs gates rates)  = ',num2str(mu_debug)]);
-% disp(['[iterate_inner]: Current Cost = ',num2str(traj_s.J)]);
-% disp(['[iterate_inner]: Constraints Violated = ',num2str(con_check)]);
+J_aug = J_ref.aug;
+J_stg = J_ref.stg;
+disp(['[iterate_inner]: Aug Cost = ',num2str(J_aug), '  ||  LQR Cost = ',num2str(J_stg),'  ||  Total = ',num2str(J_ref.tot)]);
+disp(['[iterate_inner]: Input / Gate / Rate Violations = ',num2str(con_check_input),' / ',num2str(con_check_gates),' / ',num2str(con_check_rates)]);
 
-J_aug_tot = sum(traj_s.J_aug);
-J_stg_tot = sum(traj_s.J_stg);
-disp(['[iterate_inner]: Aug Cost = ',num2str(J_aug_tot), '  ||  LQR Cost = ',num2str(J_stg_tot),'  ||  Total = ',num2str(traj_s.J)]);
-disp(['[iterate_inner]: Input || Gate || Rate Violations = ',num2str(con_check_input),'  ',num2str(con_check_gates),'   ',num2str(con_check_rates)]);
-nominal_plot(traj_s,obj,50,'persp');
-
-disp('====================================================================');
+disp('===========================================================================================');
 
 end

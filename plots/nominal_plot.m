@@ -1,4 +1,4 @@
-function nominal_plot(traj,obj,step,view_point)
+function nominal_plot(traj,obj,step,view_point,plot_type)
 
 x_bar  = traj.x_bar;
     
@@ -33,20 +33,35 @@ for k = 1:size(obj.wp_arr,2)
     h_wp(3).Color = [0 0 1];
 end
 
-for k = 1:step:size(x_bar,2)
-    [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
-    x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-    y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-    z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
+switch plot_type
+    case 'animate'        
+        disp(['[nominal_plot]: Plotting at ',num2str(step),' step intervals of the FMU.']);
+        for k = 1:step:size(x_bar,2)
+            [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
+            x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+            y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+            z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
 
-    h_fr = plot3(x,y,z,'linewidth',2);
+            h_fr = plot3(x,y,z,'linewidth',2);
 
-    % Set the Correct Colors
-    h_fr(1).Color = [1 0 0];
-    h_fr(2).Color = [0 1 0];
-    h_fr(3).Color = [0 0 1];
+            % Set the Correct Colors
+            h_fr(1).Color = [1 0 0];
+            h_fr(2).Color = [0 1 0];
+            h_fr(3).Color = [0 0 1];
+        end
+    case 'static'
+        [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,end));
+        x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+        y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+        z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
+
+        h_fr = plot3(x,y,z,'linewidth',2);
+        
+        h_fr(1).Color = [1 0 0];
+        h_fr(2).Color = [0 1 0];
+        h_fr(3).Color = [0 0 1];
 end
-    
+
 % Plot the full trajectory
 plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:),'--k','linewidth',1);
 
@@ -64,7 +79,6 @@ switch view_point
         view(0,0);
 end
 
-disp(['[nominal_plot]: Plotting at ',num2str(step),' step intervals of the FMU.']);
 
 end
 

@@ -9,7 +9,7 @@ model.g = 9.81;
 
 % Rate Parameters
 model.hz_est = 200;             % State Estimator Sample Rate
-model.hz_lqr = 5;               % iLQR Update Rate
+model.hz_lqr = 1;               % iLQR Update Rate
 model.hz_fmu = 200;             % Flight Management Unit Update Rate
 model.hz_act = 1000;            % Actual Dynamics Update Rate
 
@@ -75,8 +75,8 @@ switch mdl_type
         W_quat  = 0.0001*ones(4,1);
         W_omega = 0.0001*ones(3,1);
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
-    case 'v1.0.1'               % simple motor, with noise, with drag
-        disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');
+    case 'v1.0.1'               % simple motor, no noise, with drag
+        disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [*] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
         model.I_est = 0.0001.*[  2.14   0.00   0.00;...

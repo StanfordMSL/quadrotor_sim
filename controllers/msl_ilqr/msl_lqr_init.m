@@ -16,8 +16,4 @@ function traj = msl_lqr_init(N_seg,obj,model)
     
     traj.l = zeros(4,1,N_tot-1);
     traj.L = zeros(4,13,N_tot-1);
-    
-    traj.J     = 99999.*ones(1,N_wp);
-    traj.J_stg = 99999.*ones(1,N_tot);
-    traj.J_aug = 99999.*ones(1,N_tot);
 end

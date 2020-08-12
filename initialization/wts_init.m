@@ -1,4 +1,4 @@
-function wts = wts_init()
+function wts = wts_init(N_seg)
 
 %% Control Weight Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -17,8 +17,8 @@ Q_xy     = 1.0*ones(2,1);
 Q_z      = 1.0*ones(1,1);
 Q_vel    = 0.0*ones(3,1);
 Q_q      = 0.0*[1 1 1 1]';
-Q_omg_xy = 10.0*ones(2,1);
-Q_omg_z  = 10.0*ones(1,1);
+Q_omg_xy = 5.0*ones(2,1);
+Q_omg_z  = 5.0*ones(1,1);
 
 Q_vect    = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z];
 wts.Q_pstn = diag(Q_vect);
@@ -35,12 +35,12 @@ Q_vect    = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z];
 wts.Q_pose = diag(Q_vect);
 
 % Uniform Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Q_xy     = 1000.*ones(2,1);
-Q_z      = 1000.*ones(1,1);
-Q_vel    = 1000.*ones(3,1);
-Q_q      = 1000.*ones(4,1);
-Q_omg_xy = 1000.*ones(2,1);
-Q_omg_z  = 1000.*ones(1,1);
+Q_xy     = N_seg.*ones(2,1);
+Q_z      = N_seg.*ones(1,1);
+Q_vel    = N_seg.*ones(3,1);
+Q_q      = N_seg.*ones(4,1);
+Q_omg_xy = N_seg.*ones(2,1);
+Q_omg_z  = N_seg.*ones(1,1);
 
 Q_vect    = [Q_xy ; Q_z ; Q_vel ; Q_q ; Q_omg_xy ; Q_omg_z];
 wts.Q_unif = diag(Q_vect);

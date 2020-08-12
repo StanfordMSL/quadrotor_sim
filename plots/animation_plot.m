@@ -1,6 +1,4 @@
-function animation_plot(flight,wp,targ,view_point,wp_show)
-
-    p_gate = wp.p_gate;
+function animation_plot(flight,obj,targ,view_point,wp_show)
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -14,11 +12,12 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    gate_h = plot3(p_gate(1,:)',p_gate(2,:)',p_gate(3,:)');
+    pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+    gate_h = plot3(pnts_gate_rdr(1,:)',pnts_gate_rdr(2,:)',pnts_gate_rdr(3,:)');
     gate_h.LineWidth = 3;
-    xlim(wp.x_lim);
-    ylim(wp.y_lim);
-    zlim(wp.z_lim);
+    xlim(obj.x_lim);
+    ylim(obj.y_lim);
+    zlim(obj.z_lim);
 %     xlim([-2.5 2.5]);
 %     ylim([-1.0 1.0]);
 %     zlim([ 0.0 2.0]);
@@ -33,8 +32,8 @@ function animation_plot(flight,wp,targ,view_point,wp_show)
     switch wp_show
         case 'show'
             % Plot the Waypoints
-            for k = 1:size(wp.x,2)
-                [x_arrow, y_arrow, z_arrow] = frame_builder(wp.x(:,k));
+            for k = 1:size(obj.wp_arr,2)
+                [x_arrow, y_arrow, z_arrow] = frame_builder(obj.wp_arr(:,k));
                 x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
                 y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
                 z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';

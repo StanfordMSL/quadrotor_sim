@@ -34,7 +34,7 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
         
         % Update the Stagewise Variables
         c_x  = Q_t *(x_bar(:,k)-x_star);
-        c_u  = R*(u_bar(:,k));
+        c_u  = R*(u_bar(:,k)-u_star);
         c_xx = Q_t;
         c_uu = R;
         c_ux = zeros(4,13);
