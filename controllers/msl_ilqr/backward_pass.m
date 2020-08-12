@@ -11,6 +11,7 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
     
     % Objectives
     x_star = obj_s.x_star;
+    u_star = model.hover_u;
     
     %% Generate the necessary linear terms
     [A,B] = dynamics_linearizer(x_bar,u_bar,model);
@@ -33,7 +34,7 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
         
         % Update the Stagewise Variables
         c_x  = Q_t *(x_bar(:,k)-x_star);
-        c_u  = R*u_bar(:,k);
+        c_u  = R*(u_bar(:,k));
         c_xx = Q_t;
         c_uu = R;
         c_ux = zeros(4,13);
@@ -46,8 +47,8 @@ function [l_itr,L_itr] = backward_pass(x_bar,u_bar,obj_s,model,wts,al)
         Q_ux = c_ux + B(:,:,k)'*V*A(:,:,k) + con_u'*I_mu*con_x;
 
         % Update the feed-forward and feedback terms
-        l_itr(:,:,k) = -(Q_uu+model.rho.*eye(4))\Q_u;
-        L_itr(:,:,k) = -(Q_uu+model.rho.*eye(4))\Q_ux;
+        l_itr(:,:,k) = -(Q_uu+0.1.*model.rho.*eye(4))\Q_u;
+        L_itr(:,:,k) = -(Q_uu+0.1.*model.rho.*eye(4))\Q_ux;
 %         l_itr(:,:,k) = -Q_uu\Q_u;
 %         L_itr(:,:,k) = -Q_uu\Q_ux;
         

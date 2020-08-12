@@ -8,7 +8,7 @@ function traj = msl_lqr(traj,obj,wts,model)
         traj_s = seg_split(n_wp,traj);
 
         % Initialize Augmented Lagrangian
-        al = al_init(traj_s,16);
+        al = al_init(traj_s,22);
 
         % Iterate for segment
         traj_s = iterate_outer(traj_s,al,obj,wts,model,'full');

@@ -1,7 +1,7 @@
 function f_m = motor_transform(u_curr,model,conv_type)
     
-%     f_m = model.m2w_inv*u_curr;
-    f_m = lsqnonneg(model.m2w,u_curr);
+    f_m = model.m2w_inv*u_curr;
+%     f_m = lsqnonneg(model.m2w,u_curr);
     
     switch conv_type
         case 'actual'

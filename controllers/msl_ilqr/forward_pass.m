@@ -16,21 +16,23 @@ function [traj_s,al] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
     
     % Unpack the relevant variables
     x_bar = traj_s.x_bar;
+    u_bar = traj_s.u_bar;
     
     % Objectives
     x_star = obj_s.x_star;
+    u_star = zeros(4,1);
     
     %% Run the Forward Pass
-    x_fp = zeros(13,N_fp);
-    x_fp(:,1) = x_bar(:,1);
-    u_fp  = traj_s.u_bar;
-
     l = traj_s.l;
     L = traj_s.L;
     
-    J_aug_refr = 99999;
+    J_refr = 99999;
     alpha = al.alpha_init;
-    for itrs = 1:10
+    for itrs = 1:1
+        x_fp = zeros(13,N_fp);
+        x_fp(:,1) = x_bar(:,1);
+        u_fp  = u_bar;
+
         for k = 1:N_fp-1
             del_x = x_fp(:,k) - x_bar(:,k);
             del_u = alpha.*(l(:,:,k) + L(:,:,k)*del_x);
@@ -41,18 +43,16 @@ function [traj_s,al] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
         end
 
         al = con_compute(x_fp,u_fp,al,obj_s.pnts_gate,model);
-        [J_curr,J_stg_curr,J_aug_curr] = J_calc(x_star,x_fp,u_fp,al,wts);
+        [J_curr,J_stg_curr,J_aug_curr] = J_calc(x_star,u_star,x_fp,u_fp,al,wts);
         
-        J_aug_cand = sum(J_aug_curr);
-        
-        if (J_aug_cand + 1e-3) < J_aug_refr
+        if (J_curr + 1e-3) < J_refr
             traj_s.x_bar = x_fp;
             traj_s.u_bar = u_fp;
             traj_s.J = J_curr;
             traj_s.J_stg = J_stg_curr;
             traj_s.J_aug = J_aug_curr;
             
-            J_aug_refr = J_aug_cand;
+            J_refr = J_curr;
         else
             break
         end
@@ -60,4 +60,5 @@ function [traj_s,al] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
         alpha = al.alpha_updt .* alpha;
     end
     motor_debug(u_fp,model)
+    omega_debug(x_fp)
 end

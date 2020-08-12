@@ -11,14 +11,13 @@ function motor_debug(u_sim,model)
     motor_max = model.motor_max .* ones(1,points);
     
     for k = 1:points
-        f_m = motor_transform(u_sim(:,k),model,'actual');
-%         f_m = model.m2w_inv*u_sim(:,k);
+        f_m = motor_transform(u_sim(:,k),model,'sim');
         
         omega_m(:,k) = sign(f_m).*sqrt((1/kt).*abs(f_m));
     end
    
     for k = 1:4
-        subplot(2,2,k)
+        subplot(3,2,k)
         plot(omega_m(k,:))
         hold on
         
@@ -26,5 +25,19 @@ function motor_debug(u_sim,model)
         plot(motor_max,'--')
         xlabel('Time(s)');
         ylabel('\omega_{m} (rad s^{-1})');
+        ylim([0 3500]);
     end
+    
+    subplot(3,2,5)
+    plot(u_sim(2,:))
+    xlabel('Time(s)');
+    ylabel('\tau_x (Nm)');
+    ylim([-0.02 0.02]);
+    
+    subplot(3,2,6)
+    plot(u_sim(3,:))
+    xlabel('Time(s)');
+    ylabel('\tau_y (Nm)');
+    ylim([-0.1 0.1]);
+
 end

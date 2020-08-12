@@ -39,6 +39,7 @@ function fast_animation_plot(x_act,obj,view_point)
     switch view_point
         case 'persp'
             view(320,20);
+            zoom(2)
         case 'back'
             view(-90,0);
         case 'side'

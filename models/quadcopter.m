@@ -30,7 +30,7 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           tau_yaw = 0;
           
-          f_m_flag = 'actual';
+          f_m_flag = 'sim';
         case 'fmu_noisy'
           dt = model.dt_fmu;
           wt = model.W*randn(13,1);
@@ -45,7 +45,7 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           tau_yaw = 0;
           
-          f_m_flag = 'actual';
+          f_m_flag = 'sim';
     end
     
     pos   = x_curr(1:3,1);

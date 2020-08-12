@@ -234,7 +234,7 @@ end
 model.hover_u = [model.m_est*model.g ; 0 ; 0 ; 0];
 
 % model.motor_min = 500;      % Motor Min rad/s
-model.motor_min = 0;      % Motor Min rad/s
+model.motor_min = 500;      % Motor Min rad/s
 model.motor_max = 3000;     % Motor Max rad/s
 
 model.p_grasp_b = [0 ; 0 ; 0];      % grasper position in body frame

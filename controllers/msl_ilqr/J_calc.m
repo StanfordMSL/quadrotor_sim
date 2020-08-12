@@ -1,4 +1,4 @@
-function [J,J_stg,J_aug] = J_calc(x_star,x_bar,u_bar,al,wts)
+function [J,J_stg,J_aug] = J_calc(x_star,u_star,x_bar,u_bar,al,wts)
     % Unpack some stuff
     N = size(x_bar,2);
     
@@ -13,7 +13,7 @@ function [J,J_stg,J_aug] = J_calc(x_star,x_bar,u_bar,al,wts)
     % Compute stagewise cost
     for k = 1:N-1
         err_x = x_bar(:,k) - x_star;
-        err_u = u_bar(:,k);
+        err_u = u_bar(:,k) - u_star;
         J_stg(1,k) = 0.5* err_x'*Q_t*err_x + 0.5*err_u'*R*err_u;
         J_aug(1,k) = (al.lambda(:,k) +  0.5.*al.I_mu(:,:,k)*al.con(:,k))'*al.con(:,k);
     end
