@@ -17,7 +17,7 @@ function motor_debug(u_sim,model)
     end
    
     for k = 1:4
-        subplot(3,2,k)
+        subplot(4,1,k)
         plot(omega_m(k,:))
         hold on
         
@@ -28,16 +28,5 @@ function motor_debug(u_sim,model)
         ylim([0 3500]);
     end
     
-    subplot(3,2,5)
-    plot(u_sim(2,:))
-    xlabel('Time(s)');
-    ylabel('\tau_x (Nm)');
-    ylim([-0.02 0.02]);
-    
-    subplot(3,2,6)
-    plot(u_sim(3,:))
-    xlabel('Time(s)');
-    ylabel('\tau_y (Nm)');
-    ylim([-0.1 0.1]);
-
+set(gcf,'color','w');
 end

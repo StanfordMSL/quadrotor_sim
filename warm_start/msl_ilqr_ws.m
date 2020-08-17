@@ -9,7 +9,8 @@ traj = msl_lqr(1,traj,obj,wts,model,'offline');
 % Publish some diagnostics
 switch nom_show
     case 'show'
-        nominal_plot(traj,obj,50,'persp','static');
+        nominal_plot(traj,obj,20,'persp');
+        motor_debug(traj.u_bar,model)
     case 'hide'
 end
 

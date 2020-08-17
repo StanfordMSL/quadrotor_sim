@@ -9,9 +9,9 @@ model.g = 9.81;
 
 % Rate Parameters
 model.hz_est = 200;             % State Estimator Sample Rate
-model.hz_lqr = 1;               % iLQR Update Rate
+model.hz_lqr = 0.2;               % iLQR Update Rate
 model.hz_fmu = 200;             % Flight Management Unit Update Rate
-model.hz_act = 1000;            % Actual Dynamics Update Rate
+model.hz_act = 200;            % Actual Dynamics Update Rate
 
 model.dt_est = 1/model.hz_est;
 model.dt_lqr = 1/model.hz_lqr;
@@ -232,6 +232,7 @@ else
 end
 
 model.hover_u = [model.m_est*model.g ; 0 ; 0 ; 0];
+model.race_u =  [model.m_est*model.g ; 0 ; 0 ; 0];
 
 % model.motor_min = 500;      % Motor Min rad/s
 model.motor_min = 500;      % Motor Min rad/s

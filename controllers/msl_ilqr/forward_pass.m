@@ -20,7 +20,7 @@ function [traj_s,al,J] = forward_pass(traj_s,obj_s,model,wts,al,fp_type)
     
     % Objectives
     x_star = obj_s.x_star;
-    u_star = model.hover_u;
+    u_star = model.race_u;
     
     %% Run the Forward Pass
     l = traj_s.l;

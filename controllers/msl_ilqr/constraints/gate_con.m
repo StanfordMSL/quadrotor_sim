@@ -30,14 +30,15 @@ function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
             r_p = (p_b + p_arm)+ alpha_c.*(v_b + cross(omega_b,p_arm));
             r_s = (p_b + s_arm)+ alpha_c.*(v_b + cross(omega_b,s_arm));
 
+            % beta is the long side. gamme is the short side.
             beta_c_p = dot((r_p - p_g1),p_14)/dot(p_14,p_14);
             gamma_c_p = dot((r_p - p_g1),p_12)/dot(p_12,p_12);
             beta_c_s = dot((r_s - p_g1),p_14)/dot(p_14,p_14);
             gamma_c_s = dot((r_s - p_g1),p_12)/dot(p_12,p_12);
 
             % Port
-            upp = 0.8;
-            low = 0.2;
+            upp = 1.0;
+            low = 0.0;
             con(1,1)   =  beta_c_p - upp;
             con(2,1)  = -beta_c_p + low;
             con(3,1)  =  gamma_c_p - upp;
@@ -75,9 +76,8 @@ function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
                 omega_12_dx(1,k) = dot(inner,p_12);
             end
 
-
             % Port
-            con_x(1,:)  = [ pos_14_dx  quat_14_dx  omega_14_dx];  % p14
+            con_x(1,:) = [ pos_14_dx  quat_14_dx  omega_14_dx];  % p14
             con_x(2,:) = [-pos_14_dx -quat_14_dx -omega_14_dx];  % p14
             con_x(3,:) = [ pos_12_dx  quat_12_dx  omega_12_dx];  % p12
             con_x(4,:) = [-pos_12_dx -quat_12_dx -omega_12_dx];  % p12

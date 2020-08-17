@@ -11,7 +11,7 @@ k_lqr = 0;
 k_fmu = 0;
 
 % Initialize simulation final time and steps (fixed at 10kHz).
-t_sim = dt_fmu*(traj.kf_seg(1,end)-1);
+t_sim = dt_fmu*(obj.kf_seg(1,end)-1);
 N_sim = (t_sim/dt_act) + 1;
 N_fmu = (t_sim/dt_fmu) + 1;
 
