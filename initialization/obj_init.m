@@ -75,9 +75,9 @@ switch profile
         x(:,1) = [-2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
        
-        p_gate = [0.0 0.0 1.0]';
+        p_gate = [0.0 0.0 1.3]';
         
-        raw_angles = [0 0 pi/4];
+        raw_angles = [0 0 0];
         quat = eul2quat(raw_angles)';
         bRw = quat2rotm(quat');
         pnts_gate = bRw*dim_gate_t + p_gate;
@@ -87,9 +87,9 @@ switch profile
         x(:,1) = [-2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
        
-        p_gate = [0.0 0.0 1.4]';
+        p_gate = [0.0 0.0 1.2]';
         
-        raw_angles = [0 0.1 -pi/4];
+        raw_angles = [0.0 0.0 pi./2];
         quat = eul2quat(raw_angles)';
         bRw = quat2rotm(quat');
         pnts_gate = bRw*dim_gate_t + p_gate;
@@ -98,13 +98,10 @@ switch profile
     case 'slit III'      
         x(:,1) = [-2.0 ; 0.1 ; 1.0 ; zeros(3,1) ; 1.0 ; zeros(6,1)];
         x(:,2) = [ 2.0 ; 0.0 ; 1.0 ; zeros(3,1) ; 1.0 ; zeros(6,1)];
-        x(:,3) = [ 2.0 ; 0.0 ; 1.0 ; zeros(3,1) ; 1.0 ; zeros(6,1)];
 
-        p_gate = [0.0  0.0 ;
-                  1.0 -1.0 ;
-                  1.2  1.2];
+        p_gate = [-1.5 2.0 0.5]';
         
-        raw_angles = [0 0 pi/4];
+        raw_angles = [0 0.1 -pi/2];
         quat = eul2quat(raw_angles)';
         bRw = quat2rotm(quat');
         pnts_gate = bRw*dim_gate_t + p_gate;

@@ -1,8 +1,8 @@
-function log = simulation(traj,obj,wts,model,targ,ctl_mode)
+function log = simulation(traj,obj,wts_db,model,targ,ctl_mode)
 
 % Initialize clock variables
-dt_est = model.dt_est;
 dt_lqr = model.dt_lqr;
+dt_est = model.dt_est;
 dt_fmu = model.dt_fmu;
 dt_act = model.dt_act;
 
@@ -13,6 +13,7 @@ k_fmu = 0;
 % Initialize simulation final time and steps (fixed at 10kHz).
 t_sim = dt_fmu*(obj.kf_seg(1,end)-1);
 N_sim = (t_sim/dt_act) + 1;
+N_est = (t_sim/dt_est) + 1;
 N_fmu = (t_sim/dt_fmu) + 1;
 
 if floor(N_fmu) ~= N_fmu
@@ -22,7 +23,7 @@ if floor(N_fmu) ~= N_fmu
 end
 
 % Initialize Logger Variable
-log = logger_init(t_sim,N_sim,N_fmu,obj.wp_arr(:,1),model);     
+log = logger_init(t_sim,N_sim,N_est,N_fmu,obj.wp_arr(:,1),model);     
 
 % Contact Parameter Initialization
 dt_ct = 0.2;                        % Duration of Contact Force
@@ -39,7 +40,8 @@ for k_act = 1:N_sim
 
         % Perfect Sensing (used for flight control)
         x_now = log.x_act(:,k_act);
-        log.x_fc(:,k_est)  = x_now;        
+        log.t_est(:,k_est)  = t_now;   
+        log.x_est(:,k_est)  = x_now;        
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Controller Update    
@@ -53,19 +55,20 @@ for k_act = 1:N_sim
         u_bar = traj.u_bar(:,k_fmu);
         
         del_x = x_now - x_bar;
-        del_u = l + L*del_x;
+        del_u = L*del_x;
         
         u_now = u_bar + del_u;
         
-        log.u_fmu(:,k_fmu)     = u_now;
+        log.t_fmu(:,k_fmu)  = t_now; 
+        log.u_fmu(:,k_fmu)  = u_now;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % iLQR Updater    
-    if mod(t_now,dt_lqr) == 0
+    if (mod(t_now,dt_lqr) == 0)
         k_lqr = k_lqr + 1;
         switch ctl_mode
             case 'msl_lqr'
-                traj = msl_lqr(k_fmu,traj,obj,wts,model,'online');
+                traj = msl_lqr(k_fmu,traj,obj,wts_db,model,'offline');
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

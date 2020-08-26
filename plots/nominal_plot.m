@@ -1,10 +1,8 @@
-function nominal_plot(traj,obj,step,view_point)
-
-x_bar  = traj.x_bar;
+function nominal_plot(x_bar,obj,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
-figure(3)
+figure(1)
 clf
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,10 +47,10 @@ switch view_point
         view(0,0);
 end
 
-% Set Limits
-xlim(obj.x_lim);
-ylim(obj.y_lim);
-zlim(obj.z_lim);
+% % Set Limits
+% xlim([-2.5 2.5]);
+% ylim([-0.5 0.5]);
+% zlim([-0.1 2]);
 
 set(gcf,'color','w');
 

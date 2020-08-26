@@ -1,53 +1,101 @@
-function [traj_s, al, J_ref] = iterate_inner(traj_s,al,obj,wts,model,compute_type)
+function [traj_s, al_s, J_s] = iterate_inner(traj_s,al_s,obj_s,cost_param,model)
 
-% Some preparation for loop
-obj_s = obj_s_builder(traj_s.x_bar(:,1),obj);
-[traj_s,al,~] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');
+% Tolerances
+tol_alpha = 1e-6;
 
-% Initialize J_ref
-J_ref.stg = 1e9;
-J_ref.aug = 1e9;
-J_ref.tot = J_ref.stg + J_ref.aug;
+% Assign current segment trajectory to candidate
+traj_c = traj_s;
+al_c   = al_s;
+
+% Compute the segment cost, which is also the initial 'previous' cost
+J_s = cost_calc(traj_s.x_bar,traj_s.u_bar,al_s.con,al_s.lambda,al_s.I_mu,cost_param);
+J_p = J_s;
 
 % Run inner loop
 itrs = 0;
-itrs_max = 10;
+itrs_max = 20;
 inner_flag = true;
+rho = 0.01;
 while inner_flag
-    [traj_s.l,traj_s.L]   = backward_pass(traj_s.x_bar,traj_s.u_bar,obj_s,model,wts,al);
-    [traj_s_cand,al_cand,J_cand] = forward_pass(traj_s,obj_s,model,wts,al,'ideal');    
+    % Update bp terms (l and L) and the cost predictor (del_V)
+    [traj_c.l,traj_c.L,del_V] = backward_pass(traj_c.x_bar,traj_c.u_bar,al_s,rho,cost_param,model);    
+    
+    % Forward Pass Line Search
+    x_save = traj_c.x_bar;
+    u_save = traj_c.u_bar;
+    alpha  = 1;
+    while true
+        % Update fp terms (x_bar and u_bar)
+        [traj_c.x_bar,traj_c.u_bar] = forward_pass(traj_c,alpha,model,'ideal');    
         
-%     nominal_plot(traj_s_cand,obj,5,'persp')
-%     motor_debug(traj_s_cand.u_bar,model)
+%         % Plot for debug
+%         nominal_plot(traj_c.x_bar,obj_s,5,'persp')
+%         motor_debug(traj_c.u_bar,model)
+        
+        % Update constraints and their partials
+        [al_c.con,al_c.con_x,al_c.con_u] = con_compute(traj_c.x_bar,traj_c.u_bar,obj_s.pnts_gate,model);
+        
+        % Update the trigger matrices
+        al_c.I_mu = con_trigger(al_c.con,al_c.lambda,al_c.mu);
+        
+        % Update the the cost function and its components
+        J_c  = cost_calc(traj_c.x_bar,traj_c.u_bar,al_c.con,al_c.lambda,al_c.I_mu,cost_param);
 
-    % Iteration Limit Check
-    itrs = itrs + 1;
-    if itrs > itrs_max
-        disp(['[iterate_inner]: Hit max iteration (',num2str(itrs_max),'). Taking our best candidate']);
+        % Regularization check
+        if ~isnan(J_c.tot)
+            % Not exploding. Carry On.
+        else
+            % Cost exploding. Resetting and resorting to a more naive gradient
+            traj_c = traj_s;
+            rho = 10*rho;
+%             disp('[iterate_inner]: Cost explosion. Increasing rho to force it back.');
+            break
+        end
+        
+        % Expected Improvement check
+        z = (J_c.tot-J_p.tot)/(alpha*sum(del_V(1,:)) + (alpha^2)*sum(del_V(2,:)));        
+        if (z > 1e-4) && (z < 3)
+            % Within bounds. Carry On. Update previous cost.
+            J_p = J_c;
+            break
+        else
+            % Out of bounds. Reset
+            traj_c.x_bar = x_save;
+            traj_c.u_bar = u_save;
+            alpha = 0.5*alpha;
+            
+            if alpha < tol_alpha
+%                 disp(['[iterate_inner]: Exceed alpha tolerance (',num2str(tol_alpha),').']);
+                break;
+            end
+            
+%             disp(['[iterate_inner]: Out of bounds with ratio (',num2str(z),').']);
+        end
+    end
+
+    % Iteration Update Check
+    if J_c.tot < J_s.tot
+        traj_s = traj_c;
+        al_s   = al_c;
+        J_s    = J_c;        
+        
+        % Plot for debug
+        nominal_plot(traj_s.x_bar,obj_s,5,'persp')
+        motor_debug(traj_s.u_bar,model)
+    end
+    
+    % Alpha Convergence Check
+    if alpha < tol_alpha
+%         disp('[iterate_inner]: Converged to a pure feedback law.');
         inner_flag = false;
     end
     
-    % Iteration Update Check
-    if J_cand.tot < J_ref.tot
-        traj_s = traj_s_cand;
-        al = al_cand;
-        J_ref = J_cand;
-    else
-        switch compute_type
-            case 'online'
-                disp(['[iterate_inner]: Leaving loop after local minima at iteration ',num2str(itrs-1)]);
-                inner_flag = false;
-            case 'offline'
-                % carry on
-        end
-    end 
-    
+    % Iteration Limit Check
+    itrs = itrs + 1;
+    if itrs > itrs_max
+%         disp(['[iterate_inner]: Hit max iteration (',num2str(itrs_max),'). Taking our best candidate']);
+        inner_flag = false;
+    end
 end
-
-
-% % Publish some useful stuff
-% J_aug = J_ref.aug;
-% J_stg = J_ref.stg;
-% disp(['[iterate_inner]: Aug Cost = ',num2str(J_aug), '  ||  LQR Cost = ',num2str(J_stg),'  ||  Total = ',num2str(J_ref.tot)]);
 
 end

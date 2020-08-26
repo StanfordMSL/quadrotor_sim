@@ -7,7 +7,7 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
-    figure(2)
+    figure(3)
     clf
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,7 +54,7 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
     switch view_point
         case 'persp'
             view(320,20);
-%              zoom(1.8)
+             zoom(1.8)
         case 'back'
             view(-90,0);
         case 'side'

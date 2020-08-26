@@ -11,12 +11,12 @@ function [con,con_x,con_u] = input_con(u_bar,model)
     con = zeros(8,1);
     con_u = zeros(8,4);
     con_x = zeros(8,13);
-    for k = 1:4
-        con(k,1)   = -f_m(k,1) + f_min;
-        con(k+4,1) =  f_m(k,1) - f_max;
-
-        con_u(k,:)   = -w2m(k,:);
-        con_u(k+4,:) =  w2m(k,:);
-    end
+%     for k = 1:4
+%         con(k,1)   = -f_m(k,1) + f_min;
+%         con(k+4,1) =  f_m(k,1) - f_max;
+% 
+%         con_u(k,:)   = -w2m(k,:);
+%         con_u(k+4,:) =  w2m(k,:);
+%     end
     
 end

@@ -1,4 +1,4 @@
-function [A,B] = dynamics_linearizer(x,u,model)
+function [A,B] = traj_linearizer(x,u,model)
 
 N = size(x,2);
 states = size(x,1);

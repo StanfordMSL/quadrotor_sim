@@ -15,8 +15,8 @@ function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
     omega_b = x_bar(11:13,1);
     
     bRw = quat2rotm(q_b');
-    p_arm = bRw*[0.00  l_arm  0.00]';    % converted  to world frame
-    s_arm = bRw*[0.00 -l_arm  0.00]';    % converted  to world frame
+    p_arm = bRw*[0.00  l_arm  0.00]';    % converted to world frame
+    s_arm = bRw*[0.00 -l_arm  0.00]';    % converted to world frame
     
     if dot(v_b,n_g) == 0
         % never hitting
@@ -39,7 +39,7 @@ function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
             % Port
             upp = 1.0;
             low = 0.0;
-            con(1,1)   =  beta_c_p - upp;
+            con(1,1)  =  beta_c_p - upp;
             con(2,1)  = -beta_c_p + low;
             con(3,1)  =  gamma_c_p - upp;
             con(4,1)  = -gamma_c_p + low;
@@ -54,8 +54,8 @@ function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
             pos_14_dx = c_14.*[p_14' alpha_c.*p_14'];
             pos_12_dx = c_12.*[p_12' alpha_c.*p_12'];
             q_arm = l_arm.*[-2*q_b(4,1)  2*q_b(3,1)  2*q_b(2,1) -2*q_b(4,1);...
-                           4*q_b(1,1)      0       4*q_b(3,1)     0      ;...
-                           2*q_b(2,1)  2*q_b(1,1)  2*q_b(4,1) -2*q_b(3,1)];
+                             4*q_b(1,1)      0       4*q_b(3,1)     0      ;...
+                             2*q_b(2,1)  2*q_b(1,1)  2*q_b(4,1) -2*q_b(3,1)];
 
             quat_14_dx = zeros(1,4);
             quat_12_dx = zeros(1,4);

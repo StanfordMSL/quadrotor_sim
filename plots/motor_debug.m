@@ -1,5 +1,5 @@
 function motor_debug(u_sim,model)
-    figure(4)
+    figure(2)
     clf
 
     kt = model.kt_est(1,1);

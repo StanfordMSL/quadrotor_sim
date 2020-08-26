@@ -9,7 +9,7 @@ model.g = 9.81;
 
 % Rate Parameters
 model.hz_est = 200;             % State Estimator Sample Rate
-model.hz_lqr = 0.2;               % iLQR Update Rate
+model.hz_lqr = 0.1;             % iLQR Update Rate
 model.hz_fmu = 200;             % Flight Management Unit Update Rate
 model.hz_act = 200;            % Actual Dynamics Update Rate
 
