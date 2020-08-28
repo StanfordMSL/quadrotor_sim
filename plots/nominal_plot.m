@@ -7,7 +7,7 @@ clf
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate flight room map
-pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+pnts_gate_rdr = [obj.p_gc obj.p_gc(:,1)];  % render points need to terminate at start
 if pnts_gate_rdr(1,1) == 999
     %carry on
 else

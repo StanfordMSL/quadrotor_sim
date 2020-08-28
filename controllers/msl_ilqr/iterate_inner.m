@@ -1,101 +1,72 @@
-function [traj_s, al_s, J_s] = iterate_inner(traj_s,al_s,obj_s,cost_param,model)
+function [traj, al, J] = iterate_inner(traj,al,obj,cost_param,model)
 
-% Tolerances
-tol_alpha = 1e-6;
+% Objective of inner loop is minimize the cost function given fixed
+% lagrange multiplier or max iteration reached.
 
-% Assign current segment trajectory to candidate
-traj_c = traj_s;
-al_c   = al_s;
+%% Unpack Some Usefull Stuff
 
-% Compute the segment cost, which is also the initial 'previous' cost
-J_s = cost_calc(traj_s.x_bar,traj_s.u_bar,al_s.con,al_s.lambda,al_s.I_mu,cost_param);
-J_p = J_s;
+% Count
+N = size(traj.x,2);
 
-% Run inner loop
+del_u = zeros(4,N-1);
+
+% Current Cost and previous cost.
+J = cost_calc(traj.x,traj.u,al.con,al.lambda,al.I_mu,cost_param);
+J_p = J;
+
+%% Run the Inner loop
 itrs = 0;
-itrs_max = 20;
-inner_flag = true;
-rho = 0.01;
+itrs_max = 30;
+tol_J = 1e-1;
+
+inner_flag  = true;       % flag true if still minimizing.
 while inner_flag
-    % Update bp terms (l and L) and the cost predictor (del_V)
-    [traj_c.l,traj_c.L,del_V] = backward_pass(traj_c.x_bar,traj_c.u_bar,al_s,rho,cost_param,model);    
-    
-    % Forward Pass Line Search
-    x_save = traj_c.x_bar;
-    u_save = traj_c.u_bar;
-    alpha  = 1;
-    while true
-        % Update fp terms (x_bar and u_bar)
-        [traj_c.x_bar,traj_c.u_bar] = forward_pass(traj_c,alpha,model,'ideal');    
-        
-%         % Plot for debug
-%         nominal_plot(traj_c.x_bar,obj_s,5,'persp')
-%         motor_debug(traj_c.u_bar,model)
-        
-        % Update constraints and their partials
-        [al_c.con,al_c.con_x,al_c.con_u] = con_compute(traj_c.x_bar,traj_c.u_bar,obj_s.pnts_gate,model);
-        
-        % Update the trigger matrices
-        al_c.I_mu = con_trigger(al_c.con,al_c.lambda,al_c.mu);
-        
-        % Update the the cost function and its components
-        J_c  = cost_calc(traj_c.x_bar,traj_c.u_bar,al_c.con,al_c.lambda,al_c.I_mu,cost_param);
+    rho = 0.0001;
+    stab_flag = false;
+    while stab_flag == false
+        % Reset backward pass
+        del_u_c = del_u;  
+        rho = 10*rho;
 
-        % Regularization check
-        if ~isnan(J_c.tot)
-            % Not exploding. Carry On.
-        else
-            % Cost exploding. Resetting and resorting to a more naive gradient
-            traj_c = traj_s;
-            rho = 10*rho;
-%             disp('[iterate_inner]: Cost explosion. Increasing rho to force it back.');
-            break
-        end
+        % Update u_bar
+        traj_c.u = traj.u + del_u_c;
+
+        % Update bp terms (l and L) and the cost predictor (del_V)
+        [traj_c.l,traj_c.L,del_V] = backward_pass(traj.x,traj.u,al,rho,cost_param,model);    
+
+        % Ready the x for forward pass
+        traj_c.x = traj.x;
         
-        % Expected Improvement check
-        z = (J_c.tot-J_p.tot)/(alpha*sum(del_V(1,:)) + (alpha^2)*sum(del_V(2,:)));        
-        if (z > 1e-4) && (z < 3)
-            % Within bounds. Carry On. Update previous cost.
-            J_p = J_c;
-            break
-        else
-            % Out of bounds. Reset
-            traj_c.x_bar = x_save;
-            traj_c.u_bar = u_save;
-            alpha = 0.5*alpha;
-            
-            if alpha < tol_alpha
-%                 disp(['[iterate_inner]: Exceed alpha tolerance (',num2str(tol_alpha),').']);
-                break;
-            end
-            
-%             disp(['[iterate_inner]: Out of bounds with ratio (',num2str(z),').']);
-        end
+        % Forward Pass Line Search
+        [traj_c.x,del_u_c,traj_c.alpha,stab_flag] = forward_pass(traj_c,al,obj,del_V,J_p,cost_param,model,'ideal');    
     end
 
-    % Iteration Update Check
-    if J_c.tot < J_s.tot
-        traj_s = traj_c;
-        al_s   = al_c;
-        J_s    = J_c;        
-        
-        % Plot for debug
-        nominal_plot(traj_s.x_bar,obj_s,5,'persp')
-        motor_debug(traj_s.u_bar,model)
-    end
+    % Trajectory is stable. Solution can updated using the candidate
+    % Some u consistency stuff
+    del_u = del_u_c;
+
+    % Update Traj
+    traj.x = traj_c.x;
+    traj.u = traj_c.u;
+    traj.l = traj_c.l;
+    traj.L = traj_c.L;
+    traj.alpha = traj_c.alpha;
+ 
+    % debug
+    nominal_plot(traj.x,obj,10,'persp')
     
-    % Alpha Convergence Check
-    if alpha < tol_alpha
-%         disp('[iterate_inner]: Converged to a pure feedback law.');
-        inner_flag = false;
-    end
-    
-    % Iteration Limit Check
-    itrs = itrs + 1;
-    if itrs > itrs_max
-%         disp(['[iterate_inner]: Hit max iteration (',num2str(itrs_max),'). Taking our best candidate']);
-        inner_flag = false;
-    end
+    % Update constraints struct
+    [al.con,al.con_x,al.con_u] = con_compute(traj.x,traj.u ,obj,model);
+    al.I_mu = con_trigger(al.con,al.lambda,al.mu);
+
+    % Update cost and previous cost
+    J_p = J;
+    J   = cost_calc(traj.x,traj.u,al.con,al.lambda,al.I_mu,cost_param);
+
+    % Loop Breaking Conditions
+    inner_flag = inner_flag_check(J.tot,J_p.tot,tol_J,itrs,itrs_max);
 end
 
+% disp(['[iterate_outer]: Costs [aug/LQR]: ',mat2str([round(J_s.aug,5) round(J_s.lqr,5)])]);
+% disp(['[iterate_outer]: Unsatisfied Constraints [motor/gate]: ',mat2str(con_status)]);
 end

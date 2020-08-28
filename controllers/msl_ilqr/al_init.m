@@ -1,24 +1,19 @@
-function al = al_init(traj_s,n_con,pnts_gate,model)
+function al = al_init(traj,obj,model)
 
-n_x = size(traj_s.x_bar,1);
-n_u = size(traj_s.u_bar,1);
-N_tot = size(traj_s.x_bar,2);
+% Count
+N_tot = size(traj.x,2);
+n_con = 30;
 
-al.mu     = [ 1.*ones(8,N_tot) ;... % input
-              1.*ones(8,N_tot) ;    % gates
-              1.*ones(6,N_tot)];    % rates
+% Initialize Lagrange Multiplier Variables
+al.mu     = ones(n_con,N_tot);
 al.lambda = 0.*ones(n_con,N_tot);
-al.con    = zeros(n_con,N_tot);
-al.con_x  = zeros(n_con,n_x,N_tot);
-al.con_u  = zeros(n_con,n_u,N_tot);
-al.I_mu   = zeros(n_con,n_con,N_tot);
+al.phi    = 2.0.*ones(n_con,1);
 
-al.alpha = 1;
-al.phi   = 10.*ones(n_con,1);
+% Compute Constraints and their Partials
+[al.con,al.con_x,al.con_u] = con_compute(traj.x,traj.u,obj,model);
 
-al.alpha_upd = 0.5;
-al.phi_upd   = 0.5;
+% Update the trigger matrices
+al.I_mu = con_trigger(al.con,al.lambda,al.mu);
 
-[al.con,al.con_x,al.con_u] = con_compute(traj_s.x_bar,traj_s.u_bar,pnts_gate,model);
 
 end

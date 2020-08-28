@@ -1,40 +1,42 @@
-function traj_s = iterate_outer(traj_s,obj_s,wts_db,model)
+function traj = iterate_outer(traj,obj,wts_db,model)
 
 % Objective of outer loop is to update lagrange multipliers until
-% constraints are satisfied.
+% constraints are satisfied or max iteration reached.
 
-% Initialize Augmented Lagrangian
-al_s = al_init(traj_s,22,obj_s.pnts_gate,model);
+%% Generate the Augmented Lagrangian Variables
 
-% Generate cost parameters
-cost_param = cost_assembly(wts_db,'initial',traj_s,obj_s,model);
+% Initialize Variables
+al = al_init(traj,obj,model);
 
-% Initialize loop parameters
-itrs_max  = 20;
-tol_con   = 0;    % addition tolerance
-itrs      = 0;
-con_flag  = true;
+%% Generate Cost Variables
 
-% Run the actual loop
-while con_flag
+% Generate Cost Parameters
+cost_param = cost_assembly(traj,wts_db,obj);
+
+%% Run the Outer loop
+% Initialize loop parameters. 
+itrs     = 0;
+itrs_max = 30;
+tol_con  = 1e-1;
+
+outer_flag  = true;       % flag true if constraints are violated.
+while outer_flag == true
     % Update iterate count and check for break limit
     itrs =  itrs + 1;
-    if itrs > itrs_max
-        disp(['[iterate_outer]: [ABORT] Reached max outer loop iteration count (',num2str(itrs_max),')']);
-        return
-    end
     
-    % Update augmented lagrangian terms and iterator loop check
+    % Update augmented lagrangian terms
     if itrs > 0
-        al_s = al_update(al_s);
+        al = al_update(al);
     end
 
     % Run the inner loop (minimizing L_A)
-    [traj_s,al_s,J_s] = iterate_inner(traj_s,al_s,obj_s,cost_param,model);
+    [traj,al,J_upd] = iterate_inner(traj,al,obj,cost_param,model);
 
-    [con_flag,con_status] = con_check(al_s,tol_con);
-    disp(['[iterate_outer]: Costs [aug/LQR]: ',mat2str([round(J_s.aug,5) round(J_s.lqr,5)])]);
-    disp(['[iterate_outer]: Unsatisfied Constraints [motor/gate/rate]: ',mat2str(con_status)]);
+    % Loop Breaking Conditions
+    outer_flag = outer_flag_check(al.con,tol_con,itrs,itrs_max);
 end
+
+
+disp(['[iterate_outer]: Updated Cost: ',num2str(round(J_upd.tot,5))]);
 
 end

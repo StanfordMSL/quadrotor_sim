@@ -10,7 +10,7 @@ function [l_itr,L_itr,del_V] = backward_pass(x_bar,u_bar,al,rho,cost_param,model
     N_bp = size(x_bar,2);
     
     % Initialize feedback policy variables
-    l_itr = zeros(n_u,1,N_bp-1);
+    l_itr = zeros(n_u,N_bp-1);
     L_itr = zeros(n_u,n_x,N_bp-1);
     del_V = zeros(2,N_bp);
     
@@ -55,16 +55,16 @@ function [l_itr,L_itr,del_V] = backward_pass(x_bar,u_bar,al,rho,cost_param,model
         Q_ux = c_ux + B'*V*A + con_u'*I_mu*con_x;
 
         % Update the feed-forward and feedback terms
-        l_itr(:,:,k) = -(Q_uu+rho.*eye(4))\Q_u;
+        l_itr(:,k)   = -(Q_uu+rho.*eye(4))\Q_u;
         L_itr(:,:,k) = -(Q_uu+rho.*eye(4))\Q_ux;
         
         % Update v and V for next bp state
-        v = Q_x - L_itr(:,:,k)'*Q_uu*l_itr(:,k);
+        v = Q_x  - L_itr(:,:,k)'*Q_uu*l_itr(:,k);
         V = Q_xx - L_itr(:,:,k)'*Q_uu*L_itr(:,:,k);
         
         % Expected change in cost
-        del_V(1,k) = (l_itr(:,:,k)' * Q_u);
-        del_V(2,k) = 0.5.*(l_itr(:,:,k)' * Q_uu * l_itr(:,:,k));
+        del_V(1,k) = (l_itr(:,k)' * Q_u);
+        del_V(2,k) = 0.5.*(l_itr(:,k)' * Q_uu * l_itr(:,k));
     end
     
 end

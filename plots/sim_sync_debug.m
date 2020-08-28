@@ -4,8 +4,8 @@ figure(4)
 clf
 
 for k = 1:3
-    plot(log.x_est(k,:));
+    plot(log.x_est(k,:),'r');
     hold on
-    plot(traj.x_bar(k,:));
+    plot(traj.x_bar(k,:),'b');
     hold on
 end

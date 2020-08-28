@@ -1,9 +1,5 @@
 function model = model_init(mdl_type)
 
-% Default Heuristic Values
-model.alpha = 1;
-model.rho   = 1;
-
 % Gravity Parameter
 model.g = 9.81;
 

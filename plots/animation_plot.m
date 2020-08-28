@@ -54,9 +54,11 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
     switch view_point
         case 'persp'
             view(320,20);
-             zoom(1.8)
         case 'back'
             view(-90,0);
+        case 'top'
+            view(0,90);
+            zoom(3)
         case 'side'
             view(0,0);
     end

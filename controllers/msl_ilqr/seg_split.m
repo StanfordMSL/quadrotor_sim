@@ -1,6 +1,6 @@
-function traj_s = seg_split(fr_i,fr_f,traj)  
-    traj_s.x_bar = traj.x_bar(:,fr_i:fr_f); 
-    traj_s.u_bar = traj.u_bar(:,fr_i:fr_f-1); 
-    traj_s.l = traj.l(:,:,fr_i:fr_f-1); 
-    traj_s.L = traj.L(:,:,fr_i:fr_f-1); 
+function traj_s = seg_split(k_now,traj)  
+    traj_s.x = traj.x(:,k_now:end); 
+    traj_s.u = traj.u(:,k_now:end); 
+    traj_s.l = traj.l(:,k_now:end); 
+    traj_s.L = traj.L(:,:,k_now:end); 
 end

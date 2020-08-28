@@ -48,15 +48,17 @@ for k_act = 1:N_sim
     if (mod(t_now,dt_fmu) == 0) && (k_fmu < N_fmu-1)
         k_fmu = k_fmu + 1;
         
-        l = traj.l(:,:,k_fmu);
+        alpha = traj.alpha;
+        l = traj.l(:,k_fmu);
         L = traj.L(:,:,k_fmu);
         
         x_bar = traj.x_bar(:,k_fmu);
         u_bar = traj.u_bar(:,k_fmu);
         
         del_x = x_now - x_bar;
-        del_u = L*del_x;
-        
+        del_u = alpha.*l + L*del_x;
+%         del_u = L*del_x;
+
         u_now = u_bar + del_u;
         
         log.t_fmu(:,k_fmu)  = t_now; 
@@ -64,13 +66,13 @@ for k_act = 1:N_sim
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % iLQR Updater    
-    if (mod(t_now,dt_lqr) == 0)
-        k_lqr = k_lqr + 1;
-        switch ctl_mode
-            case 'msl_lqr'
-                traj = msl_lqr(k_fmu,traj,obj,wts_db,model,'offline');
-        end
-    end
+%     if (mod(t_now,dt_lqr) == 0)
+%         k_lqr = k_lqr + 1;
+%         switch ctl_mode
+%             case 'msl_lqr'
+%                 traj = msl_lqr(k_fmu,traj,obj,wts_db,model,'offline');
+%         end
+%     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     

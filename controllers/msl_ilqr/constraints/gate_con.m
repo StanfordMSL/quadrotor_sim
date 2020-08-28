@@ -1,101 +1,89 @@
-function [con,con_x,con_u] = gate_con(x_bar,pnts_gate,l_arm,dt_ctl)
-    %% Position Constraints
-    p_g1 = pnts_gate(:,1);
-    p_g2 = pnts_gate(:,2);
-    p_g4 = pnts_gate(:,4);
-    
-    p_12 = p_g2 - p_g1;
-    p_14 = p_g4 - p_g1;
-    
-    n_g = cross(p_14,p_12);
-    
-    p_b = x_bar(1:3,1);
-    v_b = x_bar(4:6,1);
-    q_b = x_bar(7:10,1);
-    omega_b = x_bar(11:13,1);
-    
+function [con,con_x,con_u] = gate_con(x_bar,obj,model)
+%%  Generate points of interest
+% We track 4 points on a cross-shaped quadcopter with a clockwise
+% convention starting from the fore arm. We are looking to constrain
+% the bounds into a gate using a basis vector + normal definition of
+% the gate. gamma(1->2)[idx:1] and beta(1->4)[idx:2].
+
+% Where applicable, subscript small letter variables are in body frame.
+% Subscript caps are in world frame.
+
+%% Unpack some stuff
+% Count
+N = size(x_bar,2);
+n_c = 16;
+n_x = size(x_bar,1);
+n_u = 4;
+
+% Gate Parameters
+p_G1 = obj.p_gc(:,1);
+p_G2 = obj.p_gc(:,2);
+p_G4 = obj.p_gc(:,4);
+
+r_12 = p_G2 - p_G1;
+r_14 = p_G4 - p_G1;
+r_BAS = [r_12 r_14];
+
+n_G = cross(r_12,r_14);
+
+% Quadcopter Dimensions
+l_arm = model.L_est;
+dt_fmu = model.dt_fmu;
+
+% Relative position of the four points to body center in body frame
+r_b = [ l_arm    0.00  -l_arm    0.00;
+         0.00  -l_arm    0.00   l_arm; 
+         0.00    0.00    0.00    0.00 ];
+
+% Initialize Output
+con = zeros(16,N);
+con_x = zeros(n_c,n_x,N);
+con_u = zeros(n_c,n_u,N);
+
+for k = 1:N
+    % State Parameters
+    p_B = x_bar(1:3,k);
+    v_B = x_bar(4:6,k);
+    q_b = x_bar(7:10,k);
+    omega_b = x_bar(11:13,k);
     bRw = quat2rotm(q_b');
-    p_arm = bRw*[0.00  l_arm  0.00]';    % converted to world frame
-    s_arm = bRw*[0.00 -l_arm  0.00]';    % converted to world frame
-    
-    if dot(v_b,n_g) == 0
-        % never hitting
-        con = zeros(8,1);
-        con_x = zeros(8,13);
-        con_u =  zeros(8,4);
-    else
-        alpha_c = dot((p_g1-p_b),n_g)/dot(v_b,n_g);
 
-        if alpha_c > 0 && alpha_c < dt_ctl
-            r_p = (p_b + p_arm)+ alpha_c.*(v_b + cross(omega_b,p_arm));
-            r_s = (p_b + s_arm)+ alpha_c.*(v_b + cross(omega_b,s_arm));
+    % Compute the constraints relative to each point on the quadcopter
+    for j = 1:size(r_b,2)
+        % Relative Position of Point in World Frame
+        r_arm = r_b(:,j);
+        r_ARM = bRw*r_arm;
 
-            % beta is the long side. gamme is the short side.
-            beta_c_p = dot((r_p - p_g1),p_14)/dot(p_14,p_14);
-            gamma_c_p = dot((r_p - p_g1),p_12)/dot(p_12,p_12);
-            beta_c_s = dot((r_s - p_g1),p_14)/dot(p_14,p_14);
-            gamma_c_s = dot((r_s - p_g1),p_12)/dot(p_12,p_12);
+        % Global Position and Velocity of the Point in World Frame
+        p_P = p_B + r_ARM;
+        v_P = v_B + cross(omega_b,r_ARM);
 
-            % Port
-            upp = 1.0;
-            low = 0.0;
-            con(1,1)  =  beta_c_p - upp;
-            con(2,1)  = -beta_c_p + low;
-            con(3,1)  =  gamma_c_p - upp;
-            con(4,1)  = -gamma_c_p + low;
-            % Starboard
-            con(5,1)  =  beta_c_s - upp;
-            con(6,1)  = -beta_c_s + low;
-            con(7,1)  =  gamma_c_s - upp;
-            con(8,1)  = -gamma_c_s + low;
+        % Check if we are at the right frame by computing alpha_c
+        den = dot(v_P,n_G);
 
-            c_14 = 1/dot(p_14,p_14);
-            c_12 = 1/dot(p_12,p_12);
-            pos_14_dx = c_14.*[p_14' alpha_c.*p_14'];
-            pos_12_dx = c_12.*[p_12' alpha_c.*p_12'];
-            q_arm = l_arm.*[-2*q_b(4,1)  2*q_b(3,1)  2*q_b(2,1) -2*q_b(4,1);...
-                             4*q_b(1,1)      0       4*q_b(3,1)     0      ;...
-                             2*q_b(2,1)  2*q_b(1,1)  2*q_b(4,1) -2*q_b(3,1)];
-
-            quat_14_dx = zeros(1,4);
-            quat_12_dx = zeros(1,4);
-            for k = 1:4
-                feed = q_arm(:,k) + alpha_c.*cross(omega_b,q_arm(:,k));
-
-                quat_14_dx(1,k) = dot(feed,p_14);
-                quat_12_dx(1,k) = dot(feed,p_12);
-            end
-
-            omega_14_dx = zeros(1,3);
-            omega_12_dx = zeros(1,3);
-            I_split = eye(3);
-            for k = 1:3
-                inner = alpha_c.*cross(I_split(:,k),p_arm);
-
-                omega_14_dx(1,k) = dot(inner,p_14);
-                omega_12_dx(1,k) = dot(inner,p_12);
-            end
-
-            % Port
-            con_x(1,:) = [ pos_14_dx  quat_14_dx  omega_14_dx];  % p14
-            con_x(2,:) = [-pos_14_dx -quat_14_dx -omega_14_dx];  % p14
-            con_x(3,:) = [ pos_12_dx  quat_12_dx  omega_12_dx];  % p12
-            con_x(4,:) = [-pos_12_dx -quat_12_dx -omega_12_dx];  % p12
-
-            % Starboard
-            con_x(5,:) = [ pos_14_dx -quat_14_dx  omega_14_dx];  % p14
-            con_x(6,:) = [-pos_14_dx  quat_14_dx -omega_14_dx];  % p14
-            con_x(7,:) = [ pos_12_dx -quat_12_dx  omega_12_dx];  % p12
-            con_x(8,:) = [-pos_12_dx  quat_12_dx -omega_12_dx];  % p12
-
-            con_u =  zeros(8,4);
+        if den == 0
+            % never hitting
         else
-            con = zeros(8,1);
+            alpha_c = dot((p_G1-p_P),n_G)/den;
 
-            con_x = zeros(8,13);
+            if (alpha_c > 0) && (alpha_c < dt_fmu)
+                % Contact point
+                p_C   = p_P + (alpha_c.* v_P);    % absolute
+                r_G1C = p_C - p_G1;               % relative to g1
 
-            con_u =  zeros(8,4);
+                % For each basis vector
+                for b = 1:2
+                    idx = 4*(j-1)+2*(b-1)+1;
+
+                    [con(idx:idx+1,k),con_x(idx:idx+1,:,k)] = basis_con(alpha_c,r_G1C,r_BAS(:,b),r_arm,x_bar);
+                end
+            else
+                % Pass through. no contact.
+            end
         end
-    end
+
         
+    end
+end
+
 end
