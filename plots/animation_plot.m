@@ -12,15 +12,15 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+    pnts_gate_rdr = [obj.p_gc obj.p_gc(:,1)];  % render points need to terminate at start
     gate_h = plot3(pnts_gate_rdr(1,:)',pnts_gate_rdr(2,:)',pnts_gate_rdr(3,:)');
     gate_h.LineWidth = 3;
-    xlim(obj.x_lim);
-    ylim(obj.y_lim);
-    zlim(obj.z_lim);
-%     xlim([-2.5 2.5]);
-%     ylim([-1.0 1.0]);
-%     zlim([ 0.0 2.0]);
+%     xlim(obj.x_lim);
+%     ylim(obj.y_lim);
+%     zlim(obj.z_lim);
+    xlim([-2.5 2.5]);
+    ylim([-1.0 1.0]);
+    zlim([ 0.0 2.0]);
 
     grid on
     hold on

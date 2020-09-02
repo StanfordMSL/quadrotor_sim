@@ -20,18 +20,18 @@ con   = zeros(2*n_u,N);
 con_x = zeros(2*n_u,n_x,N);
 con_u = zeros(2*n_u,n_u,N);
 
-% % Compute Constraints and their partials
-% for k = 1:N-1
-%     % Individual Motor Values
-%     f_m = w2m*u_bar(1:4,k);
-%     
-%     con_min  = -f_m + (f_min.*ones(4,1));
-%     con_max  =  f_m - (f_max.*ones(4,1));
-%     con(:,k) = [con_min ; con_max];
-%     
-%     con_u_min    = -w2m;
-%     con_u_max    =  w2m;
-%     con_u(:,:,k) = [con_u_min ; con_u_max];
-% end
+% Compute Constraints and their partials
+for k = 1:N-1
+    % Individual Motor Values
+    f_m = w2m*u_bar(1:4,k);
+    
+    con_min  = -f_m + (f_min.*ones(4,1));
+    con_max  =  f_m - (f_max.*ones(4,1));
+    con(:,k) = [con_min ; con_max];
+    
+    con_u_min    = -w2m;
+    con_u_max    =  w2m;
+    con_u(:,:,k) = [con_u_min ; con_u_max];
+end
 
 end

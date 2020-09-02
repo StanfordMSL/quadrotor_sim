@@ -7,6 +7,7 @@ traj = msl_lqr(1,traj,obj,wts_db,model);
 switch nom_show
     case 'show'
         nominal_plot(traj.x,obj,20,'side');
+        motor_debug(traj.u,model)
     case 'hide'
 end
 

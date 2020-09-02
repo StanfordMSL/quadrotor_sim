@@ -75,21 +75,27 @@ switch mdl_type
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [*] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
-        model.I_est = 0.001.*[  1.54   0.00   0.00;...
-                                0.00   1.54   0.00;...
-                                0.00   0.00   2.51]; 
-        model.kt_est = [8.8478e-09 ; 0 ; 0];
-        model.b_est  = 0.11; 
+%         model.I_est = 0.0001.*[  2.14   0.00   0.00;...
+%                                  0.00   2.14   0.00;...
+%                                  0.00   0.00  42.00];
+        model.I_est = 1e-3.*[  1.5   0.0   0.0;...
+                               0.0   1.5   0.0;...
+                               0.0   0.0   2.5];    
+        model.kt_est = [1.5683e-06 ; 0 ; 0];
+        model.b_est  = 0.0011; 
         model.kd_est = 0.3;
         model.L_est  = 0.0885;
         
         % Actual %%%
         model.m_act = 0.650;
-        model.I_act = 0.001.*[ 1.54   0.00   0.00;...
-                               0.00   1.54   0.00;...
-                               0.00   0.00   2.51];    
-        model.kt_act = [8.8478e-09 ; 0 ; 0];
-        model.b_act  = 0.11;
+%         model.I_act = 0.0001.*[  2.14   0.00   0.00;...
+%                                  0.00   2.14   0.00;...
+%                                  0.00   0.00  42.00];             
+        model.I_act = 1e-3.*[  1.5   0.0   0.0;...
+                               0.0   1.5   0.0;...
+                               0.0   0.0   2.5];
+        model.kt_act = [1.5683e-06 ; 0 ; 0];
+        model.b_act  = 0.0011;
         model.kd_act = 0.3;
         model.L_act  = 0.0885;
         % Model Noise
@@ -231,8 +237,8 @@ model.hover_u = [model.m_est*model.g ; 0 ; 0 ; 0];
 model.race_u =  [model.m_est*model.g ; 0 ; 0 ; 0];
 
 % model.motor_min = 500;      % Motor Min rad/s
-model.motor_min = 800;      % Motor Min rad/s
-model.motor_max = 33000;     % Motor Max rad/s
+model.motor_min = 500;      % Motor Min rad/s
+model.motor_max = 3000;     % Motor Max rad/s
 
 model.p_grasp_b = [0 ; 0 ; 0];      % grasper position in body frame
 

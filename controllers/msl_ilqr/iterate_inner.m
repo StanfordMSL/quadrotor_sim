@@ -54,7 +54,8 @@ while inner_flag
  
     % debug
     nominal_plot(traj.x,obj,10,'persp')
-    
+    motor_debug(traj.u,model)
+
     % Update constraints struct
     [al.con,al.con_x,al.con_u] = con_compute(traj.x,traj.u ,obj,model);
     al.I_mu = con_trigger(al.con,al.lambda,al.mu);

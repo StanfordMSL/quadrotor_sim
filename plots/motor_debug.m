@@ -25,7 +25,7 @@ function motor_debug(u_sim,model)
         plot(motor_max,'--')
         xlabel('Time(s)');
         ylabel('\omega_{m} (rad s^{-1})');
-        ylim([0 3500]);
+        ylim([( model.motor_min-10000) ( model.motor_max+10000)]);
     end
     
 set(gcf,'color','w');

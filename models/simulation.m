@@ -11,7 +11,7 @@ k_lqr = 0;
 k_fmu = 0;
 
 % Initialize simulation final time and steps (fixed at 10kHz).
-t_sim = dt_fmu*(obj.kf_seg(1,end)-1);
+t_sim = dt_fmu*(size(traj.x,2)-1);
 N_sim = (t_sim/dt_act) + 1;
 N_est = (t_sim/dt_est) + 1;
 N_fmu = (t_sim/dt_fmu) + 1;
@@ -52,27 +52,28 @@ for k_act = 1:N_sim
         l = traj.l(:,k_fmu);
         L = traj.L(:,:,k_fmu);
         
-        x_bar = traj.x_bar(:,k_fmu);
-        u_bar = traj.u_bar(:,k_fmu);
+        x_bar = traj.x(:,k_fmu);
+        u_bar = traj.u(:,k_fmu);
         
         del_x = x_now - x_bar;
         del_u = alpha.*l + L*del_x;
-%         del_u = L*del_x;
-
         u_now = u_bar + del_u;
+        
+%         del_u = L*del_x;
+%         u_now = u_bar;
         
         log.t_fmu(:,k_fmu)  = t_now; 
         log.u_fmu(:,k_fmu)  = u_now;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % iLQR Updater    
-%     if (mod(t_now,dt_lqr) == 0)
-%         k_lqr = k_lqr + 1;
-%         switch ctl_mode
-%             case 'msl_lqr'
-%                 traj = msl_lqr(k_fmu,traj,obj,wts_db,model,'offline');
-%         end
-%     end
+    if (mod(t_now,dt_lqr) == 0)
+        k_lqr = k_lqr + 1;
+        switch ctl_mode
+            case 'msl_lqr'
+                traj = msl_lqr(k_fmu,traj,obj,wts_db,model);
+        end
+    end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     

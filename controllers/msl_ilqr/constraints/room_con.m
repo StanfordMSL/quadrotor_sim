@@ -16,15 +16,15 @@ con   = zeros(2*n_c,N);
 con_x = zeros(2*n_c,n_x,N);
 con_u = zeros(2*n_c,n_u,N);
 
-% % Compute Constraints and Their Partials
-% for k = 1:N
-%     con_min = -pos(:,k) + pos_min;
-%     con_max =  pos(:,k) - pos_max;
-%     con(:,k) = [con_min ; con_max];
-% 
-%     con_x_min = [-eye(3) zeros(3,10)];
-%     con_x_max = [ eye(3) zeros(3,10)];
-%     con_x(:,:,k) = [con_x_min ; con_x_max];
-% end
+% Compute Constraints and Their Partials
+for k = 1:N
+    con_min = -pos(:,k) + pos_min;
+    con_max =  pos(:,k) - pos_max;
+    con(:,k) = [con_min ; con_max];
+
+    con_x_min = [-eye(3) zeros(3,10)];
+    con_x_max = [ eye(3) zeros(3,10)];
+    con_x(:,:,k) = [con_x_min ; con_x_max];
+end
     
 end

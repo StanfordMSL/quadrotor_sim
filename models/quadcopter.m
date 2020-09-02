@@ -1,5 +1,7 @@
 function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)   
     % Unpack
+    g = model.g;
+    
     switch type
         case 'actual'
           dt = model.dt_act; 
@@ -12,8 +14,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           F_drag = -model.kd_act .* x_curr(4:6,1);
           m = model.m_act;
-         
-          tau_yaw = 0;
           
           f_m_flag = 'actual';
         case 'fmu_ideal'
@@ -28,8 +28,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
           
-          tau_yaw = 0;
-          
           f_m_flag = 'sim';
         case 'fmu_noisy'
           dt = model.dt_fmu;
@@ -42,8 +40,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
-          
-          tau_yaw = 0;
           
           f_m_flag = 'sim';
     end
@@ -64,8 +60,8 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
     f_m = motor_transform(u_curr,model,f_m_flag);
     
     % Compute the Linear and Angular Accelerations
-    vel_dot   = lin_acc(x_curr,m,f_m,F_drag,F_ext,model,0);
-    omega_dot = ang_acc(f_m,I,inv_I,L,b,w_all,tau_ext,tau_yaw);
+    vel_dot   = lin_acc(x_curr,m,f_m,F_drag,F_ext,g,0);
+    omega_dot = ang_acc(f_m,I,inv_I,w_all,tau_ext,model.m2w);
     
     % State Updates   
     x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ

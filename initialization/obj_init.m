@@ -187,7 +187,19 @@ switch profile
        
         p_g = [0.0 0.0 1.0]';
         
-        raw_angles = [0.0 pi/2 0.0];
+        raw_angles = [0.0 pi/2 1.5*pi/4];
+        quat = eul2quat(raw_angles)';
+        bRw = quat2rotm(quat');
+        p_gc = bRw*dim_gate_s + p_g;
+        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    case 'climb twist'      
+        x(:,1) = [ 0.0 ; 0.0 ; 0.1 ; zeros(3,1) ; 1 ; zeros(6,1)];
+        x(:,2) = [ 0.0 ; 0.0 ; 2.0 ; zeros(3,1) ; 0.707 ; 0.0 ; 0.0 ; 0.707 ; zeros(3,1)];
+       
+        p_g = [0.0 0.0 1.0]';
+        
+        raw_angles = [0.0 pi/2 pi/2];
         quat = eul2quat(raw_angles)';
         bRw = quat2rotm(quat');
         p_gc = bRw*dim_gate_s + p_g;
