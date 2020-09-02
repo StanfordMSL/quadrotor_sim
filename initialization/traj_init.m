@@ -4,6 +4,4 @@ function traj = traj_init(N_traj,x_init,hover_u)
     
     traj.l = zeros(4,N_traj-1);
     traj.L = zeros(4,13,N_traj-1);
-    
-    traj.alpha = 1;
 end

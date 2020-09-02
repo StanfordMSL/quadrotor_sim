@@ -48,19 +48,15 @@ for k_act = 1:N_sim
     if (mod(t_now,dt_fmu) == 0) && (k_fmu < N_fmu-1)
         k_fmu = k_fmu + 1;
         
-        alpha = traj.alpha;
-        l = traj.l(:,k_fmu);
+%         l = traj.l(:,k_fmu);
         L = traj.L(:,:,k_fmu);
         
         x_bar = traj.x(:,k_fmu);
         u_bar = traj.u(:,k_fmu);
         
         del_x = x_now - x_bar;
-        del_u = alpha.*l + L*del_x;
+        del_u = L*del_x;
         u_now = u_bar + del_u;
-        
-%         del_u = L*del_x;
-%         u_now = u_bar;
         
         log.t_fmu(:,k_fmu)  = t_now; 
         log.u_fmu(:,k_fmu)  = u_now;

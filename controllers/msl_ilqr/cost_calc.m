@@ -25,6 +25,15 @@ function J = cost_calc(x_bar,u_bar,con,lambda,I_mu,cost_param)
     J_lqr_arr(1,N) = 0.5* err_x'*Q(:,:,N)*err_x;
     J_aug_arr(1,N) = (lambda(:,N) +  0.5.*I_mu(:,:,N)*con(:,N))'*con(:,N);
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     K = 1e-9;
+%     
+%     q_N = x_bar(7:10,end);
+%     q_star = x_star(7:10,1);
+%     err_geo = (acos(q_N'*q_star))^4;
+%     J_lqr_arr(1,N) = J_lqr_arr(1,N) + K.*err_geo;
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     % Totals
     J.lqr = sum(J_lqr_arr);
     J.aug = sum(J_aug_arr);

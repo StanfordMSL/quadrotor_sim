@@ -1,4 +1,4 @@
-function [x_fp,del_u,alpha,stab_flag] = forward_pass(traj,al,obj,del_V,J_p,cost_param,model,fp_type)
+function [x_fp,del_u_l,del_u_L,stab_flag] = forward_pass(traj,al,obj,del_V,J_p,cost_param,model,fp_type)
 
 %% Unpack and define some useful stuff
 
@@ -24,7 +24,8 @@ FT_ext = zeros(6,1);
 
 % Initialize Output variables
 x_fp = zeros(13,N_fp);
-del_u = zeros(4,N_fp-1);
+del_u_l = zeros(4,N_fp-1);
+del_u_L = zeros(4,N_fp-1);
 
 %% Run the Forward Pass
 alpha = 2;
@@ -38,9 +39,10 @@ while fp_flag == false
     % Run Simulation
     for k = 1:N_fp-1
         del_x = x_fp(:,k) - x_bar(:,k);
-        del_u(:,k) = alpha*l(:,k) + L(:,:,k)*del_x;
+        del_u_l(:,k) = alpha*l(:,k);
+        del_u_L(:,k) = L(:,:,k)*del_x;
 
-        u_fp(:,k) = u_bar(:,k) + del_u(:,k);
+        u_fp(:,k) = u_bar(:,k) + del_u_l(:,k) + del_u_L(:,k);
 
         x_fp(:,k+1) = quadcopter(x_fp(:,k),u_fp(:,k),model,FT_ext,fmu_type);
     end

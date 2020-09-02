@@ -79,17 +79,17 @@ switch mdl_type
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
         model.kt_est = [8.8478e-09 ; 0 ; 0];
-        model.b_est  = 0.11; 
+        model.b_est  = 0.10; 
         model.kd_est = 0.3;
         model.L_est  = 0.0885;
         
         % Actual %%%
         model.m_act = 0.650;
-        model.I_act = 0.001.*[ 1.54   0.00   0.00;...
-                               0.00   1.54   0.00;...
-                               0.00   0.00   2.51];    
+        model.I_act = 0.001.*[  1.54   0.00   0.00;...
+                                0.00   1.54   0.00;...
+                                0.00   0.00   2.51]; 
         model.kt_act = [8.8478e-09 ; 0 ; 0];
-        model.b_act  = 0.11;
+        model.b_act  = 0.10;
         model.kd_act = 0.3;
         model.L_act  = 0.0885;
         % Model Noise
@@ -102,21 +102,21 @@ switch mdl_type
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');
         % Estimate %%%
         model.m_est = 0.650;
-        model.I_est = 0.0001.*[  2.14   0.00   0.00;...
-                                 0.00   2.14   0.00;...
-                                 0.00   0.00  42.00];    
-        model.kt_est = [1.5683e-06 ; 0 ; 0];
-        model.b_est  = 0.0011; 
+        model.I_est = 0.001.*[  1.54   0.00   0.00;...
+                                0.00   1.54   0.00;...
+                                0.00   0.00   2.51]; 
+        model.kt_est = [8.8478e-09 ; 0 ; 0];
+        model.b_est  = 0.10; 
         model.kd_est = 0.3;
         model.L_est  = 0.0885;
         
         % Actual %%%
         model.m_act = 0.650;
-        model.I_act = 0.0001.*[  2.14   0.00   0.00;...
-                                 0.00   2.14   0.00;...
-                                 0.00   0.00  42.00];             
-        model.kt_act = [1.5683e-06 ; 0 ; 0];
-        model.b_act  = 0.0011;
+        model.I_act = 0.001.*[  1.54   0.00   0.00;...
+                                0.00   1.54   0.00;...
+                                0.00   0.00   2.51]; 
+        model.kt_act = [8.8478e-09 ; 0 ; 0];
+        model.b_act  = 0.10;
         model.kd_act = 0.3;
         model.L_act  = 0.0885;
         % Model Noise
@@ -218,7 +218,11 @@ model.m2w = [ 1  1  1  1;...
              -L  L  L -L;...
              -L  L -L  L;...
              -b -b  b  b];
-
+% model.m2w = [ 1  1  1  1;...
+%              -L  L  L -L;...
+%              -L  L -L  L;...
+%               b  b -b -b];
+         
 model.m2w_inv = inv(model.m2w);
 
 if det(model.W) == 0

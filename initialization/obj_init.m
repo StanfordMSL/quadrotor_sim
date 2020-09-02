@@ -61,7 +61,7 @@ switch profile
         x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
 
-        p_g = [ 0.0 0.0 1.5 ]';
+        p_g = [ 0.0 0.0 1.4 ]';
 
         raw_angles = [ 0 0 0];
         quat = eul2quat(raw_angles)';
@@ -74,7 +74,7 @@ switch profile
         x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
 
-        p_g = [ 0.0 0.0 0.5 ]';
+        p_g = [ 0.0 0.0 0.7 ]';
 
         raw_angles = [ 0 0 0 ];
         quat = eul2quat(raw_angles)';
