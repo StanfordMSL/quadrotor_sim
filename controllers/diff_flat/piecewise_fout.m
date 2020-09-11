@@ -1,4 +1,7 @@
-function f_out_full = piecewise_fout(tf,sig_set,hz,n_p)
+function f_out_full = piecewise_fout(sig_set,fmu_dt,N_dt,n_p)
+
+% Unpack Some Useful Stuff
+tf = fmu_dt * (N_dt-1);
 
 mu_r = 1;
 mu_angle = 1;
@@ -29,7 +32,6 @@ for i = 1:4
     Beq = [B_start ; B_end];
     
     % Motor Min/Max Constraint
-%     [A,B] = simple_motor_constraint(0,tf,100,-2.4,60.0);
     A = zeros(1,15);
     B = zeros(1,1);
     
@@ -40,14 +42,15 @@ for i = 1:4
         FUN = @(x)integral(@(t) mu_r*(f(t,x,n_p))^2,0,tf,'ArrayValued',true);
     end
         
+    tic
     A_sigma(i,:) = fmincon(FUN,sig_set(i,:,1)',A,B,Aeq,Beq,[],[],[],OPTIONS);
+    toc
 end
 
-count = round(hz*tf+1);
-t_out = linspace(0,tf,count);
-f_out_full = zeros(4,n_p,count);
+t_out = linspace(0,tf,N_dt);
+f_out_full = zeros(4,n_p,N_dt);
 
-for k = 1:count
+for k = 1:N_dt
     t_kf = t_out(k);
     
     B_sigma = zeros(n_p,n_p);

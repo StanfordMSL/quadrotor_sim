@@ -1,49 +1,32 @@
-function motor_debug(x_sim,u_sim,model)
-    figure(4)
+function motor_debug(u_sim,model)
+    figure(2)
     clf
 
+    kt = model.kt_est(1,1);
+    
     points = size(u_sim,2);
-    m_cmd = zeros(4,points);
+    omega_m = zeros(4,points);
     
     motor_min = model.motor_min .* ones(1,points);
     motor_max = model.motor_max .* ones(1,points);
     
     for k = 1:points
-        m_cmd(:,k) = wrench2m_controller(u_sim(:,k),model);
+        f_m = motor_transform(u_sim(:,k),model,'sim');
+        
+        omega_m(:,k) = sign(f_m).*sqrt((1/kt).*abs(f_m));
     end
-
+   
     for k = 1:4
-        subplot(4,2,k)
-        plot(m_cmd(k,:))
+        subplot(4,1,k)
+        plot(omega_m(k,:))
         hold on
         
         plot(motor_min,'--')
         plot(motor_max,'--')
         xlabel('Time(s)');
         ylabel('\omega_{m} (rad s^{-1})');
+        ylim([( model.motor_min-10000) ( model.motor_max+10000)]);
     end
     
-    subplot(4,2,5:8)
-    plot3(x_sim(1,:),x_sim(2,:),x_sim(3,:),'--k','linewidth',1);
-    hold on
-    
-    [x_arrow, y_arrow, z_arrow] = frame_builder(x_sim(:,1));
-    x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-    y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-    z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
-
-    plot3(x,y,z,'linewidth',3);
-    
-    [x_arrow, y_arrow, z_arrow] = frame_builder(x_sim(:,end));
-    x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
-    y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
-    z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
-
-    plot3(x,y,z,'linewidth',3);
-    
-    xlim([-4.0 4.0]);
-    ylim([-2.0 2.0]);
-    zlim([ 0.0 2.0]);
-    grid on
-
+set(gcf,'color','w');
 end

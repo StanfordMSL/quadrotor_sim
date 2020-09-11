@@ -1,7 +1,7 @@
-function vel_dot = lin_acc(states,m,f,F_drag,F_ext,model,frame)
+function vel_dot = lin_acc(states,m,f,F_drag,F_ext,g,frame)
     quat = states(7:10,1);  
     
-    F_grav   = [ 0 ; 0 ; -m*model.g];
+    F_grav   = [ 0 ; 0 ; -m*g];
     F_thrust = [ 0 ; 0 ; sum(f)];
 
     bRw = quat2rotm(quat');

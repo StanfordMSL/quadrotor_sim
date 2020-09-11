@@ -1,26 +1,23 @@
-function log = logger_init(wp,model)
+function log = logger_init(tf,N_act,N_est,N_fmu,x_init,model)
 
+% Unpack some useful stuff
 dt_act = model.dt_act;
-dt_fbc = model.dt_fbc;
+dt_fmu = model.dt_fmu;
+dt_est = model.dt_est;
+
 % Timestamped Actual Pose Array
-log.t_act = 0:dt_act:wp.tf;
-log.x_act = zeros(13,length(log.t_act));
-log.x_act(:,1) = wp.x(:,1);
+log.t_act = 0:dt_act:tf;
+log.x_act = zeros(13,N_act);
+log.x_act(:,1) = x_init;
 
-% Timestamped FC Pose Array based on lowest controller
-log.t_fc  = 0:dt_fbc:wp.tf;
-log.x_fc = zeros(13,length(log.t_fc));
-log.x_fc(:,1) = wp.x(:,1);
+% Estimator Data
+log.t_est  = 0:dt_est:tf;
+log.x_est = zeros(13,N_est);
+log.x_est(:,1) = x_init;
 
-log.sigma = zeros(13,13,length(log.t_fc));
-
-% Flight Motor Inputs
-log.m_cmd = zeros(4,length(log.t_fc)-1);
-log.u = zeros(4,length(log.t_fc)-1);
-
-% Cost Function Data
-cc_arr_size = model.hz_lqr * wp.tf;
-log.cost_curr = zeros(cc_arr_size,1);
+% FMU Data
+log.t_fmu  = 0:dt_fmu:tf;
+log.u_fmu = zeros(4,N_fmu-1);
 
 % Capture time
 log.t_capture = 999;

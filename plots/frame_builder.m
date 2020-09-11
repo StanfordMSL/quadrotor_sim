@@ -1,9 +1,9 @@
 function [x_arrow, y_arrow, z_arrow] = frame_builder(x_data)
 
     % Body Frame Axes
-    vect_x = [0.08 0.00 0.00]';
-    vect_y = [0.00 0.08 0.00]';
-    vect_z = [0.00 0.00 0.02]';
+    vect_x = [0.0885 0.0000 0.0000]';
+    vect_y = [0.0000 0.0885 0.0000]';
+    vect_z = [0.0000 0.0000 0.0200]';
     
     % Construct Rotation Matrix
     quat = x_data(7:10,1);
