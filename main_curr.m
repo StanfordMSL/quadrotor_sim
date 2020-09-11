@@ -7,7 +7,7 @@ N_traj = 501;                           % interim way of feeding number of frame
 
 % Base Parameters
 model  = model_init('v1.0.1');          % Initialize quadcopter
-obj    = obj_init('gate Ia');           % Initialize objectives
+obj    = obj_init('gate IIa');           % Initialize objectives
 wts_db = wts_init();                    % Initialize State and Input Cost Weights
 targ   = targ_init('none');
 

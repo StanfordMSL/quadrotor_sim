@@ -42,7 +42,9 @@ for i = 1:4
         FUN = @(x)integral(@(t) mu_r*(f(t,x,n_p))^2,0,tf,'ArrayValued',true);
     end
         
+    tic
     A_sigma(i,:) = fmincon(FUN,sig_set(i,:,1)',A,B,Aeq,Beq,[],[],[],OPTIONS);
+    toc
 end
 
 t_out = linspace(0,tf,N_dt);

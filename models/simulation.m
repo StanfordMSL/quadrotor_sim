@@ -67,7 +67,9 @@ for k_act = 1:N_sim
         k_lqr = k_lqr + 1;
         switch ctl_mode
             case 'msl_lqr'
+                tic
                 traj = msl_lqr(k_fmu,traj,obj,wts_db,model);
+                toc
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
