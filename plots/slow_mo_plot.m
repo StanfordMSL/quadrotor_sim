@@ -1,4 +1,4 @@
-function animation_plot(flight,obj,targ,view_point,wp_show)
+function slow_mo_plot(flight,obj,targ,view_point,wp_show)
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -22,9 +22,9 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
 %     xlim(obj.x_lim);
 %     ylim(obj.y_lim);
 %     zlim(obj.z_lim);
-    xlim([-3.5 3.5]);
-    ylim([-1.5 1.5]);
-    zlim([ 0.0 3.0]);
+    xlim([-2.1 2.1]);
+    ylim([-0.2 1.0]);
+    zlim([ 0.0 1.5]);
 
     grid on
     hold on
@@ -94,10 +94,7 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
-    curr_time = dt;
-    while (curr_time <= t_act(end))
-        tic
-        k = ceil(curr_time/dt);
+    for k = 1:10:size(x_act,2)
         
         [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
         h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
@@ -110,6 +107,6 @@ function animation_plot(flight,obj,targ,view_point,wp_show)
         
         drawnow
         
-        curr_time = curr_time + toc;
+        pause(0.1);
     end
 end

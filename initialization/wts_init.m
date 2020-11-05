@@ -3,9 +3,9 @@ function wts = wts_init()
 %% Control Weight Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Negligible Weights %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-R_f_thr  = 1e-9.*ones(1,1);
-R_tau_xy = 1e-9.*ones(2,1);
-R_tau_z  = 1e-9.*ones(1,1);
+R_f_thr  = 0.0.*ones(1,1);
+R_tau_xy = 0.0.*ones(2,1);
+R_tau_z  = 0.0.*ones(1,1);
 
 R_vect      = [R_f_thr ; R_tau_xy ; R_tau_z];
 wts.R_stnd  = diag(R_vect);   

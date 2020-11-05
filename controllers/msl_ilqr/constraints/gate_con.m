@@ -27,7 +27,7 @@ r_BAS = [r_12 r_14];
 n_G = cross(r_12,r_14);
 
 % Quadcopter Dimensions
-l_arm = model.L_est;
+l_arm  = model.L_est;
 dt_fmu = model.dt_fmu;
 
 % Relative position of the four points to body center in body frame
@@ -66,7 +66,7 @@ for k = 1:N
         else
             alpha_c = dot((p_G1-p_P),n_G)/den;
 
-            if (alpha_c > 0) && (alpha_c < dt_fmu)
+            if (alpha_c > 0) && (alpha_c < 2*dt_fmu)
                 % Contact point
                 p_C   = p_P + (alpha_c.* v_P);    % absolute
                 r_G1C = p_C - p_G1;               % relative to g1

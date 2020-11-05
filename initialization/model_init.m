@@ -7,7 +7,7 @@ model.g = 9.81;
 model.hz_est = 200;             % State Estimator Sample Rate
 model.hz_lqr = 0.1;             % iLQR Update Rate
 model.hz_fmu = 200;             % Flight Management Unit Update Rate
-model.hz_act = 200;            % Actual Dynamics Update Rate
+model.hz_act = 1000;            % Actual Dynamics Update Rate
 
 model.dt_est = 1/model.hz_est;
 model.dt_lqr = 1/model.hz_lqr;
@@ -122,9 +122,9 @@ switch mdl_type
         model.L_act  = 0.0885;
         
         % Model Noise
-        W_pos   = 0.001*ones(3,1);
+        W_pos   = 0.000*ones(3,1);
         W_vel   = 0.001*ones(3,1);
-        W_quat  = 0.001*ones(4,1);
+        W_quat  = 0.000*ones(4,1);
         W_omega = 0.001*ones(3,1);
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 end
@@ -150,7 +150,6 @@ end
 model.hover_u = [model.m_est*model.g ; 0 ; 0 ; 0];
 model.race_u =  [model.m_est*model.g ; 0 ; 0 ; 0];
 
-% model.motor_min = 500;      % Motor Min rad/s
 model.motor_min = 800;      % Motor Min rad/s
 model.motor_max = 33000;     % Motor Max rad/s
 

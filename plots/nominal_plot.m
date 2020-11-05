@@ -2,9 +2,13 @@ function nominal_plot(x_bar,obj,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
+% figure(1)
+% clf
 figure(1)
-clf
-    
+subplot(4,4,[2:4,6:8,10:12,14:16])
+cla
+set(gca,'ColorOrder','factory')
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate flight room map
 pnts_gate_rdr = [obj.p_gc obj.p_gc(:,1)];  % render points need to terminate at start
@@ -45,12 +49,16 @@ switch view_point
         view(-90,0);
     case 'side'
         view(0,0);
+    case 'top'
+        view(0,90);
+    case 'nice'
+        view(-60,20);
 end
 
-% % Set Limits
-% xlim([-2.5 2.5]);
-% ylim([-0.5 0.5]);
-% zlim([-0.1 2]);
+% Set Limits
+xlim([-3.5 3.5]);
+ylim([-1.5 1.5]);
+zlim([ 0.0 3.0]);
 
 set(gcf,'color','w');
 

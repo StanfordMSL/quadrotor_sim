@@ -9,8 +9,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           I = model.I_act;
           inv_I = model.inv_I_act;
-          L = model.L_act;
-          b = model.b_act;
           
           F_drag = -model.kd_act .* x_curr(4:6,1);
           m = model.m_act;
@@ -22,8 +20,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           I = model.I_est;
           inv_I = model.inv_I_est;
-          L = model.L_est;
-          b = model.b_est;
           
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;
@@ -35,8 +31,6 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
           
           I = model.I_est;
           inv_I = model.inv_I_est;
-          L = model.L_est;
-          b = model.b_est;
           
           F_drag = -model.kd_est .* x_curr(4:6,1);
           m = model.m_est;

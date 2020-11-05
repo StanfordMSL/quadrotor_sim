@@ -18,8 +18,8 @@ con_u = zeros(2*n_c,n_u,N);
 
 % Compute Constraints and Their Partials
 for k = 1:N
-    con_min = -pos(:,k) + pos_min;
-    con_max =  pos(:,k) - pos_max;
+    con_min = -pos(:,k) + pos_min + 0.1;
+    con_max =  pos(:,k) - pos_max - 0.1;
     con(:,k) = [con_min ; con_max];
 
     con_x_min = [-eye(3) zeros(3,10)];

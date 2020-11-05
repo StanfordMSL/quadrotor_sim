@@ -5,7 +5,7 @@ n_con = size(con,1);
 I_mu = zeros(n_con,n_con,N);
 
 for k = 1:N
-    for j = 1:16
+    for j = 1:n_con
         if con(j,k) <= 0 && lambda(j,k) == 0
             % Constraint not violated. Carry on.
         else

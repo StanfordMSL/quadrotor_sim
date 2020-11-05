@@ -20,15 +20,15 @@ J_p = J;
 %% Run the Inner loop
 itrs = 0;
 itrs_max = 30;
-tol_J = 1e-3;
+tol_J = 1e-2;
 
 inner_flag  = true;       % flag true if still minimizing.
 while inner_flag
-    rho = 0.0001;
+    rho = 0.01;
     stab_flag = false;
     while stab_flag == false
         % Reset backward pass
-        rho = 10*rho;
+        rho = 2*rho;
 
         % Update x_bar and u_bar
         traj_c.u = u_upd;
@@ -60,8 +60,8 @@ while inner_flag
     J   = cost_calc(x_upd,u_upd,al.con,al.lambda,al.I_mu,cost_param);
 
     % debug
-    nominal_plot(x_upd,obj,10,'persp')
-    motor_debug(u_upd,model)
+    nominal_plot(x_upd,obj,5,'nice')
+    mthrust_debug(u_upd,model)
 %     con_check_gates = sum(any(al.con(7:22,:) > 1e-1))
   
     % Loop Breaking Conditions

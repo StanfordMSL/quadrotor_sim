@@ -2,7 +2,7 @@ function traj = diff_flat_ws(traj,obj,model,nom_show)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Number of Derivative Orders
-n_p = 15;
+n_der = 10;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Unpack Some Terms
@@ -11,8 +11,8 @@ N_tr    = size(traj.x,2);
 N_wp    = size(obj.wp_arr,2);
 
 % Convert objectives to flat outputs
-sigma = obj2sigma(obj,n_p,N_wp);
-f_out = traj_planner(sigma,fmu_dt,N_tr,n_p);
+[kf_sig, sigma] = obj2sigma(obj,n_der,N_wp,N_tr);
+f_out = traj_planner(kf_sig,sigma,fmu_dt,N_tr,n_der);
 
 % Run through the model in perfect conditions to get x.
 x_bar = zeros(13,N_tr);
@@ -37,8 +37,8 @@ traj.L = zeros(4,13,N_tr-1);
 % Publish some diagnostics
 switch nom_show
     case 'show'
-        nominal_plot(traj.x,obj,20,'persp');
-        motor_debug(traj.u,model)
+        nominal_plot(traj.x,obj,5,'persp');
+        mthrust_debug(traj.u,model)
     case 'hide'
 end
 

@@ -1,9 +1,9 @@
-function outer_flag = outer_flag_check(con,tol,itrs,itrs_max)
+function outer_flag = outer_flag_check(con,tol_pos,tol_mot,itrs,itrs_max)
 
     % Constraint Trigger
-    con_check_room  = sum(any(con(1:6,:) > tol));
-    con_check_gates = sum(any(con(7:22,:) > tol));
-    con_check_input = sum(any(con(23:30,:) > tol));
+    con_check_room  = sum(any(con(1:6,:) > tol_pos));
+    con_check_gates = sum(any(con(7:22,:) > tol_pos));
+    con_check_input = sum(any(con(23:30,:) > tol_mot));
     con_status = [con_check_room con_check_gates con_check_input];
 
     if sum(con_status) > 0

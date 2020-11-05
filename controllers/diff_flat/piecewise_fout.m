@@ -32,8 +32,8 @@ for i = 1:4
     Beq = [B_start ; B_end];
     
     % Motor Min/Max Constraint
-    A = zeros(1,15);
-    B = zeros(1,1);
+    A = zeros(0,n_p);
+    B = zeros(0,1);
     
     f = @min_func;
     if k == 4
@@ -59,4 +59,6 @@ for k = 1:N_dt
         B_sigma = B_sigma + diag(b_vec,-j+1);
     end
     f_out_full(:,:,k) = A_sigma * B_sigma;
+end
+
 end

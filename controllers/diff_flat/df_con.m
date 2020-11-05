@@ -1,15 +1,20 @@
 function u_cmd = df_con(f_out,model)
 
 % Tuning Parameter
-kh = 0.009;
-A = -0.00001.*eye(3,3);
-B =  0.00001.*eye(3,3);
-tau_g = 0.000.*ones(3,1);
-
 % kh = 0.00;
 % A  = 0.00.*eye(3,3);
 % B  = 0.00.*eye(3,3);
 % tau_g = 0.000.*ones(3,1);
+
+% kh = 0.009;
+% A = -0.00001.*eye(3,3);
+% B =  0.00001.*eye(3,3);
+% tau_g = 0.000.*ones(3,1);
+
+kh = 0.0001;
+A  = 0.00001.*eye(3,3);
+B  = 0.00001.*eye(3,3);
+tau_g = 0.000.*ones(3,1);
 
 % Unpack Items
 g = [ 0 ; 0 ; model.g];

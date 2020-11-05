@@ -6,8 +6,9 @@ traj = msl_lqr(1,traj,obj,wts_db,model);
 % Publish some diagnostics
 switch nom_show
     case 'show'
-        nominal_plot(traj.x,obj,20,'persp');
-        motor_debug(traj.u,model)
+%         nominal_plot(traj.x,obj,5,'persp');
+%         mthrust_debug(traj.u,model)
+%         motor_debug(traj.u,model)
     case 'hide'
 end
 
