@@ -1,237 +1,111 @@
-function obj = obj_init(profile)
+function [N_traj,obj] = obj_init(profile,model)
 
 dim_gate_b = [ 0.00  0.00  0.00  0.00;...   % Gate (basic) dimensions
               -0.10 -0.10  0.10  0.10;...
               -0.10  0.10  0.10 -0.10];    
 
 dim_gate_s = [ 0.00  0.00  0.00  0.00;...   % Slit (tight) dimensions
-              -0.10 -0.10  0.10  0.10;...
+              -0.20 -0.20  0.20  0.20;...
               -0.05  0.05  0.05 -0.05];  
 
 dim_gate_t = [ 0.00  0.00  0.00  0.00;...   % Gate (tight) dimensions
               -0.08 -0.08  0.08  0.08;...
               -0.08  0.08  0.08 -0.08];  
           
+dim_gate_l = [ 0.00  0.00  0.00  0.00;...   % Gate (basic) dimensions
+              -0.20 -0.20  0.20  0.20;...
+              -0.20  0.20  0.20 -0.20];    
+          
 p_gc = 999.*ones(3,4,1);
 p_g  = 999.*ones(3,1);
         
 x = zeros(13,2);
-switch profile
+switch profile        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    case 'climb'
-        x(:,1) = [0 ; 0 ; 0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [0 ; 0 ; 1 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     case 'line'
+        t_traj = 2.5;
+        
         x(:,1) = [-2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];                             
+        x(:,2) = [ 2 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];  
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate Ia'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 0.0 -0.5 1.0 ]';
-
-        raw_angles = [ 0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;
+    case 'diagonal'
+        t_traj = 2.5;
+        
+        x(:,1) = [-1 ; -1 ; 0.1; zeros(3,1) ; 1 ; zeros(6,1)];
+        x(:,2) = [ 1 ;  1 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];  
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate Ib'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 0.0 0.5 1.0 ]';
-
-        raw_angles = [ 0 0 0 ];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate Ic'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 0.0 0.0 1.5 ]';
-
-        raw_angles = [ 0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate Id'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 0.0 0.0 0.55 ]';
-
-        raw_angles = [ 0 0 0 ];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate IIa'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 1.0 -0.5 1.0 ]';
-
-        raw_angles = [0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;     
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'gate IIb'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [-1.0 0.5 1.0 ]';
-
-        raw_angles = [0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;   
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'gate IIc'      
+    case 'side gate' 
+        t_traj = 2.5;
+                
         x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
        
         p_g = [0.0 -1.0 0.8]';
         
-        raw_angles = [0.0 0.0 -pi/2];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
+        eul  = [0.0 0.0 -pi/2];
+        bRw  = eul2rotm(eul);
         p_gc = bRw*dim_gate_t + p_g;
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    case 'low gate'   
+        t_traj = 2.5;
 
-    case 'gate IIIa'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [-1.0 0.5 1.5]';
-
-        raw_angles = [0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;     
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    case 'gate IIIb'
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-
-        p_g = [ 1.0 -0.5 0.5]';
-
-        raw_angles = [0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_b + p_g;   
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'slit I'      
-        x(:,1) = [-3 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 3 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
-       
-        p_g = [0.0 0.0 1.0]';
-        
-        raw_angles = [0 0 0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'slit IIa'      
         x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
        
-        p_g = [0.0 -0.4 1.35]';
+        p_g = [0.0 0.0 0.5]';
         
-        raw_angles = [0.0 0.0 0.0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_s + p_g;
-        
+        eul  = [0.0 0.0 -pi/2];
+        bRw  = eul2rotm(eul);
+        p_gc = bRw*dim_gate_b + p_g;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'slit IIb'      
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-       
-        p_g = [0.0 -0.4 1.35]';
-        
-        raw_angles = [0.0 0.0 -3*pi/8];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_s + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'drop'      
+    case 'drop twist'   
+        t_traj = 2.5;
+
         x(:,1) = [ 0.0 ; 0.0 ; 3.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
         x(:,2) = [ 0.0 ; 0.0 ; 0.1 ; zeros(3,1) ; 1 ; zeros(6,1)];
        
         p_g = [0.0 0.0 1.0]';
         
-        raw_angles = [0.0 pi/2 pi/4];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
+        eul  = [0.0 pi/2 0.0];
+        bRw  = eul2rotm(eul);
         p_gc = bRw*dim_gate_t + p_g;
+        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    case 'long slit'   
+        t_traj = 2.5;
+
+        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
+        x(:,2) = [ 2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
+       
+        p_g = [0.0 0.0 1.0]';
+        
+        eul  = [0.0 0.0 -pi/2];
+        bRw  = eul2rotm(eul);
+        p_gc = bRw*dim_gate_s + p_g;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'drop twist'      
-        x(:,1) = [ 0.0 ; 0.0 ; 3.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 0.0 ; 0.0 ; 0.1 ; zeros(3,1) ; 1 ; zeros(6,1)];
+    case 'drop gate'   
+        t_traj = 2.5;
+
+        x(:,1) = [-1.0 ; 0 ; 2.5 ; zeros(3,1) ; 1 ; zeros(6,1)];
+        x(:,2) = [ 1.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
        
-        p_g = [0.0 0.0 1.0]';
+        p_g = [0.0 0.0 2.0]';
         
-        raw_angles = [0.0 pi/2 1.5*pi/4];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'climb twist'      
-        x(:,1) = [ 0.0 ; 0.0 ; 0.1 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 0.0 ; 0.0 ; 2.0 ; zeros(3,1) ; 0.707 ; 0.0 ; 0.0 ; 0.707 ; zeros(3,1)];
-       
-        p_g = [0.0 0.0 1.0]';
-        
-        raw_angles = [0.0 pi/2 pi/2];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;
-        
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'perch'      
-        x(:,1) = [-2.0 ; 0 ; 1.0 ; zeros(3,1) ; 1 ; zeros(6,1)];
-        x(:,2) = [ 2.0 ; 0 ; 1.0 ; 2.0 ; 0.0 ; 0.0 ; 0.866 ; 0.00 ; -0.500 ; 0.00 ; zeros(3,1)];
- 
-        p_g = [2.05 0.0 1.0]';
-        
-        raw_angles = [0.0 pi/6 0.0];
-        quat = eul2quat(raw_angles)';
-        bRw = quat2rotm(quat');
-        p_gc = bRw*dim_gate_t + p_g;
+        eul  = [0.0 pi/2 0.0];
+        bRw  = eul2rotm(eul);
+        p_gc = bRw*dim_gate_l + p_g;
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     otherwise
         disp('[wp_init]: No trajectory loaded!');
 end
+
+N_traj = t_traj*model.hz_fmu+1;
 
 % State Data
 obj.wp_arr = x;

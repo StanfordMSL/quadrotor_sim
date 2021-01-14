@@ -5,19 +5,22 @@ addpath(genpath(pwd));
 %% Initialize Simulation Parameters
 
 % Base Parameters
-% model        = model_init('v1.0.0');          % Initialize quadcopter
-% model        = model_init('v1.0.1');          % Initialize quadcopter
-model        = model_init('v1.1.1');          % Initialize quadcopter
+model        = model_init('v1.0.1');    % Initialize quadcopter
 
-% [N_traj,obj] = obj_init_qual('side gate');           % Initialize objectives
-[N_traj,obj] = obj_init_qual('long slit');           % Initialize objectives
-% [N_traj,obj] = obj_init_qual('drop gate');           % Initialize objectives
+% Generate Dynamic Functions (Jacobian and Hessians and Acc)
+% dyn_init(model,'act');
+% dyn_init(model,'est');
 
-wts_db       = wts_init();                    % Initialize State and Input Cost Weights
-targ         = targ_init('none');
+% [N_traj,obj] = obj_init('line',model);        % Initialize objectives
+[N_traj,obj] = obj_init('side gate',model);   % Initialize objectives
+% [N_traj,obj] = obj_init('drop gate',model);   % Initialize objectives
+% [N_traj,obj] = obj_init('long slit',model);   % Initialize objectives
+
+wts_db = wts_init();              % Initialize State and Input Cost Weights
+targ   = targ_init('none');       % Initialize Target (perching/grasping)
 
 % Initialize trajectory to hover at initial
-traj   = traj_init(N_traj,obj.wp_arr(:,1),model.hover_u);
+traj   = traj_init(N_traj,obj.wp_arr(:,1),model.Ft_hover);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Warm Start
@@ -33,6 +36,7 @@ toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
 
+% log = simulation(traj,obj,wts_db,model,targ,'df');
 log = simulation(traj,obj,wts_db,model,targ,'msl_lqr');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,5 +55,4 @@ animation_plot(log,obj,targ,'nice','show');
 
 %%
 
-% SIMULATION CURRENTLY RUNNING IDENTICAL TO FP. change motor_transform (commented out 'actual'),
-% simulation dynamic model ('actual') and model_init (hz_act)
+err = HO_calc(traj);

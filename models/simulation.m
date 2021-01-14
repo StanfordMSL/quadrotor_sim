@@ -70,6 +70,8 @@ for k_act = 1:N_sim
                 tic
                 traj = msl_lqr(k_fmu,traj,obj,wts_db,model);
                 toc
+            case 'df'
+                % Carry on
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

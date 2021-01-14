@@ -14,7 +14,7 @@ for k = 1:(N_s-1)
     cost_param.Q(:,:,k) = wts_db.Q_zero;
     cost_param.R(:,:,k) = wts_db.R_stnd;
 end
-cost_param.Q(:,:,end) = wts_db.Q_hover;
+cost_param.Q(:,:,end) = 10.*wts_db.Q_hover;
 % cost_param.Q(:,:,end) = wts_db.Q_unif;
 
 % Our objectives: Target waypoint and minimum energy.

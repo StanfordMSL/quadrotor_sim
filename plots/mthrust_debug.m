@@ -8,20 +8,13 @@ function mthrust_debug(u_sim,model)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % Unpack some stuff
-    kt = model.kt_est(1,1);
-    w2m = model.m2w_inv;
-    w_min = model.motor_min;
-    w_max = model.motor_max;
-    
     % Generate lines for upper and lower limits
     points = size(u_sim,2);
-    f_min = (kt.*w_min^2) .* ones(1,points);
-    f_max = (kt.*w_max^2)  .* ones(1,points);
+    Ft_min = model.kw_act(1,1) .* model.motor_min.^2 .* ones(1,points);
+    Ft_max = model.kw_act(1,1) .* model.motor_max.^2  .* ones(1,points);
+
+    Ft_sim = model.kw_act(1,1) .* u_sim.^2;
     
-    % Compute individual motor thrusts)
-    f_motor = w2m*u_sim;
-   
     for k = 1:4
 %         subplot(4,1,k)
         idx = 4*(k-1) + 1;
@@ -29,11 +22,11 @@ function mthrust_debug(u_sim,model)
         cla
         set(gca,'ColorOrder','factory')
         
-        plot(f_motor(k,:),'Linewidth',1.2)
+        plot(Ft_sim(k,:),'Linewidth',1.2)
         hold on
         
-        plot(f_min,'--','Linewidth',1.2)
-        plot(f_max,'--','Linewidth',1.2)
+        plot(Ft_min,'--','Linewidth',1.2)
+        plot(Ft_max,'--','Linewidth',1.2)
         xlabel('Time(s)','FontSize',12);
         ylabel(['m_',num2str(k),' (N)'],'FontSize',12);
         ylim([-3 13]);

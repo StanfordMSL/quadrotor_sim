@@ -5,9 +5,9 @@ N_tot = size(traj.x,2);
 n_con = 30;
 
 % Initialize Lagrange Multiplier Variables
-al.mu     = [  1.00.*ones( 6,N_tot) ;...     % room
-               1e-2.*ones(16,N_tot) ;...     % gate
-               1e-2.*ones( 8,N_tot) ];       % motor
+al.mu     = [ 1.00.*ones( 6,N_tot) ;...     % room
+              1.00.*ones(16,N_tot) ;...     % gate
+              1.00.*ones( 8,N_tot) ];       % motor
 al.lambda = 0.*ones(n_con,N_tot);
 al.phi    = 2.*ones(n_con,1);
 

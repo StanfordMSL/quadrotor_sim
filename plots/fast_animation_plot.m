@@ -16,7 +16,7 @@ function fast_animation_plot(x_act,obj,view_point)
     zlim(obj.z_lim);
 
     % Generate gate
-    pnts_gate_rdr = [obj.pnts_gate obj.pnts_gate(:,1)];  % render points need to terminate at start
+    pnts_gate_rdr = [obj.p_gc obj.p_gc(:,1)];  % render points need to terminate at start
     gate_h = plot3(pnts_gate_rdr(1,:)',pnts_gate_rdr(2,:)',pnts_gate_rdr(3,:)');
     gate_h.LineWidth = 3;
     

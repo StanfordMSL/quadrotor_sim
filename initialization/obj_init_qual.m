@@ -20,7 +20,7 @@ p_gc = 999.*ones(3,4,1);
 p_g  = 999.*ones(3,1);
         
 x = zeros(13,2);
-switch profile        
+switch profile
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'side gate'     
         N_traj = 501;

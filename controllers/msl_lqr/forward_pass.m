@@ -48,7 +48,7 @@ while fp_flag == false
     end
     
 %     % Debug
-%     nominal_plot(x_fp,obj,10,'top')
+%     nominal_plot(x_fp,obj,10,'persp')
 %     mthrust_debug(u_fp,model)
 
     % Compute the updated constraints

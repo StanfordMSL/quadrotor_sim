@@ -17,7 +17,7 @@ function A = A_calc(x_curr,u_curr,m,I,inv_I,kd,D,dt)
     Iyy = I(2,2);
     Izz = I(3,3);
 
-    % J_pos 
+    % nabla_pos 
     J_pos = [zeros(3,3) eye(3) zeros(3,7)];
     
     % nabla_vel
