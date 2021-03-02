@@ -4,46 +4,52 @@ addpath(genpath(pwd));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Initialize Simulation Parameters
 
-% Base Parameters
-model        = model_init('v1.0.1');    % Initialize quadcopter
+% Quadcopter Model
+model = model_init('v1.0.1');   
 
-% Generate Dynamic Functions (Jacobian and Hessians and Acc)
+% Order of Basis Function (n_der-1)
+n_der = 15;                     
+
+%% Pre-Computes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% % Generate Dynamic Functions (Jacobian and Hessians)
 % dyn_init(model,'act');
 % dyn_init(model,'est');
+% 
+% % Generate QP Matrices
+% qp_init(n_der);
 
-% [N_traj,obj] = obj_init('line',model);        % Initialize objectives
-[N_traj,obj] = obj_init('side gate',model);   % Initialize objectives
-% [N_traj,obj] = obj_init('drop gate',model);   % Initialize objectives
-% [N_traj,obj] = obj_init('long slit',model);   % Initialize objectives
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wts_db = wts_init();              % Initialize State and Input Cost Weights
+% Objective and Map Constraints
+map = map_init('default');        % Initialize objectives
+obj = obj_init('line');           % Initialize objectives
+% problem_plot(map,obj,'persp');
+
 targ   = targ_init('none');       % Initialize Target (perching/grasping)
-
-% Initialize trajectory to hover at initial
-traj   = traj_init(N_traj,obj.wp_arr(:,1),model.Ft_hover);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Warm Start
 tic
 
 % Diff. Flat Warm Start
-traj = diff_flat_ws(traj,obj,model,'show');
+traj = diff_flat_ws(obj,map,model,n_der,'show');
 
 % % iLQR Warm Start
-% traj = direct_ws(traj,obj,wts_db,model,'show');
+% traj = direct_ws(obj,map,model,'show');
 
 toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
 
 % log = simulation(traj,obj,wts_db,model,targ,'df');
-log = simulation(traj,obj,wts_db,model,targ,'msl_lqr');
+log = simulation(traj,obj,model,targ,'df','br_ctrl');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate
 
 mthrust_debug(log.u_fmu,model)
-animation_plot(log,obj,targ,'nice','show');
+animation_plot(log,obj,map,targ,'nice','show');
 
 % fast_animation_plot(log.x_act,obj,'persp')
 
@@ -53,6 +59,6 @@ animation_plot(log,obj,targ,'nice','show');
 % % SimSync Test
 % sim_sync_debug(log,traj);
 
-%%
-
-err = HO_calc(traj);
+% figure(1);
+% clf
+% plot3(squeeze(traj.f_out(1,1,:)),squeeze(traj.f_out(2,1,:)),squeeze(traj.f_out(3,1,:)))

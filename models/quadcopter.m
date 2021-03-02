@@ -35,37 +35,37 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
             dt = model.dt_act;
             wt = model.W*randn(13,1);
             
-            for k = 1:4
-                if u_curr(k,1) > model.motor_max
-                    u_curr(k,1) = model.motor_max;
-                    disp('[quadcopter]: Lower limit triggered.');
-                elseif u_curr(k,1) < model.motor_min
-                    u_curr(k,1) = model.motor_min;
-                    disp('[quadcopter]: Upper limit triggered.');
-                end
-            end
+            disp('[quadcopter]: Limits on actual turned off.');
+%             for k = 1:4
+%                 if u_curr(k,1) > model.motor_max
+%                     u_curr(k,1) = model.motor_max;
+%                     disp('[quadcopter]: Upper limit triggered.');
+%                 elseif u_curr(k,1) < model.motor_min
+%                     u_curr(k,1) = model.motor_min;
+%                     disp('[quadcopter]: Lower limit triggered.');
+%                 end
+%             end
             
             vel_dot   = lin_acc_act(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4,v_x,v_y,v_z);
             omega_dot = ang_acc_act(q_w,q_x,q_y,q_z,tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,v_x,v_y,v_z,w_x,w_y,w_z);
+%             vel_dot   = lin_acc_act(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4);
+%             omega_dot = ang_acc_act(tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,w_x,w_y,w_z);
         case 'fmu_ideal'
             dt = model.dt_fmu;
             wt = zeros(13,1);
             
             vel_dot   = lin_acc_est(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4,v_x,v_y,v_z);
             omega_dot = ang_acc_est(q_w,q_x,q_y,q_z,tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,v_x,v_y,v_z,w_x,w_y,w_z);
+%             vel_dot   = lin_acc_est(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4);
+%             omega_dot = ang_acc_est(tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,w_x,w_y,w_z);
         case 'fmu_noisy'
             dt = model.dt_fmu;
             wt = model.W*randn(13,1);
             
-            vel_dot   = lin_acc_est(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4,v_x,v_y,v_z);
-            omega_dot = ang_acc_est(q_w,q_x,q_y,q_z,tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,v_x,v_y,v_z,w_x,w_y,w_z);
-    end
+            vel_dot   = lin_acc_est(F_ext_x,F_ext_y,F_ext_z,q_w,q_x,q_y,q_z,u1,u2,u3,u4);
+            omega_dot = ang_acc_est(tau_ext_x,tau_ext_y,tau_ext_z,u1,u2,u3,u4,w_x,w_y,w_z);
+   end
 
-    % State Updates   
-    x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ
-    x_upd(4:6,1)   = vel   + dt*vel_dot;    % World Frame Vel XYZ
-    x_upd(11:13,1) = w + dt*omega_dot;  % Body Frame Angular Vel XYZ
-    
     % Do Our Quaternion Business 
     % NOTE: We are using the Aerospace toolbox definition of rotation,
     % which is passive. Therefore the rotation is going to be quat(W->B).
@@ -77,7 +77,12 @@ function x_upd = quadcopter(x_curr,u_curr,model,FT_ext,type)
     
     q_hat = quat + 0.5*Omega*quat*dt;
     q_norm = q_hat./norm(q_hat); 
-    x_upd(7:10,1) = q_norm;
+    
+    % State Updates   
+    x_upd(1:3,1)   = pos   + dt*vel;        % World Frame Pos XYZ
+    x_upd(4:6,1)   = vel   + dt*vel_dot;    % World Frame Vel XYZ
+    x_upd(7:10,1)  = q_norm;
+    x_upd(11:13,1) = w     + dt*omega_dot;      % Body Frame Angular Vel XYZ
     
     x_upd = x_upd + wt;
 end

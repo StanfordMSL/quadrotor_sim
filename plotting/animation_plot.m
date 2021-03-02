@@ -1,0 +1,129 @@
+function animation_plot(flight,obj,map,targ,view_point,wp_show)
+    
+    t_act = flight.t_act;
+    x_act = flight.x_act;
+    x_est = flight.x_est;
+
+    dt = t_act(1,2)-t_act(1,1);
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Define plot window and clear previous stuff
+%     figure(3)
+%     clf
+    figure(2)
+    subplot(4,4,[2:4,6:8,10:12,14:16])
+    cla
+    set(gca,'ColorOrder','factory')
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Generate flight room map
+    if any(ismember(fields(map),'p_gc'))
+        N_g = size(map.p_gc,3);
+
+        for k = 1:N_g
+            % Gate(s) Present. Render.    
+            p_G1 = map.p_gc(:,1,k);
+            p_G2 = map.p_gc(:,2,k);
+            p_G4 = map.p_gc(:,4,k);
+
+            r_12 = p_G2 - p_G1;
+            r_14 = p_G4 - p_G1;
+            n_G  = cross(r_14,r_12);
+            p_gc_dir = map.p_gc(:,1,k)+ (0.3.*n_G./norm(n_G));
+
+            gate = [map.p_gc(:,:,k) map.p_gc(:,1,k) p_gc_dir];  % render points need to terminate at start
+
+            gate_h = plot3(gate(1,:)',gate(2,:)',gate(3,:)','b');
+            gate_h.LineWidth = 3;
+            hold on
+        end
+    else
+        % No Gate. Carry On.
+    end
+    grid on
+    set(gcf,'color','white')
+
+    % Plot the target
+    h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+    
+    switch wp_show
+        case 'show'
+            % Plot the Waypoints
+            for k = 1:size(obj.x,2)
+                [x_arrow, y_arrow, z_arrow] = frame_builder(obj.x(:,k));
+                x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+                y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+                z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
+
+                h_wp = plot3(x,y,z,'linewidth',2);
+
+                % Set the Correct Colors
+                h_wp(1).Color = [1 0 0];
+                h_wp(2).Color = [0 1 0];
+                h_wp(3).Color = [0 0 1];
+            end
+        case 'hide'
+    end
+
+    % Set Camera Angle
+    daspect([1 1 1])
+    
+    switch view_point
+        case 'persp'
+            view(320,20);
+        case 'back'
+            view(-90,0);
+        case 'top'
+            view(0,90);
+            zoom(3)
+        case 'side'
+            view(0,0);
+        case 'nice'
+            view(-60,20);
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the full trajectory
+    plot3(x_act(1,:),x_act(2,:),x_act(3,:),'--k','linewidth',2);
+    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'b','linewidth',0.5);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the Initial Frame  
+    [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,1));
+    x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
+    y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
+    z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
+
+    h_persp = plot3(x,y,z,'linewidth',3);
+    
+    % Set the Correct Colors
+    h_persp(1).Color = [1 0 0];
+    h_persp(2).Color = [0 1 0];
+    h_persp(3).Color = [0 0 1];
+
+    % Labels and Legend
+    xlabel('x-axis');
+    ylabel('y-axis');
+    zlabel('z-axis');
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Plot the Remainder with REAL-TIME
+    curr_time = dt;
+    while (curr_time <= t_act(end))
+        tic
+        k = ceil(curr_time/dt);
+        
+        [x_arrow, y_arrow, z_arrow] = frame_builder(x_act(:,k));
+        h_persp = reassign(h_persp,x_arrow,y_arrow,z_arrow);
+        
+        if t_act(k) > flight.t_capture
+            h_targ.XData = x_act(1,k);
+            h_targ.YData = x_act(2,k);
+            h_targ.ZData = x_act(3,k)-0.1;
+        end
+        
+        drawnow
+        
+        curr_time = curr_time + toc;
+    end
+end

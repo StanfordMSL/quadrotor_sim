@@ -6,8 +6,8 @@ g = model.g;
 
 switch mode
     case 'est'
-        kh = model.kh_est;
         kw = model.kw_est(1,1);
+        kh = model.kh_est;
 
         D = model.D_est;
         A = model.A_est;
@@ -15,12 +15,12 @@ switch mode
 
         m = model.m_est;
 
-        I = model.I_est.*1e-6;
+        I = model.I_est;
 
         m2w = model.m2w_est;
     case 'act'
-        kh = model.kh_act;
         kw = model.kw_act(1,1);
+        kh = model.kh_act;
 
         D = model.D_act;
         A = model.A_act;
@@ -87,12 +87,6 @@ tau_ext = [tau_ext_x ; tau_ext_y ; tau_ext_z ];
 
 % Collating Forces/Torques %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Simplification
-kh = 0;
-D = zeros(3,3);
-A = zeros(3,3);
-B = zeros(3,3);
-
 % Forces
 wrench = m2w*T;
 
@@ -120,47 +114,33 @@ x_dot = [p_dot ; v_dot ; q_dot ; w_dot];
 J_x = jacobian(x_dot,x);
 J_u = jacobian(x_dot,u);
 
-H_x  = sym(zeros(13,13,13));
-H_u  = sym(zeros(4,4,13));
-H_xu = sym(zeros(13,4,13));
-
-for k = 1:13
-    H_x(:,:,k) = jacobian(J_x(k,:),x);
-    H_u(:,:,k) = jacobian(J_u(k,:),u);
-
-    H_xu(:,:,k) = jacobian(J_x(k,:),u);
-end
+% H_x  = sym(zeros(13,13,13));
+% H_u  = sym(zeros(4,4,13));
+% H_xu = sym(zeros(13,4,13));
+% 
+% for k = 1:13
+%     H_x(:,:,k) = jacobian(J_x(k,:),x);
+%     H_u(:,:,k) = jacobian(J_u(k,:),u);
+% 
+%     H_xu(:,:,k) = jacobian(J_x(k,:),u);
+% end
 
 %% Output Files
 
-% switch mode
-%     case 'est'
-%         matlabFunction(v_dot,'File','models/lin_acc_est')
-%         matlabFunction(w_dot,'File','models/ang_acc_est')
-% 
-%         matlabFunction(J_x,'File','linearization/J_x_calc')
-%         matlabFunction(J_u,'File','linearization/J_u_calc')
-%         
+switch mode
+    case 'est'
+        matlabFunction(v_dot,'File','models/lin_acc_est')
+        matlabFunction(w_dot,'File','models/ang_acc_est')
+
+        matlabFunction(J_x,'File','linearization/J_x_calc')
+        matlabFunction(J_u,'File','linearization/J_u_calc')
+        
 %         matlabFunction(H_x,'File','linearization/H_x_calc')
 %         matlabFunction(H_u,'File','linearization/H_u_calc')
 %         matlabFunction(H_xu,'File','linearization/H_xu_calc')
-%     case 'act'
-%         matlabFunction(v_dot,'File','models/lin_acc_act')
-%         matlabFunction(w_dot,'File','models/ang_acc_act')
-% end
+    case 'act'
+        matlabFunction(v_dot,'File','models/lin_acc_act')
+        matlabFunction(w_dot,'File','models/ang_acc_act')
+end
 
-disp("[dyn_init: Functions Generated")
-
-%% Sanity Check
-
-% sample = subs(J_x(1,:),[qw,qx,qy,qz],[1,0,0,0]);
-% sample = subs(sample,[kD_x,kD_y,kD_z],[0,0,0]);
-% sample = subs(sample,[kA_x,kA_y,kA_z],[0,0,0]);
-% sample = subs(sample,[kB_x,kB_y,kB_z],[0,0,0]);
-% sample = subs(sample,k_h,0)
-% 
-% % sample = subs(H_vy_x,[qw,qx,qy,qz],[1,0,0,0]);
-% % sample = subs(sample,[kD_x,kD_y,kD_z],[0,0,0]);
-% % sample = subs(sample,[kA_x,kA_y,kA_z],[0,0,0]);
-% % sample = subs(sample,[kB_x,kB_y,kB_z],[0,0,0]);
-% % sample = subs(sample,k_h,0)
+disp("[dyn_init]: Functions Generated")

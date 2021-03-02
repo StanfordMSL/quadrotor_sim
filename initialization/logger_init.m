@@ -17,7 +17,9 @@ log.x_est(:,1) = x_init;
 
 % FMU Data
 log.t_fmu  = 0:dt_fmu:tf;
-log.u_fmu = zeros(4,N_fmu-1);
+log.u_w    = zeros(4,N_fmu-1);     % Wrench Input
+log.u_br   = zeros(4,N_fmu-1);     % Body Rate Controller
+log.u_m    = zeros(4,N_fmu-1);     % Motor Input (propellers)
 
 % Capture time
 log.t_capture = 999;
