@@ -46,6 +46,12 @@ for k_wp = 1:N_wp
         sigma(1:3,1,k_wp) = obj.x(1:3,k_obj);
         sigma(1:3,2,k_wp) = obj.x(4:6,k_obj);        
         
+        quat = obj.x(7:10,k_obj)';
+        eul = quat2eul(quat);
+        
+        sigma(4,1,k_wp) = eul(1);
+        sigma(4,2,k_wp) = 0;  
+        
         % Setup Constraint Triggers
         if ((k_wp == 1) || (k_wp == N_wp))
             con_sigma(:,:,k_wp) = [ 1 1 1 1 1;       % terminal wp

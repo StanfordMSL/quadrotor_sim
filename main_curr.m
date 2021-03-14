@@ -23,7 +23,7 @@ n_der = 15;
 
 % Objective and Map Constraints
 map = map_init('default');        % Initialize objectives
-obj = obj_init('line');           % Initialize objectives
+obj = obj_init('square');           % Initialize objectives
 % problem_plot(map,obj,'persp');
 
 targ   = targ_init('none');       % Initialize Target (perching/grasping)

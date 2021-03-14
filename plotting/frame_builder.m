@@ -6,9 +6,13 @@ function [x_arrow, y_arrow, z_arrow] = frame_builder(x_data)
     vect_z = [0.0000 0.0000 0.0200]';
     
     % Construct Rotation Matrix
-    quat = x_data(7:10,1);
-    bRw = quat2rotm(quat');
-    
+    if size(x_data,1) == 13
+        quat = x_data(7:10,1);
+        bRw = quat2rotm(quat');
+    else
+        angles = [x_data(4,1) 0 0];
+        bRw = eul2rotm(angles);
+    end
     % Determine World Frame Pose of Craft Axes
     pos = x_data(1:3,1);
     

@@ -60,12 +60,12 @@ switch nom_show
     case 'hide'
 end
 
-% figure(5)
-% clf
-% plot3(squeeze(f_out(1,1,:)),squeeze(f_out(2,1,:)),squeeze(f_out(3,1,:)))
-% hold on
-% plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:))
-% xlim([-5 5]);
-% ylim([-5 5]);
-% zlim([0 5]);
+figure(5)
+clf
+plot3(squeeze(f_out(1,1,:)),squeeze(f_out(2,1,:)),squeeze(f_out(3,1,:)))
+hold on
+plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:))
+xlim([-5 5]);
+ylim([-5 5]);
+zlim([0 5]);
 end
