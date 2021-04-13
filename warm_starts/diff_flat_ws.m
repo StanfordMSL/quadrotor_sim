@@ -4,12 +4,12 @@ function traj = diff_flat_ws(obj,map,model,n_der,nom_show)
 fmu_dt  = model.dt_fmu;
 N_wp    = size(obj.x,2);
 
-% Trajectory time setup. We assume a constant velocity of around 2.0m/s in
+% Trajectory time setup. We assume a constant velocity of around 0.5m/s in
 % between waypoints to generate an estimated time.
 t_wp = zeros(1,N_wp);
 for k = 1:N_wp-1
     s_int = norm(obj.x(1:3,k+1) - obj.x(1:3,k));
-    t_int = fmu_dt*round(s_int/(fmu_dt*2.0));
+    t_int = fmu_dt*round(s_int/(fmu_dt*1.0));
     
     if s_int == 0   % hover (default)
         t_wp(1,k+1) = 5;
@@ -19,7 +19,7 @@ for k = 1:N_wp-1
 end
 
 % Convert objectives to flat outputs
-[t_sigma, sigma, con_sigma] = obj2sigma(obj,map,t_wp,model,n_der);
+[t_sigma, sigma, con_sigma] = obj2sigma(obj,t_wp,n_der);
 
 % Solve the Piecewise QP
 f_out = piecewise_QP(t_sigma,sigma,con_sigma,fmu_dt);

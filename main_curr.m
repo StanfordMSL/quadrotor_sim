@@ -5,7 +5,7 @@ addpath(genpath(pwd));
 %% Initialize Simulation Parameters
 
 % Quadcopter Model
-model = model_init('v1.0.1');   
+model = model_init('v1.0.0');   
 
 % Order of Basis Function (n_der-1)
 n_der = 15;                     
@@ -22,9 +22,9 @@ n_der = 15;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Objective and Map Constraints
-map = map_init('default');        % Initialize objectives
-obj = obj_init('line');           % Initialize objectives
-% problem_plot(map,obj,'persp');
+map = map_init('flightroom_easy');        % Initialize objectives
+obj = obj_init('traj_easy');           % Initialize objectives
+problem_plot(map,obj,'persp');
 
 targ   = targ_init('none');       % Initialize Target (perching/grasping)
 
@@ -33,7 +33,7 @@ targ   = targ_init('none');       % Initialize Target (perching/grasping)
 tic
 
 % Diff. Flat Warm Start
-traj = diff_flat_ws(obj,map,model,n_der,'show');
+traj = diff_flat_ws(obj,map,model,n_der,'hide');
 
 % % iLQR Warm Start
 % traj = direct_ws(obj,map,model,'show');
@@ -43,7 +43,7 @@ toc
 %% Simulation
 
 % log = simulation(traj,obj,wts_db,model,targ,'df');
-log = simulation(traj,obj,model,targ,'df','br_ctrl');
+log = simulation(traj,map,obj,model,targ,'df','br_ctrl');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate

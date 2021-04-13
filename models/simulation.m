@@ -1,4 +1,4 @@
-function log = simulation(traj,obj,model,targ,high_ctl,low_ctl)
+function log = simulation(traj,map,obj,model,targ,high_ctl,low_ctl)
 
 % Initialize clock variables
 dt_lqr = model.dt_lqr;
@@ -93,9 +93,9 @@ for k_act = 1:N_sim
     if (mod(t_now,dt_lqr) == 0)
         k_lqr = k_lqr + 1;
         switch high_ctl
-            case 'msl_lqr'
+            case 'al_ilqr'
                 tic
-                traj = msl_lqr(k_fmu,traj,obj,wts_db,model);
+                traj = al_ilqr(traj,map,obj,model);
                 toc
             case 'df'
                 % Carry on
