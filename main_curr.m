@@ -22,9 +22,9 @@ n_der = 15;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Objective and Map Constraints
-map = map_init('flightroom_easy');        % Initialize objectives
-obj = obj_init('traj_easy');           % Initialize objectives
-problem_plot(map,obj,'persp');
+map = map_init('default');        % Initialize objectives
+obj = obj_init('square');           % Initialize objectives
+% problem_plot(map,obj,'persp');
 
 targ   = targ_init('none');       % Initialize Target (perching/grasping)
 
