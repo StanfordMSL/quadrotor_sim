@@ -5,34 +5,22 @@ addpath(genpath(pwd));
 %% Initialize Simulation Parameters
 
 % Quadcopter Model
-model = model_init('v1.0.0');   
+model = model_init('v1.1.0');  
 
-% Order of Basis Function (n_der-1)
-n_der = 15;                     
+% % Pre-Compute (comment out after first run to save time)
+% precompute(model);
 
-%% Pre-Computes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% % Generate Dynamic Functions (Jacobian and Hessians)
-% dyn_init(model,'act');
-% dyn_init(model,'est');
-% 
-% % Generate QP Matrices
-% qp_init(n_der);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Objective and Map Constraints
-map = map_init('default');        % Initialize objectives
-obj = obj_init('square');           % Initialize objectives
-% problem_plot(map,obj,'persp');
-
-targ   = targ_init('none');       % Initialize Target (perching/grasping)
+% Objective and Constraints
+obj  = obj_init('crescent');
+map  = map_init('default');
+targ = targ_init('none');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Warm Start
 tic
 
 % Diff. Flat Warm Start
+n_der = 15; % Order of Basis Function
 traj = diff_flat_ws(obj,map,model,n_der,'hide');
 
 % % iLQR Warm Start
@@ -44,6 +32,7 @@ toc
 
 % log = simulation(traj,obj,wts_db,model,targ,'df');
 log = simulation(traj,map,obj,model,targ,'df','br_ctrl');
+% log = simulation(traj,map,obj,model,targ,'df','open_loop');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate
@@ -51,14 +40,3 @@ log = simulation(traj,map,obj,model,targ,'df','br_ctrl');
 mthrust_debug(log.u_fmu,model)
 animation_plot(log,obj,map,targ,'nice','show');
 
-% fast_animation_plot(log.x_act,obj,'persp')
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Plot the States and Animate
-
-% % SimSync Test
-% sim_sync_debug(log,traj);
-
-% figure(1);
-% clf
-% plot3(squeeze(traj.f_out(1,1,:)),squeeze(traj.f_out(2,1,:)),squeeze(traj.f_out(3,1,:)))

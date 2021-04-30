@@ -1,6 +1,9 @@
 function model = model_init(mdl_type)
 
-% Gravity ParAeter
+% 'Zero' Constant to Keep Variables
+eps = 1e-9;
+
+% Gravity Parameter
 model.g = 9.81;
 
 % Rate ParAeters
@@ -18,29 +21,29 @@ switch mdl_type
     case 'v1.0.0'              % simple motor, no noise, no drag
         disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [ ] Drag ||');
         % Estimate %%%          
-        model.m_est = 0.650;
-        model.I_est = 0.001.*[  1.54   0.00   0.00;...
+        model.m_est  = 0.650;
+        model.I_est  = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
         model.kw_est = [8.8478e-09 ; 0 ; 0];
         model.b_est  = 0.10; 
-        model.D_est = 0.0.*eye(3);
-        model.kh_est = 0.0.*model.m_est;
-        model.A_est = 0.0.*eye(3,3);
-        model.B_est = 0.0.*eye(3,3);
+        model.D_est  = eps.*eye(3);
+        model.kh_est = eps.*model.m_est;
+        model.A_est  = eps.*eye(3,3);
+        model.B_est  = eps.*eye(3,3);
         model.L_est  = 0.0885;
         
         % Actual %%%
-        model.m_act = 0.650;
-        model.I_act = 0.001.*[  1.54   0.00   0.00;...
+        model.m_act  = 0.650;
+        model.I_act  = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
         model.kw_act = [8.8478e-09 ; 0 ; 0];
         model.b_act  = 0.10;
-        model.D_act = 0.0.*eye(3);
-        model.kh_act = 0.0.*model.m_act;
-        model.A_act = 0.0.*eye(3,3);
-        model.B_act = 0.0.*eye(3,3);
+        model.D_act  = eps.*eye(3);
+        model.kh_act = eps.*model.m_act;
+        model.A_act  = eps.*eye(3,3);
+        model.B_act  = eps.*eye(3,3);
         model.L_act  = 0.0885;
 
         % Model Noise
@@ -58,30 +61,30 @@ switch mdl_type
                                 0.00   0.00   2.51]; 
         model.kw_est = [8.8478e-09 ; 0 ; 0];
         model.b_est  = 0.10; 
-        model.D_est = 0.0.*eye(3);
-        model.kh_est = 0.009*model.m_est;
-        model.A_est  = 0.00001.*eye(3,3);
-        model.B_est  = 0.00001.*eye(3,3);
+        model.D_est  = eps.*eye(3);
+        model.kh_est = eps*model.m_est;
+        model.A_est  = eps.*eye(3,3);
+        model.B_est  = eps.*eye(3,3);
         model.L_est  = 0.0885;
         
         % Actual %%%
-        model.m_act = 0.650;
-        model.I_act = 0.001.*[  1.54   0.00   0.00;...
+        model.m_act  = 0.650;
+        model.I_act  = 0.001.*[ 1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
         model.kw_act = [8.8478e-09 ; 0 ; 0];
         model.b_act  = 0.10;
-        model.D_act = 0.0.*eye(3);
-        model.kh_act = 0.009*model.m_act;
-        model.A_act  = 0.00001.*eye(3,3);
-        model.B_act  = 0.00001.*eye(3,3);
+        model.D_act  = eps.*eye(3);
+        model.kh_act = eps*model.m_act;
+        model.A_act  = eps.*eye(3,3);
+        model.B_act  = eps.*eye(3,3);
         model.L_act  = 0.0885;
         
         % Model Noise
         W_pos   = 0.0001*ones(3,1);
-        W_vel   = 0.0001*ones(3,1);
+        W_vel   = 0.01*ones(3,1);
         W_quat  = 0.0001*ones(4,1);
-        W_omega = 0.0001*ones(3,1);
+        W_omega = 0.01*ones(3,1);
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
     case 'v1.0.1'               % simple motor, no noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [*] Drag ||');

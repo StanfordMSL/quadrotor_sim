@@ -23,7 +23,7 @@ for k_wp = 1:n_wp-1
         % Load cost matrix
         if ( k_sig >= 1 ) && ( k_sig < 4 )     % sigma = r
             H = QP_H_r(t_pw_0,t_pw_1);
-        else                                % sigma = psi
+        else                                   % sigma = psi
             H = QP_H_psi(t_pw_0,t_pw_1);
         end
         

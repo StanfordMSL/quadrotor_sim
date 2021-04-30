@@ -25,6 +25,9 @@ end
 % Initialize Logger Variable
 log = logger_init(t_sim,N_sim,N_est,N_fmu,obj.x(:,1),model);     
 
+% Store Desired Trajectory
+log.x_des = traj.x;
+
 % State Estimator Initilization
 u_m = zeros(4,1);
 x_est = traj.x(:,1);

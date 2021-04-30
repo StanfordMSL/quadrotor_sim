@@ -1,4 +1,4 @@
-function fast_animation_plot(x_act,obj,view_point)
+function fast_animation_plot(x_act,obj,map,view_point)
     % Reset window
     figure(2)
     clf
@@ -11,9 +11,9 @@ function fast_animation_plot(x_act,obj,view_point)
     zlabel('z-axis');
     
     % Define Map Limits
-    xlim(obj.x_lim);
-    ylim(obj.y_lim);
-    zlim(obj.z_lim);
+    xlim(map.x_lim);
+    ylim(map.y_lim);
+    zlim(map.z_lim);
 
     % Generate gate
     pnts_gate_rdr = [obj.p_gc obj.p_gc(:,1)];  % render points need to terminate at start

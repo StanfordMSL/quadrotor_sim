@@ -23,14 +23,14 @@ for k_wp = 1:N_wp
     % Setup Constraint Triggers
     if ((k_wp == 1) || (k_wp == N_wp))
         con_sigma(:,:,k_wp) = [ 1 1 1 1 1;       % terminal wp
-            1 1 1 1 1;
-            1 1 1 1 1;
-            1 1 1 0 0];
+                                1 1 1 1 1;
+                                1 1 1 1 1;
+                                1 1 1 0 0];
     else
-        con_sigma(:,:,k_wp) = [ 1 1 1 1 1;       % regular wp
-            1 1 1 1 1;
-            1 1 1 1 1;
-            1 1 1 0 0];
+        con_sigma(:,:,k_wp) = [ 1 0 0 0 0;       % regular wp
+                                1 0 0 0 0;
+                                1 0 0 0 0;
+                                1 0 0 0 0];
     end
     
     % Load next obj index.

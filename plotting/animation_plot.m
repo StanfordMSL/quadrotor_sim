@@ -3,7 +3,8 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     t_act = flight.t_act;
     x_act = flight.x_act;
     x_est = flight.x_est;
-
+    x_des = flight.x_des;
+    
     dt = t_act(1,2)-t_act(1,1);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,6 +15,19 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     subplot(4,4,[2:4,6:8,10:12,14:16])
     cla
     set(gca,'ColorOrder','factory')
+    
+    % Labels and Legend
+    xlabel('x-axis');
+    ylabel('y-axis');
+    zlabel('z-axis');
+
+    % Define Map Limits
+    xlim(map.x_lim);
+    ylim(map.y_lim);
+    zlim(map.z_lim);
+    grid on
+    hold on
+    set(gcf,'color','white')
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
@@ -35,16 +49,20 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
 
             gate_h = plot3(gate(1,:)',gate(2,:)',gate(3,:)','b');
             gate_h.LineWidth = 3;
+            gate_h.Annotation.LegendInformation.IconDisplayStyle = 'off';
             hold on
         end
     else
         % No Gate. Carry On.
     end
-    grid on
-    set(gcf,'color','white')
-
+    
     % Plot the target
-    h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+    if targ.name == "none"
+        % Do Nothing
+    else
+        h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+    	h_targ.Annotation.LegendInformation.IconDisplayStyle = 'off';
+    end
     
     switch wp_show
         case 'show'
@@ -56,6 +74,11 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
                 z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
 
                 h_wp = plot3(x,y,z,'linewidth',2);
+                
+                % Turn Off Legend
+                h_wp(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
+                h_wp(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
+                h_wp(3).Annotation.LegendInformation.IconDisplayStyle = 'off';
 
                 % Set the Correct Colors
                 h_wp(1).Color = [1 0 0];
@@ -84,8 +107,11 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the full trajectory
-    plot3(x_act(1,:),x_act(2,:),x_act(3,:),'--k','linewidth',2);
-    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'b','linewidth',0.5);
+    plot3(x_act(1,:),x_act(2,:),x_act(3,:),'k','linewidth',1);
+    plot3(x_des(1,:),x_des(2,:),x_des(3,:),'--b','linewidth',0.5);
+    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'--g','linewidth',0.5);
+
+    legend('Actual','Desired','Estimator');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Initial Frame  
@@ -96,16 +122,16 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
 
     h_persp = plot3(x,y,z,'linewidth',3);
     
+    % Turn Off Legend
+    h_persp(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
+    h_persp(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
+    h_persp(3).Annotation.LegendInformation.IconDisplayStyle = 'off';
+                
     % Set the Correct Colors
     h_persp(1).Color = [1 0 0];
     h_persp(2).Color = [0 1 0];
     h_persp(3).Color = [0 0 1];
-
-    % Labels and Legend
-    xlabel('x-axis');
-    ylabel('y-axis');
-    zlabel('z-axis');
-
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Remainder with REAL-TIME
     curr_time = dt;

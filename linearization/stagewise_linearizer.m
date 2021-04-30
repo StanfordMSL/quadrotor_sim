@@ -17,8 +17,8 @@ function [A,B] = stagewise_linearizer(x_bar,u_bar,dt)
     u3 = u_bar(3,1);
     u4 = u_bar(4,1);
     
-%     J_x = J_x_calc(q_w,q_x,q_y,q_z,u1,u2,u3,u4,v_x,v_y,v_z,w_x,w_y,w_z);
-    J_x = J_x_calc(q_w,q_x,q_y,q_z,u1,u2,u3,u4,w_x,w_y,w_z);
+    J_x = J_x_calc(q_w,q_x,q_y,q_z,u1,u2,u3,u4,v_x,v_y,v_z,w_x,w_y,w_z);
+%     J_x = J_x_calc(q_w,q_x,q_y,q_z,u1,u2,u3,u4,w_x,w_y,w_z);
     J_u = J_u_calc(q_w,q_x,q_y,q_z,u1,u2,u3,u4);
     
     A = eye(13) + dt.*J_x;
