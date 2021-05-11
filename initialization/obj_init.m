@@ -1,6 +1,6 @@
 function obj = obj_init(trajectory)
      
-address = ['trajectories/',trajectory,'.csv'];
+address = ['waypoint_objectives/',trajectory,'.csv'];
 
 % Gate Data
 if isfile(address)
@@ -15,7 +15,7 @@ else
     obj.x = zeros(13,2);
     obj.x(:,1) = [0 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
     
-    q_obj  = eul2quat([pi/6 0 0]);
+    q_obj  = eul2quat([pi/4 0 0]);
     q_targ = quatconj(q_obj/norm(q_obj));
     
     vel_mag = 3.0;

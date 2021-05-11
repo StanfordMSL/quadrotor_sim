@@ -35,6 +35,9 @@ log = simulation(traj,map,obj,model,'df','pos_att');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate
 
-des_err_debug(log);
 animation_plot(log,obj,map,'top','show');
-% mthrust_debug(log.u_fmu,model)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Save the Flat Output in Pos/Vel csv
+
+fout2csv(log.t_est,traj.f_out)
