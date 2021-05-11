@@ -17,7 +17,7 @@ map  = map_init('default');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Warm Start
 tic
-
+ 
 % Diff. Flat Warm Start
 traj = diff_flat_ws(obj,map,model,n_der,'hide');
 
