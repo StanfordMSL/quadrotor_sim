@@ -7,21 +7,11 @@ addpath(genpath(pwd));
 % Quadcopter Model
 model = model_init('v1.0.0');  
 
-% % % Pre-Computes (comment out after first run to save time)
-% dyn_func_init(model,'act');  % Generate Actual Dynamic Functions
-% dyn_func_init(model,'est');  % Generate Estimated Dynamic Functions
-
-% lin_func_init('direct',model);
-% al_ilqr_init('pid');
-
 n_der = 15;             % Order of Basis Function for QP
-qp_init(n_der);         % Generate QP Matrices
-
-% al_ilqr_init('direct');
-% al_ilqr_init('pid');
+% qp_init(n_der);        % Generate QP Matrices
 
 % Objective and Constraints
-obj  = obj_init('crescent');
+obj  = obj_init('massless');
 map  = map_init('default');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,5 +36,5 @@ log = simulation(traj,map,obj,model,'df','pos_att');
 %% Plot the States and Animate
 
 des_err_debug(log);
-animation_plot(log,obj,map,'nice','show');
+animation_plot(log,obj,map,'top','show');
 % mthrust_debug(log.u_fmu,model)

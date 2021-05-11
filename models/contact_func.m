@@ -1,38 +1,42 @@
-function [FT_ext,n_ct,model,log] = contact_func(t_now,x_act,FT_ext,n_ct,model,targ,N_ct,log,contact_type)
+function [FT_ext,obj,model] = contact_func(x_now,obj,model,contact_type)
 
 % Compute location of grasper (world frame)
-quat = x_act(7:10,1);  
+quat = x_now(7:10,1);  
 bRw = quat2rotm(quat');
 
-p_grasp_W = x_act(1:3) + bRw*model.p_grasp_b;
+p_grasp_W = x_now(1:3) + bRw*model.p_grasp_b;
 
 % check for contact
-check_ct = targ.pos - p_grasp_W;
+check_ct = obj.x(1:3,2) - p_grasp_W;
 
 switch contact_type
-    case 'grasp'
-        if (norm(check_ct) < 0.3) && (n_ct == 0)      % First Contact! 
+    case 'catch'
+        if (norm(check_ct) < 0.3) && (obj.n_ct == 0)      % First Contact! 
+            % Assign actual number of real-time frames
+            obj.N_ct  = round(obj.dt_ct*model.hz_act);  % Number of actual dynamics frames
+
             % Build force array    
             m1 = model.m_act;
-            m2 = targ.m_act;
-            v1 = x_act(4:6,1);
+            m2 = obj.m_act;
+            v1 = x_now(4:6,1);
             delta_v = m1*v1/(m1+m2);
             
-            acc = delta_v/(N_ct*model.dt_act);
+            acc = delta_v/(obj.N_ct*model.dt_act);
             F = -(m1+m2).*acc;
-            FT_ext = [F ; cross(check_ct,F)];
-    
+            FT_ext = [F ; cross(check_ct,F)];    
+            obj.FT_ext = FT_ext;
+            
             % Update Mass and Inertia
             d = model.p_grasp_b;
-            model.I_act = model.I_act + diag(targ.m_act * d.^2);
-            model.m_act = model.m_act + targ.m_act;
+            model.I_act = model.I_act + diag(obj.m_act * d.^2);
+            model.m_act = model.m_act + obj.m_act;
     
-            n_ct = n_ct + 1;
-            log.t_capture = t_now;
+            obj.n_ct = obj.n_ct + 1;
 
             disp('[main]: Contact triggered!');
-        elseif (n_ct <= N_ct) && (n_ct > 0)
-            n_ct = n_ct + 1;
+        elseif (obj.n_ct <= obj.N_ct) && (obj.n_ct > 0)
+            FT_ext = obj.FT_ext;
+            obj.n_ct = obj.n_ct + 1;
         else
             FT_ext = zeros(6,1);
         end
@@ -41,14 +45,13 @@ switch contact_type
             % Build force array    
             m1 = model.m_act;
             m2 = targ.m_act;
-            v1 = x_act(4:6,1);
+            v1 = x_now(4:6,1);
             
             acc = v1/(N_ct*model.dt_act);
             F = -(m1+m2).*acc;
             FT_ext = [F ; cross(check_ct,F)];
     
-            n_ct = n_ct + 1;
-            log.t_capture = t_now;
+            obj.n_ct = obj.n_ct + 1;
 
             disp('[main]: Contact triggered!');
         end

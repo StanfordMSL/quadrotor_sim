@@ -1,14 +1,14 @@
-function [con,con_x,con_u] = room_con(x,map)
+function [con,con_x,con_u] = room_con(x_bar,obj)
 
 % Unpack some stuff
-pos_min = [map.x_lim(1,1) ; map.y_lim(1,1) ; map.z_lim(1,1) ];
-pos_max = [map.x_lim(1,2) ; map.y_lim(1,2) ; map.z_lim(1,2) ];
-pos = x(1:3,:);
+pos_min = [obj.x_lim(1,1) ; obj.y_lim(1,1) ; obj.z_lim(1,1) ];
+pos_max = [obj.x_lim(1,2) ; obj.y_lim(1,2) ; obj.z_lim(1,2) ];
+pos = x_bar(1:3,:);
 
 % Count
-N = size(x,2);
+N = size(x_bar,2);
 n_c = size(pos,1);
-n_x = size(x,1);
+n_x = size(x_bar,1);
 n_u = 4;
 
 % Initialize Output

@@ -1,4 +1,4 @@
-function log = simulation(traj,map,obj,model,targ,high_ctl,low_ctl)
+function log = simulation(traj,map,obj,model,high_ctl,low_ctl)
 
 % Initialize clock variables
 dt_lqr = model.dt_lqr;
@@ -29,22 +29,21 @@ log = logger_init(t_sim,N_sim,N_est,N_fmu,obj.x(:,1),model);
 log.x_des = traj.x;
 
 % State Estimator Initilization
-u_m = zeros(4,1);
+u_mt = zeros(4,1);
 x_est = traj.x(:,1);
 sigma_est = zeros(13,13);
 
-% Contact Parameter Initialization
-dt_ct = 0.2;                        % Duration of Contact Force
-n_ct  = 0;                          % Contact state (0 = no contact, 1 = contact/post-contact)
-N_ct  = round(dt_ct*model.hz_act);  % Number of actual dynamics frames
-FT_ext = zeros(6,1);
-
 % Body Rate Controller Initialization
-e_I = 0;
-e_D_prev = 0;
-w_hat = zeros(3,2);
+switch low_ctl
+    case 'pos_att'                
+        pa = pa_init;
+    case 'body_rate'                
+        br = br_init();
+    case 'direct'
+        % Do Nothing
+end
 
-for k_act = 1:N_sim
+for k_act = 1:(N_sim-1)
     t_now = (k_act-1)*dt_act;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % State Estimation Update
@@ -52,8 +51,9 @@ for k_act = 1:N_sim
         k_est = k_est + 1;
 
         x_now = log.x_act(:,k_act);
-        y = sensors(x_now,model);
-        [x_est, sigma_est] = ekf(x_est,sigma_est,u_m,y,model);
+        x_est = x_now;
+%         y = sensors(x_now,model);
+%         [x_est, sigma_est] = ekf(x_est,sigma_est,u_mt,y,model);
         
         log.t_est(:,k_est)  = t_now;   
         log.x_est(:,k_est)  = x_est;        
@@ -64,32 +64,25 @@ for k_act = 1:N_sim
         k_fmu = k_fmu + 1;
         
         switch low_ctl
-            case 'fs_lqr_wrench'
-                u_m = fs_lqr_wrench(x_now,traj.x(:,k_fmu),traj.u_w(:,k_fmu),traj.l(:,k_fmu),traj.L(:,:,k_fmu));  
-            case 'br_ctrl'                
-                % Generate Low Pass Filtered Body Rate
-                w_hat = LPFilter(w_hat,x_now(11:13,1));
-                
-                % Generate Thrust Input
-                thrust = thrust_ctrl(x_now,traj.f_out(:,:,k_fmu),model);
-%                 thrust = traj.u_w(1,1);
-                
-                % Generate Body Rate Inputs
-                w_des = traj.x(11:13,k_fmu);
-                [u_tau,e_I,e_D_prev] = br_ctrl(x_now,w_des,e_I,w_hat,e_D_prev);
-%                 u_tau = traj.u_w(2:4,1);
+            case 'pos_att'
+                f_out_now = traj.f_out(:,:,k_fmu);
+                u_wr = pa_ctrl(x_est,f_out_now,pa,model);
                 
                 % Output to Motors
-                u_w = [thrust ; u_tau];               
-                u_m = wrench2motor(u_w,model);
-            case 'open_loop'
-                u_w = traj.u_w(:,k_fmu);
-                u_m = traj.u_m(:,k_fmu);
+                u_mt = wrench2motor(u_wr,model);
+            case 'body_rate'                
+                [u_wr ,br] = br_ctrl(x_estZ,u_br,br);
+                
+                % Output to Motors
+                u_mt = wrench2motor(u_wr,model);
+            case 'direct'
+                u_wr = traj.u_w(:,k_fmu);
+                u_mt = traj.u_m(:,k_fmu);
         end
         
         log.t_fmu(:,k_fmu) = t_now; 
-        log.u_w(:,k_fmu)   = u_w;
-        log.u_fmu(:,k_fmu) = u_m;
+        log.u_w(:,k_fmu)   = u_wr;
+        log.u_fmu(:,k_fmu) = u_mt;
     end
     %%%%%%%%%%%%%%%%%%%%%%y%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Level Control Updater    
@@ -107,9 +100,19 @@ for k_act = 1:N_sim
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Dynamic Model
     
-    % Simple Contact Model
-    [FT_ext,n_ct,model,log] = contact_func(t_now,x_now,FT_ext,n_ct,model,targ,N_ct,log,'grasp');
-
+    % Simple Contact/External Forces Model
+    if obj.type == 1
+        [FT_ext,obj,model] = contact_func(x_now,obj,model,'catch');
+    else
+        FT_ext = zeros(6,1);
+    end
+    
     % Dynamic Model
-    log.x_act(:,k_act+1) = quadcopter(log.x_act(:,k_act),u_m,model,FT_ext,'actual');
+    wt = model.W*randn(13,1);
+    log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
+end
+
+if k_est < N_est
+    log.t_est(:,end)  = t_now;   
+    log.x_est(:,end)  = x_est;  
 end

@@ -6,7 +6,9 @@ function [x_est, sigma_est] = ekf(x_curr,sigma_curr,u_now,y,model)
     R = model.R_fil;
     
     % Predict Forward Dynamics
-    x_pred = quadcopter(x_curr,u_now,model,zeros(6,1),'fmu_ideal');
+    FT_ext = zeros(6,1);
+    wt = zeros(13,1);
+    x_pred = quadcopter_est(x_curr,u_now,FT_ext,wt);
     
     % Predict the Covariance
     [A,~] = stagewise_linearizer(x_curr,u_now,dt_fmu);

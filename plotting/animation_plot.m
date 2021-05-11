@@ -1,4 +1,4 @@
-function animation_plot(flight,obj,map,targ,view_point,wp_show)
+function animation_plot(flight,obj,map,view_point,wp_show)
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -11,8 +11,7 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     % Define plot window and clear previous stuff
 %     figure(3)
 %     clf
-    figure(2)
-    subplot(4,4,[2:4,6:8,10:12,14:16])
+    figure(1)
     cla
     set(gca,'ColorOrder','factory')
     
@@ -57,10 +56,10 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     end
     
     % Plot the target
-    if targ.name == "none"
+    if obj.type == 0
         % Do Nothing
     else
-        h_targ = plot3(targ.pos(1,1),targ.pos(2,1),targ.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+        h_targ = plot3(obj.pos(1,1),obj.pos(2,1),obj.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
     	h_targ.Annotation.LegendInformation.IconDisplayStyle = 'off';
     end
     
@@ -98,7 +97,7 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
             view(-90,0);
         case 'top'
             view(0,90);
-            zoom(3)
+%             zoom(3)
         case 'side'
             view(0,0);
         case 'nice'
@@ -107,11 +106,11 @@ function animation_plot(flight,obj,map,targ,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the full trajectory
-    plot3(x_act(1,:),x_act(2,:),x_act(3,:),'k','linewidth',1);
+    plot3(x_act(1,:),x_act(2,:),x_act(3,:),'k','linewidth',1.5);
     plot3(x_des(1,:),x_des(2,:),x_des(3,:),'--b','linewidth',0.5);
-    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'--g','linewidth',0.5);
+    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'g','linewidth',0.5);
 
-    legend('Actual','Desired','Estimator');
+    legend('Actual','Desired','Estimator','Location','northwest');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot the Initial Frame  

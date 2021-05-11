@@ -4,7 +4,7 @@ switch target_type
     case "pigeon"
         target.name = "pigeon";
         target.m_act = 0.3;
-        target.pos = [0.0 ; 0.0 ; 0.3];
+        target.pos = [0.0 ; 0.0 ; 1.0];
     case "soft toy"
         target.name = "soft toy";
         target.m_act = 0.1;

@@ -40,7 +40,8 @@ for k = 1:N_tr-1
     u_m(:,k) = sqrt(T_motor./model.kw_est(1,1));
     
     FT_ext = zeros(6,1);
-    x_bar(:,k+1) = quadcopter(x_bar(:,k),u_m(:,k),model,FT_ext,'fmu_ideal');
+    wt = zeros(13,1);
+    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_m(:,k),FT_ext,wt);
 end
 
 traj.x = x_bar;
@@ -60,12 +61,12 @@ switch nom_show
     case 'hide'
 end
 
-figure(5)
-clf
-plot3(squeeze(f_out(1,1,:)),squeeze(f_out(2,1,:)),squeeze(f_out(3,1,:)))
-hold on
-plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:))
-xlim([-5 5]);
-ylim([-5 5]);
-zlim([0 5]);
+% figure(5)
+% clf
+% plot3(squeeze(f_out(1,1,:)),squeeze(f_out(2,1,:)),squeeze(f_out(3,1,:)))
+% hold on
+% plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:))
+% xlim([-5 5]);
+% ylim([-5 5]);
+% zlim([0 5]);
 end

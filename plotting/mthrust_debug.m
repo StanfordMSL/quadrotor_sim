@@ -15,9 +15,7 @@ function mthrust_debug(u_sim,model)
     Ft_sim = model.kw_act(1,1) .* u_sim.^2;
     
     for k = 1:4
-%         subplot(4,1,k)
-        idx = 4*(k-1) + 1;
-        subplot(4,4,idx)
+        subplot(4,1,k)
         cla
         set(gca,'ColorOrder','factory')
         

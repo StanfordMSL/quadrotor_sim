@@ -1,4 +1,4 @@
-function precompute(model)   
+function precompute(model,n_der)   
 
 % Generate Dynamic Functions (Jacobian and Hessians)
 dyn_init(model,'act');

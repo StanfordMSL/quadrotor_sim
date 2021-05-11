@@ -10,7 +10,7 @@ model.g = 9.81;
 model.hz_est = 100;             % State Estimator Sample Rate
 model.hz_lqr = 0.1;             % iLQR Update Rate
 model.hz_fmu = 100;             % Flight Management Unit Update Rate
-model.hz_act = 100;            % Actual DynAics Update Rate
+model.hz_act = 1000;            % Actual Dynamics Update Rate
 
 model.dt_est = 1/model.hz_est;
 model.dt_lqr = 1/model.hz_lqr;
@@ -133,12 +133,10 @@ switch mdl_type
                                 0.00   0.00   2.51]; 
         model.kw_est = [8.8478e-09 ; 0 ; 0];
         model.b_est  = 0.10; 
-        model.D_est = [  0.10   0.00   0.00;...
-                          0.00   0.10   0.00;...
-                          0.00   0.00   0.30]; 
-        model.kh_est = 0.009*model.m_est;
-        model.A_est  = 0.00001.*eye(3,3);
-        model.B_est  = 0.00001.*eye(3,3);
+        model.D_est  = eps.*eye(3);
+        model.kh_est = eps*model.m_est;
+        model.A_est  = eps.*eye(3,3);
+        model.B_est  = eps.*eye(3,3);
         model.L_est  = 0.0885;
         
         % Actual %%%
@@ -148,19 +146,19 @@ switch mdl_type
                                 0.00   0.00   2.51]; 
         model.kw_act = [8.8478e-09 ; 0 ; 0];
         model.b_act  = 0.10;
-        model.D_act  = [  0.10   0.00   0.00;...
-                          0.00   0.10   0.00;...
-                          0.00   0.00   0.30]; 
-        model.kh_act = 0.009*model.m_act;
-        model.A_act  = 0.00001.*eye(3,3);
-        model.B_act  = 0.00001.*eye(3,3);
+        model.D_act = [  0.30   0.00   0.00;...
+                         0.00   0.30   0.00;...
+                         0.00   0.00   0.10]; 
+        model.kh_act = eps*model.m_act;
+        model.A_act  = eps.*eye(3,3);
+        model.B_act  = eps.*eye(3,3);
         model.L_act  = 0.0885;
         
         % Model Noise
-        W_pos   = 0.000*ones(3,1);
-        W_vel   = 0.001*ones(3,1);
-        W_quat  = 0.000*ones(4,1);
-        W_omega = 0.001*ones(3,1);
+        W_pos   = 0.0001*ones(3,1);
+        W_vel   = 0.01*ones(3,1);
+        W_quat  = 0.0001*ones(4,1);
+        W_omega = 0.01*ones(3,1);
         model.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 end
 
@@ -225,5 +223,5 @@ var_gyro = (1e-5).*ones(3,1);
 var_sens = [var_mocap ; var_gyro];
 
 % Model and Sensor Noise Matrices
-model.Q_fil = 0.001.*eye(13);
+model.Q_fil = 0.01.*eye(13);
 model.R_fil = diag(var_sens);
