@@ -23,7 +23,7 @@ z_b = R_now*e3;
 z_W = e3;
 
 g    = [ 0 ; 0 ; model.g];
-m    = model.m_est;
+m    = model.m;
 
 p_des = f_out(1:3,1);
 v_des = f_out(1:3,2);

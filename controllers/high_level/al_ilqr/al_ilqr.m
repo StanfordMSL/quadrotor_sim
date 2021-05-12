@@ -1,17 +1,10 @@
-function traj = iterate_outer(traj,obj,wts_db,model)
+function traj = al_ilqr(traj,obj,map,cost_mode,input_mode,model)
 
-% Objective of outer loop is to update lagrange multipliers until
-% constraints are satisfied or max iteration reached.
+% Generate Cost Variables
+cost_param = cost_assembly(traj,obj,cost_mode,input_mode,model);
 
-%% Generate the Augmented Lagrangian Variables
-
-% Initialize Variables
-al = al_init(traj,obj,model);
-
-%% Generate Cost Variables
-
-% Generate Cost Parameters
-cost_param = cost_assembly(traj,wts_db,obj);
+% Initialize Augmented Lagrangian Variables
+al = al_init(traj,obj,map,model);
 
 %% Run the Outer loop
 % Initialize loop parameters. 
@@ -35,9 +28,4 @@ while outer_flag == true
 
     % Loop Breaking Conditions
     outer_flag = outer_flag_check(al.con,tol_pos,tol_mot,itrs,itrs_max);
-end
-
-
-disp(['[iterate_outer]: Updated Cost: ',num2str(round(J_upd.tot,5))]);
-
 end

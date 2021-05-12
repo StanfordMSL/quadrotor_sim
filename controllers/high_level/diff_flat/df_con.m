@@ -2,16 +2,16 @@ function wrench = df_con(f_out,model)
 
 % Unpack Items
 g    = [ 0 ; 0 ; model.g];
-m    = model.m_est;
-I    = model.I_est;
+m    = model.m;
+I    = model.I;
 
 %%%%%%%%%%%%%%%
-kh   = model.kh_est;
-A    = model.A_est;
-B    = model.B_est;
+kh   = model.kh;
+A    = model.A;
+B    = model.B;
 tau_g = 0.000.*ones(3,1);
 
-D   = model.D_est;
+D   = model.D;
 kDx = D(1,1);
 kDy = D(2,2);
 kDz = D(3,3);

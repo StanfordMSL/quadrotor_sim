@@ -2,7 +2,7 @@ function animation_plot(flight,obj,map,view_point,wp_show)
     
     t_act = flight.t_act;
     x_act = flight.x_act;
-    x_est = flight.x_est;
+    x_ses = flight.x_ses;
     x_des = flight.x_des;
     
     dt = t_act(1,2)-t_act(1,1);
@@ -108,7 +108,7 @@ function animation_plot(flight,obj,map,view_point,wp_show)
     % Plot the full trajectory
     plot3(x_act(1,:),x_act(2,:),x_act(3,:),'k','linewidth',1.5);
     plot3(x_des(1,:),x_des(2,:),x_des(3,:),'--b','linewidth',0.5);
-    plot3(x_est(1,:),x_est(2,:),x_est(3,:),'g','linewidth',0.5);
+    plot3(x_ses(1,:),x_ses(2,:),x_ses(3,:),'g','linewidth',0.5);
 
     legend('Actual','Desired','Estimator','Location','northwest');
     

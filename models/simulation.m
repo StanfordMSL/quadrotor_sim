@@ -1,19 +1,19 @@
-function log = simulation(traj,map,obj,model,high_ctl,low_ctl)
+function log = simulation(traj,map,obj,model,high_ctl,low_ctl,sense_mode)
 
 % Initialize clock variables
-dt_lqr = model.dt_lqr;
-dt_est = model.dt_est;
-dt_fmu = model.dt_fmu;
-dt_act = model.dt_act;
+dt_lqr = model.clock.dt_lqr;
+dt_ses = model.clock.dt_ses;
+dt_fmu = model.clock.dt_fmu;
+dt_act = model.clock.dt_act;
 
-k_est = 0;
+k_ses = 0;
 k_lqr = 0;
 k_fmu = 0;
 
 % Initialize simulation final time and steps (fixed at 10kHz).
 t_sim = dt_fmu*(size(traj.x,2)-1);
 N_sim = round((t_sim/dt_act) + 1);
-N_est = round((t_sim/dt_est) + 1);
+N_ses = round((t_sim/dt_ses) + 1);
 N_fmu = round((t_sim/dt_fmu) + 1);
 
 if floor(N_fmu) ~= N_fmu
@@ -23,17 +23,13 @@ if floor(N_fmu) ~= N_fmu
 end
 
 % Initialize Logger Variable
-log = logger_init(t_sim,N_sim,N_est,N_fmu,obj.x(:,1),model);     
-
-% Store Desired Trajectory
-log.x_des = traj.x;
+log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,obj,model);     
 
 % State Estimator Initilization
-u_mt = zeros(4,1);
-x_est = traj.x(:,1);
-sigma_est = zeros(13,13);
+ses = ses_init(traj);
 
-% Body Rate Controller Initialization
+% Low Level Controller Initialization
+u_mt = zeros(4,1);
 switch low_ctl
     case 'pos_att'                
         pa = pa_init;
@@ -47,16 +43,15 @@ for k_act = 1:(N_sim-1)
     t_now = (k_act-1)*dt_act;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % State Estimation Update
-    if mod(t_now,dt_est) == 0
-        k_est = k_est + 1;
-
-        x_now = log.x_act(:,k_act);
-        x_est = x_now;
-%         y = sensors(x_now,model);
-%         [x_est, sigma_est] = ekf(x_est,sigma_est,u_mt,y,model);
+    if mod(t_now,dt_ses) == 0
+        k_ses = k_ses + 1;
         
-        log.t_est(:,k_est)  = t_now;   
-        log.x_est(:,k_est)  = x_est;        
+        x_now = log.x_act(:,k_act);
+        ses = state_estimation(x_now,u_mt,ses,sense_mode);
+        
+        log.t_ses(:,k_ses)   = t_now;   
+        log.x_ses(:,k_ses)   = ses.x; 
+        log.sigma(:,:,k_ses) = ses.sigma;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Low Level Control Updater    
@@ -66,15 +61,15 @@ for k_act = 1:(N_sim-1)
         switch low_ctl
             case 'pos_att'
                 f_out_now = traj.f_out(:,:,k_fmu);
-                u_wr = pa_ctrl(x_est,f_out_now,pa,model);
+                u_wr = pa_ctrl(ses.x,f_out_now,pa,model.est);
                 
                 % Output to Motors
-                u_mt = wrench2motor(u_wr,model);
+                u_mt = wrench2motor(u_wr,model.est);
             case 'body_rate'                
-                [u_wr ,br] = br_ctrl(x_estZ,u_br,br);
+                [u_wr ,br] = br_ctrl(ses.x,u_br,br);
                 
                 % Output to Motors
-                u_mt = wrench2motor(u_wr,model);
+                u_mt = wrench2motor(u_wr,model.est);
             case 'direct'
                 u_wr = traj.u_w(:,k_fmu);
                 u_mt = traj.u_m(:,k_fmu);
@@ -90,10 +85,10 @@ for k_act = 1:(N_sim-1)
         k_lqr = k_lqr + 1;
         switch high_ctl
             case 'al_ilqr'
-                tic
-                traj = al_ilqr(traj,map,obj,model);
-                toc
-            case 'df'
+%                 tic
+%                 traj = al_ilqr(traj,map,obj,model.est);
+%                 toc
+            case 'none'
                 % Carry on
         end
     end
@@ -108,11 +103,11 @@ for k_act = 1:(N_sim-1)
     end
     
     % Dynamic Model
-    wt = model.W*randn(13,1);
+    wt = model.ses.W*randn(13,1);
     log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
 end
 
-if k_est < N_est
-    log.t_est(:,end)  = t_now;   
-    log.x_est(:,end)  = x_est;  
+if k_ses < N_ses
+    log.t_ses(:,end)  = t_now;   
+    log.x_ses(:,end)  = ses.x;  
 end

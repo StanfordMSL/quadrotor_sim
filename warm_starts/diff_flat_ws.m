@@ -1,7 +1,7 @@
 function traj = diff_flat_ws(obj,map,model,n_der,nom_show)
 
 % Unpack Some Terms
-fmu_dt  = model.dt_fmu;
+fmu_dt  = model.clock.dt_fmu;
 N_wp    = size(obj.x,2);
 
 % Trajectory time setup. We assume a constant velocity of around 0.5m/s in
@@ -33,11 +33,11 @@ u_w = zeros(4,N_tr-1);
 u_m = zeros(4,N_tr-1);
 
 for k = 1:N_tr-1
-    u_w(:,k) = df_con(f_out(:,:,k),model);
+    u_w(:,k) = df_con(f_out(:,:,k),model.est);
     
     % Directly convert wrench to motor inputs
-    T_motor = model.m2w_est_inv*u_w(:,k);
-    u_m(:,k) = sqrt(T_motor./model.kw_est(1,1));
+    T_motor = model.est.m2w_inv*u_w(:,k);
+    u_m(:,k) = sqrt(T_motor./model.est.kw(1,1));
     
     FT_ext = zeros(6,1);
     wt = zeros(13,1);

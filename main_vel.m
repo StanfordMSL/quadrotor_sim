@@ -28,9 +28,9 @@ toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
 
-% log = simulation(traj,obj,wts_db,model,targ,'df');
-log = simulation(traj,map,obj,model,'df','pos_att');
-% log = simulation(traj,map,obj,model,targ,'df','open_loop');
+log = simulation(traj,map,obj,model,'none','pos_att','bypass');
+% log = simulation(traj,map,obj,model,'none','body_rate','bypass');
+% log = simulation(traj,map,obj,model,'none','direct','bypass');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate
@@ -40,4 +40,4 @@ animation_plot(log,obj,map,'top','show');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Save the Flat Output in Pos/Vel csv
 
-fout2csv(log.t_est,traj.f_out)
+fout2csv(log.t_fmu,traj.f_out)
