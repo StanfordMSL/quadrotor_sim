@@ -1,4 +1,4 @@
-function cost_param = cost_assembly(traj,obj,cost_mode,input_mode,model)
+function cost_param = cost_assembly(traj,cost_mode,input_mode,model)
 
 % Counts
 N_x = size(traj.x,1);
@@ -6,8 +6,6 @@ N_u = size(traj.u,1);
 N_s = size(traj.x,2);
 
 % Initialize the Cost Struct.
-cost_param.Q = zeros(N_x,N_x,N_s);
-cost_param.R = zeros(N_u,N_u,(N_s-1));
 switch input_mode
     case 'direct'
         cost_param.x_star = traj.x;
