@@ -4,7 +4,7 @@ function traj = al_ilqr(traj,obj,map,cost_mode,input_mode,model)
 cost_param = cost_assembly(traj,obj,cost_mode,input_mode,model);
 
 % Initialize Augmented Lagrangian Variables
-al = al_init(traj,obj,map,model);
+al = al_init(traj,obj,map,input_mode,model);
 
 %% Run the Outer loop
 % Initialize loop parameters. 

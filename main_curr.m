@@ -7,8 +7,8 @@ addpath(genpath(pwd));
 model = model_init('v1.0.0');  
 
 % Objective and Constraints
-obj  = obj_init('crescent');
-map  = map_init('default');
+obj  = obj_init('traj_gate');
+map  = map_init('flightroom_medium');
 
 % Order of Basis Function for QP
 n_der = 15;             
@@ -46,6 +46,6 @@ log = simulation(traj,map,obj,model,'none','pos_att','bypass');
 
 %% Plot the States, Animate and Debug
 
-des_err_debug(log);
+% des_err_debug(log);
 animation_plot( log,obj,map,'nice','show');
 % mthrust_debug(log.u_fmu,model)

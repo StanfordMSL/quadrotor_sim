@@ -23,7 +23,7 @@ for k = 1:3
     plot(log.t_act,x_act(idx,:),'Linewidth',1.2)
     hold on
 
-    plot(log.t_est,x_des(idx,:),'--','Linewidth',1.2)
+    plot(log.t_fmu,x_des(idx,:),'--','Linewidth',1.2)
     
     legend(names(1,k),names(2,k));
 end
