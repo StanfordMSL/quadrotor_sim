@@ -6,10 +6,12 @@ N_wp    = size(obj.x,2);
 
 % Trajectory time setup. We assume a constant velocity of around 0.5m/s in
 % between waypoints to generate an estimated time.
+vel = 1.0;
+
 t_wp = zeros(1,N_wp);
 for k = 1:N_wp-1
     s_int = norm(obj.x(1:3,k+1) - obj.x(1:3,k));
-    t_int = fmu_dt*round(s_int/(fmu_dt*1.0));
+    t_int = fmu_dt*round(s_int/(fmu_dt*vel));
     
     if s_int == 0   % hover (default)
         t_wp(1,k+1) = 5;
