@@ -35,6 +35,8 @@ switch low_ctl
         pa = pa_init;
     case 'body_rate'                
         br = br_init();
+    case 'wrench'
+        % Do Nothing
     case 'direct'
         % Do Nothing
 end
@@ -65,12 +67,21 @@ for k_act = 1:(N_sim-1)
                 
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
-            case 'body_rate'                
+            case 'body_rate'  
+                del_x = ses.x(1:10,:) - traj.x(1:10,k_fmu);
+
+                u_op = traj.u(:,k_fmu);
+                u_cl =  traj.L(:,:,k_fmu)*del_x;
+        
+                u_br = u_op +  u_cl;
                 [u_wr ,br] = br_ctrl(ses.x,u_br,br);
                 
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
             case 'direct'
+                u_wr = traj.u_w(:,k_fmu);
+                u_mt = traj.u_m(:,k_fmu);
+            case 'wrench'
                 u_wr = traj.u_w(:,k_fmu);
                 u_mt = traj.u_m(:,k_fmu);
         end

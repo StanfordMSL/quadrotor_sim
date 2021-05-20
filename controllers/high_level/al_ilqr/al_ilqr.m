@@ -1,16 +1,16 @@
-function traj = al_ilqr(traj,obj,map,cost_mode,input_mode,model)
+function traj = al_ilqr(traj,map,cost_mode,input_mode,model)
 
 % Generate Cost Variables
-cost_param = cost_assembly(traj,obj,cost_mode,input_mode,model);
+cost_param = cost_assembly(traj,cost_mode,input_mode,model);
 
 % Initialize Augmented Lagrangian Variables
-al = al_init(traj,obj,map,input_mode,model);
+al = al_init(traj,input_mode);
 
 %% Run the Outer loop
 % Initialize loop parameters. 
 itrs     = 0;
 itrs_max = 30;
-tol_pos  = 1e-1;
+tol_pos  = 0;
 tol_mot  = 1e-1;
 
 outer_flag  = true;       % flag true if constraints are violated.
@@ -24,8 +24,13 @@ while outer_flag == true
     end
 
     % Run the inner loop (minimizing L_A)
-    [traj,al,J_upd] = iterate_inner(traj,al,obj,cost_param,model);
+    al = iterate_inner(al,map,cost_param,model);
 
     % Loop Breaking Conditions
     outer_flag = outer_flag_check(al.con,tol_pos,tol_mot,itrs,itrs_max);
 end
+
+traj.x = al.x;
+traj.u = al.u;
+% traj.u_mr = al.u_mr;
+traj.L = al.L;

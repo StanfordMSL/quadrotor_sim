@@ -11,7 +11,7 @@ n_der = 15;             % Order of Basis Function for QP
 % qp_init(n_der);        % Generate QP Matrices
 
 % Objective and Constraints
-obj  = obj_init('zigzag');
+obj  = obj_init('massless');
 map  = map_init('default');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

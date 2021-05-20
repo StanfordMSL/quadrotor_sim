@@ -22,9 +22,9 @@ log.x_des = traj.x;
 
 % FMU Data
 log.t_fmu  = 0:dt_fmu:tf;
-log.u_w    = zeros(4,N_fmu-1);     % Wrench Input
+log.u_wr   = zeros(4,N_fmu-1);     % Wrench Input
 log.u_br   = zeros(4,N_fmu-1);     % Body Rate Controller
-log.u_m    = zeros(4,N_fmu-1);     % Motor Input (propellers)
+log.u_mt   = zeros(4,N_fmu-1);     % Motor Input (propellers)
 
 % Capture time
 log.t_capture = 999;

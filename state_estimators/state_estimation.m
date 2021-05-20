@@ -21,7 +21,7 @@ function ses = state_estimation(x_now,u_now,ses,mode)
             x_pred = quadcopter_est(x_now,u_now,FT_ext,wt);
 
             % Predict the Covariance
-            A = eye(13) + dt.*J_x_ekf(x_now,u_mt);      
+            A = A_ekf_calc(x_now,u_mt);      
             sig_pred = A*ses.sigma*A'+Q;
 
             % Update 

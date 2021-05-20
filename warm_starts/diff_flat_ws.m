@@ -31,26 +31,25 @@ N_tr = size(f_out,3);
 x_bar = zeros(13,N_tr);
 x_bar(:,1) = obj.x(:,1);
 
-u_w = zeros(4,N_tr-1);
-u_m = zeros(4,N_tr-1);
+u_wr = zeros(4,N_tr-1);
+u_mt = zeros(4,N_tr-1);
 
 for k = 1:N_tr-1
-    u_w(:,k) = df_con(f_out(:,:,k),model.est);
+    u_wr(:,k) = df_con(f_out(:,:,k),model.est);
     
     % Directly convert wrench to motor inputs
-    T_motor = model.est.m2w_inv*u_w(:,k);
-    u_m(:,k) = sqrt(T_motor./model.est.kw(1,1));
+    T_motor = model.est.w2m*u_wr(:,k);
+    u_mt(:,k) = sqrt(T_motor./model.est.kw(1,1));
     
     FT_ext = zeros(6,1);
     wt = zeros(13,1);
-    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_m(:,k),FT_ext,wt);
+    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt(:,k),FT_ext,wt);
 end
 
 traj.x = x_bar;
-traj.u_w = u_w;
-traj.u_m = u_m;
+traj.u_wr = u_wr;
+traj.u_mt = u_mt;
 
-traj.l = zeros(4,1,N_tr-1);
 traj.L = zeros(4,13,N_tr-1);
 
 traj.f_out = f_out;

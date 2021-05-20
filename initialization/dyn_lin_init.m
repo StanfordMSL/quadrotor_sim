@@ -76,14 +76,16 @@ for k = 1:2
     tau_linD = -A*quatrot2(v,q_c);
     tau_accD = -B*w;
 
-    % Dynamics Equations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    % Dynamics Equations 
+    
     p_dot = v;
     v_dot = (1/m) .* ( F_g + F_t + F_D + F_ext);
     q_dot = 0.5*W*q;
     w_dot = I\(tau_mot + tau_rot + tau_g + tau_linD + tau_accD + tau_ext);
 
-    % Update Equations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    x_dot = [p_dot ; v_dot ; q_dot ; w_dot];
+    
+    % Update Equations 
 
     x_upd(1:3,1) = p + dt.*p_dot;
     x_upd(4:6,1) = v + dt.*v_dot;  
@@ -114,15 +116,19 @@ for k = 1:2
 
         x_ekf = subs(x_ekf,{w_m1,w_m2,w_m3,w_m4},{u_ses1,u_ses2,u_ses3,u_ses4});
 
-        J_x_ekf = jacobian(x_ekf,x_ses);
-        matlabFunction(J_x_ekf,'File','linearization/J_x_ekf','vars',{x_ses,u_ses})
+%         J_x_ekf = jacobian(x_ekf,x_ses);
+%         A_ekf   = eye(13) + dt.*J_x_ekf;
+
+        A_ekf   = jacobian(x_ekf,x_ses);   
+        matlabFunction(A_ekf,'File','linearization/A_ekf_calc','vars',{x_ses,u_ses})
         
         % Linearization for al-iLQR
         switch input_mode
             case 'direct'
+                n_x = 13;
                 x_opt = x_upd;
                 
-                syms x [13 1] real
+                syms x [n_x 1] real
                 syms u [4 1] real
                 
                 x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
@@ -131,8 +137,44 @@ for k = 1:2
                 x_opt = subs(x_opt,{w1,w2,w3},{x11,x12,x13});
                 
                 x_opt = subs(x_opt,{w_m1,w_m2,w_m3,w_m4},{u1,u2,u3,u4});              
+           case 'wrench'
+                syms x [13 1] real
+                syms u [4 1] real
+                
+                % Forces
+                F_g =  m.*[0 ; 0 ; -g];
+                F_t =  u(1);
+                F_D = -quatrotmat2(D,q)*v;
+
+                % Torques
+                tau_mot  =  u(2:4,1);
+                tau_rot  = -cross(w,I*w);
+                tau_linD = -A*quatrot2(v,q_c);
+                tau_accD = -B*w;
+
+                % Dynamics Equations
+                p_dot = v;
+                v_dot = (1/m) .* ( F_g + F_t + F_D + F_ext);
+                q_dot = 0.5*W*q;
+                w_dot = I\(tau_mot + tau_rot + tau_g + tau_linD + tau_accD + tau_ext);
+    
+                % Update Equations 
+                x_opt(1:3,1) = p + dt.*p_dot;
+                x_opt(4:6,1) = v + dt.*v_dot;  
+
+                q_hat = q + q_dot.*dt;
+                x_opt(7:10,1)  = q_hat./norm(q_hat);
+                x_opt(11:13,1) = w + dt.*w_dot;
+   
+                x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
+                x_opt = subs(x_opt,{v1,v2,v3},{x4,x5,x6});
+                x_opt = subs(x_opt,{q1,q2,q3,q4},{x7,x8,x9,x10});
+                x_opt = subs(x_opt,{w1,w2,w3},{x11,x12,x13});
+                
             case 'body_rate'
-                syms x [10 1] real
+                n_x = 10;
+                
+                syms x [n_x 1] real
                 syms u [4 1] real
                 
                 % Forces
@@ -157,11 +199,16 @@ for k = 1:2
                 x_opt = subs(x_opt,{w1,w2,w3},{u2,u3,u4});
         end
         
-        J_x = jacobian(x_opt,x);
-        J_u = jacobian(x_opt,u);
-
-        matlabFunction(J_x,'File','linearization/J_x_calc','vars',{x,u})
-        matlabFunction(J_u,'File','linearization/J_u_calc','vars',{x,u})
+%         J_x = jacobian(x_opt,x);
+%         J_u = jacobian(x_opt,u);
+%         
+%         A = eye(n_x) + dt.*J_x;
+%         B = dt.*J_u;
+        A = jacobian(x_opt,x);
+        B = jacobian(x_opt,u);
+        
+        matlabFunction(A,'File','linearization/A_calc','vars',{x,u})
+        matlabFunction(B,'File','linearization/B_calc','vars',{x,u})
     end
 
 end

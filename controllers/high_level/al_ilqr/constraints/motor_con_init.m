@@ -24,6 +24,19 @@ switch input_mode
         matlabFunction(con,'File',[address,'motor_con'],'vars',{x,u})
         matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
         matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
+    case 'wrench'
+        syms x [13 1] real
+        syms u [4 1] real
+                
+        w_m  = sqrt((1/kw).*w2m*u);
+        con = [w_m-w_m_max ; -w_m+w_m_min];
+        
+        con_x = jacobian(con,x);
+        con_u = jacobian(con,u);
+        
+        matlabFunction(con,'File',[address,'motor_con'],'vars',{x,u})
+        matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
+        matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
     case 'body_rate'
         syms x [10 1] real
         syms u   [4 1] real
@@ -47,9 +60,5 @@ switch input_mode
         matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u,u_p})
         matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u,u_p})
 end
-
-
-
-
 
 end

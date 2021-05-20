@@ -1,4 +1,4 @@
-function nominal_plot(x_bar,obj,map,step,view_point)
+function nominal_plot(x_bar,map,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
@@ -39,6 +39,8 @@ grid on
 
 for k = 1:step:size(x_bar,2)
     [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
+
+%     [x_arrow, y_arrow, z_arrow] = frame_builder(x_bar(:,k));
     x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
     y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
     z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
