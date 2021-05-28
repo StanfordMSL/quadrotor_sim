@@ -1,76 +1,61 @@
-function cdd = backward_pass(x_bar,u_bar,al,rho,cost_param)     
-    %% Unpack and initialize some useful stuff
-    % State and input parameters
-    n_x = size(x_bar,1);
-    n_u = size(u_bar,1);
-        
-    % Counts
-    N_bp = size(x_bar,2);
-    
-    % Initialize feedback policy variables
-    l = zeros(n_u,N_bp-1);
-    L = zeros(n_u,n_x,N_bp-1);
-    del_V = zeros(2,N_bp);
-    
-    %% Execute the Backward Pass
-    % Initial Step
-    x_bp  = x_bar(:,end);
-    x_N   = cost_param.x_N;
-    
-    Q     = cost_param.Q_N;
-    
-    v     = Q*(x_bp-x_N);
-    V     = Q;
-    
-    for k = N_bp-1:-1:1
-        % Extract states and inputs
-        x_bp = x_bar(:,k);
-        u_bp = u_bar(:,k);
-        x_k = cost_param.x_k(:,k);
-        u_k = cost_param.u_k(:,k);
+function [l,L,delV] = backward_pass(X,U,con,con_x,con_u,lambda,mu_diag,rho)
 
-        % Extract cost weights
-        Q     = cost_param.Q_k(:,:,k);
-        R     = cost_param.R_k(:,:,k);
-    
-        % Generate linearization
-        A = A_calc(x_bp,u_bp);
-        B = B_calc(x_bp,u_bp);
-    
-        % Extract constraint variables
-        lambda = al.lambda(:,k);
-        I_mu   = al.I_mu(:,:,k);
-        con    = al.con(:,k);
-        con_x  = al.con_x(:,:,k);
-        con_u  = al.con_u(:,:,k);
-        
-        % Update the Stagewise Variables
-        c_x  = Q * (x_bp-x_k);
-        c_u  = R * (u_bp-u_k);
-        c_xx = Q;
-        c_uu = R;
-        c_ux = zeros(4,n_x);
+U = [U(1,:) ; X(11:13,1:end-1)];
+X = X(1:10,:);
 
-        % Update intermediate variables
-        Q_x  = c_x  + A'*v + con_x'*(lambda + I_mu*con);
-        Q_u  = c_u  + B'*v + con_u'*(lambda + I_mu*con);
-        Q_xx = c_xx + A'*V*A + con_x'*I_mu*con_x;
-        Q_uu = c_uu + B'*V*B + con_u'*I_mu*con_u;
-        Q_ux = c_ux + B'*V*A + con_u'*I_mu*con_x;
+% Unpack some useful stuff
+n_x = size(X,1);
+n_u = size(U,1);
+N   = size(X,2);
+
+% Initialize feedback policy variables
+l = zeros(n_u,N-1);
+L = zeros(n_u,n_x,N-1);
+delV = zeros(2,N);
+
+% Initial
+Q_N = Q_N_calc(1);
+q_N = q_N_calc(X(:,N));
+
+V = Q_N;
+v = q_N;
+
+for k = N-1:-1:1
+    % Unpack stagewise stuff
+    x = X(:,k);
+    u = U(:,k);
+    
+    A = A_calc(x,u);
+    B = B_calc(x,u);
+    
+    c = con(:,k);
+    cx = con_x(:,:,k);
+    cu = con_u(:,:,k);
+    
+    ld = lambda(:,k);
+    I_mu = diag(mu_diag(:,k));
+    
+    % Generate Intermediate Terms
+    Q_k = Q_k_calc(1);
+    R_k = R_k_calc(1);
+    q_k = q_k_calc(1);
+    r_k = r_k_calc(1);
         
-        % Update the feed-forward and feedback terms
-        l(:,k)   = -(Q_uu+rho.*eye(4))\Q_u;
-        L(:,:,k) = -(Q_uu+rho.*eye(4))\Q_ux;
+    Qx  = q_k + A'*v + cx'*(ld + I_mu*c);
+    Qu  = r_k + B'*v + cu'*(ld + I_mu*c);
+    Qxx = Q_k + A'*V*A + cx'*I_mu*cx;
+    Quu = R_k + B'*V*B + cu'*I_mu*cu;
+    Qux = B'*V*A + cu'*I_mu*cx;
         
-        % Update v and V for next bp state
-        v = Q_x  - L(:,:,k)'*Q_uu*l(:,k);
-        V = Q_xx - L(:,:,k)'*Q_uu*L(:,:,k);
-        
-        % Expected change in cost
-        del_V(1,k) = (l(:,k)' * Q_u);
-        del_V(2,k) = 0.5.*(l(:,k)' * Q_uu * l(:,k));
-    end
-    cdd.l = l;
-    cdd.L = L;
-    cdd.del_V = del_V;
+    % Generate Feedback Update
+    l(:,k)   = -(Quu+rho.*eye(4))\Qu;
+    L(:,:,k) = -(Quu+rho.*eye(4))\Qux;
+    
+    % Generate next cost-to-go
+    V = Qxx - L(:,:,k)'*Quu*L(:,:,k);
+    v = Qx  - L(:,:,k)'*Quu*l(:,k);
+    
+    % Generate line-search checker
+    delV(1,k) = (l(:,k)' * Qu);
+    delV(2,k) = 0.5.*(l(:,k)' * Quu * l(:,k));
 end

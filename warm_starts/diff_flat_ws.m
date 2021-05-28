@@ -32,42 +32,27 @@ x_bar = zeros(13,N_tr);
 x_bar(:,1) = obj.x(:,1);
 
 u_wr = zeros(4,N_tr-1);
-u_mt = zeros(4,N_tr-1);
 
 for k = 1:N_tr-1
     u_wr(:,k) = df_con(f_out(:,:,k),model.est);
     
     % Directly convert wrench to motor inputs
     T_motor = model.est.w2m*u_wr(:,k);
-    u_mt(:,k) = sqrt(T_motor./model.est.kw(1,1));
+    u_mt = sqrt(T_motor./model.est.kw(1,1));
     
     FT_ext = zeros(6,1);
     wt = zeros(13,1);
-    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt(:,k),FT_ext,wt);
+    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt,FT_ext,wt);
 end
 
 traj.x = x_bar;
-traj.u_wr = u_wr;
-traj.u_mt = u_mt;
-
-traj.L = zeros(4,13,N_tr-1);
-
-traj.f_out = f_out;
+traj.u = u_wr;
 
 % Publish some diagnostics
 switch nom_show
     case 'show'
-        nominal_plot(traj.x,obj,map,100,'persp');
-        mthrust_debug(traj.u_m,model)
+        nominal_plot(traj.x,map,100,'persp');
     case 'hide'
 end
 
-% figure(5)
-% clf
-% plot3(squeeze(f_out(1,1,:)),squeeze(f_out(2,1,:)),squeeze(f_out(3,1,:)))
-% hold on
-% plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:))
-% xlim([-5 5]);
-% ylim([-5 5]);
-% zlim([0 5]);
 end

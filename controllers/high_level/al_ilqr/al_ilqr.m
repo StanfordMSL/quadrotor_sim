@@ -1,36 +1,64 @@
-function traj = al_ilqr(traj,map,cost_mode,input_mode,model)
+function traj = al_ilqr(traj,map)
+% Tuning Parameters
+tol_motor = 1e3;
+tol_gate  = 1e-1;
+tol_inner = 0.00;
+rho = 0.1;
 
-% Generate Cost Variables
-cost_param = cost_assembly(traj,cost_mode,input_mode,model);
+% Unpack some stuff
+N = size(traj.x,2);
 
-% Initialize Augmented Lagrangian Variables
-al = al_init(traj,input_mode);
+% Initialize Variables
+X = traj.x;
+U = traj.u;
 
-%% Run the Outer loop
-% Initialize loop parameters. 
-itrs     = 0;
-itrs_max = 30;
-tol_pos  = 0;
-tol_mot  = 1e-1;
+% Debug
+nominal_plot(X,map,10,'persp')
 
-outer_flag  = true;       % flag true if constraints are violated.
-while outer_flag == true
-    % Update iterate count and check for break limit
-    itrs =  itrs + 1;
-    
-    % Update augmented lagrangian terms
-    if itrs > 1
-        al = al_update(al);
+mu = [ 0.1.*ones(8,N) ;...     % motor
+       0.1.*ones(16,N) ];      % gate
+lambda = 0.*ones(24,N);
+phi    = 1.2.*ones(24,1);
+
+[c, cx, cu] = con_calc(X,U);
+mu_diag = check_con(c,lambda,mu);
+
+Jc = lagr_calc(X,U,c,lambda,mu_diag);
+
+counter = [0 0];
+while true
+    counter(1,1) = counter(1,1)+1;
+    while true
+        counter(1,2) = counter(1,2)+1;        
+        Xp = X;
+        Up = U;
+        Jp = Jc;
+        
+        [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag,rho);
+        [X,U,Jc,c,cx,cu] = forward_pass(X,U,l,L,del_V,Jp,lambda,mu,map);
+        nominal_plot(X,map,100,'top');
+
+        if (check_inner(Jc,Jp,tol_inner) == 1)
+            break
+        elseif (check_inner(Jc,Jp,tol_inner) == 2)
+            X = Xp;
+            U = Up;
+            break
+        end
+        
     end
-
-    % Run the inner loop (minimizing L_A)
-    al = iterate_inner(al,map,cost_param,model);
-
-    % Loop Breaking Conditions
-    outer_flag = outer_flag_check(al.con,tol_pos,tol_mot,itrs,itrs_max);
+    [lambda,mu] = mult_update(lambda,mu,phi,c);
+    
+    if (check_outer(c,tol_motor,tol_gate) == true)
+        break
+    end
+    
+    % Debug
+    disp(['[al_ilqr]: Obj. Cost: ',num2str(Jc.obj),' Con. Cost: ',num2str(Jc.obj)]);
 end
 
-traj.x = al.x;
-traj.u = al.u;
-% traj.u_mr = al.u_mr;
-traj.L = al.L;
+nominal_plot(X,map,10,'top');
+
+traj.x = X;
+traj.u = U;
+traj.L = L;

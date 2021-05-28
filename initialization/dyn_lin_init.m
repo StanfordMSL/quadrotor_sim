@@ -45,10 +45,12 @@ FT_ext = [F_ext ; tau_ext];
 for k = 1:2
     if k == 1       % Actual
         db = model.act;        
-        filename = 'models/quadcopter_act';
+        quad_func = 'models/quadcopter_act';
+        w2m_func  = 'models/w2m_act';
     else            % Estimated
         db = model.est;     
-        filename = 'models/quadcopter_est';
+        quad_func = 'models/quadcopter_est';
+        w2m_func  = 'models/w2m_est';
     end
     
     % Unpack
@@ -62,6 +64,7 @@ for k = 1:2
     m = db.m;
     I = db.I;
     m2w = db.m2w;
+    w2m = db.w2m;
     
     % Forces
     F_w = m2w*(kw(1).*w_m.^2 + kw(2).*w_m.^1 + kw(3).*w_m.^0); 
@@ -97,8 +100,15 @@ for k = 1:2
     x_upd = x_upd + wt;
 
     %% Output Quadcopter Dynamics Function
-    matlabFunction(x_upd,'File',filename,'vars',{x_s,w_m,FT_ext,wt})
+    matlabFunction(x_upd,'File',quad_func,'vars',{x_s,w_m,FT_ext,wt})
     
+    %% Output Wrench to Motor
+    syms wrench [4 1] real
+
+    T_motor = w2m*wrench;
+    u_m = sqrt(T_motor./kw(1));
+    matlabFunction(u_m,'File',w2m_func,'vars',{wrench})
+
     %% Output Linearization Terms
     % Note: we use the estimated model since the linearization is in
     % the controller only.
@@ -115,9 +125,6 @@ for k = 1:2
         x_ekf = subs(x_ekf,{w1,w2,w3},{x_ses11,x_ses12,x_ses13});
 
         x_ekf = subs(x_ekf,{w_m1,w_m2,w_m3,w_m4},{u_ses1,u_ses2,u_ses3,u_ses4});
-
-%         J_x_ekf = jacobian(x_ekf,x_ses);
-%         A_ekf   = eye(13) + dt.*J_x_ekf;
 
         A_ekf   = jacobian(x_ekf,x_ses);   
         matlabFunction(A_ekf,'File','linearization/A_ekf_calc','vars',{x_ses,u_ses})
@@ -190,7 +197,7 @@ for k = 1:2
                 x_opt(1:3,1) = p + dt.*p_dot;
                 x_opt(4:6,1) = v + dt.*v_dot;  
 
-                q_hat = q + q_dot.*dt;
+                q_hat = q + dt.*q_dot;
                 x_opt(7:10,1)  = q_hat./norm(q_hat);
                 
                 x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
@@ -199,11 +206,6 @@ for k = 1:2
                 x_opt = subs(x_opt,{w1,w2,w3},{u2,u3,u4});
         end
         
-%         J_x = jacobian(x_opt,x);
-%         J_u = jacobian(x_opt,u);
-%         
-%         A = eye(n_x) + dt.*J_x;
-%         B = dt.*J_u;
         A = jacobian(x_opt,x);
         B = jacobian(x_opt,u);
         
@@ -214,5 +216,3 @@ for k = 1:2
 end
 
 disp("[dyn_func_init]: Model Functions Generated")
-
-end

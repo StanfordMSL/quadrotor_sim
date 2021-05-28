@@ -1,4 +1,4 @@
-function log = logger_init(tf,N_act,N_ses,N_fmu,traj,obj,model)
+function log = logger_init(tf,N_act,N_ses,N_fmu,traj,model)
 
 % Unpack some useful stuff
 dt_act = model.clock.dt_act;
@@ -8,12 +8,12 @@ dt_ses = model.clock.dt_ses;
 % Timestamped Actual Pose Array
 log.t_act = 0:dt_act:tf;
 log.x_act = zeros(13,N_act);
-log.x_act(:,1) = obj.x(:,1);
+log.x_act(:,1) = traj.x(:,1);
 
 % Estimator Data
 log.t_ses  = 0:dt_ses:tf;
 log.x_ses  = zeros(13,N_ses);
-log.x_ses(:,1) = obj.x(:,1);
+log.x_ses(:,1) = traj.x(:,1);
 
 log.sigma = zeros(13,13,N_ses);
 

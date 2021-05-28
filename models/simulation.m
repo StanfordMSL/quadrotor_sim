@@ -1,4 +1,4 @@
-function log = simulation(traj,map,obj,model,high_ctl,low_ctl,sense_mode)
+function log = simulation(traj,obj,model,high_ctl,low_ctl,sense_mode)
 
 % Initialize clock variables
 dt_lqr = model.clock.dt_lqr;
@@ -23,7 +23,7 @@ if floor(N_fmu) ~= N_fmu
 end
 
 % Initialize Logger Variable
-log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,obj,model);     
+log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,model);     
 
 % State Estimator Initilization
 ses = ses_init(traj);
