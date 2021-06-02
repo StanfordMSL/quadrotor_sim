@@ -36,14 +36,6 @@ while true
         X_fp(:,k+1) = quadcopter_est(X_fp(:,k),u_mt,FT_ext,wt);
     end
     
-    % Debug
-%     nominal_plot(X_fp,map,100,'top');
-%     figure(3)
-%     clf
-%     plot(U_fp(3,:))
-%     hold on
-%     plot(X_fp(12,:))
-    
     [con, con_x, con_u] = con_calc(X_fp,U_fp);
     mu_diag = check_con(con,lambda,mu);
     

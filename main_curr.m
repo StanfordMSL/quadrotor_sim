@@ -9,7 +9,7 @@ model = model_init('v1.0.0');
 % Objective and Constraints
 obj  = obj_init('traj_gate');
 % map  = map_init('flightroom_wall_left');
-map  = map_init('flightroom_hard');
+map  = map_init('flightroom_hard_high');
 
 % Order of Basis Function for QP
 n_der = 15;             

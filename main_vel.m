@@ -28,9 +28,9 @@ toc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation
 
-log = simulation(traj,map,obj,model,'none','pos_att','bypass');
-% log = simulation(traj,map,obj,model,'none','body_rate','bypass');
-% log = simulation(traj,map,obj,model,'none','direct','bypass');
+log = simulation(traj,obj,model,'none','pos_att','bypass');
+% log = simulation(traj,obj,model,'none','body_rate','bypass');
+% log = simulation(traj,obj,model,'none','direct','bypass');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Plot the States and Animate

@@ -48,6 +48,9 @@ end
 traj.x = x_bar;
 traj.u = u_wr;
 
+traj.t_fmu = t_sigma;
+traj.f_out = f_out;
+
 % Publish some diagnostics
 switch nom_show
     case 'show'
