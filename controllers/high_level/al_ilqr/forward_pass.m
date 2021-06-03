@@ -41,11 +41,14 @@ while true
     
     Jc = lagr_calc(X_fp,U_fp,con,lambda,mu_diag);
 
+    nominal_plot(X_fp,map,100,'back');
+
     if check_LS(Jc,Jp,alpha,delV)
         X = X_fp;
         U = U_fp;
+        disp(['[forward_pass]: alpha = ',num2str(alpha)]);
         break;
     else
-        alpha = 0.5.*alpha;
+        alpha = 0.9.*alpha;
     end
 end

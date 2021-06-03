@@ -32,8 +32,7 @@ end
 syms u [4 1] real
 
 % Initialize Function Output
-syms gain_act [n_p*2 1] real % actual
-syms gain_par [n_p*2 1] real % for partials
+syms gain [n_p*2 1] real % actual
 
 for j = 1:2
     r_g = r_g_arr(:,j);
@@ -43,25 +42,23 @@ for j = 1:2
         
         r_d = x(1:3,1) + quatrot2(r_d_arr(:,k),x(7:10,1));
 
-        del_x = x(1,1) - p_g(1,1);
-        g1 = 1./(1+exp(-20*(del_x+tol)));
-        g2 = 1./(1+exp(-20*(del_x-tol)));
-
-        g = round(g1-g2);
+%         a1 = 1/tol;
+%         a2 = p_g(1,1)/tol;
+%         a3 = 1;
+%         
+%         g = -(a1*x(1,1)+a2)^2 + a3;
+        g = 1;
         
-        gain_act(idx,1) = g.*dot((r_d-p_G1),r_g)./(r_g'*r_g);
-        gain_par(idx,1) = dot((r_d-p_G1),r_g)./(r_g'*r_g);
+        gain(idx,1) = g.*dot((r_d-p_G1),r_g)./(r_g'*r_g);
     end
 end
 
-con_act = [-gain_act ; gain_act-ones(n_p*2,1)];
-
-con_par = [-gain_par ; gain_par-ones(n_p*2,1)];
-con_x = jacobian(con_par,x);
-con_u = jacobian(con_par,u);
+con = [-gain ; gain-ones(n_p*2,1)];
+con_x = jacobian(con,x);
+con_u = jacobian(con,u);
 
 address = 'controllers/high_level/al_ilqr/constraints/';
-matlabFunction(con_act,'File',[address,'gate_con'],'vars',{x,u})
+matlabFunction(con,'File',[address,'gate_con'],'vars',{x,u})
 matlabFunction(con_x,'File',[address,'gate_con_x'],'vars',{x,u})
 matlabFunction(con_u,'File',[address,'gate_con_u'],'vars',{x,u})
 

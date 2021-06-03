@@ -1,20 +1,22 @@
 function traj = al_ilqr(traj,map)
 % Tuning Parameters
 tol_motor = 1e3;
-tol_gate  = 1e-1;
-tol_inner = 0.00;
-rho = 0.1;
+tol_gate  = 1e-2;
+tol_inner = 0.01;
 
 % Unpack some stuff
+n_x = size(traj.x,1);
+n_u = size(traj.u,1);
 N = size(traj.x,2);
 
 % Initialize Trajectory Variables
 X = traj.x;
 U = traj.u;
+L = zeros(n_u,n_x,N-1);
 
 % Initialize Lagrange Variables
-mu = [ 0.1.*ones(8,N) ;...     % motor
-       0.1.*ones(16,N) ];      % gate
+mu = [ 0.001.*ones(8,N) ;...     % motor
+       0.001.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
 phi    = 1.2.*ones(24,1);
 
@@ -31,15 +33,26 @@ while true
     while true
         counter(1,2) = counter(1,2)+1;        
         La_p = La_c;
+        Xp = X;
+        Up = U;
+        Lp = L;
         
         [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag);
         [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,map);
-
-        if (check_inner(La_c,La_p,tol_inner) == 1)
-            break
-        elseif (check_inner(La_c,La_p,tol_inner) == 2)
+        
+        flag_inner = check_inner(La_c,La_p,tol_inner);
+        if (flag_inner == 0)
+            % Carry on
+        elseif (flag_inner == 1)
+            % Explosion. Revert
+            
             X = Xp;
             U = Up;
+            L = Lp;
+            
+            break
+        else
+            % Minimum Found. Exit loop.
             break
         end
         
@@ -47,6 +60,7 @@ while true
     [lambda,mu] = mult_update(lambda,mu,phi,c);
     
     if (check_outer(c,tol_motor,tol_gate) == true)
+        % Constraints satisfied. Stop al-iLQR.
         break
     end
     

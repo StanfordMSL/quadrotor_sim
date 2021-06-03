@@ -7,9 +7,9 @@ addpath(genpath(pwd));
 model = model_init('v1.0.0');  
 
 % Objective and Constraints
-obj  = obj_init('traj_gate');
+obj  = obj_init('line');
 % map  = map_init('flightroom_wall_left');
-map  = map_init('flightroom_hard_high');
+map  = map_init('gate_high');
 
 % Order of Basis Function for QP
 n_der = 15;             
@@ -22,14 +22,13 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% dyn_lin_init(model,input_mode);        % Generate Dynamics and Linearization Functions
-% % % % qp_init(n_der);                   % Generate QP Matrices
+% qp_init(n_der);                   % Generate QP Matrices
 
-% al_ilqr_init(cost_mode,input_mode,obj,map,model);
+% dyn_lin_init(model,input_mode);        % Generate Dynamics and Linearization Functions
 
 % lagr_init(cost_mode,input_mode,obj)
 % motor_con_init(input_mode,model)
-% gate_con_init(map,input_mode,model)
+gate_con_init(map,input_mode,model)
 
 
 %% Warm Start

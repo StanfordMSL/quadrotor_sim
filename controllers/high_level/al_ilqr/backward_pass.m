@@ -10,7 +10,7 @@ n_u = size(U,1);
 N   = size(X,2);
 
 % Tuning Parameter
-reg_init = zeros(n_x,n_x);
+reg_init = 0.01.*eye(n_u);
 reg = reg_init;
 
 % Initialize feedback policy variables
@@ -50,22 +50,25 @@ for k = N-1:-1:1
     Qu  = r_k + B'*v + cu'*(ld + I_mu*c);
     Qxx = Q_k + A'*V*A + cx'*I_mu*cx;
     
-    Quu = R_k + B'*V*B + cu'*I_mu*cu;
+    Quu = R_k + B'*V*B + cu'*I_mu*cu + reg;
+    while rcond(Quu) < 1e-5
+        reg = 10.*reg;
+        Quu = R_k + B'*V*B + cu'*I_mu*cu + reg;
+    end
     Qux = B'*V*A + cu'*I_mu*cx;
     
-    Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
-    
-    % Regularize the term to be inverted
-    while rcond(Quuh) < 1e-5
-        reg = reg + eye(n_x);
-        Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
-    end
-    Quxh = B'*(V+reg)*A + cu'*I_mu*cx;
-    reg = reg_init;
+%     Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
+%     
+%     % Regularize the term to be inverted
+%     while rcond(Quuh) < 1e-5
+%         reg = 10.*reg;
+%         Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
+%     end
+%     Quxh = B'*(V+reg)*A + cu'*I_mu*cx;
     
     % Generate Feedback Update
-    l(:,k)   = -Quuh\Qu;
-    L(:,:,k) = -Quuh\Quxh;
+    l(:,k)   = -Quu\Qu;
+    L(:,:,k) = -Quu\Qux;
     
     % Generate next cost-to-go
     V = Qxx + L(:,:,k)'*Quu*L(:,:,k) + L(:,:,k)'*Qux + Qux'*L(:,:,k);
