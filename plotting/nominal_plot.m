@@ -71,7 +71,7 @@ switch view_point
     case 'top'
         view(0,90);
     case 'nice'
-        view(-60,20);
+        view(-100,20);
 end
 
 % Set Limits

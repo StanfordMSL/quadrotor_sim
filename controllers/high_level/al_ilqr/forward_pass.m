@@ -1,54 +1,59 @@
-function [X,U,Jc,con,con_x,con_u] = forward_pass(X,U,l,L,delV,Jp,lambda,mu,map)
+function [X,U,La_c,con,con_x,con_u] = forward_pass(X,U,l,L,delV,La_p,lambda,mu,xs,us,map)
 
 % Tuning Parameter
 alpha = 1;
 
 % Unpack the relevant variables
-X_bar = X(1:10,:);
-U_bar = [U(1,:) ;X(11:13,1:end-1)];
+Xb = X(1:10,:);
+Ub = [U(1,:) ;X(11:13,1:end-1)];
 
 N = size(X,2);
 n_x = size(X,1);
 n_u = size(U,1);
 
-X_fp = zeros(n_x,N);
-X_fp(:,1) = X(:,1);
-U_fp = zeros(n_u,N-1);
+Xfp = zeros(n_x,N);
+Xfp(:,1) = X(:,1);
+Ufp = zeros(n_u,N-1);
 
-br = br_init(); 
 
 % Forward pass assumes no external forces and noise
 FT_ext = zeros(6,1);  
 wt = zeros(13,1);
 
 while true
-    for k = 1:N-1
-        del_x = X_fp(1:10,k) - X_bar(:,k);
+    br = br_init(); 
 
-        u_op = U_bar(:,k) + alpha*l(:,k);
+    for k = 1:N-1
+        del_x = Xfp(1:10,k) - Xb(:,k);
+
+        u_op = Ub(:,k) + alpha*l(:,k);
         u_cl = L(:,:,k)*del_x;
         
-        U_fp(:,k) = u_op +  u_cl;
+        Ufp(:,k) = u_op +  u_cl;
 
-        [u_wr ,br] = br_ctrl(X_fp(:,k),U_fp(:,k),br);
+        [u_wr ,br] = br_ctrl(Xfp(:,k),Ufp(:,k),br);
         u_mt = w2m_est(u_wr);
         
-        X_fp(:,k+1) = quadcopter_est(X_fp(:,k),u_mt,FT_ext,wt);
+        Xfp(:,k+1) = quadcopter_est(Xfp(:,k),u_mt,FT_ext,wt);
     end
     
-    [con, con_x, con_u] = con_calc(X_fp,U_fp);
+    [con, con_x, con_u] = con_calc(Xfp,Ufp);
     mu_diag = check_con(con,lambda,mu);
     
-    Jc = lagr_calc(X_fp,U_fp,con,lambda,mu_diag);
+    La_c = lagr_calc(Xfp,Ufp,xs,us,con,lambda,mu_diag);
 
-    nominal_plot(X_fp,map,100,'back');
+    % Debug
+    La_plot(La_p,La_c);
+    nominal_plot(Xfp,map,10,'nice');
+    disp(['[forward_pass]: alpha = ',num2str(alpha)]);
+    disp(['[forward_pass]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 
-    if check_LS(Jc,Jp,alpha,delV)
-        X = X_fp;
-        U = U_fp;
-        disp(['[forward_pass]: alpha = ',num2str(alpha)]);
+    flag_LS = check_LS(La_c,La_p,alpha,delV);
+    if flag_LS == 1
+        X = Xfp;
+        U = Ufp;
         break;
     else
-        alpha = 0.9.*alpha;
+        alpha = 0.95.*alpha;
     end
 end

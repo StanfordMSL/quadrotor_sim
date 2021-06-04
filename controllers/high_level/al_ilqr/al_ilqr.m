@@ -1,4 +1,4 @@
-function traj = al_ilqr(traj,map)
+function traj = al_ilqr(traj,obj,map)
 % Tuning Parameters
 tol_motor = 1e3;
 tol_gate  = 1e-2;
@@ -9,6 +9,9 @@ n_x = size(traj.x,1);
 n_u = size(traj.u,1);
 N = size(traj.x,2);
 
+xs = obj.x(:,end);
+us = zeros(4,1);
+
 % Initialize Trajectory Variables
 X = traj.x;
 U = traj.u;
@@ -18,18 +21,20 @@ L = zeros(n_u,n_x,N-1);
 mu = [ 0.001.*ones(8,N) ;...     % motor
        0.001.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
-phi    = 1.2.*ones(24,1);
+phi    = 2.0;
 
-% Calculate and Activate Constraints
+% Initialize Constraint Variables
 [c, cx, cu] = con_calc(X,U);
-mu_diag = check_con(c,lambda,mu);
-
-% Calculate Lagrangian
-La_c = lagr_calc(X,U,c,lambda,mu_diag);
 
 counter = [0 0];
 while true
     counter(1,1) = counter(1,1)+1;
+    
+    % Calculate Constraint Activator Values and Lagrangian
+    mu_diag = check_con(c,lambda,mu);
+    La_c = lagr_calc(X,U,xs,us,c,lambda,mu_diag);
+    disp(['[al_ilqr]: REFERENCE Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
+
     while true
         counter(1,2) = counter(1,2)+1;        
         La_p = La_c;
@@ -37,8 +42,8 @@ while true
         Up = U;
         Lp = L;
         
-        [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag);
-        [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,map);
+        [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag,xs,us);
+        [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us,map);
         
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)
@@ -64,8 +69,8 @@ while true
         break
     end
     
-    % Debug
-    disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.obj)]);
+%     % Debug
+%     disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 end
 
 nominal_plot(X,map,10,'top');
