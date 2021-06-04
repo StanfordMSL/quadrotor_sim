@@ -31,13 +31,13 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 
 %% Warm Start
-tic
+
 traj = diff_flat_ws(obj,map,model,n_der,'show');
-toc
+
 %% Full Constraint Optimization
-tic
+
 traj = al_ilqr(traj,obj,map);
-toc
+
 %% Simulation
 
 % log = simulation(traj,obj,model,'none','pos_att','bypass');

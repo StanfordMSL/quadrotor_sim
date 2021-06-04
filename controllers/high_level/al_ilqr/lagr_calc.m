@@ -47,4 +47,6 @@ J.obj = sum(J_objs);
 J.con = sum(J_cons);
 J.tot = J.obj + J.con;
 
+disp(['[lagr_calc]: Obj. Cost: ',num2str(J.obj),' Con. Cost: ',num2str(J.con)]);
+
 end

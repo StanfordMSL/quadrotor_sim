@@ -33,7 +33,6 @@ while true
     % Calculate Constraint Activator Values and Lagrangian
     mu_diag = check_con(c,lambda,mu);
     La_c = lagr_calc(X,U,xs,us,c,lambda,mu_diag);
-%     disp(['[al_ilqr]: REFERENCE Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 
     while true
         counter(1,2) = counter(1,2)+1;        
