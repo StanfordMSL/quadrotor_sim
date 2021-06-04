@@ -8,7 +8,7 @@ model = model_init('v1.0.0');
 
 % Objective and Constraints
 obj  = obj_init('line');
-map  = map_init('gate_high');
+map  = map_init('slit_hard');
 
 % Order of Basis Function for QP
 n_der = 15;             
@@ -31,13 +31,13 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 
 %% Warm Start
-
+tic
 traj = diff_flat_ws(obj,map,model,n_der,'show');
-
+toc
 %% Full Constraint Optimization
-
+tic
 traj = al_ilqr(traj,obj,map);
-
+toc
 %% Simulation
 
 % log = simulation(traj,obj,model,'none','pos_att','bypass');
@@ -46,6 +46,9 @@ log = simulation(traj,obj,model,'none','body_rate','bypass');
 
 %% Plot the States, Animate and Debug
 
-% des_err_debug(log);
+tol_motor = 2e3;
+tol_gate  = 2e-1;
+check_outer(log.con,tol_motor,tol_gate);
+
 animation_plot( log,obj,map,'nice','show');
 % mthrust_debug(log.u_fmu,model)

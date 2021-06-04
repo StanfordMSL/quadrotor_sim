@@ -1,4 +1,4 @@
-function mthrust_debug(u_sim,model)
+function mthrust_debug(u_mt,model)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
@@ -9,24 +9,22 @@ function mthrust_debug(u_sim,model)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Generate lines for upper and lower limits
-    points = size(u_sim,2);
-    Ft_min = model.Ft_min.*ones(1,points);
-    Ft_max = model.Ft_max.*ones(1,points);
-    Ft_sim = model.kw_act(1,1) .* u_sim.^2;
+    N = size(u_mt,2);
+    w_min = model.motor.max.*ones(1,N);
+    w_max = model.motor.max.*ones(1,N);
     
     for k = 1:4
         subplot(4,1,k)
         cla
         set(gca,'ColorOrder','factory')
         
-        plot(Ft_sim(k,:),'Linewidth',1.2)
+        plot(u_mt(k,:),'Linewidth',1.2)
         hold on
         
-        plot(Ft_min,'--','Linewidth',1.2)
-        plot(Ft_max,'--','Linewidth',1.2)
+        plot(w_min,'--','Linewidth',1.2)
+        plot(w_max,'--','Linewidth',1.2)
         xlabel('Time(s)','FontSize',12);
         ylabel(['m_',num2str(k),' (N)'],'FontSize',12);
-        ylim([-3 13]);
     end
     
 set(gcf,'color','w');

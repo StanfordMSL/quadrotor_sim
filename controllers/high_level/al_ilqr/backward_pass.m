@@ -1,10 +1,5 @@
 function [l,L,delV] = backward_pass(X,U,con,con_x,con_u,lambda,mu_diag,xs,us)
 
-% Rearrange Some Stuff
-U = [U(1,:) ; X(11:13,1:end-1)];
-X = X(1:10,:);
-xs = xs(1:10,:);
-
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
@@ -64,7 +59,7 @@ for k = N-1:-1:1
         rho = 10.*rho;
         
         Quu = R_k + B'*V*B + cu'*I_mu*cu + reg;
-        disp(['[backward_pass]: reg increased to ',num2str(rho)]);
+%         disp(['[backward_pass]: reg increased to ',num2str(rho)]);
     end
     Qux = B'*V*A + cu'*I_mu*cx;
     

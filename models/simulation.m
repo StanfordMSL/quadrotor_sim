@@ -23,7 +23,7 @@ if floor(N_fmu) ~= N_fmu
 end
 
 % Initialize Logger Variable
-log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,model);     
+log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,obj,model);     
 
 % State Estimator Initilization
 ses = ses_init(traj);
@@ -79,16 +79,18 @@ for k_act = 1:(N_sim-1)
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
             case 'direct'
-                u_wr = traj.u_w(:,k_fmu);
-                u_mt = traj.u_m(:,k_fmu);
+                u_wr = traj.u_wr(:,k_fmu);
+                u_mt = traj.u_mt(:,k_fmu);
             case 'wrench'
-                u_wr = traj.u_w(:,k_fmu);
-                u_mt = traj.u_m(:,k_fmu);
+                u_wr = traj.u_wr(:,k_fmu);
+                u_mt = traj.u_mt(:,k_fmu);
         end
         
         log.t_fmu(:,k_fmu) = t_now; 
-        log.u_w(:,k_fmu)   = u_wr;
-        log.u_fmu(:,k_fmu) = u_mt;
+        log.u_wr(:,k_fmu)  = u_wr;
+        log.u_br(:,k_fmu)  = u_br;
+        log.u_mt(:,k_fmu)  = u_mt;
+        log.x_fmu(:,k_fmu) = x_now;
     end
     %%%%%%%%%%%%%%%%%%%%%%y%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Level Control Updater    
@@ -118,7 +120,12 @@ for k_act = 1:(N_sim-1)
     log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
 end
 
+% Tie Up Terminal Point
 if k_ses < N_ses
     log.t_ses(:,end)  = t_now;   
     log.x_ses(:,end)  = ses.x;  
+    log.x_fmu(:,end)  = ses.x;  
 end
+
+% Check Constraints
+[log.con,~,~] = con_calc(log.x_fmu,log.u_br);

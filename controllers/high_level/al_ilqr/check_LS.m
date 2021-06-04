@@ -1,12 +1,21 @@
-function flag = check_LS(Jc,Jp,alpha,delV)
+function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
 
-z = (Jc.tot-Jp.tot)/(alpha*sum(delV(1,:)) + (alpha^2)*sum(delV(2,:)));
+z = Jp.tot-Jc.tot;
 
-if (z < 10)
-% if (z > 1e-4) && (z < 10)
-% if (z > -1) && (z < 10)
-% if (z > -10) && (z < 10)
-    flag = true;
+if (z > 0)
+    % Line-Search Gain Valid
+    flag = 0;
 else
-    flag = false;
+    if z < -100
+        % Trajectory Exploded. Generate an 'empty' update
+        flag = 2;
+    end
+    if alpha > 0.3
+        % Line-Search Gain Invalid
+        flag = 1;
+        alpha = 0.5.*alpha; 
+    elseif ((alpha < 0.3) && (alpha > 0.0))
+        % Alpha Too Small. Generate an 'empty' update
+        flag = 2;
+    end
 end

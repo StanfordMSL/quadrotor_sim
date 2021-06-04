@@ -10,6 +10,6 @@ function flag = check_outer(con,tol_motor,tol_gate)
         flag = true;        % stop
     end
     
-    disp(['[check_outer]: Unsatisfied Constraints [motor/gate]: ',mat2str(con_status)]);
+%     disp(['[check_outer]: Unsatisfied Constraints [motor/gate]: ',mat2str(con_status)]);
 
 end

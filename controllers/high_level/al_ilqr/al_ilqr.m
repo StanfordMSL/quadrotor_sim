@@ -1,27 +1,27 @@
 function traj = al_ilqr(traj,obj,map)
+
 % Tuning Parameters
 tol_motor = 1e3;
 tol_gate  = 1e-2;
 tol_inner = 0.01;
 
 % Unpack some stuff
-n_x = size(traj.x,1);
-n_u = size(traj.u,1);
-N = size(traj.x,2);
+X = traj.x(1:10,:);
+U = [traj.u(1,:) ; traj.x(11:13,1:end-1)];
 
-xs = obj.x(:,end);
+n_x = size(X,1);
+n_u = size(U,1);
+N = size(X,2);
+
+L = zeros(n_u,n_x,N-1);
+xs = obj.x(1:10,end);
 us = zeros(4,1);
 
-% Initialize Trajectory Variables
-X = traj.x;
-U = traj.u;
-L = zeros(n_u,n_x,N-1);
-
 % Initialize Lagrange Variables
-mu = [ 0.001.*ones(8,N) ;...     % motor
+mu = [ (1e-12).*ones(8,N) ;...     % motor
        0.001.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
-phi    = 2.0;
+phi    = 1.2;
 
 % Initialize Constraint Variables
 [c, cx, cu] = con_calc(X,U);
@@ -33,7 +33,7 @@ while true
     % Calculate Constraint Activator Values and Lagrangian
     mu_diag = check_con(c,lambda,mu);
     La_c = lagr_calc(X,U,xs,us,c,lambda,mu_diag);
-    disp(['[al_ilqr]: REFERENCE Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
+%     disp(['[al_ilqr]: REFERENCE Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 
     while true
         counter(1,2) = counter(1,2)+1;        
@@ -73,7 +73,7 @@ while true
 %     disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 end
 
-nominal_plot(X,map,10,'top');
+% nominal_plot(X,map,10,'top');
 
 traj.x = X;
 traj.u = U;
