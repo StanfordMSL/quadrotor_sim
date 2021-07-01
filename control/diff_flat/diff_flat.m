@@ -1,4 +1,4 @@
-function traj = diff_flat_ws(obj,map,model,n_der,nom_show)
+function traj = diff_flat(obj,map,model,n_der,nom_show)
 
 % Unpack Some Terms
 fmu_dt  = model.clock.dt_fmu;
@@ -50,6 +50,8 @@ traj.u = u_wr;
 
 traj.t_fmu = t_sigma;
 traj.f_out = f_out;
+
+traj.hz = model.clock.hz_fmu;
 
 % Publish some diagnostics
 switch nom_show

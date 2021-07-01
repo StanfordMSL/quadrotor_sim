@@ -1,6 +1,6 @@
 function obj = obj_init(trajectory)
      
-address = ['waypoint_objectives/',trajectory,'.csv'];
+address = ['scenarios/objectives/',trajectory,'.csv'];
 
 % Gate Data
 if isfile(address)

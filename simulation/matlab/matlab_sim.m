@@ -1,4 +1,4 @@
-function log = simulation(traj,obj,model,high_ctl,low_ctl,sense_mode)
+function log = matlab_sim(traj,obj,model,high_ctl,low_ctl,sense_mode)
 
 % Initialize clock variables
 dt_lqr = model.clock.dt_lqr;

@@ -1,4 +1,4 @@
-function qp_init(n_der)
+function QP_init(n_der)
 
 % States %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 syms t real
@@ -18,8 +18,8 @@ H_psi = int((A_basis(3,:)'*A_basis(3,:)),t,t0,t1);
 
 %% Output Files
 
-matlabFunction(A_basis,'File','controllers/high_level/diff_flat/pre_compute/QP_A_basis')
-matlabFunction(H_r,'File','controllers/high_level/diff_flat/pre_compute/QP_H_r')
-matlabFunction(H_psi,'File','controllers/high_level/diff_flat/pre_compute/QP_H_psi')
+matlabFunction(A_basis,'File','control/diff_flat/QP/QP_A_basis')
+matlabFunction(H_r,'File','control/diff_flat/QP/QP_H_r')
+matlabFunction(H_psi,'File','control/diff_flat/QP/QP_H_psi')
 
 disp("[dyn_init]: Basis Generated")

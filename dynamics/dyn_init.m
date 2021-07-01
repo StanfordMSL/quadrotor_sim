@@ -1,4 +1,4 @@
-function dyn_lin_init(model,input_mode)
+function dyn_init(model,input_mode)
 
 % Precession (implement later) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -45,12 +45,12 @@ FT_ext = [F_ext ; tau_ext];
 for k = 1:2
     if k == 1       % Actual
         db = model.act;        
-        quad_func = 'models/quadcopter_act';
-        w2m_func  = 'models/w2m_act';
+        quad_func = 'models/flight_dynamics/quadcopter_act';
+        w2m_func  = 'models/motor_mapping/w2m_act';
     else            % Estimated
         db = model.est;     
-        quad_func = 'models/quadcopter_est';
-        w2m_func  = 'models/w2m_est';
+        quad_func = 'models/flight_dynamics/quadcopter_est';
+        w2m_func  = 'models/motor_mapping/w2m_est';
     end
     
     % Unpack
@@ -127,7 +127,7 @@ for k = 1:2
         x_ekf = subs(x_ekf,{w_m1,w_m2,w_m3,w_m4},{u_ses1,u_ses2,u_ses3,u_ses4});
 
         A_ekf   = jacobian(x_ekf,x_ses);   
-        matlabFunction(A_ekf,'File','linearization/A_ekf_calc','vars',{x_ses,u_ses})
+        matlabFunction(A_ekf,'File','models/Jacobians/A_ekf_calc','vars',{x_ses,u_ses})
         
         % Linearization for al-iLQR
         switch input_mode
@@ -209,8 +209,8 @@ for k = 1:2
         A = jacobian(x_opt,x);
         B = jacobian(x_opt,u);
         
-        matlabFunction(A,'File','linearization/A_calc','vars',{x,u})
-        matlabFunction(B,'File','linearization/B_calc','vars',{x,u})
+        matlabFunction(A,'File','models/Jacobians/A_calc','vars',{x,u})
+        matlabFunction(B,'File','models/Jacobians/B_calc','vars',{x,u})
     end
 
 end
