@@ -9,7 +9,7 @@ function slow_mo_plot(flight,obj,targ,view_point,wp_show)
     % Define plot window and clear previous stuff
 %     figure(3)
 %     clf
-    figure(1)
+    figure(4)
     subplot(4,4,[2:4,6:8,10:12,14:16])
     cla
     set(gca,'ColorOrder','factory')

@@ -90,7 +90,7 @@ I_mu = diag(mu_diag);
 con_cost = (lambda + 0.5*I_mu*con)'*con;
 
 % Export Functions
-add = 'controllers/high_level/al_ilqr/lagrangian/';
+add = 'control/al_ilqr/lagrangian/';
 
 matlabFunction(obj_cost_k,'File',[add,'obj_cost_k'],'vars',{x,u,x_bar,u_bar,x_star,u_star});
 matlabFunction(obj_cost_N,'File',[add,'obj_cost_N'],'vars',{x,u,x_bar,u_bar,x_star,u_star});

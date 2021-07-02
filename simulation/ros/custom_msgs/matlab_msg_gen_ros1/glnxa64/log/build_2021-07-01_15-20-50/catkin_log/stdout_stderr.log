@@ -1,0 +1,156 @@
+[0/1] Re-running CMake...
+CMake Warning (dev) in CMakeLists.txt:
+  No project() command is present.  The top-level CMakeLists.txt file must
+  contain a literal, direct call to the project() command.  Add a line of
+  code such as
+
+    project(ProjectName)
+
+  near the top of the file, but after cmake_minimum_required().
+
+  CMake is pretending there is a "project(Project)" command on the first
+  line.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Deprecation Warning at CMakeLists.txt:4 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- Using CATKIN_DEVEL_PREFIX: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel
+-- Using CMAKE_PREFIX_PATH: /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages
+-- This workspace overlays: /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages
+-- Using PYTHON_EXECUTABLE: /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2
+-- Using Debian Python package layout
+-- Using empy: /usr/bin/empy
+-- Using CATKIN_ENABLE_TESTING: off
+-- catkin 0.7.17
+-- BUILD_SHARED_LIBS is on
+-- BUILD_SHARED_LIBS is on
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- ~~  traversing 1 packages in topological order:
+-- ~~  - mavros_msgs
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- +++ processing catkin package: 'mavros_msgs'
+-- ==> add_subdirectory(mavros_msgs)
+-- Disabling the following message generators: geneus;genlisp;gennodejs
+-- Using these message generators: gencpp;genpy
+-- mavros_msgs: 2 messages, 3 services
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build
+ninja: no work to do.
+[1/14] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg std_msgs/Header
+[2/14] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv
+[3/14] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv
+[4/14] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Vector3
+[5/14] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv
+[6/14] Generating Python from MSG mavros_msgs/Thrust
+[7/14] Generating C++ code from mavros_msgs/Thrust.msg
+[8/14] Generating Python msg __init__.py for mavros_msgs
+[9/14] Generating Python srv __init__.py for mavros_msgs
+[10/14] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_Thrust_common.cpp.o
+[11/14] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_publisher.cpp.o
+[12/14] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_subscriber.cpp.o
+[13/14] Linking CXX shared library /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/libmavros_msgs_matlab.so
+[13/14] Install the project...
+-- Install configuration: "Release"
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/_setup_util.py
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/env.sh
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/setup.bash
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/local_setup.bash
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/setup.sh
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/local_setup.sh
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/setup.zsh
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/local_setup.zsh
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/.rosinstall
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/msg/AttitudeTarget.msg
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/msg/Thrust.msg
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/srv/CommandBool.srv
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/srv/CommandTOL.srv
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/srv/SetMode.srv
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/cmake/mavros_msgs-msg-paths.cmake
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/SetModeRequest.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/AttitudeTarget.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/SetModeResponse.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandTOL.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandTOLRequest.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandTOLResponse.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandBool.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandBoolResponse.h
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/Thrust.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/CommandBoolRequest.h
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/SetMode.h
+Listing /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs ...
+Listing /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs/msg ...
+Compiling /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs/msg/_Thrust.py ...
+Compiling /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs/msg/__init__.py ...
+Listing /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs/srv ...
+Compiling /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages/mavros_msgs/srv/__init__.py ...
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/__init__.py
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/__init__.pyc
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_CommandBool.pyc
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_CommandTOL.pyc
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_CommandBool.py
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_SetMode.pyc
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/__init__.py
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_CommandTOL.py
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/_SetMode.py
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/srv/__init__.pyc
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/_AttitudeTarget.py
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/_Thrust.pyc
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/__init__.py
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/__init__.pyc
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/_AttitudeTarget.pyc
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/python2.7/dist-packages/mavros_msgs/msg/_Thrust.py
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/pkgconfig/mavros_msgs.pc
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/cmake/mavros_msgs-msg-extras.cmake
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/cmake/mavros_msgsConfig.cmake
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/cmake/mavros_msgsConfig-version.cmake
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/share/mavros_msgs/package.xml
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include/mavros_msgs/visibility_control.h
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib/libmavros_msgs_matlab.so
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m/
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/CommandBoolResponse.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/CommandBoolRequest.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/CommandTOLRequest.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/CommandTOLResponse.m
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/Thrust.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/SetModeResponse.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/SetModeRequest.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+msggen/+mavros_msgs/AttitudeTarget.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/commandTOLResponse.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/commandTOLRequest.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/attitudeTarget.m
+-- Installing: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/thrust.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/commandBoolRequest.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/setModeResponse.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/commandBoolResponse.m
+-- Up-to-date: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m//+ros/+internal/+ros/+custommessages/+mavros_msgs/setModeRequest.m
+Base path: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64
+Source space: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src
+Build space: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build
+Devel space: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel
+Install space: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install
+####
+#### Running command: "ninja build.ninja" in "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build"
+####
+####
+#### Running command: "ninja install install -j12 -l12" in "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build"
+####

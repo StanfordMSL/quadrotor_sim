@@ -22,4 +22,4 @@ matlabFunction(A_basis,'File','control/diff_flat/QP/QP_A_basis')
 matlabFunction(H_r,'File','control/diff_flat/QP/QP_H_r')
 matlabFunction(H_psi,'File','control/diff_flat/QP/QP_H_psi')
 
-disp("[dyn_init]: Basis Generated")
+disp("[QP_init]: Basis Generated")

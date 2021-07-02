@@ -22,7 +22,7 @@ switch mdl_type
         model.est.I  = 0.001.*[ 1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [8.8478e-09 ; 0 ; 0];
+        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps.*model.est.m;
@@ -35,7 +35,7 @@ switch mdl_type
         model.act.I  = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [8.8478e-09 ; 0 ; 0];
+        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = eps.*eye(3);
         model.act.kh = eps.*model.act.m;
@@ -56,7 +56,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [8.8478e-09 ; 0 ; 0];
+        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps*model.est.m;
@@ -69,7 +69,7 @@ switch mdl_type
         model.act.I  = 0.001.*[ 1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [8.8478e-09 ; 0 ; 0];
+        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = eps.*eye(3);
         model.act.kh = eps*model.act.m;
@@ -90,7 +90,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [8.8478e-09 ; 0 ; 0];
+        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = [  0.50   0.00   0.00;...
                          0.00   0.50   0.00;...
@@ -105,7 +105,7 @@ switch mdl_type
         model.act.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [8.8478e-09 ; 0 ; 0];
+        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = [  0.50   0.00   0.00;...
                          0.00   0.50   0.00;...
@@ -128,7 +128,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [8.8478e-09 ; 0 ; 0];
+        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps*model.est.m;
@@ -141,7 +141,7 @@ switch mdl_type
         model.act.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [8.8478e-09 ; 0 ; 0];
+        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D = [  0.30   0.00   0.00;...
                          0.00   0.30   0.00;...
@@ -157,6 +157,40 @@ switch mdl_type
         W_quat  = 0.0001*ones(4,1);
         W_omega = 0.01*ones(3,1);
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+case 'iris'              % iris
+        disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [ ] Drag ||');
+        % Estimate %%%          
+        model.est.m  = 1.50;
+        model.est.I  = 0.01.*[ 2.91   0.00   0.00;...
+                               0.00   2.91   0.00;...
+                               0.00   0.00   5.52]; 
+        model.est.kw = [5.84e-06 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.est.b  = 0.06; 
+        model.est.D  = eps.*eye(3);
+        model.est.kh = eps.*model.est.m;
+        model.est.A  = eps.*eye(3,3);
+        model.est.B  = eps.*eye(3,3);
+        model.est.L  = 0.0885;
+        
+        % Actual %%%
+        model.act.m  = 1.50;
+        model.act.I  = 0.01.*[ 2.91   0.00   0.00;...
+                               0.00   2.91   0.00;...
+                               0.00   0.00   5.52]; 
+        model.act.kw = [5.84e-06 ; 0 ; 0];         % originally [8.8478e-09 ; 0 ; 0]; 
+        model.act.b  = 0.06;
+        model.act.D  = eps.*eye(3);
+        model.act.kh = eps.*model.act.m;
+        model.act.A  = eps.*eye(3,3);
+        model.act.B  = eps.*eye(3,3);
+        model.act.L  = 0.0885;
+
+        % Model Noise
+        W_pos   = 0.0*ones(3,1);
+        W_vel   = 0.0*ones(3,1);
+        W_quat  = 0.0*ones(4,1);
+        W_omega = 0.0*ones(3,1);
+        model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);        
 end
 
 % dt Parameter
@@ -196,8 +230,10 @@ else
 end
 
 % Motor Limits
-model.motor.min = 800;      % Motor Min rad/s
-model.motor.max = 33000;    % Motor Max rad/s
+model.motor.min = 10;      % Motor Min rad/s
+model.motor.max = 4250;    % Motor Max rad/s
+% model.motor.min = 800;      % Motor Min rad/s
+% model.motor.max = 33000;    % Motor Max rad/s
 
 model.motor.thrust_hover = model.act.m*model.act.g;
 model.motor.thrust_min   = model.act.kw(1,1).*model.motor.min^2 +...

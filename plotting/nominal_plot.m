@@ -76,7 +76,7 @@ end
 
 % Set Limits
 xlim([-3.5 3.5]);
-ylim([-1.5 1.5]);
+ylim([-2.0 2.0]);
 zlim([ 0.0 3.0]);
 
 set(gcf,'color','w');

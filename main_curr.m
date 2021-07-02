@@ -1,14 +1,16 @@
 clear; clc; 
 addpath(genpath(pwd));
+addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
 
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
 model = model_init('v1.0.0');  
+% model = model_init('iris');  
 
 % Objective and Constraints
 obj  = obj_init('line');
-map  = map_init('empty');
+map  = map_init('slit_hard');
 
 % Order of Basis Function for QP
 n_der = 15;             
@@ -22,16 +24,15 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 %% Pre-Computes (comment out after initial run to save time)
 
 % % Generate QP Matrices
-% qp_init(n_der);                       
-
+% QP_init(n_der);                       
+% 
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-
+% 
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(input_mode,model)
 % gate_con_init(map,input_mode,model)
-
 
 %% Trajectory Planning
 
@@ -44,9 +45,9 @@ traj = al_ilqr(traj,obj,map);
 %% Simulation
 
 % MATLAB
-% log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
+log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
 
-% ROS
+% % ROS
 log_R = gazebo_sim(traj,'pos');
 
 %% Plot the States, Animate and Debug
@@ -62,4 +63,4 @@ log_R = gazebo_sim(traj,'pos');
 % log = simulation(traj,obj,model,'none','pos_att','bypass');
 % log = simulation(traj,obj,model,'none','direct','bypass');
 
-% mthrust_debug(log.u_fmu,model)
+% mthrust_debug(log_M.u_mt,model)

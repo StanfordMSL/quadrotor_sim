@@ -57,7 +57,7 @@ con = [-gain ; gain-ones(n_p*2,1)];
 con_x = jacobian(con,x);
 con_u = jacobian(con,u);
 
-address = 'controllers/high_level/al_ilqr/constraints/';
+address = 'control/al_ilqr/constraints/';
 matlabFunction(con,'File',[address,'gate_con'],'vars',{x,u})
 matlabFunction(con_x,'File',[address,'gate_con_x'],'vars',{x,u})
 matlabFunction(con_u,'File',[address,'gate_con_u'],'vars',{x,u})

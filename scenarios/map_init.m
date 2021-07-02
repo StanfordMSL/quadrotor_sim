@@ -1,6 +1,6 @@
 function map = map_init(map_id)
 
-address = ['maps/',map_id,'.csv'];
+address = ['scenarios/maps/',map_id,'.csv'];
 
 % Gate Data
 if isfile(address)

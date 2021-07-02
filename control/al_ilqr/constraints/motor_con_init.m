@@ -12,7 +12,7 @@ dt  = model.est.dt;
 fm_min = kw.*wm_min.^2;
 fm_max = kw.*wm_max.^2;
 
-address = 'controllers/high_level/al_ilqr/constraints/';
+address = 'control/al_ilqr/constraints/';
 
 switch input_mode
     case 'direct'

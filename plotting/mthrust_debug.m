@@ -2,7 +2,7 @@ function mthrust_debug(u_mt,model)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
-    figure(2)
+    figure(3)
 %     clf
 %     figure(1)
     
