@@ -1,6 +1,6 @@
 clear; clc; 
 addpath(genpath(pwd));
-addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
+% addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
 
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
