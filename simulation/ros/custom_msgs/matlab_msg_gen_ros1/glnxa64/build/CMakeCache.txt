@@ -129,7 +129,7 @@ CMAKE_INSTALL_PREFIX:PATH=/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ro
 CMAKE_LINKER:FILEPATH=/usr/bin/ld
 
 //Program used to build from build.ninja files.
-CMAKE_MAKE_PROGRAM:FILEPATH=/usr/bin/ninja
+CMAKE_MAKE_PROGRAM:FILEPATH=/usr/local/MATLAB/R2020b/toolbox/shared/coder/ninja/glnxa64/ninja
 
 //Flags used by the linker during the creation of modules during
 // all build types.
@@ -278,6 +278,18 @@ UBUNTU:BOOL=TRUE
 
 //LSB Distrib - codename tag
 UBUNTU_BIONIC:BOOL=TRUE
+
+//Value Computed by CMake
+bridge_px4_BINARY_DIR:STATIC=/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/bridge_px4
+
+//Value Computed by CMake
+bridge_px4_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+bridge_px4_SOURCE_DIR:STATIC=/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/bridge_px4
+
+//Dependencies for the target
+bridge_px4_matlab_LIB_DEPENDS:STATIC=general;/usr/local/MATLAB/R2020b/extern/bin/glnxa64/libMatlabDataArray.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/lib/libconsole_bridge.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libclass_loader.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librosconsole.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp_serialization.so;general;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librostime.so;general;dl;
 
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/catkin/cmake
@@ -456,7 +468,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=3
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

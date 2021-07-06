@@ -49,6 +49,10 @@ switch mdl_type
         W_quat  = 0.0*ones(4,1);
         W_omega = 0.0*ones(3,1);
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+        
+        % Motor Limits
+        model.motor.min = 10;      % Motor Min rad/s
+        model.motor.max = 4250;    % Motor Max rad/s
     case 'v1.1.0'               % simple motor, with noise, no drag
         disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [ ] Drag ||');
         % Estimate %%%          
@@ -83,6 +87,10 @@ switch mdl_type
         W_quat  = 0.0001*ones(4,1);
         W_omega = 0.01*ones(3,1);
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+        
+        % Motor Limits
+        model.motor.min = 10;      % Motor Min rad/s
+        model.motor.max = 4250;    % Motor Max rad/s
     case 'v1.0.1'               % simple motor, no noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [*] Drag ||');
         % Estimate %%%
@@ -121,6 +129,10 @@ switch mdl_type
         W_quat  = 0.0*ones(4,1);
         W_omega = 0.0*ones(3,1);
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+        
+        % Motor Limits
+        model.motor.min = 10;      % Motor Min rad/s
+        model.motor.max = 4250;    % Motor Max rad/s
     case 'v1.1.1'               % simple motor, with noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');
         % Estimate %%%
@@ -157,6 +169,10 @@ switch mdl_type
         W_quat  = 0.0001*ones(4,1);
         W_omega = 0.01*ones(3,1);
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
+        
+        % Motor Limits
+        model.motor.min = 10;      % Motor Min rad/s
+        model.motor.max = 4250;    % Motor Max rad/s
 case 'iris'              % iris
         disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [ ] Drag ||');
         % Estimate %%%          
@@ -190,7 +206,11 @@ case 'iris'              % iris
         W_vel   = 0.0*ones(3,1);
         W_quat  = 0.0*ones(4,1);
         W_omega = 0.0*ones(3,1);
-        model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);        
+        model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);    
+        
+        % Motor Limits
+        model.motor.min = 0;      % Motor Min rad/s
+        model.motor.max = 940;    % Motor Max rad/s
 end
 
 % dt Parameter
@@ -230,8 +250,6 @@ else
 end
 
 % Motor Limits
-model.motor.min = 10;      % Motor Min rad/s
-model.motor.max = 4250;    % Motor Max rad/s
 % model.motor.min = 800;      % Motor Min rad/s
 % model.motor.max = 33000;    % Motor Max rad/s
 

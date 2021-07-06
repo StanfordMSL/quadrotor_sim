@@ -27,4 +27,6 @@ D_term = -Kd*(br.err_now - br.err_prev);
 br.err_prev = br.err_now;
 
 % Compile the Output
-u_wr = [u_br(1,1) ; P_term + I_term + D_term];
+u_wr = [fn2f(u_br(1,1)) ; P_term + I_term + D_term];
+
+end

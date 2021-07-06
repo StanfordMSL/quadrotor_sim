@@ -109,6 +109,17 @@ for k = 1:2
     u_m = sqrt(T_motor./kw(1));
     matlabFunction(u_m,'File',w2m_func,'vars',{wrench})
 
+    %% Output Thrust (f) to Normalized Thrust (fn)
+    f2fn_func  = 'dynamics/motor_mapping/f2fn';
+    fn2f_func  = 'dynamics/motor_mapping/fn2f';
+    
+    syms f fn real
+    
+    fn_out = f/(4*model.motor.thrust_max);
+    f_out = fn*(4*model.motor.thrust_max);
+    matlabFunction(fn_out,'File',f2fn_func,'vars',f)
+    matlabFunction(f_out,'File',fn2f_func,'vars',fn)
+
     %% Output Linearization Terms
     % Note: we use the estimated model since the linearization is in
     % the controller only.
@@ -186,7 +197,7 @@ for k = 1:2
                 
                 % Forces
                 F_g =  m.*[0 ; 0 ; -g];
-                F_t =  quatrot2([0 ; 0 ; u1],q);
+                F_t =  quatrot2([0 ; 0 ; fn2f(u1)],q);
                 F_D = -quatrotmat2(D,q)*v;
                 
                 % Dynamic Equations

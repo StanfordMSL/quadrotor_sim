@@ -32,7 +32,7 @@ while true
         u_cl = L(:,:,k)*del_x;
         
         Ufp(:,k) = u_op +  u_cl;
-
+        
         [u_wr ,br] = br_ctrl(Xact(:,k),Ufp(:,k),br);
         u_mt = w2m_est(u_wr);
         

@@ -6,7 +6,7 @@ N_wp    = size(obj.x,2);
 
 % Trajectory time setup. We assume a constant velocity of around 0.5m/s in
 % between waypoints to generate an estimated time.
-vel = 1.0;
+vel = 0.5;
 
 t_wp = zeros(1,N_wp);
 for k = 1:N_wp-1
@@ -46,7 +46,7 @@ for k = 1:N_tr-1
 end
 
 traj.x = x_bar;
-traj.u = u_wr;
+traj.u_wr = u_wr;
 
 traj.t_fmu = t_sigma;
 traj.f_out = f_out;

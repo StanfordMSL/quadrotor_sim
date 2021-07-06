@@ -70,7 +70,7 @@ for k_act = 1:(N_sim-1)
             case 'body_rate'  
                 del_x = ses.x(1:10,:) - traj.x(1:10,k_fmu);
 
-                u_op = traj.u(:,k_fmu);
+                u_op = traj.u_br(:,k_fmu);
                 u_cl =  traj.L(:,:,k_fmu)*del_x;
         
                 u_br = u_op +  u_cl;
