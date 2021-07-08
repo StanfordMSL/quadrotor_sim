@@ -210,7 +210,7 @@ case 'iris'              % iris
         
         % Motor Limits
         model.motor.min = 0;      % Motor Min rad/s
-        model.motor.max = 940;    % Motor Max rad/s
+        model.motor.max = 945;    % Motor Max rad/s
 end
 
 % dt Parameter
