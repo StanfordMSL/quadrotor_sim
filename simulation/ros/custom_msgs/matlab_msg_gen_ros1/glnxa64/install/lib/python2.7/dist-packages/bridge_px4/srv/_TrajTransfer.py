@@ -7,7 +7,7 @@ import struct
 
 
 class TrajTransferRequest(genpy.Message):
-  _md5sum = "079a6839ab220fef8e176135c4d95beb"
+  _md5sum = "7bec211c9c37912d6558392a02228ea4"
   _type = "bridge_px4/TrajTransferRequest"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """
@@ -15,10 +15,11 @@ class TrajTransferRequest(genpy.Message):
 int32 hz
 int32 N
 float32[] u_arr
+float32[] x_arr
 float32[] L_arr
 """
-  __slots__ = ['hz','N','u_arr','L_arr']
-  _slot_types = ['int32','int32','float32[]','float32[]']
+  __slots__ = ['hz','N','u_arr','x_arr','L_arr']
+  _slot_types = ['int32','int32','float32[]','float32[]','float32[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -28,7 +29,7 @@ float32[] L_arr
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       hz,N,u_arr,L_arr
+       hz,N,u_arr,x_arr,L_arr
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -43,12 +44,15 @@ float32[] L_arr
         self.N = 0
       if self.u_arr is None:
         self.u_arr = []
+      if self.x_arr is None:
+        self.x_arr = []
       if self.L_arr is None:
         self.L_arr = []
     else:
       self.hz = 0
       self.N = 0
       self.u_arr = []
+      self.x_arr = []
       self.L_arr = []
 
   def _get_types(self):
@@ -69,6 +73,10 @@ float32[] L_arr
       buff.write(_struct_I.pack(length))
       pattern = '<%sf'%length
       buff.write(struct.pack(pattern, *self.u_arr))
+      length = len(self.x_arr)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sf'%length
+      buff.write(struct.pack(pattern, *self.x_arr))
       length = len(self.L_arr)
       buff.write(_struct_I.pack(length))
       pattern = '<%sf'%length
@@ -100,6 +108,13 @@ float32[] L_arr
       pattern = '<%sf'%length
       start = end
       end += struct.calcsize(pattern)
+      self.x_arr = struct.unpack(pattern, str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sf'%length
+      start = end
+      end += struct.calcsize(pattern)
       self.L_arr = struct.unpack(pattern, str[start:end])
       return self
     except struct.error as e:
@@ -119,6 +134,10 @@ float32[] L_arr
       buff.write(_struct_I.pack(length))
       pattern = '<%sf'%length
       buff.write(self.u_arr.tostring())
+      length = len(self.x_arr)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sf'%length
+      buff.write(self.x_arr.tostring())
       length = len(self.L_arr)
       buff.write(_struct_I.pack(length))
       pattern = '<%sf'%length
@@ -145,6 +164,13 @@ float32[] L_arr
       start = end
       end += struct.calcsize(pattern)
       self.u_arr = numpy.frombuffer(str[start:end], dtype=numpy.float32, count=length)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sf'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.x_arr = numpy.frombuffer(str[start:end], dtype=numpy.float32, count=length)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -276,6 +302,6 @@ def _get_struct_B():
     return _struct_B
 class TrajTransfer(object):
   _type          = 'bridge_px4/TrajTransfer'
-  _md5sum = 'a0b1e392974699bf0679550af2a9b6db'
+  _md5sum = '86ad9a373914f3b846b0a89d22fe4af3'
   _request_class  = TrajTransferRequest
   _response_class = TrajTransferResponse

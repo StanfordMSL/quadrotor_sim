@@ -8,10 +8,11 @@ classdef TrajTransferRequest < ros.Message
         MessageType = 'bridge_px4/TrajTransferRequest' % The ROS message type
     end
     properties (Constant, Hidden)
-        MD5Checksum = '079a6839ab220fef8e176135c4d95beb' % The MD5 Checksum of the message definition
-        PropertyList = { 'Hz' 'N' 'UArr' 'LArr' } % List of non-constant message properties
-        ROSPropertyList = { 'hz' 'N' 'u_arr' 'L_arr' } % List of non-constant ROS message properties
+        MD5Checksum = '7bec211c9c37912d6558392a02228ea4' % The MD5 Checksum of the message definition
+        PropertyList = { 'Hz' 'N' 'UArr' 'XArr' 'LArr' } % List of non-constant message properties
+        ROSPropertyList = { 'hz' 'N' 'u_arr' 'x_arr' 'L_arr' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
+			 '' ...
 			 '' ...
 			 '' ...
 			 '' ...
@@ -23,6 +24,7 @@ classdef TrajTransferRequest < ros.Message
         Hz
         N
         UArr
+        XArr
         LArr
     end
     methods
@@ -48,6 +50,17 @@ classdef TrajTransferRequest < ros.Message
             validAttributes = {'vector'};
             validateattributes(val, validClasses, validAttributes, 'TrajTransferRequest', 'UArr');
             obj.UArr = single(val);
+        end
+        function set.XArr(obj, val)
+            validClasses = {'numeric'};
+            if isempty(val)
+                % Allow empty [] input
+                val = single.empty(0, 1);
+            end
+            val = val(:);
+            validAttributes = {'vector'};
+            validateattributes(val, validClasses, validAttributes, 'TrajTransferRequest', 'XArr');
+            obj.XArr = single(val);
         end
         function set.LArr(obj, val)
             validClasses = {'numeric'};

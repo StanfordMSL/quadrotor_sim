@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::bridge_px4::TrajTransfer > {
   static const char* value()
   {
-    return "a0b1e392974699bf0679550af2a9b6db";
+    return "86ad9a373914f3b846b0a89d22fe4af3";
   }
 
   static const char* value(const ::bridge_px4::TrajTransfer&) { return value(); }

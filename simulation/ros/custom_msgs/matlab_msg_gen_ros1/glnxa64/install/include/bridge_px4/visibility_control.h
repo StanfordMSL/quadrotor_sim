@@ -28,5 +28,5 @@
   #define BRIDGE_PX4_PUBLIC_TYPE
 #endif
 #endif  // BRIDGE_PX4__VISIBILITY_CONTROL_H_
-// Generated 06-Jul-2021 12:04:05
+// Generated 09-Jul-2021 14:04:14
 // Copyright 2019-2020 The MathWorks, Inc.

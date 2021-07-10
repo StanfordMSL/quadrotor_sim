@@ -75,6 +75,17 @@ namespace TrajTransfer_Request {
         throw std::invalid_argument("Field 'u_arr' is wrong type; expected a single.");
     }
     try {
+        //x_arr
+        const matlab::data::TypedArray<float> x_arr_arr = arr[0]["x_arr"];
+        size_t nelem = x_arr_arr.getNumberOfElements();
+        	msg.x_arr.resize(nelem);
+        	std::copy(x_arr_arr.begin(), x_arr_arr.begin()+nelem, msg.x_arr.begin());
+    } catch (matlab::data::InvalidFieldNameException&) {
+        throw std::invalid_argument("Field 'x_arr' is missing.");
+    } catch (matlab::data::TypeMismatchException&) {
+        throw std::invalid_argument("Field 'x_arr' is wrong type; expected a single.");
+    }
+    try {
         //L_arr
         const matlab::data::TypedArray<float> L_arr_arr = arr[0]["L_arr"];
         size_t nelem = L_arr_arr.getNumberOfElements();
@@ -102,13 +113,15 @@ namespace TrajTransfer_Request {
   }
   //----------------------------------------------------------------------------
   BRIDGE_PX4_EXPORT MDArray_T get_arr(MDFactory_T& factory, const bridge_px4::TrajTransfer::Request& msg) {
-    auto outArray = factory.createStructArray({1,1},{"hz","N","u_arr","L_arr"});
+    auto outArray = factory.createStructArray({1,1},{"hz","N","u_arr","x_arr","L_arr"});
     // hz
     outArray[0]["hz"] = factory.createScalar(msg.hz);
     // N
     outArray[0]["N"] = factory.createScalar(msg.N);
     // u_arr
     outArray[0]["u_arr"] = factory.createArray<bridge_px4::TrajTransfer::Request::_u_arr_type::const_iterator, float>({1, msg.u_arr.size()}, msg.u_arr.begin(), msg.u_arr.end());
+    // x_arr
+    outArray[0]["x_arr"] = factory.createArray<bridge_px4::TrajTransfer::Request::_x_arr_type::const_iterator, float>({1, msg.x_arr.size()}, msg.x_arr.begin(), msg.x_arr.end());
     // L_arr
     outArray[0]["L_arr"] = factory.createArray<bridge_px4::TrajTransfer::Request::_L_arr_type::const_iterator, float>({1, msg.L_arr.size()}, msg.L_arr.begin(), msg.L_arr.end());
     return std::move(outArray);

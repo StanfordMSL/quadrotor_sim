@@ -16,9 +16,11 @@ switch mode
         req = rosmessage(traj_client);
         req.Hz = traj.hz;
         req.N = size(traj.x,2);
+        
         req.UArr = traj.u_br(:);
         req.LArr = traj.L(:);
-
+        req.XArr = traj.x(:);
+        
         call(traj_client,req,'Timeout',3);
 
         % print(["Actual: ",num2str(cs_act)," ROS: ",num2str(cs_ros)]);

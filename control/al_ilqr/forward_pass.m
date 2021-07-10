@@ -47,7 +47,7 @@ while true
 
     % Debug
 %     La_plot(La_p,La_c);
-    nominal_plot(Xact,map,10,'nice');
+%    nominal_plot(Xact,map,10,'nice');
     disp(['[forward_pass]: alpha = ',num2str(alpha)]);
 
     [flag_LS,alpha] = check_LS(La_c,La_p,alpha,delV);

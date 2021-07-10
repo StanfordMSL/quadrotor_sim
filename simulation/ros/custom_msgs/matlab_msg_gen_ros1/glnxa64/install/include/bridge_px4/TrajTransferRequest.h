@@ -27,12 +27,14 @@ struct TrajTransferRequest_
     : hz(0)
     , N(0)
     , u_arr()
+    , x_arr()
     , L_arr()  {
     }
   TrajTransferRequest_(const ContainerAllocator& _alloc)
     : hz(0)
     , N(0)
     , u_arr(_alloc)
+    , x_arr(_alloc)
     , L_arr(_alloc)  {
   (void)_alloc;
     }
@@ -47,6 +49,9 @@ struct TrajTransferRequest_
 
    typedef std::vector<float, typename ContainerAllocator::template rebind<float>::other >  _u_arr_type;
   _u_arr_type u_arr;
+
+   typedef std::vector<float, typename ContainerAllocator::template rebind<float>::other >  _x_arr_type;
+  _x_arr_type x_arr;
 
    typedef std::vector<float, typename ContainerAllocator::template rebind<float>::other >  _L_arr_type;
   _L_arr_type L_arr;
@@ -129,12 +134,12 @@ struct MD5Sum< ::bridge_px4::TrajTransferRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "079a6839ab220fef8e176135c4d95beb";
+    return "7bec211c9c37912d6558392a02228ea4";
   }
 
   static const char* value(const ::bridge_px4::TrajTransferRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x079a6839ab220fefULL;
-  static const uint64_t static_value2 = 0x8e176135c4d95bebULL;
+  static const uint64_t static_value1 = 0x7bec211c9c37912dULL;
+  static const uint64_t static_value2 = 0x6558392a02228ea4ULL;
 };
 
 template<class ContainerAllocator>
@@ -158,6 +163,7 @@ struct Definition< ::bridge_px4::TrajTransferRequest_<ContainerAllocator> >
 "int32 hz\n"
 "int32 N\n"
 "float32[] u_arr\n"
+"float32[] x_arr\n"
 "float32[] L_arr\n"
 ;
   }
@@ -180,6 +186,7 @@ namespace serialization
       stream.next(m.hz);
       stream.next(m.N);
       stream.next(m.u_arr);
+      stream.next(m.x_arr);
       stream.next(m.L_arr);
     }
 
@@ -208,6 +215,12 @@ struct Printer< ::bridge_px4::TrajTransferRequest_<ContainerAllocator> >
     {
       s << indent << "  u_arr[" << i << "]: ";
       Printer<float>::stream(s, indent + "  ", v.u_arr[i]);
+    }
+    s << indent << "x_arr[]" << std::endl;
+    for (size_t i = 0; i < v.x_arr.size(); ++i)
+    {
+      s << indent << "  x_arr[" << i << "]: ";
+      Printer<float>::stream(s, indent + "  ", v.x_arr[i]);
     }
     s << indent << "L_arr[]" << std::endl;
     for (size_t i = 0; i < v.L_arr.size(); ++i)

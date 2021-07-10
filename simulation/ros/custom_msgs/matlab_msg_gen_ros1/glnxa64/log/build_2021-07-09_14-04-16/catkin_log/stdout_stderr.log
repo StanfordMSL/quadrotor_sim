@@ -66,71 +66,71 @@ CMake Warning:
 
 
 -- Build files have been written to: /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build
-[1/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv
-[2/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg std_msgs/Header
-[3/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Vector3
+[1/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv
+[2/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Vector3
+[3/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv
 [4/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv
 [5/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/bridge_px4 && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py bridge_px4 /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/bridge_px4/srv/TrajTransfer.srv
-[6/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv
+[6/70] cd /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/mavros_msgs && /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build/catkin_generated/env_cached.sh /home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2 /usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py mavros_msgs /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg std_msgs/Header
 [7/70] Generating C++ code from mavros_msgs/Thrust.msg
-[8/70] Generating C++ code from mavros_msgs/AttitudeTarget.msg
+[8/70] Generating Python code from SRV mavros_msgs/CommandBool
 [9/70] Generating Python code from SRV bridge_px4/TrajTransfer
-[10/70] Generating Python code from SRV mavros_msgs/CommandBool
-[11/70] Generating Python code from SRV mavros_msgs/CommandTOL
-[12/70] Generating Python code from SRV mavros_msgs/SetMode
+[10/70] Generating Python from MSG mavros_msgs/AttitudeTarget
+[11/70] Generating Python code from SRV mavros_msgs/SetMode
+[12/70] Generating C++ code from mavros_msgs/AttitudeTarget.msg
 [13/70] Generating Python from MSG mavros_msgs/Thrust
-[14/70] Generating Python from MSG mavros_msgs/AttitudeTarget
-[15/70] Generating C++ code from bridge_px4/TrajTransfer.srv
+[14/70] Generating Python code from SRV mavros_msgs/CommandTOL
+[15/70] Generating C++ code from mavros_msgs/CommandBool.srv
 [16/70] Generating C++ code from mavros_msgs/CommandTOL.srv
-[17/70] Generating Python srv __init__.py for bridge_px4
-[18/70] Generating C++ code from mavros_msgs/CommandBool.srv
-[19/70] Generating C++ code from mavros_msgs/SetMode.srv
+[17/70] Generating C++ code from mavros_msgs/SetMode.srv
+[18/70] Generating C++ code from bridge_px4/TrajTransfer.srv
+[19/70] Generating Python srv __init__.py for bridge_px4
 [20/70] Generating Python msg __init__.py for mavros_msgs
 [21/70] Generating Python srv __init__.py for mavros_msgs
-[22/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransfer_response_common.cpp.o
-[23/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferRequest_publisher.cpp.o
-[24/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_AttitudeTarget_common.cpp.o
-[25/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferResponse_publisher.cpp.o
-[26/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_AttitudeTarget_publisher.cpp.o
-[27/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransferRequest_common.cpp.o
-[28/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransferResponse_common.cpp.o
-[29/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransfer_request_common.cpp.o
+[22/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferRequest_publisher.cpp.o
+[23/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferResponse_publisher.cpp.o
+[24/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransferResponse_common.cpp.o
+[25/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_AttitudeTarget_common.cpp.o
+[26/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransferRequest_common.cpp.o
+[27/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransfer_response_common.cpp.o
+[28/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_TrajTransfer_request_common.cpp.o
+[29/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_AttitudeTarget_publisher.cpp.o
 [30/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferRequest_subscriber.cpp.o
-[31/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_srv_TrajTransfer_server.cpp.o
-[32/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferResponse_subscriber.cpp.o
+[31/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_msg_TrajTransferResponse_subscriber.cpp.o
+[32/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_srv_TrajTransfer_server.cpp.o
 [33/70] Building CXX object bridge_px4/CMakeFiles/bridge_px4_matlab.dir/src/bridge_px4_srv_TrajTransfer_client.cpp.o
 [34/70] Linking CXX shared library /home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/libbridge_px4_matlab.so
-[35/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_Thrust_common.cpp.o
-[36/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_publisher.cpp.o
-[37/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_AttitudeTarget_subscriber.cpp.o
-[38/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolRequest_publisher.cpp.o
-[39/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBool_request_common.cpp.o
-[40/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBool_response_common.cpp.o
-[41/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_subscriber.cpp.o
-[42/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandBool_client.cpp.o
-[43/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandBool_server.cpp.o
-[44/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolResponse_publisher.cpp.o
+[35/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_publisher.cpp.o
+[36/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBool_request_common.cpp.o
+[37/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_Thrust_common.cpp.o
+[38/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_Thrust_subscriber.cpp.o
+[39/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBool_response_common.cpp.o
+[40/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolRequest_publisher.cpp.o
+[41/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_AttitudeTarget_subscriber.cpp.o
+[42/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolResponse_publisher.cpp.o
+[43/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandBool_client.cpp.o
+[44/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandBool_server.cpp.o
 [45/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolRequest_subscriber.cpp.o
 [46/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandBoolResponse_subscriber.cpp.o
 [47/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBoolRequest_common.cpp.o
 [48/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandBoolResponse_common.cpp.o
-[49/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOL_request_common.cpp.o
-[50/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOL_response_common.cpp.o
-[51/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLResponse_publisher.cpp.o
-[52/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLRequest_publisher.cpp.o
-[53/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOLRequest_common.cpp.o
-[54/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandTOL_client.cpp.o
-[55/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLRequest_subscriber.cpp.o
-[56/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLResponse_subscriber.cpp.o
-[57/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandTOL_server.cpp.o
+[49/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOL_response_common.cpp.o
+[50/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOL_request_common.cpp.o
+[51/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLRequest_publisher.cpp.o
+[52/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLResponse_publisher.cpp.o
+[53/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandTOL_client.cpp.o
+[54/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLRequest_subscriber.cpp.o
+[55/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_CommandTOL_server.cpp.o
+[56/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOLRequest_common.cpp.o
+[57/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_CommandTOLResponse_subscriber.cpp.o
 [58/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_CommandTOLResponse_common.cpp.o
-[59/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetMode_request_common.cpp.o
-[60/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetMode_response_common.cpp.o
+[59/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetMode_response_common.cpp.o
+[60/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetMode_request_common.cpp.o
 [61/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_SetModeRequest_publisher.cpp.o
-[62/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_SetMode_client.cpp.o
-[63/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_SetMode_server.cpp.o
-[64/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_SetModeResponse_publisher.cpp.o
-[65/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetModeResponse_common.cpp.o
+[62/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetModeResponse_common.cpp.o
+[63/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_SetModeResponse_publisher.cpp.o
+[64/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_SetMode_client.cpp.o
+[65/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_srv_SetMode_server.cpp.o
 [66/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_SetModeRequest_common.cpp.o
 [67/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_SetModeRequest_subscriber.cpp.o
 [68/70] Building CXX object mavros_msgs/CMakeFiles/mavros_msgs_matlab.dir/src/mavros_msgs_msg_SetModeResponse_subscriber.cpp.o

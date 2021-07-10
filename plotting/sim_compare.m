@@ -14,6 +14,12 @@ for k = 1:3
     hold on
     plot(t_g,x_g(k,:),'*');
     legend('matlab','gazebo');
+    
+    if k == 3
+        ylim([0 5]);
+    else
+        ylim([-5 5]);
+    end
 end
 
 set(gcf,'color','w');

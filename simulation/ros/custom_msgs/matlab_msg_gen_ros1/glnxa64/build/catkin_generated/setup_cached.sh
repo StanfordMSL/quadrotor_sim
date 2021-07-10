@@ -8,8 +8,6 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
-export PYTHONPATH="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/lib/python2.7/dist-packages:$PYTHONPATH"
+export PWD="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/build"
 export ROSLISP_PACKAGE_DIRECTORIES="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/devel/share/common-lisp"
 export ROS_PACKAGE_PATH="/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src:$ROS_PACKAGE_PATH"
