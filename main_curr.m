@@ -47,7 +47,7 @@ traj = al_ilqr(traj,obj,map);
 % MATLAB
 log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
 
-% % ROS
+% ROS
 log_R = gazebo_sim(traj,'body_rate');
 
 %% Plot the States, Animate and Debug
