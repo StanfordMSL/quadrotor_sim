@@ -5,8 +5,8 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-% model = model_init('v1.0.0');  
-model = model_init('iris');  
+model = model_init('v1.0.0');  
+% model = model_init('iris');  
 
 % Objective and Constraints
 obj  = obj_init('line');
@@ -23,16 +23,16 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% % Generate QP Matrices
-% QP_init(n_der);                       
-% 
-% % Generate Dynamics and Linearization Functions
-% dyn_init(model,input_mode);      
-% 
-% % Generate Constraint Variables
-% lagr_init(cost_mode,input_mode)
-% motor_con_init(input_mode,model)
-% gate_con_init(map,input_mode,model)
+% Generate QP Matrices
+QP_init(n_der);                       
+
+% Generate Dynamics and Linearization Functions
+dyn_init(model,input_mode);      
+
+% Generate Constraint Variables
+lagr_init(cost_mode,input_mode)
+motor_con_init(input_mode,model)
+gate_con_init(map,input_mode,model)
 
 %% Trajectory Planning
 

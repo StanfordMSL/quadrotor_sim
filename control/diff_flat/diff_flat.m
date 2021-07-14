@@ -4,9 +4,9 @@ function traj = diff_flat(obj,map,model,n_der,nom_show)
 fmu_dt  = model.clock.dt_fmu;
 N_wp    = size(obj.x,2);
 
-% Trajectory time setup. We assume a constant velocity of around 0.5m/s in
-% between waypoints to generate an estimated time.
-vel = 0.5;
+% Trajectory time setup. We assume a constant velocity of around
+% $(vel) m/s in between waypoints to generate an estimated time.
+vel = 1.0;
 
 t_wp = zeros(1,N_wp);
 for k = 1:N_wp-1
