@@ -28,8 +28,8 @@ end
 % Terminal Case
 xk = X(:,N);
 uk = X(:,N);
-xs = Xs(:,k);
-us = Us(:,k);
+xs = Xs(:,N);
+us = Us(:,N-1);
 
 c = con(:,N);
 

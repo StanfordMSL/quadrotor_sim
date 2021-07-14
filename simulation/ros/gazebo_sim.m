@@ -1,7 +1,12 @@
 function log = gazebo_sim(traj,mode)
 
 % Initialize ROS Matlab Node
-% rosinit('ASGARD.local')
+try
+    rosnode list
+catch
+    rosinit('ASGARD.local')
+end
+% 
 
 % Initialize ROS Topic
 node = ros.Node('/matlab_node');
