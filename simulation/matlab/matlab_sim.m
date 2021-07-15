@@ -26,7 +26,7 @@ end
 log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,obj,model);     
 
 % State Estimator Initilization
-ses = ses_init(traj);
+ses = ses_init(obj,model);
 
 % Low Level Controller Initialization
 u_mt = zeros(4,1);
@@ -48,8 +48,8 @@ for k_act = 1:(N_sim-1)
     if mod(t_now,dt_ses) == 0
         k_ses = k_ses + 1;
         
-        x_now = log.x_act(:,k_act);
-        ses = state_estimation(x_now,u_mt,ses,sense_mode);
+        x_act = log.x_act(:,k_act);
+        ses = state_estimation(x_act,ses,sense_mode);
         
         log.t_ses(:,k_ses)   = t_now;   
         log.x_ses(:,k_ses)   = ses.x; 
@@ -90,7 +90,9 @@ for k_act = 1:(N_sim-1)
         log.u_wr(:,k_fmu)  = u_wr;
         log.u_br(:,k_fmu)  = u_br;
         log.u_mt(:,k_fmu)  = u_mt;
-        log.x_fmu(:,k_fmu) = x_now;
+        log.x_fmu(:,k_fmu) = ses.x;
+        
+        ses.u = u_mt;
     end
     %%%%%%%%%%%%%%%%%%%%%%y%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Level Control Updater    
