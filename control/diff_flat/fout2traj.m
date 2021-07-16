@@ -14,11 +14,11 @@ x_bar(:,1) = traj.x_bar(:,n_tr);
 
 %%% Body Rates
 x_br      = zeros(10,N_tr);
-l_br      = zeros(4,N_tr-1);
+u_br      = zeros(4,N_tr-1);
 L_br      = zeros(4,10,N_tr-1);
 
 x_br(:,1) = traj.x_bar(1:10,n_tr);
-l_br(:,1) = [fn ; traj.x_bar(11:13,n_tr)];
+u_br(:,1) = [fn ; traj.x_bar(11:13,n_tr)];
 
 %%% Direct
 u_mt = zeros(4,N_tr-1);
@@ -42,9 +42,10 @@ for k = 1:N_tr-1
     
     % Body Rates
     x_br(:,k)   = x_bar(1:10,k);
-    l_br(:,k)   = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
+    u_br(:,k)   = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
     L_br(:,:,k) = zeros(4,10);
 end
+x_br(:,N_tr)   = x_bar(1:10,N_tr);
 
 % Store it in the desired format
 idx_x = n_tr:n_tr+N_tr-1;
@@ -56,7 +57,8 @@ switch mode
         traj.f_out(:,:,idx_x) = f_out;
     case 'body_rate'
         traj.x_br(:,idx_x) = x_br;
-        traj.l_br(:,idx_u) = l_br;
+        traj.u_br(:,idx_u) = u_br;
+        traj.L_br(:,:,idx_u) = L_br;
     case 'direct'
         traj.u_mt(:,idx_u) = u_mt;
     case 'wrench'

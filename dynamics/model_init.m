@@ -280,7 +280,7 @@ model.ses.R = diag(var_sens);
 
 % Misc
 model.df.ndr = 15;          % Number of Terms for Diff Flat Polynomial
-model.df.vel = 1.0;         % Desired Cruising Velocity in Diff Flat
+model.df.vel = 2.0;         % Desired Cruising Velocity in Diff Flat
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)

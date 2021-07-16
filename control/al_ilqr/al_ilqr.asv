@@ -2,22 +2,22 @@ function traj = al_ilqr(traj,obj)
 
 % Tuning Parameters
 tol_motor = 1e3;
-tol_gate  = 1e-2;
+tol_gate  = 1e-3;
 tol_inner = 0.01;
 
 % Unpack some stuff
-X = traj.x_br;
-U = traj.l_br;
-L = traj.L_br;
+N = size(traj.x_bar,2);
 
-N = size(X,2);
+X  = traj.x_br;
+U  = traj.u_br;
+L  = traj.L_br;
 
 xs = obj.kf.x(1:10,end);
 us = zeros(4,1);
 
 % Initialize Lagrange Variables
-mu = [ (1e-12).*ones(8,N) ;...     % motor
-       0.001.*ones(16,N) ];      % gate
+mu = [ (1e-12).*ones(8,N) ;...   % motor
+       0.1.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
 phi    = 1.2;
 
@@ -35,27 +35,31 @@ while true
     while true
         counter(1,2) = counter(1,2)+1;        
         La_p = La_c;
+        
         Xp = X;
         Up = U;
         Lp = L;
         
         [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag,xs,us);
-        [Xact,l,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us,obj.gt);
-        Xfp(:,k+1) = Xact(1:10,k+1);
-
+        [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us,obj.gt);
+        
+        % Debug
+        nominal_plot(X,obj.gt,10,'persp');
+        
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)
             % Carry on
         elseif (flag_inner == 1)
+            % Minimum Found. Exit loop.
+            break
+        elseif (flag_inner == 2)
             % Explosion. Revert
             
             X = Xp;
             U = Up;
             L = Lp;
             
-            break
-        else
-            % Minimum Found. Exit loop.
+%             disp('[al_ilqr]: Explosion Reverting.');
             break
         end
         
@@ -68,10 +72,11 @@ while true
     end
     
 %     % Debug
-%     disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
+    disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 end
 
-% nominal_plot(X,map,10,'top');
+% nominal_plot(X,obj.gt,10,'top');
+traj.x_bar = [X ; U(2:4,:) zeros(3,1)];     % Regenerate the full trajectory (with 'fake' last body rate frame).
 traj.x_br = X;
-traj.u_br = l;
+traj.u_br = U;
 traj.L_br = L;

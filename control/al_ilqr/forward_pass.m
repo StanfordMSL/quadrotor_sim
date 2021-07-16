@@ -48,18 +48,18 @@ while true
 
     % Debug
 %     La_plot(La_p,La_c);
-%    nominal_plot(Xact,gate,10,'nice');
+%     nominal_plot(Xact,gate,10,'nice');
 %     disp(['[forward_pass]: alpha = ',num2str(alpha)]);
 
     [flag_LS,alpha] = check_LS(La_c,La_p,alpha,delV);
     if flag_LS == 0 
-        X = Xact;
+        X = Xfp;
         U = Ufp;
         break;
     elseif flag_LS == 1
         % Carry On
     elseif flag_LS == 2
-        % Rever to Old
+        % Revert to Old
         break
     end
 end

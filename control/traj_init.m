@@ -27,7 +27,7 @@ switch mode
         traj.type = 'body_rate';
 
         traj.x_br = zeros(10,N);
-        traj.l_br = zeros(4,N-1);
+        traj.u_br = zeros(4,N-1);
         traj.L_br = zeros(4,10,N-1);
     case 'direct'
         % u: motor input

@@ -2,28 +2,27 @@ function traj = al_ilqr(traj,obj)
 
 % Tuning Parameters
 tol_motor = 1e3;
-tol_gate  = 1e-2;
+tol_gate  = 1e-3;
 tol_inner = 0.01;
 
 % Unpack some stuff
-Xac  = traj.x_bar;
-Xbr  = traj.x_br;
-U    = traj.l_br;
-L    = traj.L_br;
+N = size(traj.x_bar,2);
 
-N = size(Xbr,2);
+X  = traj.x_br;
+U  = traj.u_br;
+L  = traj.L_br;
 
 xs = obj.kf.x(1:10,end);
 us = zeros(4,1);
 
 % Initialize Lagrange Variables
-mu = [ (1e-12).*ones(8,N) ;...     % motor
+mu = [ (1e-12).*ones(8,N) ;...   % motor
        0.001.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
 phi    = 1.2;
 
 % Initialize Constraint Variables
-[c, cx, cu] = con_calc(Xbr,U);
+[c, cx, cu] = con_calc(X,U);
 
 counter = [0 0];
 while true
@@ -31,38 +30,36 @@ while true
     
     % Calculate Constraint Activator Values and Lagrangian
     mu_diag = check_con(c,lambda,mu);
-    La_c = lagr_calc(Xbr,U,xs,us,c,lambda,mu_diag);
+    La_c = lagr_calc(X,U,xs,us,c,lambda,mu_diag);
 
     while true
         counter(1,2) = counter(1,2)+1;        
         La_p = La_c;
         
-        Xacp = Xac;
-        Xbrp = Xbr;
+        Xp = X;
         Up = U;
         Lp = L;
         
-        [l,L,del_V] = backward_pass(Xbr,U,c,cx,cu,lambda,mu_diag,xs,us);
-        [Xact,l,La_c,c,cx,cu] = forward_pass(Xbr,U,l,L,del_V,La_p,lambda,mu,xs,us,obj.gt);
-        Xbr = Xact(1:10,:);
+        [l,L,del_V] = backward_pass(X,U,c,cx,cu,lambda,mu_diag,xs,us);
+        [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us,obj.gt);
         
         % Debug
-        nominal_plot(Xac,obj.gt,10,'persp');
-
+        nominal_plot(X,obj.gt,10,'persp');
+        
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)
             % Carry on
         elseif (flag_inner == 1)
+            % Minimum Found. Exit loop.
+            break
+        elseif (flag_inner == 2)
             % Explosion. Revert
             
-            Xac = Xacp;
-            Xbr = Xbrp;
+            X = Xp;
             U = Up;
             L = Lp;
             
-            break
-        else
-            % Minimum Found. Exit loop.
+%             disp('[al_ilqr]: Explosion Reverting.');
             break
         end
         
@@ -75,15 +72,11 @@ while true
     end
     
 %     % Debug
-%     nominal_plot(Xac,obj.gt,10,'top');
-
-%     disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
+    disp(['[al_ilqr]: Obj. Cost: ',num2str(La_c.obj),' Con. Cost: ',num2str(La_c.con)]);
 end
 
-% Debug
-nominal_plot(Xac,obj.gt,10,'persp');
-
-traj.x_bar = Xac;
-traj.x_br = Xbr;
-traj.u_br = l;
+% nominal_plot(X,obj.gt,10,'top');
+traj.x_bar = [X ; U(2:4,:) zeros(3,1)];     % Regenerate the full trajectory (with 'fake' last body rate frame).
+traj.x_br = X;
+traj.u_br = U;
 traj.L_br = L;

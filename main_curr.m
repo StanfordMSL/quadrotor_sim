@@ -12,11 +12,11 @@ model = model_init('v1.0.0');
 % model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','empty');
+obj  = race_init('line','slit_hard');
 % obj  = grasp_init('empty');            
 
 % Trajectory Horizon
-t_hzn = 10;
+t_hzn = 5;
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -31,7 +31,7 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 % 
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-% 
+
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(input_mode,model)
@@ -64,7 +64,7 @@ animation_plot(log_M,obj,model.map,'nice','show');
 % tol_gate  = 2e-1;
 % check_outer(log_M.con,tol_motor,tol_gate);
 
-% animation_plot( log_M,obj,map,'nice','show');
+animation_plot(log_M,obj,model.map,'back','show');
 % br_debug(log_M.u_br)
 
 %% Boneyard
