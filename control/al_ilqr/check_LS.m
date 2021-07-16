@@ -1,6 +1,7 @@
 function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
 
 z = Jp.tot-Jc.tot;
+flag = 999;
 
 if (z > 0)
     % Line-Search Gain Valid

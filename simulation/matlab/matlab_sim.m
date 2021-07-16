@@ -68,7 +68,7 @@ for k_act = 1:(N_sim-1)
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
             case 'body_rate'  
-                del_x = ses.x(1:10,:) - traj.x(1:10,k_fmu);
+                del_x = ses.x(1:10,:) - traj.x_br(:,k_fmu);
 
                 u_op = traj.u_br(:,k_fmu);
                 u_cl =  traj.L(:,:,k_fmu)*del_x;
@@ -79,11 +79,11 @@ for k_act = 1:(N_sim-1)
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
             case 'direct'
-                u_wr = traj.u_wr(:,k_fmu);
+
                 u_mt = traj.u_mt(:,k_fmu);
             case 'wrench'
                 u_wr = traj.u_wr(:,k_fmu);
-                u_mt = traj.u_mt(:,k_fmu);
+                u_mt = wrench2motor(u_wr,model.est);
         end
         
         log.t_fmu(:,k_fmu) = t_now; 

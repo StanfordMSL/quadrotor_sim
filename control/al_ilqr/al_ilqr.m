@@ -79,7 +79,7 @@ end
 
 % nominal_plot(X,map,10,'top');
 
-traj.x = X;
+traj.x_br = X;
 traj.u_br = U;
 
 traj.L = L;

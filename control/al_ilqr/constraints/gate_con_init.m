@@ -1,13 +1,9 @@
-function gate_con_init(map,input_mode,model)
-
-% Tuning Parameter
-tol = 0.2;
+function gate_con_init(gate,input_mode,model)
 
 % Gate Parameters
-p_g  = map.p_g;
-p_G1 = map.p_gc(:,1);
-p_G2 = map.p_gc(:,2);
-p_G4 = map.p_gc(:,4);
+p_G1 = gate.p_box(:,1);
+p_G2 = gate.p_box(:,2);
+p_G4 = gate.p_box(:,4);
 
 r_12 = p_G2 - p_G1;
 r_14 = p_G4 - p_G1;
@@ -41,15 +37,7 @@ for j = 1:2
         idx = (j-1)*n_p+k;
         
         r_d = x(1:3,1) + quatrot2(r_d_arr(:,k),x(7:10,1));
-
-%         a1 = 1/tol;
-%         a2 = p_g(1,1)/tol;
-%         a3 = 1;
-%         
-%         g = -(a1*x(1,1)+a2)^2 + a3;
-        g = 1;
-        
-        gain(idx,1) = g.*dot((r_d-p_G1),r_g)./(r_g'*r_g);
+        gain(idx,1) = dot((r_d-p_G1),r_g)./(r_g'*r_g);
     end
 end
 

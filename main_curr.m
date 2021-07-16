@@ -8,15 +8,12 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-% model = model_init('v1.0.1');  
-model = model_init('iris');  
+model = model_init('v1.0.0');  
+% model = model_init('iris');  
 
 % Objective and Constraints
-obj  = obj_init('line');
-map  = map_init('empty');
-
-% Order of Basis Function for QP
-n_der = 15;             
+obj  = race_init('line','two_gate');
+% obj  = grasp_init('empty');            
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -26,33 +23,35 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% % Generate QP Matrices
-% QP_init(n_der);                       
-% 
+% Generate QP Matrices
+QP_init(model.df.ndr);                       
+
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-% 
+
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(input_mode,model)
-% gate_con_init(map,input_mode,model)
+% gate_con_init(obj.gt,input_mode,model)
 
 %% Trajectory Planning
 
+traj = traj_init('body_rate');
+
 % Warm Start
-traj = diff_flat(obj,map,model,n_der,'show');
+traj_br = diff_flat(obj,model,traj,'body_rate');
 
 % Full Constraint Optimization
-traj = al_ilqr(traj,obj,map);
+traj = al_ilqr(obj,map,traj);
 
 %% Simulation
 
 % MATLAB
-log_M = matlab_sim(traj,obj,model,'none','body_rate','ekf');
-animation_plot( log_M,obj,map,'nice','show');
+log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
+animation_plot(log_M,obj,map,'nice','show');
 
 % ROS
-log_R = gazebo_sim(traj,'body_rate');
+% log_R = gazebo_sim(traj,'body_rate');
 % sim_compare(log_M,log_R)
 
 %% Plot the States, Animate and Debug

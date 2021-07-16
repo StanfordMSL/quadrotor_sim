@@ -1,4 +1,4 @@
-function nominal_plot(x_bar,map,step,view_point)
+function nominal_plot(x_bar,gate,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
@@ -10,23 +10,23 @@ set(gca,'ColorOrder','factory')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Generate flight room map
-if any(ismember(fields(map),'p_gc')) == 1
-    N_g = size(map.p_gc,3);
+if any(ismember(fields(gate),'p_ctr'))
+    N_g = size(gate.p_ctr,2);
     
     for k = 1:N_g
         % Gate(s) Present. Render.    
-        p_G1 = map.p_gc(:,1,k);
-        p_G2 = map.p_gc(:,2,k);
-        p_G4 = map.p_gc(:,4,k);
+        p_G1 = gate.p_box(:,1,k);
+        p_G2 = gate.p_box(:,2,k);
+        p_G4 = gate.p_box(:,4,k);
 
         r_12 = p_G2 - p_G1;
         r_14 = p_G4 - p_G1;
         n_G  = cross(r_14,r_12);
-        p_gc_dir = map.p_gc(:,1,k)+ (0.3.*n_G./norm(n_G));
+        gate_dir = gate.p_box(:,1,k)+ (0.3.*n_G./norm(n_G));
         
-        gate = [map.p_gc(:,:,k) map.p_gc(:,1,k) p_gc_dir];  % render points need to terminate at start
+        g_frame = [gate.p_box(:,:,k) gate.p_box(:,1,k) gate_dir];  % render points need to terminate at start
 
-        gate_h = plot3(gate(1,:)',gate(2,:)',gate(3,:)','b');
+        gate_h = plot3(g_frame(1,:)',g_frame(2,:)',g_frame(3,:)','b');
         gate_h.LineWidth = 3;
         hold on
     end

@@ -5,6 +5,14 @@ N     = size(X,2);
 J_objs = zeros(1,N);
 J_cons = zeros(1,N);
 
+% Initialize the Mex Sensitive Variables
+J.objs = zeros(1,N);
+J.cons = zeros(1,N);
+J.tots = zeros(1,N);
+J.obj = 0;
+J.con = 0;
+J.tot = 0;
+
 % Generate the nominals and ideals (Xstar, Ustar)
 Xs = [X(:,2:end) xs];
 Us = repmat(us,1,N-1);
@@ -47,6 +55,6 @@ J.obj = sum(J_objs);
 J.con = sum(J_cons);
 J.tot = J.obj + J.con;
 
-disp(['[lagr_calc]: Obj. Cost: ',num2str(J.obj),' Con. Cost: ',num2str(J.con)]);
+% disp(['[lagr_calc]: Obj. Cost: ',num2str(J.obj),' Con. Cost: ',num2str(J.con)]);
 
 end

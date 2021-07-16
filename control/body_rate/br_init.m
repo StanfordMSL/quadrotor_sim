@@ -15,7 +15,7 @@ br.Kd = 0.0001.*eye(3);
 %           0.0000 0.0000 0.0000];
    
 % Proportional Variables
-br.err_now = 0;
+br.err_now = zeros(3,1);
 
 % Integral Variables
 br.I_lim = 999;

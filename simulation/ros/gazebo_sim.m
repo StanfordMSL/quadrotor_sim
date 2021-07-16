@@ -29,7 +29,7 @@ switch mode
         req.UArr = traj.u_br(:);
         req.LArr = traj.L(:);
 
-        req.XArr = traj.x(:);
+        req.XArr = traj.x_br(:);
         
         call(traj_client,req,'Timeout',3);
 

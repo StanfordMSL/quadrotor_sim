@@ -1,8 +1,8 @@
-function obj = obj_init(trajectory)
+function obj = grasp_init(trajectory)
      
 address = ['scenarios/objectives/',trajectory,'.csv'];
 
-% Gate Data
+% Objective Waypoints
 if isfile(address)
     obj.type = 0;           % race/trajectory following
     

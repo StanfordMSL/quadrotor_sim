@@ -269,11 +269,19 @@ model.ses.C     = [ eye(3) zeros(3,10);               % y(1:3)  = pos_mocap
                     zeros(3,10) eye(3) ];            % y(8:10) = omega_gyro
                 
 % Variances
-var_mocap  = [ (1.0*1e-2).*ones(3,1) ;
-               (1.0*1e-3).*ones(4,1)];
+var_mocap  = [ (1.0*1e-7).*ones(3,1) ;
+               (1.0*1e-7).*ones(4,1)];
 var_gyro = (1e-5).*ones(3,1);    
 var_sens = [var_mocap ; var_gyro];
 
 % Model and Sensor Noise Matrices
 model.ses.Q = 0.0.*eye(13);
 model.ses.R = diag(var_sens);
+
+% Misc
+model.df.ndr = 15;          % Number of Terms for Diff Flat Polynomial
+model.df.vel = 1.0;         % Desired Cruising Velocity in Diff Flat
+
+model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
+model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)
+model.map.z_lim = [0 3];        % Map z-limits (height)
