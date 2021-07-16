@@ -8,18 +8,19 @@ tol_inner = 0.01;
 % Unpack some stuff
 N = size(traj.x_bar,2);
 
-X  = traj.x_br;
-U  = traj.u_br;
-L  = traj.L_br;
+traj.t_fmu = traj.t_fmu(1,1:traj.k_N);
+X  = traj.x_br(:,1:traj.k_N);
+U  = traj.u_br(:,1:traj.k_N);
+L  = traj.L_br(:,:,1:traj.k_N);
 
 xs = obj.kf.x(1:10,end);
 us = zeros(4,1);
 
 % Initialize Lagrange Variables
 mu = [ (1e-12).*ones(8,N) ;...   % motor
-       0.1.*ones(16,N) ];      % gate
+       0.0001.*ones(16,N) ];      % gate
 lambda = 0.*ones(24,N);
-phi    = 1.2;
+phi    = 1.1;
 
 % Initialize Constraint Variables
 [c, cx, cu] = con_calc(X,U);
@@ -44,7 +45,7 @@ while true
         [X,U,La_c,c,cx,cu] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us,obj.gt);
         
         % Debug
-        nominal_plot(X,obj.gt,10,'persp');
+        nominal_plot(X,obj.gt,10,'back');
         
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)

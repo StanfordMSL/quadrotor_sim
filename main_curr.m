@@ -31,7 +31,7 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 % 
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-
+% 
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(input_mode,model)
