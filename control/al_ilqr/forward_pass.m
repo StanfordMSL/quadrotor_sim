@@ -1,7 +1,7 @@
-function [X,U,La_c,con,con_x,con_u] = forward_pass(X,U,l,L,delV,La_p,lambda,mu,xs,us,gate)
+function [X,U,con,La_c] = forward_pass(X,U,l,L,delV,La_p,lambda,mu,xs,us)
 
 % Tuning Parameter
-alpha = 1;
+alpha = diag([10,1,1,1]);
 
 % Unpack the relevant variables
 Xb = X;
@@ -38,28 +38,28 @@ while true
         u_mt = w2m_est(u_wr);
         
         Xact(:,k+1) = quadcopter_est(Xact(:,k),u_mt,FT_ext,wt);
-        Xfp(:,k+1) = Xact(1:10,k+1);
+        Xfp(:,k+1)  = Xact(1:10,k+1);
     end
     
-    [con, con_x, con_u] = con_calc(Xfp,Ufp);
-    mu_diag = check_con(con,lambda,mu);
+    con = con_calc(Xfp,Ufp);
     
-    La_c = lagr_calc(Xfp,Ufp,xs,us,con,lambda,mu_diag);
+    mu_diag = check_con(con.c,lambda,mu);
+    La_c = lagr_calc(Xfp,Ufp,xs,us,con.c,lambda,mu_diag);
 
     % Debug
 %     La_plot(La_p,La_c);
-%     nominal_plot(Xact,gate,10,'nice');
 %     disp(['[forward_pass]: alpha = ',num2str(alpha)]);
 
     [flag_LS,alpha] = check_LS(La_c,La_p,alpha,delV);
-    if flag_LS == 0 
+    if flag_LS == 0     
+        % Constraint Cost Improved. Allow a Trajectory Update
         X = Xfp;
         U = Ufp;
         break;
     elseif flag_LS == 1
-        % Carry On
+        % Try simply reducing alpha.
     elseif flag_LS == 2
-        % Revert to Old
+        % Reducing alpha not helping. Resorting to alternatives.
         break
     end
 end

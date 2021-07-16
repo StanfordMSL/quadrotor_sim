@@ -3,19 +3,17 @@ function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
 tol_alpha = 0.01;
 z = Jp.con-Jc.con;
 
-if (z > 0)
-    % Line-Search Gain Valid
+if (z > 0)      
+    % Constraint Cost Improved. Allow a Trajectory Update
     flag = 0;
-elseif ( (z <= 0) && (z > -100))
-    if alpha > tol_alpha
-        % Line-Search Gain Invalid (too big). Reduce it more.
+else
+    % Constraint Cost Worsened.
+    if alpha(1,1) > tol_alpha        
+        % Try simply reducing alpha.
         flag = 1;
         alpha = 0.5.*alpha; 
-    elseif (alpha < tol_alpha)
-        % Alpha Too Small. Generate an 'empty' update
+    elseif (alpha(1,1) < tol_alpha)  
+        % Reducing alpha not helping. Resorting to alternatives.
         flag = 2;
     end
-else    
-    % Trajectory Exploded. Generate an 'empty' update
-    flag = 2;
-end
+end   

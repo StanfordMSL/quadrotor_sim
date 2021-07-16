@@ -1,4 +1,4 @@
-function [l,L,delV] = backward_pass(X,U,con,con_x,con_u,lambda,mu_diag,xs,us)
+function [l,L,delV] = backward_pass(X,U,con,lambda,mu_diag,xs,us)
 
 % Unpack some useful stuff
 n_x = size(X,1);
@@ -36,9 +36,9 @@ for k = N-1:-1:1
     A = A_calc(x,u);
     B = B_calc(x,u);
     
-    c = con(:,k);
-    cx = con_x(:,:,k);
-    cu = con_u(:,:,k);
+    c  = con.c(:,k);
+    cx = con.cx(:,:,k);
+    cu = con.cu(:,:,k);
     
     ld = lambda(:,k);
     I_mu = diag(mu_diag(:,k));
