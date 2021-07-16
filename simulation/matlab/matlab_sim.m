@@ -11,7 +11,7 @@ k_lqr = 0;
 k_fmu = 0;
 
 % Initialize simulation final time and steps (fixed at 10kHz).
-t_sim = dt_fmu*(size(traj.x,2)-1);
+t_sim = traj.t_fmu(end);
 N_sim = round((t_sim/dt_act) + 1);
 N_ses = round((t_sim/dt_ses) + 1);
 N_fmu = round((t_sim/dt_fmu) + 1);
@@ -70,8 +70,8 @@ for k_act = 1:(N_sim-1)
             case 'body_rate'  
                 del_x = ses.x(1:10,:) - traj.x_br(:,k_fmu);
 
-                u_op = traj.u_br(:,k_fmu);
-                u_cl =  traj.L(:,:,k_fmu)*del_x;
+                u_op = traj.l_br(:,k_fmu);
+                u_cl = traj.L_br(:,:,k_fmu)*del_x;
         
                 u_br = u_op +  u_cl;
                 [u_wr ,br] = br_ctrl(ses.x,u_br,br);
@@ -111,7 +111,7 @@ for k_act = 1:(N_sim-1)
     % Dynamic Model
     
     % Simple Contact/External Forces Model
-    if obj.type == 1
+    if strcmp(obj.type,'grasp') 
         [FT_ext,obj,model] = contact_func(x_now,obj,model,'catch');
     else
         FT_ext = zeros(6,1);

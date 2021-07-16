@@ -1,5 +1,7 @@
 function obj = race_init(keyframes,gates)
-     
+
+obj.type = 'race';
+
 kf_add = ['scenarios/keyframes/',keyframes,'.csv'];
 gt_add = ['scenarios/gates/',gates,'.csv'];
 

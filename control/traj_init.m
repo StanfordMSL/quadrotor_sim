@@ -1,10 +1,18 @@
-function traj = traj_init(mode)
+function traj = traj_init(obj,model,t_end,mode)
 
-% Tunable Parameters
-traj.hz = 100;
-traj.t_end =10;
+x0 = obj.kf.x(:,1);
+hz_fmu = model.clock.hz_fmu;
 
-N = traj.hz*traj.t_end + 1;
+% Intermediate Variables
+fmu_dt = 1/hz_fmu;
+N      = hz_fmu*t_end + 1;
+
+% Some Useful Parameters
+traj.hz    = hz_fmu;
+traj.t_fmu = 0:fmu_dt:t_end;
+traj.x_bar = zeros(13,N);
+traj.x_bar(:,1) = x0;
+traj.k_N   = N;
 
 switch mode
     case 'pos_att'

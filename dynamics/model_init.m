@@ -22,7 +22,7 @@ switch mdl_type
         model.est.I  = 0.001.*[ 1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.est.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps.*model.est.m;
@@ -35,7 +35,7 @@ switch mdl_type
         model.act.I  = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.act.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = eps.*eye(3);
         model.act.kh = eps.*model.act.m;
@@ -51,8 +51,8 @@ switch mdl_type
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
         
         % Motor Limits
-        model.motor.min = 10;      % Motor Min rad/s
-        model.motor.max = 4250;    % Motor Max rad/s
+        model.motor.min = 800;      % Motor Min rad/s
+        model.motor.max = 33000;    % Motor Max rad/s
     case 'v1.1.0'               % simple motor, with noise, no drag
         disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [ ] Drag ||');
         % Estimate %%%          
@@ -60,7 +60,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.est.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps*model.est.m;
@@ -73,7 +73,7 @@ switch mdl_type
         model.act.I  = 0.001.*[ 1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.act.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = eps.*eye(3);
         model.act.kh = eps*model.act.m;
@@ -89,8 +89,8 @@ switch mdl_type
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
         
         % Motor Limits
-        model.motor.min = 10;      % Motor Min rad/s
-        model.motor.max = 4250;    % Motor Max rad/s
+        model.motor.min = 800;      % Motor Min rad/s
+        model.motor.max = 33000;    % Motor Max rad/s
     case 'v1.0.1'               % simple motor, no noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [*] Drag ||');
         % Estimate %%%
@@ -98,7 +98,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.est.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = [ 0.30   0.00   0.00;...
                          0.00   0.30   0.00;...
@@ -113,7 +113,7 @@ switch mdl_type
         model.act.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.act.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D  = [  0.30   0.00   0.00;...
                          0.00   0.30   0.00;...
@@ -131,8 +131,8 @@ switch mdl_type
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
         
         % Motor Limits
-        model.motor.min = 10;      % Motor Min rad/s
-        model.motor.max = 4250;    % Motor Max rad/s
+        model.motor.min = 800;      % Motor Min rad/s
+        model.motor.max = 33000;    % Motor Max rad/s
     case 'v1.1.1'               % simple motor, with noise, with drag
         disp('[model init]: || || [ ] Quadratic Motor Model || [*] Squared Motor Model || [*] Process Noise || [*] Drag ||');
         % Estimate %%%
@@ -140,7 +140,7 @@ switch mdl_type
         model.est.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.est.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.est.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.est.b  = 0.10; 
         model.est.D  = eps.*eye(3);
         model.est.kh = eps*model.est.m;
@@ -153,7 +153,7 @@ switch mdl_type
         model.act.I = 0.001.*[  1.54   0.00   0.00;...
                                 0.00   1.54   0.00;...
                                 0.00   0.00   2.51]; 
-        model.act.kw = [3.6552e-07 ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
+        model.act.kw = [8.8478e-09  ; 0 ; 0];        % originally [8.8478e-09 ; 0 ; 0]; 
         model.act.b  = 0.10;
         model.act.D = [  0.30   0.00   0.00;...
                          0.00   0.30   0.00;...
@@ -171,8 +171,8 @@ switch mdl_type
         model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
         
         % Motor Limits
-        model.motor.min = 10;      % Motor Min rad/s
-        model.motor.max = 4250;    % Motor Max rad/s
+        model.motor.min = 800;      % Motor Min rad/s
+        model.motor.max = 33000;    % Motor Max rad/s
 case 'iris'              % iris
         disp('[model init]: || [ ] Quadratic Motor Model || [*] Squared Motor Model || [ ] Process Noise || [ ] Drag ||');
         % Estimate %%%          

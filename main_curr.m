@@ -12,8 +12,11 @@ model = model_init('v1.0.0');
 % model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','two_gate');
+obj  = race_init('line','empty');
 % obj  = grasp_init('empty');            
+
+% Trajectory Horizon
+t_hzn = 10;
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -23,12 +26,12 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% Generate QP Matrices
-QP_init(model.df.ndr);                       
-
+% % Generate QP Matrices
+% QP_init(model.df.ndr);                       
+% 
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-
+% 
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(input_mode,model)
@@ -36,19 +39,20 @@ QP_init(model.df.ndr);
 
 %% Trajectory Planning
 
-traj = traj_init('body_rate');
+traj = traj_init(obj,model,t_hzn,'body_rate');
 
 % Warm Start
-traj_br = diff_flat(obj,model,traj,'body_rate');
+traj = diff_flat(obj,model,traj,'body_rate');
+nominal_plot(traj.x_bar,obj.gt,10,'persp');
 
 % Full Constraint Optimization
-traj = al_ilqr(obj,map,traj);
+traj = al_ilqr(traj,obj);
 
 %% Simulation
 
 % MATLAB
 log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
-animation_plot(log_M,obj,map,'nice','show');
+animation_plot(log_M,obj,model.map,'nice','show');
 
 % ROS
 % log_R = gazebo_sim(traj,'body_rate');

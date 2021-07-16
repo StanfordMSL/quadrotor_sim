@@ -75,8 +75,8 @@ switch view_point
 end
 
 % Set Limits
-xlim([-3.5 3.5]);
-ylim([-2.0 2.0]);
+xlim([-8.1 8.1]);
+ylim([-3.2 3.2]);
 zlim([ 0.0 3.0]);
 
 set(gcf,'color','w');

@@ -8,17 +8,17 @@ dt_ses = model.clock.dt_ses;
 % Timestamped Actual Pose Array
 log.t_act = 0:dt_act:tf;
 log.x_act = zeros(13,N_act);
-log.x_act(:,1) = obj.x(:,1);
+log.x_act(:,1) = obj.kf.x(:,1);
 
 % Estimator Data
 log.t_ses  = 0:dt_ses:tf;
 log.x_ses  = zeros(13,N_ses);
-log.x_ses(:,1) = obj.x(:,1);
+log.x_ses(:,1) = obj.kf.x(:,1);
 
 log.sigma = zeros(13,13,N_ses);
 
 % Store Desired Trajectory
-log.x_des = traj.x;
+log.x_des = traj.x_bar;
 
 % FMU Data
 log.t_fmu  = 0:dt_fmu:tf;
