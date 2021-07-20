@@ -1,7 +1,7 @@
 function [X,U,con,La_c] = forward_pass(X,U,l,L,delV,La_p,lambda,mu,xs,us)
 
 % Tuning Parameter
-alpha = diag([10,1,1,1]);
+alpha = diag([100,1,1,1]);
 
 % Unpack the relevant variables
 Xb = X;

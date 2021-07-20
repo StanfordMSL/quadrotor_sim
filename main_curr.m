@@ -12,7 +12,7 @@ model = model_init('v1.0.0');
 % model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','slit_hard');
+obj  = race_init('line','gate_high');
 % obj  = grasp_init('empty');            
 
 % Trajectory Horizon
@@ -26,16 +26,16 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% % Generate QP Matrices
-% QP_init(model.df.ndr);                       
-% 
-% % Generate Dynamics and Linearization Functions
-% dyn_init(model,input_mode);      
-% 
-% % Generate Constraint Variables
-% lagr_init(cost_mode,input_mode)
-% motor_con_init(input_mode,model)
-% gate_con_init(obj.gt,input_mode,model)
+% Generate QP Matrices
+QP_init(model.df.ndr);                       
+
+% Generate Dynamics and Linearization Functions
+dyn_init(model,input_mode);      
+
+% Generate Constraint Variables
+lagr_init(cost_mode,input_mode)
+motor_con_init(input_mode,model)
+gate_con_init(obj.gt,input_mode,model)
 
 %% Trajectory Planning
 
