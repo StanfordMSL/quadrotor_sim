@@ -1,5 +1,5 @@
 function sim_compare(log1,log2)
-figure(1)
+figure(3)
 clf
 
 t_m = log1.t_act;

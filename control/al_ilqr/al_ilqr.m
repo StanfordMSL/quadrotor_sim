@@ -8,10 +8,10 @@ tol_inner = 0.01;
 % Unpack some stuff
 N = size(traj.x_bar,2);
 
-traj.t_fmu = traj.t_fmu(1,1:traj.k_N);
-X  = traj.x_br(:,1:traj.k_N);
-U  = traj.u_br(:,1:traj.k_N);
-L  = traj.L_br(:,:,1:traj.k_N);
+% traj.t_fmu = traj.t_fmu(1,1:traj.k_N);
+X  = traj.x_br;
+U  = traj.u_br;
+L  = traj.L_br;
 
 xs = obj.kf.x(1:10,end);
 us = zeros(4,1);

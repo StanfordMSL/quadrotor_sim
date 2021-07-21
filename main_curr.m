@@ -8,11 +8,11 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-model = model_init('v1.0.0');  
-% model = model_init('iris');  
+% model = model_init('v1.0.0');  
+model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_high');
+obj  = race_init('line','gate_right');
 % obj  = grasp_init('empty');            
 
 % Trajectory Horizon
@@ -26,16 +26,16 @@ input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% Generate QP Matrices
-QP_init(model.df.ndr);                       
-
-% Generate Dynamics and Linearization Functions
-dyn_init(model,input_mode);      
-
-% Generate Constraint Variables
-lagr_init(cost_mode,input_mode)
-motor_con_init(input_mode,model)
-gate_con_init(obj.gt,input_mode,model)
+% % Generate QP Matrices
+% QP_init(model.df.ndr);                       
+% 
+% % Generate Dynamics and Linearization Functions
+% dyn_init(model,input_mode);      
+% 
+% % Generate Constraint Variables
+% lagr_init(cost_mode,input_mode)
+% motor_con_init(input_mode,model)
+% gate_con_init(obj.gt,input_mode,model)
 
 %% Trajectory Planning
 
@@ -54,7 +54,7 @@ traj = al_ilqr(traj,obj);
 log_M = matlab_sim(traj,obj,model,'none','body_rate','bypass');
 animation_plot(log_M,obj,model.map,'nice','show');
 
-% ROS
+% % ROS
 % log_R = gazebo_sim(traj,'body_rate');
 % sim_compare(log_M,log_R)
 
@@ -64,7 +64,7 @@ animation_plot(log_M,obj,model.map,'nice','show');
 % tol_gate  = 2e-1;
 % check_outer(log_M.con,tol_motor,tol_gate);
 
-animation_plot(log_M,obj,model.map,'back','show');
+% animation_plot(log_M,obj,model.map,'back','show');
 % br_debug(log_M.u_br)
 
 %% Boneyard

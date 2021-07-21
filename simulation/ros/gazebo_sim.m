@@ -14,7 +14,7 @@ pose_init_pub = ros.Publisher(node,'drone1/setpoint/position','geometry_msgs/Pos
 pause(1);
 
 % Send the Drone to Initial Position
-send2init(pose_init_pub,traj.x(:,1));
+send2init(pose_init_pub,traj.x_bar(:,1));
 pause(1);
 
 % Send Trajectory for Execution
@@ -24,10 +24,10 @@ switch mode
 
         req = rosmessage(traj_client);
         req.Hz = traj.hz;
-        req.N = size(traj.x,2);
+        req.N = size(traj.x_br,2);
         
         req.UArr = traj.u_br(:);
-        req.LArr = traj.L(:);
+        req.LArr = traj.L_br(:);
 
         req.XArr = traj.x_br(:);
         
@@ -36,5 +36,5 @@ switch mode
         % print(["Actual: ",num2str(cs_act)," ROS: ",num2str(cs_ros)]);
 end
 
-log = ros_logger(pose_sub,traj.t_fmu(2));
+log = ros_logger(pose_sub,traj.t_fmu(1,end));
 
