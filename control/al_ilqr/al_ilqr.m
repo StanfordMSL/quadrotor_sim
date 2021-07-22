@@ -6,34 +6,29 @@ tol_gate  = 1e-3;
 tol_inner = 0.01;
 
 % Unpack some stuff
-N = size(traj.x_bar,2);
-
-% traj.t_fmu = traj.t_fmu(1,1:traj.k_N);
-X  = traj.x_br;
-U  = traj.u_br;
-L  = traj.L_br;
+X = traj.x_br;
+U = traj.u_br;
+L = traj.L_br;
+T = traj.T;
 
 xs = obj.kf.x(1:10,end);
-us = zeros(4,1);
+us = round(U(:,end),3);
+
+% Calculate Constraints
+con = con_calc(X,U,obj.gt.p_box);
 
 % Initialize Lagrange Variables
-mu = [ (1e-12).*ones(8,N) ;...   % motor
-       0.001.*ones(16,N) ];      % gate
-lambda = 0.*ones(24,N);
-phi    = 1.1;
-
-% Initialize Constraint Variables
-con = con_calc(X,U);
+mult = mult_init(X,U,xs,us,T,con.c);
 
 counter = [0 0];
 while true
     counter(1,1) = counter(1,1)+1;
     
     % Calculate Constraint Activator Values and Lagrangian
-    mu_diag = check_con(con.c,lambda,mu);
-    La_c = lagr_calc(X,U,xs,us,con.c,lambda,mu_diag);
+    La_c = lagr_calc(X,U,xs,us,T,con.c,mult.lambda,mult.mu_d);
     disp(['[al_ilqr]: Constraint cost to beat: ',num2str(La_c.con)]);
-    
+    La_plot(La_c,La_c);
+
     while true
         counter(1,2) = counter(1,2)+1;        
         La_p = La_c;
@@ -42,8 +37,8 @@ while true
         Up = U;
         Lp = L;
         
-        [l,L,del_V]    = backward_pass(X,U,con,lambda,mu_diag,xs,us);
-        [X,U,con,La_c] = forward_pass(X,U,l,L,del_V,La_p,lambda,mu,xs,us);
+        [l,L,del_V]    = backward_pass(X,U,xs,us,T,con,mult);
+        [X,U,con,La_c] = forward_pass(X,U,xs,us,T,l,L,del_V,La_p,mult,obj.gt);
         
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)
@@ -67,7 +62,7 @@ while true
     nominal_plot(X,obj.gt,10,'back');
     disp(['[al_ilqr]: Constraint cost on departure: ',num2str(La_c.con)]);
     
-    [lambda,mu] = mult_update(lambda,mu,phi,con.c);
+    mult = mult_update(mult,con.c);
     
     if (check_outer(con.c,tol_motor,tol_gate) == true)
         % Constraints satisfied. Stop al-iLQR.

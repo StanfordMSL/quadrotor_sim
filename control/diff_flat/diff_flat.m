@@ -25,7 +25,7 @@ for k_kf = 1:N_kf
 end
 
 %% Pad the remainder of the trajectory
-traj.k_N = n_tr;        % Trajectory ends here.
+traj.T = n_tr;        % Trajectory ends here.
 
 f_end.t = [0 traj.t_fmu(end)-f_wp.t(end)];
 f_end.sigma = zeros(4,15,2);

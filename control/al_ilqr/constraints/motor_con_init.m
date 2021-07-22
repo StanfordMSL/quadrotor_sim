@@ -1,4 +1,4 @@
-function motor_con_init(input_mode,model)
+function motor_con_init(model,input_mode)
 
 % Unpack some stuff
 wm_min = model.motor.min.*ones(4,1);
@@ -16,11 +16,11 @@ address = 'control/al_ilqr/constraints/';
 
 switch input_mode
     case 'direct'
-        syms x [13 1] real
-        syms u [4 1] real
-            
+        x = sym('x',[13 1],'real');
+        u = sym('u',[4 1],'real');
+
         fm = kw.*u.^2;       
-        con = [fm-fm_max ; -fm+fm_min];
+        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
         
         con_x = jacobian(con,x);
         con_u = jacobian(con,u);
@@ -29,11 +29,11 @@ switch input_mode
         matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
         matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
     case 'wrench'
-        syms x [13 1] real
-        syms u [4 1] real
+        x = sym('x',[13 1],'real');
+        u = sym('u',[4 1],'real');
         
         fm = w2m.*u;
-        con = [fm-fm_max ; -fm+fm_min];
+        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
      
         con_x = jacobian(con,x);
         con_u = jacobian(con,u);
@@ -42,9 +42,9 @@ switch input_mode
         matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
         matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
     case 'body_rate'
-        syms x [10 1] real
-        syms u   [4 1] real
-        syms up [4 1] real
+        x = sym('x',[10 1],'real');
+        u = sym('u',[4 1],'real');
+        up = sym('up',[4 1],'real');
         
         w = u(2:4);
         wp = up(2:4);
@@ -54,7 +54,7 @@ switch input_mode
         wrench = [u(1) ; tau];
         
         fm = w2m*wrench;
-        con = [fm-fm_max ; -fm+fm_min];
+        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
         
         con_x = jacobian(con,x);
         con_u = jacobian(con,u);

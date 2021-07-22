@@ -69,7 +69,7 @@ switch view_point
     case 'side'
         view(0,0);
     case 'top'
-        view(0,90);
+        view(-90,90);
     case 'nice'
         view(-100,20);
 end

@@ -1,4 +1,4 @@
-function J = lagr_calc(X,U,xs,us,con,lambda,mu_diag)
+function J = lagr_calc(X,U,xs,us,T,con,lambda,mu_diag)
 
 % Initialize Variables
 N     = size(X,2);
@@ -13,38 +13,34 @@ J.obj = 0;
 J.con = 0;
 J.tot = 0;
 
-% Generate the nominals and ideals (Xstar, Ustar)
-Xs = [X(:,2:end) xs];
-Us = repmat(us,1,N-1);
-
 % Compute stagewise cost
 for k = 1:N-1
     xk = X(:,k);
-    uk = U(:,k);    
-    xs = Xs(:,k);
-    us = Us(:,k);
+    uk = U(:,k);
     
     c = con(:,k);
     
     ld = lambda(:,k);
     md = mu_diag(:,k);
     
-    J_objs(1,k) = obj_cost_k(xk,uk,xk,uk,xs,us);
+    if k < T
+        J_objs(1,k) = dCn(xk,uk,xk,uk,xs,us,1);
+    else
+        J_objs(1,k) = dCT(xk,uk,xk,uk,xs,us,1);
+    end
+    
     J_cons(1,k) = con_cost(c,ld,md);
 end
 
-% Terminal Case
+% Terminal
 xk = X(:,N);
-uk = X(:,N);
-xs = Xs(:,N);
-us = Us(:,N-1);
 
 c = con(:,N);
 
 ld = lambda(:,N);
 md = mu_diag(:,N);
 
-J_objs(1,N) = obj_cost_N(xk,uk,xk,uk,xs,us);
+J_objs(1,N) = dCN(xk,xk,xs,1);
 J_cons(1,N) = con_cost(c,ld,md);
 
 % Totals

@@ -96,7 +96,7 @@ function animation_plot(flight,obj,map,view_point,wp_show)
         case 'back'
             view(-90,0);
         case 'top'
-            view(0,90);
+        view(-90,90);
 %             zoom(3)
         case 'side'
             view(0,0);

@@ -25,9 +25,6 @@ for k_sig = 1:4
         
         beq0 = sig(k_sig,1:3,1)';
         beq1 = sig(k_sig,1:3,end)';
-        
-        Aeq_fr = zeros(0,N_dr);
-        beq_fr = zeros(0,N_dr);
     else                % sigma = r                            
         H = H_r(t0,t1);
                 
@@ -36,13 +33,13 @@ for k_sig = 1:4
         
         beq0 = sig(k_sig,1:5,1)';
         beq1 = sig(k_sig,1:5,end)';
-        
-        Aeq_fr = zeros(N_fr,N_dr);
-        beq_fr = zeros(N_fr,1);
-        for k_fr = 1:N_fr
-            Aeq_fr(k_fr,:) = Ad00(t_sig(1,k_fr+1));
-            beq_fr(k_fr,:) = sig(k_sig,1,k_fr+1)';
-        end
+    end
+    
+    Aeq_fr = zeros(N_fr,N_dr);
+    beq_fr = zeros(N_fr,1);
+    for k_fr = 1:N_fr
+        Aeq_fr(k_fr,:) = Ad00(t_sig(1,k_fr+1));
+        beq_fr(k_fr,:) = sig(k_sig,1,k_fr+1)';
     end
     
     Aeq = [Aeq0 ; Aeq1 ; Aeq_fr];

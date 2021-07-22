@@ -79,6 +79,9 @@ for k_act = 1:(N_sim-1)
                 
                 % Output to Motors
                 u_mt = wrench2motor(u_wr,model.est);
+                
+                % Body Rate Logging
+                log.u_br(:,k_fmu)  = u_br;
             case 'direct'
 
                 u_mt = traj.u_mt(:,k_fmu);
@@ -87,9 +90,9 @@ for k_act = 1:(N_sim-1)
                 u_mt = wrench2motor(u_wr,model.est);
         end
         
+        % General Logging
         log.t_fmu(:,k_fmu) = t_now; 
         log.u_wr(:,k_fmu)  = u_wr;
-        log.u_br(:,k_fmu)  = u_br;
         log.u_mt(:,k_fmu)  = u_mt;
         log.x_fmu(:,k_fmu) = ses.x;
         
@@ -131,4 +134,4 @@ if k_ses < N_ses
 end
 
 % Check Constraints
-log.con = con_calc(log.x_fmu,log.u_br);
+log.con = con_calc(log.x_fmu,log.u_br,obj.gt.p_box);

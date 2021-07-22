@@ -11,25 +11,21 @@ end
 n_c = 24;
 
 % Initialize Variables
-syms x [n_x 1] real
-syms u [n_u 1] real
+x = sym('x',[n_x 1],'real');
+u = sym('u',[n_u 1],'real');
 
-syms x_bar [n_x 1] real
-syms u_bar [n_u 1] real
+x_bar = sym('x_bar',[n_x 1],'real');
+u_bar = sym('u_bar',[n_u 1],'real');
 
-syms x_star [n_x 1] real
-syms u_star [n_u 1] real
+x_star = sym('x_star',[n_x 1],'real');
+u_star = sym('u_star',[n_u 1],'real');
 
-syms lambda [n_c 1] real
-syms mu_diag [n_c 1] real
+lambda = sym('lambda',[n_c 1],'real');
+mu_diag = sym('mu_diag',[n_c 1],'real');
 
-syms con [n_c 1] real
-syms con_x [n_c n_x] real
-syms con_u [n_c n_u] real
+con = sym('con',[n_c 1],'real');
+trig = sym('trig','real');
 
-syms rho real
-
-syms a real
 % Standard Weights
 sQ = eye(n_x);
 sR = eye(n_u);
@@ -41,49 +37,62 @@ eR = zeros(n_u,n_u);
 disp('[lagr_init]: Assuming we are using l2-norm style costs');
 
 switch cost_mode
-    case 'con_only'
-        hQ_N = eQ;
-        hQ_k = eQ;
+    case 'terminal'        
+        Qn = eQ;
+        QT = sQ;
+        QN = sQ;
+
+        Rk = eR;
+        RT = eR;
         
-        hR_k = eR;
-    case 'terminal'
-        hQ_N = sQ;
-        hQ_k = eQ;
-        
-        hR_k = eR;        
-    case 'min_time'
-        hQ_N = sQ;
-        hQ_k = sQ;
-        
-        hR_k = eR;
-    case 'min_energy'
-        hQ_N = sQ;
-        hQ_k = eQ;
-        
-        hR_k = sR;
+%     case 'con_only'
+%         hQ_N = eQ;
+%         hQ_k = eQ;
+%         
+%         hR_k = eR;
+%     case 'min_time'
+%         hQ_N = sQ;
+%         hQ_k = sQ;
+%         
+%         hR_k = eR;
+%     case 'min_energy'
+%         hQ_N = sQ;
+%         hQ_k = eQ;
+%         
+%         hR_k = sR;
 end
 
 % Full Form of Quadratic
-Q_N = hQ_N;
-q_N = hQ_N*(x_bar - x_star);
-p_N = 0.5.*(x_bar - x_star)'*hQ_N*(x_bar - x_star);
+dQn = Qn;
+dRn = Rk;
+dHn = zeros(n_u,n_x);
+dqn = Qn*(x_bar - x_star);
+drn = Rk*(u_bar - u_star);
+dpn = 0.5.*(x_bar - x_star)'*Qn*(x_bar - x_star) +  0.5.*(u_bar - u_star)'*Rk*(u_bar - u_star);
 
-Q_k = hQ_k;
-q_k = hQ_k*(x_bar - x_star);
-
-R_k = hR_k;
-r_k = hR_k*(u_bar - u_star);
-
-H_k = zeros(n_u,n_x);
-
-p_k = 0.5.*(x_bar - x_star)'*hQ_k*(x_bar - x_star) +  0.5.*(u_bar - u_star)'*hR_k*(u_bar - u_star);
+dQT = QT;
+dRT = RT;
+dHT = zeros(n_u,n_x);
+dqT = QT*(x_bar - x_star);
+drT = RT*(u_bar - u_star);
+dpT = 0.5.*(x_bar - x_star)'*QT*(x_bar - x_star) +  0.5.*(u_bar - u_star)'*RT*(u_bar - u_star);
         
+dQN = QN;
+dqN = QN*(x_bar - x_star);
+dpN = 0.5.*(x_bar - x_star)'*QN*(x_bar - x_star);
+
 % Compute Objective Costs
 del_x = x-x_bar;
 del_u = u-u_bar;
 
-obj_cost_k = del_x'*Q_k*del_x + del_u'*R_k*del_u + del_u'*H_k*x + q_k'*del_x + r_k'*del_u + p_k;
-obj_cost_N = del_x'*Q_N*del_x + q_N'*del_x + p_N;
+dCn = del_x'*dQn*del_x + del_u'*dRn*del_u + del_u'*dHn*x + dqn'*del_x + drn'*del_u + dpn;
+dCT = del_x'*dQT*del_x + del_u'*dRT*del_u + del_u'*dHT*x + dqT'*del_x + drT'*del_u + dpT;
+dCN = del_x'*dQN*del_x + dqN'*del_x + dpN;
+
+% Augment with Trigger Variable
+dCn = trig.*dCn;
+dCT = trig.*dCT;
+dCN = trig.*dCN;
 
 % Compute Constraint Costs
 I_mu = diag(mu_diag);
@@ -92,13 +101,22 @@ con_cost = (lambda + 0.5*I_mu*con)'*con;
 % Export Functions
 add = 'control/al_ilqr/lagrangian/';
 
-matlabFunction(obj_cost_k,'File',[add,'obj_cost_k'],'vars',{x,u,x_bar,u_bar,x_star,u_star});
-matlabFunction(obj_cost_N,'File',[add,'obj_cost_N'],'vars',{x,u,x_bar,u_bar,x_star,u_star});
+matlabFunction(dQN,'File',[add,'dQN_calc'],'vars',trig);
+matlabFunction(dqN,'File',[add,'dqN_calc'],'vars',{x_bar,x_star,trig});
+
+matlabFunction(dQT,'File',[add,'dQT_calc'],'vars',trig);
+matlabFunction(dRT,'File',[add,'dRT_calc'],'vars',trig);
+matlabFunction(dqT,'File',[add,'dqT_calc'],'vars',{x_bar,x_star,trig});
+matlabFunction(drT,'File',[add,'drT_calc'],'vars',{u_bar,u_star,trig});
+
+matlabFunction(dQn,'File',[add,'dQn_calc'],'vars',trig);
+matlabFunction(dRn,'File',[add,'dRn_calc'],'vars',trig);
+matlabFunction(dqn,'File',[add,'dqn_calc'],'vars',{x_bar,x_star,trig});
+matlabFunction(drn,'File',[add,'drn_calc'],'vars',{u_bar,u_star,trig});
+
+matlabFunction(dCn,'File',[add,'dCn'],'vars',{x,u,x_bar,u_bar,x_star,u_star,trig});
+matlabFunction(dCT,'File',[add,'dCT'],'vars',{x,u,x_bar,u_bar,x_star,u_star,trig});
+matlabFunction(dCN,'File',[add,'dCN'],'vars',{x,x_bar,x_star,trig});
+
 matlabFunction(con_cost,'File',[add,'con_cost'],'vars',{con,lambda,mu_diag});
 
-matlabFunction(Q_N,'File',[add,'Q_N_calc'],'vars',a);
-matlabFunction(q_N,'File',[add,'q_N_calc'],'vars',{x_bar,x_star});
-matlabFunction(Q_k,'File',[add,'Q_k_calc'],'vars',a);
-matlabFunction(R_k,'File',[add,'R_k_calc'],'vars',a);
-matlabFunction(q_k,'File',[add,'q_k_calc'],'vars',{x_bar,x_star});
-matlabFunction(r_k,'File',[add,'r_k_calc'],'vars',{u_bar,x_star,u_star});

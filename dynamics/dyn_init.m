@@ -6,11 +6,13 @@ tau_g = -[0 ; 0 ; 0];
 
 % States %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-syms p [3 1] real
-syms v [3 1] real
-syms q [4 1] real
+
+
+p = sym('p',[3 1],'real');
+v = sym('v',[3 1],'real');
+q = sym('q',[4 1],'real');
 q_c = [q(1) ; -q(2) ; -q(3) ; -q(4)];
-syms w [3 1] real
+w = sym('w',[3 1],'real');
 
 x_s = [p ; v ; q ; w];
 
@@ -28,16 +30,17 @@ W = [  0  -w(1) -w(2) -w(3) ;
 
 % Motor Inputs (rad/s) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-syms w_m [4 1] real
+w_m = sym('w_m',[4 1],'real');
 
 % Noise %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-syms wt [13 1] real
+wt = sym('wt',[13 1],'real');
 
 % External Forces/Torques %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-syms F_ext [3 1] real
-syms tau_ext [3 1] real
+F_ext = sym('F_ext',[3 1],'real');
+tau_ext = sym('tau_ext',[3 1],'real');
+
 FT_ext = [F_ext ; tau_ext];
     
 % Generate Equations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,7 +106,7 @@ for k = 1:2
     matlabFunction(x_upd,'File',quad_func,'vars',{x_s,w_m,FT_ext,wt})
     
     %% Output Wrench to Motor
-    syms wrench [4 1] real
+    wrench = sym('wrench',[4 1],'real');
 
     T_motor = w2m*wrench;
     u_m = sqrt(T_motor./kw(1));
@@ -112,9 +115,10 @@ for k = 1:2
     %% Output Thrust (f) to Normalized Thrust (fn)
     f2fn_func  = 'dynamics/motor_mapping/f2fn';
     fn2f_func  = 'dynamics/motor_mapping/fn2f';
-    
-    syms f fn real
-    
+
+    f  = sym('f','real');
+    fn = sym('fn','real');
+
     fn_out = f/(4*model.motor.thrust_max);
     f_out = fn*(4*model.motor.thrust_max);
     matlabFunction(fn_out,'File',f2fn_func,'vars',f)
@@ -126,16 +130,16 @@ for k = 1:2
     if k == 2
         % Linearization for EKF
         x_ekf = x_upd;
-
-        syms x_ses [13 1] real
-        syms u_ses [4 1] real
         
-        x_ekf = subs(x_ekf,{p1,p2,p3},{x_ses1,x_ses2,x_ses3});
-        x_ekf = subs(x_ekf,{v1,v2,v3},{x_ses4,x_ses5,x_ses6});
-        x_ekf = subs(x_ekf,{q1,q2,q3,q4},{x_ses7,x_ses8,x_ses9,x_ses10});
-        x_ekf = subs(x_ekf,{w1,w2,w3},{x_ses11,x_ses12,x_ses13});
-
-        x_ekf = subs(x_ekf,{w_m1,w_m2,w_m3,w_m4},{u_ses1,u_ses2,u_ses3,u_ses4});
+        x_ses = sym('x_ses',[13 1],'real');
+        u_ses = sym('u_ses',[4 1],'real');
+        
+        x_ekf = subs(x_ekf,p,x_ses(1:3));
+        x_ekf = subs(x_ekf,v,x_ses(4:6));
+        x_ekf = subs(x_ekf,q,x_ses(7:10));
+        x_ekf = subs(x_ekf,w,x_ses(11:13));
+               
+        x_ekf = subs(x_ekf,w_m,u_ses);
 
         A_ekf   = jacobian(x_ekf,x_ses);   
         matlabFunction(A_ekf,'File','dynamics/Jacobians/A_ekf_calc','vars',{x_ses,u_ses})
@@ -143,21 +147,20 @@ for k = 1:2
         % Linearization for al-iLQR
         switch input_mode
             case 'direct'
-                n_x = 13;
+                x = sym('x',[13 1],'real');
+                u = sym('u',[4 1],'real');
+                
                 x_opt = x_upd;
                 
-                syms x [n_x 1] real
-                syms u [4 1] real
+                x_opt = subs(x_opt,p,x(1:3));
+                x_opt = subs(x_opt,v,x(4:6));
+                x_opt = subs(x_opt,q,x(7:10));
+                x_opt = subs(x_opt,w,x(11:13));
                 
-                x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
-                x_opt = subs(x_opt,{v1,v2,v3},{x4,x5,x6});
-                x_opt = subs(x_opt,{q1,q2,q3,q4},{x7,x8,x9,x10});
-                x_opt = subs(x_opt,{w1,w2,w3},{x11,x12,x13});
-                
-                x_opt = subs(x_opt,{w_m1,w_m2,w_m3,w_m4},{u1,u2,u3,u4});              
+                x_opt = subs(x_opt,w_m,u);
            case 'wrench'
-                syms x [13 1] real
-                syms u [4 1] real
+                x = sym('x',[13 1],'real');
+                u = sym('u',[4 1],'real');
                 
                 % Forces
                 F_g =  m.*[0 ; 0 ; -g];
@@ -184,20 +187,18 @@ for k = 1:2
                 x_opt(7:10,1)  = q_hat./norm(q_hat);
                 x_opt(11:13,1) = w + dt.*w_dot;
    
-                x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
-                x_opt = subs(x_opt,{v1,v2,v3},{x4,x5,x6});
-                x_opt = subs(x_opt,{q1,q2,q3,q4},{x7,x8,x9,x10});
-                x_opt = subs(x_opt,{w1,w2,w3},{x11,x12,x13});
+                x_opt = subs(x_opt,p,x(1:3));
+                x_opt = subs(x_opt,v,x(4:6));
+                x_opt = subs(x_opt,q,x(7:10));
+                x_opt = subs(x_opt,w,x(11:13));
                 
             case 'body_rate'
-                n_x = 10;
-                
-                syms x [n_x 1] real
-                syms u [4 1] real
+                x = sym('x',[10 1],'real');
+                u = sym('u',[4 1],'real');
                 
                 % Forces
                 F_g =  m.*[0 ; 0 ; -g];
-                F_t =  quatrot2([0 ; 0 ; fn2f(u1)],q);
+                F_t =  quatrot2([0 ; 0 ; fn2f(u(1))],q);
                 F_D = -quatrotmat2(D,q)*v;
                 
                 % Dynamic Equations
@@ -211,10 +212,10 @@ for k = 1:2
                 q_hat = q + dt.*q_dot;
                 x_opt(7:10,1)  = q_hat./norm(q_hat);
                 
-                x_opt = subs(x_opt,{p1,p2,p3},{x1,x2,x3});
-                x_opt = subs(x_opt,{v1,v2,v3},{x4,x5,x6});
-                x_opt = subs(x_opt,{q1,q2,q3,q4},{x7,x8,x9,x10});
-                x_opt = subs(x_opt,{w1,w2,w3},{u2,u3,u4});
+                x_opt = subs(x_opt,p,x(1:3));
+                x_opt = subs(x_opt,v,x(4:6));
+                x_opt = subs(x_opt,q,x(7:10));
+                x_opt = subs(x_opt,w,u(2:4));
         end
         
         A = jacobian(x_opt,x);

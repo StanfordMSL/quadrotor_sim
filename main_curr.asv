@@ -22,7 +22,7 @@ t_hzn = 5;
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
 
 % Input Mode
-input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pid
+input_mode = 'body_rate';    % || wrench || body_rate || body_rate_pid
 
 %% Pre-Computes (comment out after initial run to save time)
 
@@ -39,30 +39,26 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 %% Trajectory Planning
 
-traj = traj_init(obj,model,t_hzn,input_mode);
+traj = traj_init(obj,model,t_hzn,'body_rate');
 
 % Warm Start
-traj = diff_flat(obj,model,traj,input_mode);
+traj = diff_flat(obj,model,traj,'pos_att');
+nominal_plot(traj.x_bar,obj.gt,10,'top');
+
+% traj = diff_flat(obj,model,traj,'body_rate');
 % nominal_plot(traj.x_bar,obj.gt,10,'top');
 
-% Modifier for Debugging
-traj.t_fmu = traj.t_fmu(1,1:traj.T);
-traj.x_bar = traj.x_bar(:,1:traj.T);
-traj.x_br = traj.x_br(:,1:traj.T);
-traj.u_br = traj.u_br(:,1:traj.T);
-traj.L_br = traj.L_br(:,:,1:traj.T);
-obj  = race_init('line','gate_right');
-
-% nominal_plot(traj.x_bar,obj.gt,10,'persp');
-
-% Full Constraint Optimization
-traj = al_ilqr(traj,obj);
+% obj  = race_init('line','gate_right');
+% % nominal_plot(traj.x_bar,obj.gt,10,'persp');
+% 
+% % Full Constraint Optimization
+% traj = al_ilqr(traj,obj);
 % nominal_plot(traj.x_bar,obj.gt,10,'persp');
 
 %% Simulation
 
 % MATLAB
-log_M = matlab_sim(traj,obj,model,'none',input_mode,'bypass');
+log_M = matlab_sim(traj,obj,model,'none','p','bypass');
 animation_plot(log_M,obj,model.map,'top','show');
 
 % % ROS

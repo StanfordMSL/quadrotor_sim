@@ -1,7 +1,7 @@
 function [X,U,con,La_c] = forward_pass(X,U,xs,us,T,l,L,delV,La_p,mult,gate)
 
 % Tuning Parameter
-alpha = 1;
+alpha = diag([0.1,1,1,1]);
 
 % Unpack the relevant variables
 Xb = X;
@@ -46,12 +46,12 @@ while true
     
     con = con_calc(Xfp,Ufp,gate.p_box);
     
-    mult.mu_d = check_con(con.c,mult.lambda,mult.mu,0);
-    La_c = lagr_calc(Xfp,Ufp,xs,us,T,con.c,mult.lambda,mult.mu_d);
+    mu_diag = check_con(con.c,mult.lambda,mult.mu,0);
+    La_c = lagr_calc(Xfp,Ufp,xs,us,T,con.c,lambda,mu_diag);
 
     % Debug
     La_plot(La_p,La_c);
-    nominal_plot(Xfp,gate,10,'top');
+%     nominal_plot(Xfp,gate,10,'top');
 %     disp(['[forward_pass]: alpha = ',num2str(alpha)]);
 
     [flag_LS,alpha] = check_LS(La_c,La_p,alpha,delV);

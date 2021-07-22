@@ -1,8 +1,8 @@
 function br = br_init()
 
 % Tuning Parameters
-br.Kp = 0.22.*eye(3);
-br.Ki = 0.001.*eye(3);
+br.Kp = 0.2200.*eye(3);
+br.Ki = 0.0010.*eye(3);
 br.Kd = 0.0001.*eye(3);
 % br.Kp = [ 0.2 0.00 0.00 ;
 %           0.00 0.2 0.00 ;

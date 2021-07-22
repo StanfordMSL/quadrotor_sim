@@ -1,13 +1,9 @@
-function [l,L,delV] = backward_pass(X,U,con,lambda,mu_diag,xs,us)
+function [l,L,delV] = backward_pass(X,U,xs,us,T,con,mult)
 
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
 N   = size(X,2);
-
-% Generate the nominals and ideals (Xstar, Ustar)
-Xs = [X(:,2:end) xs];
-Us = repmat(us,1,N-1);
 
 % Tuning Parameter
 rho = 0.001;
@@ -19,20 +15,17 @@ L = zeros(n_u,n_x,N-1);
 delV = zeros(2,N);
 
 % Initial
-Q_N = Q_N_calc(1);
-q_N = q_N_calc(X(:,N),Xs(:,N));
+QN = dQN_calc(1);
+qN = dqN_calc(X(:,N),xs,1);
 
-V = Q_N;
-v = q_N;
+V = QN;
+v = qN;
 
 for k = N-1:-1:1
     % Unpack stagewise stuff
     x = X(:,k);
     u = U(:,k);
-    
-    xs = Xs(:,k);
-    us = Us(:,k);
-    
+
     A = A_calc(x,u);
     B = B_calc(x,u);
     
@@ -40,25 +33,32 @@ for k = N-1:-1:1
     cx = con.cx(:,:,k);
     cu = con.cu(:,:,k);
     
-    ld = lambda(:,k);
-    I_mu = diag(mu_diag(:,k));
+    ld = mult.lambda(:,k);
+    I_mu = diag(mult.mu_d(:,k));
     
     % Generate Intermediate Terms
-    Q_k = Q_k_calc(1);
-    R_k = R_k_calc(1);
-    q_k = q_k_calc(x,xs);
-    r_k = r_k_calc(u,us);
+    if k < T
+        dQk = dQn_calc(1);
+        dRk = dRn_calc(1);
+        dqk = dqn_calc(x,xs,1);
+        drk = drn_calc(u,us,1);
+    else
+        dQk = dQT_calc(1);
+        dRk = dRT_calc(1);
+        dqk = dqT_calc(x,xs,1);
+        drk = drT_calc(u,us,1);
+    end
         
-    Qx  = q_k + A'*v + cx'*(ld + I_mu*c);
-    Qu  = r_k + B'*v + cu'*(ld + I_mu*c);
-    Qxx = Q_k + A'*V*A + cx'*I_mu*cx;
+    Qx  = dqk + A'*v + cx'*(ld + I_mu*c);
+    Qu  = drk + B'*v + cu'*(ld + I_mu*c);
+    Qxx = dQk + A'*V*A + cx'*I_mu*cx;
     
-    Quu = R_k + B'*V*B + cu'*I_mu*cu + reg;
+    Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
     while rcond(Quu) < 1e-5
         reg = rho.*eye(n_u);
         rho = 10.*rho;
         
-        Quu = R_k + B'*V*B + cu'*I_mu*cu + reg;
+        Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
 %         disp(['[backward_pass]: reg increased to ',num2str(rho)]);
     end
     Qux = B'*V*A + cu'*I_mu*cx;

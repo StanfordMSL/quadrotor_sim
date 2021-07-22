@@ -1,7 +1,8 @@
 function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
 
-tol_alpha = 0.01;
-z = Jp.con-Jc.con;
+tol_alpha = 0.00001;
+z = Jp.tot-Jc.tot;
+% z = Jp.con-Jc.con;
 
 if (z > 0)      
     % Constraint Cost Improved. Allow a Trajectory Update
