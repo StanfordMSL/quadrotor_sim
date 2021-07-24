@@ -11,7 +11,7 @@ if isfile(kf_add)
     
     disp(['[race_init]: Loaded Keyframe Sequence: ',keyframes]);
 else
-    obj.kf.x = zeros(10,2);
+    obj.kf.x = zeros(13,2);
     obj.kf.x(7,:) = 1;
     
     disp('[race_init]: Keyframe input not recognized. Defaulting to hover at origin');

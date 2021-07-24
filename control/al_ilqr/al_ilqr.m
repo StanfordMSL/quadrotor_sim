@@ -4,6 +4,7 @@ function traj = al_ilqr(traj,obj)
 tol_motor = 1e3;
 tol_gate  = 1e-3;
 tol_inner = 0.01;
+phi       = 1.1;
 
 % Unpack some stuff
 X = traj.x_br;
@@ -18,14 +19,13 @@ us = round(U(:,end),3);
 con = con_calc(X,U,obj.gt.p_box);
 
 % Initialize Lagrange Variables
-mult = mult_init(X,U,xs,us,T,con.c);
+[mult,La_c] = mult_init(X,U,xs,us,con,T);
 
 counter = [0 0];
 while true
     counter(1,1) = counter(1,1)+1;
     
     % Calculate Constraint Activator Values and Lagrangian
-    La_c = lagr_calc(X,U,xs,us,T,con.c,mult.lambda,mult.mu_d);
     disp(['[al_ilqr]: Constraint cost to beat: ',num2str(La_c.con)]);
     La_plot(La_c,La_c);
 
@@ -37,9 +37,12 @@ while true
         Up = U;
         Lp = L;
         
-        [l,L,del_V]    = backward_pass(X,U,xs,us,T,con,mult);
-        [X,U,con,La_c] = forward_pass(X,U,xs,us,T,l,L,del_V,La_p,mult,obj.gt);
+        [l,L,~]    = backward_pass(X,U,xs,us,T,con,mult);
+        [X,U,con,La_c] = forward_pass(X,U,T,l,L,La_p,mult,obj);
         
+        % Debug
+        nominal_plot(X,obj.gt,10,'top');
+         
         flag_inner = check_inner(La_c,La_p,tol_inner);
         if (flag_inner == 0)
             % Carry on

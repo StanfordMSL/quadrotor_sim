@@ -12,7 +12,7 @@ else
     if alpha(1,1) > tol_alpha        
         % Try simply reducing alpha.
         flag = 1;
-        alpha = 0.5.*alpha; 
+        alpha = 0.9.*alpha; 
     elseif (alpha(1,1) < tol_alpha)  
         % Reducing alpha not helping. Resorting to alternatives.
         flag = 2;

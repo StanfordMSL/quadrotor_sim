@@ -16,33 +16,26 @@ address = 'control/al_ilqr/constraints/';
 
 switch input_mode
     case 'direct'
-        x = sym('x',[13 1],'real');
         u = sym('u',[4 1],'real');
 
         fm = kw.*u.^2;       
-        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
+        conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
         
-        con_x = jacobian(con,x);
-        con_u = jacobian(con,u);
+        conu_u = jacobian(conu,u);
         
-        matlabFunction(con,'File',[address,'motor_con'],'vars',{x,u})
-        matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
-        matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u})
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u})
     case 'wrench'
-        x = sym('x',[13 1],'real');
         u = sym('u',[4 1],'real');
         
         fm = w2m.*u;
-        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
+        conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
      
-        con_x = jacobian(con,x);
-        con_u = jacobian(con,u);
+        conu_u = jacobian(conu,u);
         
-        matlabFunction(con,'File',[address,'motor_con'],'vars',{x,u})
-        matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u})
-        matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u})
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u})
     case 'body_rate'
-        x = sym('x',[10 1],'real');
         u = sym('u',[4 1],'real');
         up = sym('up',[4 1],'real');
         
@@ -54,14 +47,12 @@ switch input_mode
         wrench = [u(1) ; tau];
         
         fm = w2m*wrench;
-        con = [fm-fm_max ; -fm+fm_min]/fm_max(1);
+        conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
         
-        con_x = jacobian(con,x);
-        con_u = jacobian(con,u);
+        conu_u = jacobian(conu,u);
 
-        matlabFunction(con,'File',[address,'motor_con'],'vars',{x,u,up})
-        matlabFunction(con_x,'File',[address,'motor_con_x'],'vars',{x,u,up})
-        matlabFunction(con_u,'File',[address,'motor_con_u'],'vars',{x,u,up})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u,up})
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u,up})
 end
 
 end

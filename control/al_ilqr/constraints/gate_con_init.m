@@ -11,18 +11,14 @@ n_p = size(r_d_arr,2);
 switch input_mode
     case 'direct'
         n_x = 13;
-        n_u = 4;
     case 'wrench'
         n_x = 13;
-        n_u = 4;
     case 'body_rate'
         n_x = 10;
-        n_u = 4;
 end
 
 % Initialize Input/Outputs
 x = sym('x',[n_x 1],'real');
-u = sym('u',[n_u 1],'real');
 p_box = sym('p_box',[3 4],'real');
 gain = sym('gain',[n_p*2 1],'real');
 
@@ -42,13 +38,11 @@ for j = 1:2
     end
 end
 
-con = [-gain ; gain-ones(n_p*2,1)];
-con_x = jacobian(con,x);
-con_u = jacobian(con,u);
+conx   = [-gain ; gain-ones(n_p*2,1)];
+conx_x = jacobian(conx,x);
 
 address = 'control/al_ilqr/constraints/';
-matlabFunction(con,'File',[address,'gate_con'],'vars',{x,u,p_box})
-matlabFunction(con_x,'File',[address,'gate_con_x'],'vars',{x,u,p_box})
-matlabFunction(con_u,'File',[address,'gate_con_u'],'vars',{x,u,p_box})
+matlabFunction(conx,'File',[address,'conx'],'vars',{x,p_box})
+matlabFunction(conx_x,'File',[address,'conx_x'],'vars',{x,p_box})
 
 end

@@ -8,8 +8,8 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-% model = model_init('v1.0.0');  
-model = model_init('iris');  
+model = model_init('v1.0.0');  
+% model = model_init('iris');  
 
 % Objective and Constraints
 obj  = race_init('line','gate_center');
@@ -46,13 +46,12 @@ traj = diff_flat(obj,model,traj,input_mode);
 % nominal_plot(traj.x_bar,obj.gt,10,'top');
 
 % Modifier for Debugging
-traj.t_fmu = traj.t_fmu(1,1:traj.T);
-traj.x_bar = traj.x_bar(:,1:traj.T);
-traj.x_br = traj.x_br(:,1:traj.T);
-traj.u_br = traj.u_br(:,1:traj.T);
-traj.L_br = traj.L_br(:,:,1:traj.T);
+% traj.t_fmu = traj.t_fmu(1,1:traj.T);
+% traj.x_bar = traj.x_bar(:,1:traj.T);
+% traj.x_br = traj.x_br(:,1:traj.T);
+% traj.u_br = traj.u_br(:,1:traj.T-1);
+% traj.L_br = traj.L_br(:,:,1:traj.T-1);
 obj  = race_init('line','gate_right');
-
 % nominal_plot(traj.x_bar,obj.gt,10,'persp');
 
 % Full Constraint Optimization
