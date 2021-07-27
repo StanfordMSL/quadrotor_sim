@@ -3,29 +3,39 @@ function La_plot(La_p,La_c)
 figure(5)
 clf
 
-c_objs = La_c.x_o + La_c.u_o + La_c.xup(1,:) +  La_c.xup(2,:);
-c_cons = La_c.x_c + La_c.u_c;
-
-p_objs = La_p.x_o + La_p.u_o + La_p.xup(1,:) +  La_p.xup(2,:);
-p_cons = La_p.x_c + La_p.u_c;
-
-subplot(3,1,1)
-plot(c_objs)
+subplot(5,1,1)
+plot(La_c.x_o)
 hold on
-plot(p_objs)
-title("J_{obj}");
+plot(La_p.x_o,'--')
+title("x_o");
 legend('Current','Previous');
 
-subplot(3,1,2)
-plot(c_cons)
+subplot(5,1,2)
+plot(La_c.u_o)
 hold on
-plot(p_cons)
-title("J_{con}");
+plot(La_p.u_o,'--')
+title("u_o");
 legend('Current','Previous');
 
-subplot(3,1,3)
-plot(c_objs+c_cons)
+subplot(5,1,3)
+plot(La_c.x_c)
 hold on
-plot(p_objs+p_cons)
-title("J_{tot}");
+plot(La_p.x_c,'--')
+title("x_c");
 legend('Current','Previous');
+
+subplot(5,1,4)
+plot(La_c.u_c)
+hold on
+plot(La_p.u_c,'--')
+title("u_c");
+legend('Current','Previous');
+
+subplot(5,1,5)
+plot(La_c.xup(1,:))
+hold on
+plot(La_c.xup(2,:))
+plot(La_p.xup(1,:),'--')
+plot(La_p.xup(2,:),'--')
+title("xup");
+legend('Current(1)','Current(2)','Previous(1)','Previous(2)');

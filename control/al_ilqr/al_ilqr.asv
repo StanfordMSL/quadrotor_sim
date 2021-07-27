@@ -13,16 +13,13 @@ L = traj.L_br;
 T = traj.T;
 
 xs = obj.kf.x(1:10,end);
-us = round(U(:,end),3);
+us = round(traj.U(:,end),3);
 
 % Calculate Constraints
 con  = con_calc(X,U,obj.gt.p_box);
     
-% Initialize Lagrange Multiplier Terms
+% Initialize Lagrange Mu
 mult = mult_init(con);
-
-% Initialize Lagrangian
-La_c = lagr_calc(X,U,X,U,xs,us,T,con,mult);
 
 counter = [0 0];
 while true
@@ -33,14 +30,14 @@ while true
         % Inner-Loop Count Increment
         counter(1,2) = counter(1,2)+1;
         
-%         % Save Inner Loop Terms
-%         La_p = La_c;
-%         
-%         Xp = X;
-%         Up = U;
-%         Lp = L;
+        % Save Inner Loop Terms
+        La_p = La_c;
         
-        [l,L,~]    = backward_pass(X,U,xs,us,con,mult);
+        Xp = X;
+        Up = U;
+        Lp = L;
+        
+        [itr,~]    = backward_pass(itr,con,mult);
         [X,U,con,La_c,mult] = forward_pass(X,U,T,l,L,La_p,mult,obj);
         conx = con.c(1:16,:);
         conu = con.c(17:end,:);

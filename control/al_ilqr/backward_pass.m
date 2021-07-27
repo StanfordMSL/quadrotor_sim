@@ -61,7 +61,6 @@ for k = N-1:-1:1
         rho = 10.*rho;
         
         Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
-%         disp(['[backward_pass]: reg increased to ',num2str(rho)]);
     end
     Qux = B'*V*A + cu'*I_mu*cx;
     
