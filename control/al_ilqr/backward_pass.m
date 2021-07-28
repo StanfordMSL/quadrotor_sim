@@ -1,9 +1,12 @@
-function [l,L,delV] = backward_pass(X,U,xs,us,T,con,mult)
+function [l,L,delV] = backward_pass(X,U,lqr,con,mult,mode)
 
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
 N   = size(X,2);
+xs  = lqr.xs;
+us  = lqr.us;
+T   = lqr.T;
 
 % Tuning Parameter
 rho = 0.001;
@@ -55,27 +58,33 @@ for k = N-1:-1:1
     Qu  = drk + B'*v + cu'*(lam + I_mu*c);
     Qxx = dQk + A'*V*A + cx'*I_mu*cx;
     
-    Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
-    while rcond(Quu) < 1e-5
-        reg = rho.*eye(n_u);
-        rho = 10.*rho;
-        
-        Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
+    switch mode
+        case 'fast'
+            % Generate Feedback Update
+            l(:,k)   = -Qu;
+        case 'slow'
+            Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
+            while rcond(Quu) < 1e-5
+                reg = rho.*eye(n_u);
+                rho = 10.*rho;
+                
+                Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
+            end
+            Qux = B'*V*A + cu'*I_mu*cx;
+            
+            %     Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
+            %
+            %     % Regularize the term to be inverted
+            %     while rcond(Quuh) < 1e-5
+            %         reg = 10.*reg;
+            %         Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
+            %     end
+            %     Quxh = B'*(V+reg)*A + cu'*I_mu*cx;
+            
+            % Generate Feedback Update
+            l(:,k)   = -Quu\Qu;
+            L(:,:,k) = -Quu\Qux;
     end
-    Qux = B'*V*A + cu'*I_mu*cx;
-    
-%     Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
-%     
-%     % Regularize the term to be inverted
-%     while rcond(Quuh) < 1e-5
-%         reg = 10.*reg;
-%         Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
-%     end
-%     Quxh = B'*(V+reg)*A + cu'*I_mu*cx;
-    
-    % Generate Feedback Update
-    l(:,k)   = -Quu\Qu;
-    L(:,:,k) = -Quu\Qux;
     
     % Generate next cost-to-go
     V = Qxx + L(:,:,k)'*Quu*L(:,:,k) + L(:,:,k)'*Qux + Qux'*L(:,:,k);

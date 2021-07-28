@@ -11,8 +11,8 @@ mult.lamu = 0.*ones(nu,N);
 
 mult.mux  = ones(nx,N);
 mult.muu  = ones(nu,N);
-mult.mudx = check_con(con.cx,mult.lamx,mult.mux,0);
-mult.mudu = check_con(con.cu,mult.lamu,mult.muu,0);
+mult.mudx = zeros(nx,N);
+mult.mudu = zeros(nu,N);
 
 % % Compute First Pass of Lagrangian
 % [La_x_o,La_x_c] = lagr_x(X,X,xs,con.cx,lamx,mudx,T);
