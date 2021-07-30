@@ -9,10 +9,8 @@ del_con = La_p.con - La_c.con;
 if (abs(del_con) < tol_con)         % Constraint Moderate
     if (abs(del_obj) < tol_obj)         % Cost Moderate
         flag = 0;                           % Use alpha and update multiplier
-    elseif (del_obj > tol_obj)          % Cost Improved
+    else                                % Cost Improved/Worsened
         flag = 1;                           % Use alpha and maintain multiplier
-    else                                % Cost Worsened
-        flag = 1;                           % Update alpha
     end
 elseif (del_con > tol_con)          % Constraint Improved
     if (del_obj > -tol_obj)             % Cost Moderate/Improved
