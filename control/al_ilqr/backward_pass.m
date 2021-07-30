@@ -29,9 +29,9 @@ for k = N-1:-1:1
     A = A_calc(x,u);
     B = B_calc(x,u);
     
-    c  = con.c(:,k);
-    cx = con.cx(:,:,k);
-    cu = con.cu(:,:,k);
+    c  = [ con.cx(:,k) ; con.cu(:,k)];
+    c_x = [ con.cx_x(:,:,k) ; con.cu_x(:,:,k)];
+    c_u = [ con.cx_u(:,:,k) ; con.cu_u(:,:,k)];
     
     lamx = mult.lamx(:,k);
     lamu = mult.lamu(:,k);
@@ -54,23 +54,23 @@ for k = N-1:-1:1
         drk = drT(u,us,1);
     end
         
-    Qx  = dqk + A'*v + cx'*(lam + I_mu*c);
-    Qu  = drk + B'*v + cu'*(lam + I_mu*c);
-    Qxx = dQk + A'*V*A + cx'*I_mu*cx;
+    Qx  = dqk + A'*v + c_x'*(lam + I_mu*c);
+    Qu  = drk + B'*v + c_u'*(lam + I_mu*c);
+    Qxx = dQk + A'*V*A + c_x'*I_mu*c_x;
     
     switch mode
         case 'fast'
             % Generate Feedback Update
             l(:,k)   = -Qu;
         case 'slow'
-            Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
+            Quu = dRk + B'*V*B + c_u'*I_mu*c_u + reg;
             while rcond(Quu) < 1e-5
                 reg = rho.*eye(n_u);
                 rho = 10.*rho;
                 
-                Quu = dRk + B'*V*B + cu'*I_mu*cu + reg;
+                Quu = dRk + B'*V*B + c_u'*I_mu*c_u + reg;
             end
-            Qux = B'*V*A + cu'*I_mu*cx;
+            Qux = B'*V*A + c_u'*I_mu*c_x;
             
             %     Quuh = R_k + B'*(V+reg)*B + cu'*I_mu*cu;
             %

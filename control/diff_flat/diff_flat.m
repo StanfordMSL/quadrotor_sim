@@ -12,7 +12,7 @@ function traj = diff_flat(obj,model,traj,mode)
 
 %% Generate the main part of the trajectory
 N_kf = size(obj.kf.x,2)-1;
-n_tr = 1;
+T = 1;
 for k_kf = 1:N_kf
     % Convert objectives to flat outputs
     f_wp = obj2fwp(obj,k_kf,model.df);
@@ -21,11 +21,11 @@ for k_kf = 1:N_kf
     f_out = piecewise_QP(f_wp,model.clock.dt_fmu);
     
     % Update the total trajectory
-    [traj,n_tr] = fout2traj(traj,n_tr,f_out,model,mode);
+    [traj,T] = fout2traj(traj,T,f_out,model,mode);
 end
 
 %% Pad the remainder of the trajectory
-traj.T = n_tr;        % Trajectory ends here.
+traj.T = T;        % Trajectory ends here.
 
 f_end.t = [0 traj.t_fmu(end)-f_wp.t(end)];
 f_end.sigma = zeros(4,15,2);
@@ -37,5 +37,12 @@ f_end.sigma(:,2:5,2) = 0;
 f_out = piecewise_QP(f_end,model.clock.dt_fmu);
 
 % Update the total trajectory
-[traj,~] = fout2traj(traj,n_tr,f_out,model,mode);
+[traj,~] = fout2traj(traj,T,f_out,model,mode);
+
+% Trim to have only single terminal
+traj.t_fmu = traj.t_fmu(1,1:T);
+traj.x_bar = traj.x_bar(:,1:T);
+traj.x_br  = traj.x_br(:,1:T);
+traj.u_br  = traj.u_br(:,1:T-1);
+traj.L_br  = traj.L_br(:,:,1:T-1);
 

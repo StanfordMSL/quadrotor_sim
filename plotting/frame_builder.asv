@@ -6,9 +6,9 @@ function [x_arrow, y_arrow, z_arrow] = frame_builder(x_data)
     vect_z = [0.00 0.00 0.02]';
     
     % Construct Rotation Matrix
-    quat = x_data(7:10,1);
-    bRw = quat2rotm(quat');
-    
+    x_rot = quatrot2(vect_x,x_data(7:10,1);
+    y_rot = quatrot2(vect_x,x_data(7:10,1);
+    vect_x_rot = quatrot2(vect_x,x_data(7:10,1);
     % Determine World Frame Pose of Craft Axes
     pos = x_data(1:3,1);
     

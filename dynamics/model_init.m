@@ -254,6 +254,7 @@ end
 % model.motor.max = 33000;    % Motor Max rad/s
 
 model.motor.thrust_hover = model.act.m*model.act.g;
+model.motor.c_hover      = f2fn(model.motor.thrust_hover);
 model.motor.thrust_min   = model.act.kw(1,1).*model.motor.min^2 +...
                            model.act.kw(2,1).*model.motor.min +...
                            model.act.kw(3,1);
@@ -280,7 +281,7 @@ model.ses.R = diag(var_sens);
 
 % Misc
 model.df.ndr = 15;          % Number of Terms for Diff Flat Polynomial
-model.df.vel = 2.0;         % Desired Cruising Velocity in Diff Flat
+model.df.vel = 3.0;         % Desired Cruising Velocity in Diff Flat
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)

@@ -12,7 +12,7 @@ model = model_init('v1.0.0');
 % model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_center');
+obj  = race_init('line','gate_high');
 % obj  = grasp_init('empty');            
 
 % Trajectory Horizon
@@ -32,7 +32,7 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 % % Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
 % 
-% % % Generate Constraint Variables
+% % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(model,input_mode)
 % gate_con_init(model,input_mode)
@@ -43,15 +43,10 @@ traj = traj_init(obj,model,t_hzn,input_mode);
 
 % Warm Start
 traj = diff_flat(obj,model,traj,input_mode);
-% nominal_plot(traj.x_bar,obj.gt,10,'top');
+nominal_plot(traj.x_bar,obj.gt,10,'nice');
 
 % Modifier for Debugging
-% traj.t_fmu = traj.t_fmu(1,1:traj.T);
-% traj.x_bar = traj.x_bar(:,1:traj.T);
-% traj.x_br = traj.x_br(:,1:traj.T);
-% traj.u_br = traj.u_br(:,1:traj.T-1);
-% traj.L_br = traj.L_br(:,:,1:traj.T-1);
-obj  = race_init('line','gate_right');
+% obj  = race_init('line','gate_right');
 % nominal_plot(traj.x_bar,obj.gt,10,'persp');
 
 % Full Constraint Optimization
@@ -62,7 +57,7 @@ traj = al_ilqr(traj,obj);
 
 % MATLAB
 log_M = matlab_sim(traj,obj,model,'none',input_mode,'bypass');
-animation_plot(log_M,obj,model.map,'top','show');
+animation_plot(log_M,obj,model.map,'persp','show');
 
 % % ROS
 % log_R = gazebo_sim(traj,'body_rate');

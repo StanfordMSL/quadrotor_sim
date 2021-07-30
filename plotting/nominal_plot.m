@@ -60,6 +60,11 @@ plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:),'--k','linewidth',1);
 % Set Aspect Ratio
 daspect([1 1 1])
 
+% Set Limits
+xlim([-8.1 8.1]);
+ylim([-3.2 3.2]);
+zlim([ 0.0 3.0]);
+
 switch view_point
     case 'persp'
         view(320,20);
@@ -71,13 +76,13 @@ switch view_point
     case 'top'
         view(-90,90);
     case 'nice'
-        view(-100,20);
+        view(-76,7);
+        campos([-5,-2,1.5]);
+        camtarget([-0.02,-1,1]);
+        camva(6);
 end
 
-% Set Limits
-xlim([-8.1 8.1]);
-ylim([-3.2 3.2]);
-zlim([ 0.0 3.0]);
+
 
 set(gcf,'color','w');
 

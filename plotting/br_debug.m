@@ -1,20 +1,39 @@
-function br_debug(u_br)
-    figure(2)
+function br_debug(Xact,U)
+    figure(3)
     clf
 
-    subplot(2,1,1)
-    plot(u_br(1,:))
+    subplot(4,1,1)
+    plot(U(1,:))
     xlabel('Time(s)');
     ylabel('Thrust (normalized)');
+    ylim([0 1]);
     
-    subplot(2,1,2)
-    plot(u_br(2,:))
+    subplot(4,1,2)
+    plot(U(2,:))
     hold on
-    plot(u_br(3,:))
-    plot(u_br(4,:))
+    plot(Xact(11,:))
     xlabel('Time(s)');
-    ylabel('Body Rate');
-    legend('x','y','z');
-    
+    ylabel('Body Rate X');
+    legend('Desired','Actual');
+    ylim([-5 5]);
+
+    subplot(4,1,3)
+    plot(U(3,:))
+    hold on
+    plot(Xact(12,:))
+    xlabel('Time(s)');
+    ylabel('Body Rate Y');
+    legend('Desired','Actual');
+    ylim([-5 5]);
+
+    subplot(4,1,4)
+    plot(U(4,:))
+    hold on
+    plot(Xact(13,:))
+    xlabel('Time(s)');
+    ylabel('Body Rate Z');
+    legend('Desired','Actual');
+    ylim([-5 5]);
+
     set(gcf,'color','w');
 end

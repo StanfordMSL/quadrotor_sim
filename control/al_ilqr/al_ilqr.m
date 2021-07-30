@@ -1,82 +1,94 @@
 function traj = al_ilqr(traj,obj)
 
 % Tuning Parameters
-tol_motor = 1e3;
+tol_motor = 1e-3;
 tol_gate  = 1e-3;
-tol_inner = 0.01;
-phi       = 1.2;
+phi       = [1.5 ; 15];
 
 % Unpack Variables
 X = traj.x_br;
 U = traj.u_br;
-Xbar = X;
-Ubar = U;
 
 lqr.T = traj.T;
 lqr.xs = obj.kf.x(1:10,end);
 lqr.us = round(U(:,end),3);
 
+p_box = obj.gt.p_box;
+
 % Initialize Constraints
 con  = con_calc(X,U,p_box);
 
 % Initialize Lagrange Multiplier Terms
-mult = mult_init(con);
+mult = mult_init(con,lqr);
 
 % Initialize Lagrangian
-La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
+La_c = lagr_calc(X,U,X,U,lqr,con,mult);
 
 % Initialize Counter
 counter = [0 0 0];
 
-% Updated Multiplier Loop
+% Multiplier Loop
 while true
     counter(1,1) = counter(1,1)+1;
     
-    % Fixed Multiplier Loop
+    % iLQR Loop
     while true
         counter(1,2) = counter(1,2)+1;
-        
+
         % Backward Pass
-        [l,L,~]    = backward_pass(Xbar,Ubar,lqr,con,mult,'slow');
+        [l,L,~] = backward_pass(X,U,lqr,con,mult,'slow');
         
         % Line Search Loop
+        La_p = La_c;
+        Xbar = X;
+        Ubar = U;
+        alpha = 1;
         while true
             counter(1,3) = counter(1,3)+1;
 
-            [X,U] = forward_pass(Xbar,Ubar,l,L,alpha);
-            
+            [X,U,~,Umt] = forward_pass(Xbar,Ubar,l,L,alpha);
+%             % Debug
+%             nominal_plot(X,obj.gt,10,'back');
+%             mthrust_debug(Umt)
+
             con  = con_calc(X,U,p_box);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
             
-            % Constraint Improved, Objective Improved
-            % Constraint Improved, Objective Moderate
-            % Constraint Improved, Objective Worsened
-            % Constraint Moderate, Objective Improved
-            % Constraint Moderate, Objective Moderate
-            % Constraint Moderate, Objective Worsened
-            % Constraint Worsened, Objective Improved
-            % Constraint Worsened, Objective Moderate
-            % Constraint Worsened, Objective Worsened
-            
+            flag_LS = check_LS(La_c,La_p);
+            if flag_LS <= 1
+                break;
+            else
+                alpha = 0.8*alpha;
+            end
         end
+%         % Debug
+%         nominal_plot(X,obj.gt,10,'persp');
+%         mthrust_debug(Umt)
         
+        flag_iLQR = check_iLQR(flag_LS);
+        if flag_iLQR == 0
+            break;
+        else
+            % Carry on.
+        end
     end
-end
+    % Debug
+    nominal_plot(X,obj.gt,1,'nice');
+    mthrust_debug(Umt);  
     
-   
     % Update Lagrangian
-    mult = mult_update(mult,con.c,phi);
-
-    if (check_outer(con.c,tol_motor,tol_gate) == true)
+    mult = mult_update(mult,con,phi);
+    La_c = lagr_calc(X,U,X,U,lqr,con,mult);
+    
+    if (check_outer(con,tol_motor,tol_gate) == true)
         % Constraints satisfied. Stop al-iLQR.
         break
     end
-    
 end
-
-% nominal_plot(X,obj.gt,10,'top');
+    
+% Package the Output
 traj.x_bar = [X ; U(2:4,:) zeros(3,1)];     % Regenerate the full trajectory (with 'fake' last body rate frame).
 traj.x_br = X;
 traj.u_br = U;

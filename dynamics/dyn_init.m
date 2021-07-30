@@ -6,8 +6,6 @@ tau_g = -[0 ; 0 ; 0];
 
 % States %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
 p = sym('p',[3 1],'real');
 v = sym('v',[3 1],'real');
 q = sym('q',[4 1],'real');
@@ -70,7 +68,8 @@ for k = 1:2
     w2m = db.w2m;
     
     % Forces
-    F_w = m2w*(kw(1).*w_m.^2 + kw(2).*w_m.^1 + kw(3).*w_m.^0); 
+    F_m = sign(w_m).*(kw(1).*w_m.^2 + kw(2).*w_m.^1 + kw(3).*w_m.^0);
+    F_w = m2w*F_m; 
 
     F_g =  m.*[0 ; 0 ; -g];
     F_t =  quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
@@ -108,8 +107,11 @@ for k = 1:2
     %% Output Wrench to Motor
     wrench = sym('wrench',[4 1],'real');
 
-    T_motor = w2m*wrench;
-    u_m = sqrt(T_motor./kw(1));
+    mt = w2m*wrench;
+    mt_sgn = sign(mt);
+    mt_abs = abs(mt);
+    
+    u_m = mt_sgn.*sqrt(mt_abs./kw(1));
     matlabFunction(u_m,'File',w2m_func,'vars',{wrench})
 
     %% Output Thrust (f) to Normalized Thrust (fn)

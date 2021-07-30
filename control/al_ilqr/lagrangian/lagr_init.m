@@ -34,7 +34,11 @@ conu = sym('conu',[N_cu 1],'real');
 trig = sym('trig','real');
 
 % Standard Weights
-sQ = eye(n_x);
+Qp  = ones(3,1);
+Qv  = ones(3,1);
+Qq  = zeros(4,1);
+
+sQ = diag([Qp ; Qv ; Qq]);
 % sR = eye(n_u);
 
 % Empty Weights

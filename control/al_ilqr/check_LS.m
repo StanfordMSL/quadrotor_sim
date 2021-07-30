@@ -1,20 +1,27 @@
-function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
+function flag = check_LS(La_c,La_p)
 
-tol_alpha = 0.00001;
-z = Jp.tot-Jc.tot;
-% z = Jp.con-Jc.con;
+tol_obj = 1;
+tol_con = 1e-2;
 
-if (z > 0)      
-    % Constraint Cost Improved. Allow a Trajectory Update
-    flag = 0;
-else
-    % Constraint Cost Worsened.
-    if alpha(1,1) > tol_alpha        
-        % Try simply reducing alpha.
-        flag = 1;
-        alpha = 0.9.*alpha; 
-    elseif (alpha(1,1) < tol_alpha)  
-        % Reducing alpha not helping. Resorting to alternatives.
-        flag = 2;
+del_obj = La_p.obj - La_c.obj;
+del_con = La_p.con - La_c.con;
+
+if (abs(del_con) < tol_con)         % Constraint Moderate
+    if (abs(del_obj) < tol_obj)         % Cost Moderate
+        flag = 0;                           % Use alpha and update multiplier
+    elseif (del_obj > tol_obj)          % Cost Improved
+        flag = 1;                           % Use alpha and maintain multiplier
+    else                                % Cost Worsened
+        flag = 1;                           % Update alpha
     end
-end   
+elseif (del_con > tol_con)          % Constraint Improved
+    if (del_obj > -tol_obj)             % Cost Moderate/Improved
+        flag = 1;                           % Use alpha and maintain multiplier
+    else                                % Cost Worsened
+        flag = 2;                           % Update alpha
+    end
+else                                 % Constraint Worsened
+    flag = 2;                           % Update alpha.
+end
+
+end

@@ -32,8 +32,7 @@ for k = 1:N_tr-1
     u_wr(:,k) = df_con(f_out(:,:,k),model.est);
     
     % Direct
-    T_motor = model.est.w2m*u_wr(:,k);
-    u_mt(:,k) = sqrt(T_motor./model.est.kw(1,1));
+    u_mt(:,k) = w2m_est(u_wr(:,k));
     
     % Full State Nominal Trajectory
     FT_ext = zeros(6,1);

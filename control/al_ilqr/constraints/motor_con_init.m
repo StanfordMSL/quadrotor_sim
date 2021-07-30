@@ -44,11 +44,12 @@ switch input_mode
         delta_w = w-wp;
         
         tau = ((I*delta_w)./dt) + cross(w,I*w);        
-        wrench = [u(1) ; tau];
+        wrench = [fn2f(u(1)) ; tau];
         
         fm = w2m*wrench;
-        conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
-        
+%         conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
+        conu = [fm-fm_max ; -fm+fm_min];
+
         conu_u = jacobian(conu,u);
 
         matlabFunction(conu,'File',[address,'conu'],'vars',{u,up})
