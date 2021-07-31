@@ -2,7 +2,7 @@ function nominal_plot(x_bar,gate,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
-figure(2)
+figure(3)
 subplot(4,4,[2:4,6:8,10:12,14:16])
 cla
 set(gca,'ColorOrder','factory')

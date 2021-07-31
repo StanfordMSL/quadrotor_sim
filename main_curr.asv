@@ -12,7 +12,7 @@ model = model_init('v1.0.0');
 % model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_right');
+obj  = race_init('line','slit_hard');
 % obj  = grasp_init('empty');            
 
 % Trajectory Horizon

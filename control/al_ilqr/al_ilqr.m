@@ -74,9 +74,9 @@ while true
             % Carry on.
         end
     end
-    % Debug
-    nominal_plot(X,obj.gt,1,'nice');
-    mthrust_debug(Umt);  
+%     % Debug
+%     nominal_plot(X,obj.gt,1,'nice');
+%     mthrust_debug(Umt);  
     
     % Update Lagrangian
     mult = mult_update(mult,con,phi);
@@ -88,8 +88,12 @@ while true
     end
 end
     
+% % Debug
+% mthrust_debug(Umt); 
+
 % Package the Output
 traj.x_bar = [X ; U(2:4,:) zeros(3,1)];     % Regenerate the full trajectory (with 'fake' last body rate frame).
 traj.x_br = X;
 traj.u_br = U;
 traj.L_br = L;
+traj.u_mt = Umt;
