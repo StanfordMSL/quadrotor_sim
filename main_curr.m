@@ -8,12 +8,11 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-model = model_init('v1.0.0');  
-% model = model_init('iris');  
+% model = model_init('v1.0.0');  
+model = model_init('iris');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_right');
-% obj  = grasp_init('empty');            
+obj  = race_init('climb','gate_flat');
 
 % Trajectory Horizon
 t_hzn = 5;
@@ -43,7 +42,7 @@ traj = traj_init(obj,model,t_hzn,input_mode);
 
 % Warm Start
 traj = diff_flat(obj,model,traj,input_mode);
-% nominal_plot(traj.x_bar,obj.gt,10,'nice');
+nominal_plot(traj.x_bar,obj.gt,10,'nice');
 
 % Modifier for Debugging
 % obj  = race_init('line','gate_right');
@@ -51,7 +50,7 @@ traj = diff_flat(obj,model,traj,input_mode);
 
 % Full Constraint Optimization
 traj = al_ilqr(traj,obj);
-% nominal_plot(traj.x_bar,obj.gt,10,'persp');
+%c
 
 %% Simulation
 

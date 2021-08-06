@@ -4,9 +4,7 @@ function [traj,n_tr] = fout2traj(traj,n_tr,f_out,model,mode)
 N_tr = size(f_out,3); 
 
 % Some Useful Terms
-f_hov = model.motor.thrust_hover;
-f_max = model.motor.thrust_max;
-fn = f_hov/f_max;
+fn = model.motor.c_hover;
 
 %%% Full State Nominal Trajectory
 x_bar      = zeros(13,N_tr);

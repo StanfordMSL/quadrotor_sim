@@ -4,9 +4,9 @@ function model = model_init(mdl_type)
 eps = 1e-9;
 
 % Rate Parameters
-model.clock.hz_ses = 100;             % State Estimator Sample Rate
+model.clock.hz_ses = 200;             % State Estimator Sample Rate
 model.clock.hz_lqr = 0.1;             % iLQR Update Rate
-model.clock.hz_fmu = 100;             % Flight Management Unit Update Rate
+model.clock.hz_fmu = 200;             % Flight Management Unit Update Rate
 model.clock.hz_act = 1000;            % Actual Dynamics Update Rate
 
 model.clock.dt_ses = 1/model.clock.hz_ses;
@@ -281,7 +281,7 @@ model.ses.R = diag(var_sens);
 
 % Misc
 model.df.ndr = 15;          % Number of Terms for Diff Flat Polynomial
-model.df.vel = 3.0;         % Desired Cruising Velocity in Diff Flat
+model.df.vel = 1.0;         % Desired Cruising Velocity in Diff Flat
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)

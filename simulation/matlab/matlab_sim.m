@@ -138,4 +138,4 @@ if k_ses < N_ses
 end
 
 % Check Constraints
-log.con = con_calc(log.x_fmu(1:10,:),log.u_br,obj.gt.p_box);
+% log.con = con_calc(log.x_fmu(1:10,:),log.u_br,obj.gt.p_box);
