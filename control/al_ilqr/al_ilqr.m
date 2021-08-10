@@ -12,6 +12,9 @@ U = traj.u_br;
 lqr.T = traj.T;
 lqr.xs = obj.kf.x(1:10,end);
 lqr.us = round(U(:,end),3);
+lqr.Qn = zeros(10,1);
+lqr.Rn = [1/(100*lqr.T) ; 0 ; 0 ; 0];
+lqr.QN = [ones(6,1) ; zeros(4,1)];
 
 p_box = obj.gt.p_box;
 

@@ -24,22 +24,22 @@ for k_kf = 1:N_kf
     [traj,T] = fout2traj(traj,T,f_out,model,mode);
 end
 
-%% Pad the remainder of the trajectory
-traj.T = T;        % Trajectory ends here.
-
-f_end.t = [0 traj.t_fmu(end)-f_wp.t(end)];
-f_end.sigma = zeros(4,15,2);
-f_end.sigma(:,:,1) = f_wp.sigma(:,:,end);
-f_end.sigma(:,:,2) = f_wp.sigma(:,:,end);
-f_end.sigma(:,2:5,2) = 0;
-
-% Solve the Piecewise QP
-f_out = piecewise_QP(f_end,model.clock.dt_fmu);
-
-% Update the total trajectory
-[traj,~] = fout2traj(traj,T,f_out,model,mode);
+% NOT NEEDED BECAUSE WE DROPPED THE PADDING IDEA
+% %% Pad the remainder of the trajectory
+% f_end.t = [0 traj.t_fmu(end)-f_wp.t(end)];
+% f_end.sigma = zeros(4,15,2);
+% f_end.sigma(:,:,1) = f_wp.sigma(:,:,end);
+% f_end.sigma(:,:,2) = f_wp.sigma(:,:,end);
+% f_end.sigma(:,2:5,2) = 0;
+% 
+% % Solve the Piecewise QP
+% f_out = piecewise_QP(f_end,model.clock.dt_fmu);
+% 
+% % Update the total trajectory
+% [traj,~] = fout2traj(traj,T,f_out,model,mode);
 
 % Trim to have only single terminal
+traj.T = T;
 traj.t_fmu = traj.t_fmu(1,1:T);
 traj.x_bar = traj.x_bar(:,1:T);
 traj.x_br  = traj.x_br(:,1:T);

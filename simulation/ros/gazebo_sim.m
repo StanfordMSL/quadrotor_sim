@@ -15,7 +15,7 @@ pause(1);
 
 % Send the Drone to Initial Position
 send2init(pose_init_pub,traj.x_bar(:,1));
-pause(1);
+pause(3);
 
 % Send Trajectory for Execution
 switch mode

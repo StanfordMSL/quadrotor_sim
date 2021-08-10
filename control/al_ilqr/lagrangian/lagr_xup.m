@@ -1,7 +1,14 @@
-function La_xup = lagr_xup(X,U,Xbar,Ubar,xs,us,T)
+function La_xup = lagr_xup(X,U,Xbar,Ubar,lqr)
+
+% Unpack Some Stuff
+xs  = lqr.xs;
+us  = lqr.us;
+N   = lqr.T;
+Qn  = lqr.Qn;
+QN  = lqr.QN;
+Rn  = lqr.Rn;
 
 % Initialize Variables
-N     = size(X,2);
 La_xup = zeros(2,N);
 
 % Compute stagewise cost
@@ -12,18 +19,13 @@ for k = 1:N-1
     xb = Xbar(:,k);
     ub = Ubar(:,k);
     
-    if k < T
-        La_xup(1,k) = dCn_xu(x,u,xb,ub,xs,us,1);
-        La_xup(2,k) = dCn_p(xb,ub,xs,us,1);
-    else
-        La_xup(1,k) = dCT_xu(x,u,xb,ub,xs,us,1);
-        La_xup(2,k) = dCT_p(xb,ub,xs,us,1);
-    end
+    La_xup(1,k) = dCn_xu(x,u,xb,ub,xs,us,1);
+    La_xup(2,k) = dCn_p(xb,ub,xs,us,Qn,Rn,1);
 end
 
 xb = Xbar(:,N);
 
 La_xup(1,N) = dCN_xu(1);
-La_xup(2,N) = dCN_p(xb,xs,1);
+La_xup(2,N) = dCN_p(xb,xs,QN,1);
 
 end

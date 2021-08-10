@@ -18,8 +18,9 @@ L = zeros(n_u,n_x,N-1);
 delV = zeros(2,N);
 
 % Initial
-V = dQN(1);
-v = dqN(X(:,N),xs,1);
+Qin = lqr.QN;
+V = dQN(Qin,1);
+v = dqN(X(:,N),xs,Qin,1);
 
 for k = N-1:-1:1
     % Unpack stagewise stuff
@@ -29,7 +30,7 @@ for k = N-1:-1:1
     A = A_calc(x,u);
     B = B_calc(x,u);
     
-    c  = [ con.cx(:,k) ; con.cu(:,k)];
+    c   = [ con.cx(:,k) ; con.cu(:,k)];
     c_x = [ con.cx_x(:,:,k) ; con.cu_x(:,:,k)];
     c_u = [ con.cx_u(:,:,k) ; con.cu_u(:,:,k)];
     
@@ -42,18 +43,14 @@ for k = N-1:-1:1
     I_mu = diag([ mudx ; mudu ] );
     
     % Generate Intermediate Terms
-    if k < T
-        dQk = dQn(1);
-        dRk = dRn(1);
-        dqk = dqn(x,xs,1);
-        drk = drn(u,us,1);
-    else
-        dQk = dQT(1);
-        dRk = dRT(1);
-        dqk = dqT(x,xs,1);
-        drk = drT(u,us,1);
-    end
-        
+    Qin = lqr.Qn;
+    Rin = lqr.Rn;
+    
+    dQk = dQn(Qin,1);
+    dRk = dRn(Rin,1);
+    dqk = dqn(x,xs,Qin,1);
+    drk = drn(u,us,Rin,1);
+    
     Qx  = dqk + A'*v + c_x'*(lam + I_mu*c);
     Qu  = drk + B'*v + c_u'*(lam + I_mu*c);
     Qxx = dQk + A'*V*A + c_x'*I_mu*c_x;

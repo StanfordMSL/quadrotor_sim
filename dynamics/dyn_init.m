@@ -1,4 +1,4 @@
-function dyn_init(model,input_mode)
+function model = dyn_init(model,input_mode)
 
 % Precession (implement later) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -121,10 +121,17 @@ for k = 1:2
     f  = sym('f','real');
     fn = sym('fn','real');
 
-    fn_out = f/(4*model.motor.thrust_max);
-    f_out = fn*(4*model.motor.thrust_max);
+    val_min = model.motor.thrust_min;
+    val_max = model.motor.thrust_max;
+    
+    fn_out = (1/4) * ((f-val_min)/(val_max-val_min));
+    f_out = 4*fn*(val_max-val_min) + val_min;
+    
     matlabFunction(fn_out,'File',f2fn_func,'vars',f)
     matlabFunction(f_out,'File',fn2f_func,'vars',fn)
+
+    % Update the c_hover
+    model.motor.c_hover      = f2fn(model.motor.thrust_hover);
 
     %% Output Linearization Terms
     % Note: we use the estimated model since the linearization is in

@@ -1,7 +1,12 @@
-function [La_x_o,La_x_c] = lagr_x(X,Xbar,xs,conx,lamx,mudx,T)
+function [La_x_o,La_x_c] = lagr_x(X,Xbar,conx,lamx,mudx,lqr)
+
+% Unpack Some Stuff
+xs  = lqr.xs;
+N   = lqr.T;
+Qn  = lqr.Qn;
+QN  = lqr.QN;
 
 % Initialize Variables
-N     = size(X,2);
 La_x_o = zeros(1,N);
 La_x_c = zeros(1,N);
 
@@ -13,12 +18,10 @@ for k = 1:N
     ldx = lamx(:,k);
     mdx = mudx(:,k);
     
-    if k < T
-        La_x_o(1,k) = dCn_x(x,xb,xs,1);
-    elseif ((k >= T) && (k < N))
-        La_x_o(1,k) = dCT_x(x,xb,xs,1);
+    if k < N
+        La_x_o(1,k) = dCn_x(x,xb,xs,Qn,1);
     else
-        La_x_o(1,k) = dCN_x(x,xb,xs,1);
+        La_x_o(1,k) = dCN_x(x,xb,xs,QN,1);
     end
     
     La_x_c(1,k) = conx_cost(cx,ldx,mdx);

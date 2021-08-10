@@ -12,7 +12,7 @@ msg.Pose.Orientation.X = x_init(8,1);
 msg.Pose.Orientation.Y = x_init(9,1);
 msg.Pose.Orientation.Z = x_init(10,1);
 
-for k = 1:30
+for k = 1:50
     msg.Header.Stamp = rostime('now');
 
     send(pose_init_pub,msg);
