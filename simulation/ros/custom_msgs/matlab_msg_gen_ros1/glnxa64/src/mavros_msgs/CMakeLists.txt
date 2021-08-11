@@ -28,6 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
 ################################################
 add_message_files(
     FILES
+    ActuatorControl.msg
     AttitudeTarget.msg
     Thrust.msg
 )
@@ -95,6 +96,9 @@ link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/boost/lib")
 add_library(
     mavros_msgs_matlab 
     SHARED
+    src/mavros_msgs_ActuatorControl_common.cpp
+    src/mavros_msgs_msg_ActuatorControl_publisher.cpp
+    src/mavros_msgs_msg_ActuatorControl_subscriber.cpp
     src/mavros_msgs_AttitudeTarget_common.cpp
     src/mavros_msgs_msg_AttitudeTarget_publisher.cpp
     src/mavros_msgs_msg_AttitudeTarget_subscriber.cpp
@@ -168,5 +172,5 @@ install(
   RUNTIME DESTINATION bin
 )
 install (DIRECTORY m/ DESTINATION m/ FILES_MATCHING PATTERN "*.m")
-# Generated 09-Jul-2021 14:04:16
+# Generated 10-Aug-2021 19:33:46
 # Copyright 2019-2020 The MathWorks, Inc.

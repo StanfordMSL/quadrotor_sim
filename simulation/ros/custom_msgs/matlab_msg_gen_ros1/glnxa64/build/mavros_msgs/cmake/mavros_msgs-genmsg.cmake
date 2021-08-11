@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "mavros_msgs: 2 messages, 3 services")
+message(STATUS "mavros_msgs: 3 messages, 3 services")
 
 set(MSG_I_FLAGS "-Imavros_msgs:/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg;-Istd_msgs:/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg;-Igeometry_msgs:/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/geometry_msgs/cmake/../msg;-Istd_msgs:/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg")
 
@@ -14,9 +14,9 @@ add_custom_target(mavros_msgs_generate_messages ALL)
 
 
 
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
 add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" ""
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" ""
 )
 
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv" NAME_WE)
@@ -24,19 +24,24 @@ add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv" ""
 )
 
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" ""
+)
+
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg" NAME_WE)
 add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg" "std_msgs/Header"
 )
 
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
-add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" ""
-)
-
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg" NAME_WE)
 add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg" "std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Vector3"
+)
+
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg" NAME_WE)
+add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "mavros_msgs" "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg" "std_msgs/Header"
 )
 
 #
@@ -45,6 +50,12 @@ add_custom_target(_mavros_msgs_generate_messages_check_deps_${_filename}
 
 ### Section generating for lang: gencpp
 ### Generating Messages
+_generate_msg_cpp(mavros_msgs
+  "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg"
+  "${MSG_I_FLAGS}"
+  "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg/Header.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/mavros_msgs
+)
 _generate_msg_cpp(mavros_msgs
   "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg"
   "${MSG_I_FLAGS}"
@@ -90,15 +101,17 @@ add_custom_target(mavros_msgs_generate_messages_cpp
 add_dependencies(mavros_msgs_generate_messages mavros_msgs_generate_messages_cpp)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
-add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg" NAME_WE)
+add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_cpp _mavros_msgs_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
@@ -110,6 +123,12 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS mavros_msgs_generate_messages_cpp)
 
 ### Section generating for lang: genpy
 ### Generating Messages
+_generate_msg_py(mavros_msgs
+  "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg"
+  "${MSG_I_FLAGS}"
+  "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg/Header.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/mavros_msgs
+)
 _generate_msg_py(mavros_msgs
   "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg"
   "${MSG_I_FLAGS}"
@@ -155,15 +174,17 @@ add_custom_target(mavros_msgs_generate_messages_py
 add_dependencies(mavros_msgs_generate_messages mavros_msgs_generate_messages_py)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandBool.srv" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/SetMode.srv" NAME_WE)
+add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/Thrust.msg" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/srv/CommandTOL.srv" NAME_WE)
-add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/AttitudeTarget.msg" NAME_WE)
+add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/src/mavros_msgs/msg/ActuatorControl.msg" NAME_WE)
 add_dependencies(mavros_msgs_generate_messages_py _mavros_msgs_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility

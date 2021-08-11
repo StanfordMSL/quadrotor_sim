@@ -28,5 +28,5 @@
   #define MAVROS_MSGS_PUBLIC_TYPE
 #endif
 #endif  // MAVROS_MSGS__VISIBILITY_CONTROL_H_
-// Generated 09-Jul-2021 14:04:16
+// Generated 10-Aug-2021 19:33:46
 // Copyright 2019-2020 The MathWorks, Inc.

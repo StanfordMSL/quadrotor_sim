@@ -1,4 +1,4 @@
-function [T,X,U] = send2point(pose_pub,pose_sub,u_sub,point)
+function [T,X,U] = send2point(pose_pub,pose_sub,th_sub,br_sub,point)
 
 % Generate Containers
 T = zeros(1,2000);
@@ -27,7 +27,8 @@ while toc < 5
     
     % Pull Data from Topics Trajectory Data
     pose = pose_sub.LatestMessage;
-    u_br = u_sub.LatestMessage;
+    u_th = th_sub.LatestMessage;
+    u_br = br_sub.LatestMessage;
     
     % Log Time
     T(1,k) = toc;
@@ -46,7 +47,8 @@ while toc < 5
     X(10,k) = pose.Pose.Orientation.Z;
     
     % Log Body Rate
-    U(1,k) = u_br.Thrust;
+%     u_th.Controls(3)
+    U(1,k) = u_th.Controls(4);
     U(2,k) = u_br.BodyRate.X;
     U(3,k) = u_br.BodyRate.Y;
     U(4,k) = u_br.BodyRate.Z;
