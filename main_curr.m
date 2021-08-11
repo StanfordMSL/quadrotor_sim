@@ -8,7 +8,7 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-model = model_init('v1.0.0');  
+model = model_init('v1.0.1');  
 % model = model_init('iris');  
 
 % Objective and Constraints
