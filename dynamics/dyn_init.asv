@@ -80,14 +80,8 @@ for k = 1:2
     J = (10^-7).*[ 7.8  0.0  0.0;...
                    0.0  7.8  0.0;...
                    0.0  0.0  9.6];      % Motor Inertia Tensor
-    w_mg = [0       0      0      0;...
-            0       0      0      0;...
-         -w_m(1) -w_m(2) w_m(3) w_m(4)];
-    
-    tau_g = [0 ; 0 ; 0];
-    for k_mg = 1:4
-        tau_g = tau_g - J*cross(w,w_mg(:,k_mg));
-    end
+    tau_g1 = -J*w
+    tau_g = -J[0 ; 0 ; 0];
     
     % Dynamics Equations 
     

@@ -117,10 +117,10 @@ switch mdl_type
 %         model.est.B  = 0.00001.*eye(3,3);
 %         model.est.L  = 0.06;
   
-        model.est.kw = [2.310e-07  ; 0 ; 0];         
-        model.est.D  = [ 0.53   0.00   0.00;...
-                         0.00   0.38   0.00;...
-                         0.00   0.00   0.38]; 
+        model.est.kw = [2.35e-07  ; 0 ; 0];         
+        model.est.D  = [ 0.15   0.00   0.00;...
+                         0.00   0.25   0.00;...
+                         0.00   0.00   0.50]; 
 
         model.act = model.est;
 %         % Actual %%%
