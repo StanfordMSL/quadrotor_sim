@@ -4,13 +4,17 @@ function log = gazebo_sim(traj,mode)
 try
     rosnode list
 catch
-    rosinit('ASGARD.local')
+%     rosinit('ASGARD.local')
+    rosinit('relay.local')
 end
+
+% droneID = 'drone1';
+droneID = 'drone7';
 
 % Initialize ROS Parameters
 node = ros.Node('/matlab_node');
-pose_sub = ros.Subscriber(node,'drone1/mavros/local_position/pose');
-pose_init_pub = ros.Publisher(node,'drone1/setpoint/position','geometry_msgs/PoseStamped');
+pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
+pose_init_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
 pause(1);
 
 % Send the Drone to Initial Position
@@ -20,7 +24,7 @@ pause(3);
 % Send Trajectory for Execution
 switch mode
     case 'body_rate'
-        traj_client = ros.ServiceClient(node,'/drone1/setpoint/TrajTransfer',"Timeout",3);
+        traj_client = ros.ServiceClient(node,[droneID '/setpoint/TrajTransfer'],"Timeout",3);
 
         req = rosmessage(traj_client);
         req.Hz = traj.hz;

@@ -98,45 +98,30 @@ switch mdl_type
         model.est.I  = 0.001.*[ 1.00   0.00   0.00;...
                                 0.00   1.60   0.00;...
                                 0.00   0.00   2.00]; 
+        model.est.kw = [2.31e-07  ; 0 ; 0];         
+        model.est.b  = 0.06; 
+        model.est.D  = [ 0.80   0.00   0.00;...
+                         0.00   0.80   0.00;...
+                         0.00   0.00   0.80]; 
         model.est.kh = 0.000*model.est.m;
-        model.est.A  = 0.00001.*eye(3,3);
-        model.est.B  = 0.00001.*eye(3,3);
+        model.est.A  = 1e-9.*eye(3,3);
+        model.est.B  = 1e-9.*eye(3,3);
         model.est.L  = 0.06;
-        model.est.b  = 0.013; 
-%         model.est.m  = 0.530;
-%         model.est.I  = 0.001.*[ 1.00   0.00   0.00;...
-%                                 0.00   1.60   0.00;...
-%                                 0.00   0.00   2.00]; 
-%         model.est.kw = [2.350e-07  ; 0 ; 0];         
-%         model.est.b  = 0.013; 
-%         model.est.D  = [ 0.25   0.00   0.00;...
-%                          0.00   0.25   0.00;...
-%                          0.00   0.00   0.50]; 
-%         model.est.kh = 0.000*model.est.m;
-%         model.est.A  = 0.00001.*eye(3,3);
-%         model.est.B  = 0.00001.*eye(3,3);
-%         model.est.L  = 0.06;
-  
-        model.est.kw = [2.310e-07  ; 0 ; 0];         
-        model.est.D  = [ 0.53   0.00   0.00;...
-                         0.00   0.38   0.00;...
-                         0.00   0.00   0.38]; 
 
-        model.act = model.est;
-%         % Actual %%%
-%         model.act.m  = 0.530;
-%         model.act.I  = 0.001.*[  1.54   0.00   0.00;...
-%                                 0.00   1.54   0.00;...
-%                                 0.00   0.00   2.51]; 
-%         model.act.kw = [2.7e-07  ; 0 ; 0];         
-%         model.act.b  = 0.013;
-%         model.act.D  = [ 0.00   0.00   0.00;...
-%                          0.00   0.00   0.00;...
-%                          0.00   0.00   0.0]; 
-%         model.act.kh = 0.000*model.act.m;
-%         model.act.A  = 0.00001.*eye(3,3);
-%         model.act.B  = 0.00001.*eye(3,3);
-%         model.act.L  = 0.06;
+        % Actual %%%
+        model.act.m  = 0.530;
+        model.act.I  = 0.001.*[ 1.00   0.00   0.00;...
+                                0.00   1.60   0.00;...
+                                0.00   0.00   2.00]; 
+        model.act.kw = [2.31e-07  ; 0 ; 0];         
+        model.act.b  = 0.06;
+        model.act.D  = [ 0.80   0.00   0.00;...
+                         0.00   0.80   0.00;...
+                         0.00   0.00   0.80]; 
+        model.act.kh = 0.000*model.act.m;
+        model.act.A  = 1e-9.*eye(3,3);
+        model.act.B  = 1e-9.*eye(3,3);
+        model.act.L  = 0.06;
         
         % Model Noise
         W_pos   = 0.0*ones(3,1);
@@ -296,7 +281,7 @@ model.ses.R = diag(var_sens);
 
 % Misc
 model.df.ndr = 15;          % Number of Terms for Diff Flat Polynomial
-model.df.vel = 0.2;         % Desired Cruising Velocity in Diff Flat
+model.df.vel = 1.0;         % Desired Cruising Velocity in Diff Flat
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)
