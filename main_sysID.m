@@ -4,9 +4,9 @@ clear; clc;
 rehash toolboxcache
 
 %% Test Arrays
-N_kw = 1;
-N_Dxy = 1;
-N_Dz = 1;
+N_kw    = 2;
+N_Dxy   = 1;
+N_Dz    = 1;
 
 kw = linspace(2.010e-07,2.31e-7,N_kw);
 Dxy = linspace(0.8,0.8,N_Dxy);
@@ -105,7 +105,5 @@ for k_kw = 1:N_kw
     end
 end
 
-save data_full.mat data_full
-save data_simp.mat data_simp
-
-% sysID_plot(log_M,T,X,U);
+save misc/sysID/results/full.mat data_full
+save misc/sysID/results/simp.mat data_simp

@@ -1,12 +1,18 @@
-function traj = traj_init(obj,model,t_end,mode)
+function traj = traj_init(obj,model,mode)
 
+% Unpack some stuff
 x0 = obj.kf.x(:,1);
+x1 = obj.kf.x(:,2);
 hz_fmu = model.clock.hz_fmu;
+
+% Estimate t_end using assumed velocity.
+t_end = norm(x1(1:3)-x0(1:3))/model.misc.v_cr;
 
 % Intermediate Variables
 fmu_dt = 1/hz_fmu;
 N      = hz_fmu*t_end + 1;
-u_br_hov = [model.motor.c_hover ; 0 ; 0 ; 0];
+u_br_hov = [f2fn(model.motor.thrust_hover) ; 0 ; 0 ; 0];
+
 % Some Useful Parameters
 traj.hz    = hz_fmu;
 traj.t_fmu = 0:fmu_dt:t_end;

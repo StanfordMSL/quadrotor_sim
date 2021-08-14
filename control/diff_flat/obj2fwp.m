@@ -1,4 +1,4 @@
-function fwp = obj2fwp(obj,seq,df)
+function fwp = obj2fwp(obj,seq,misc)
 
 % Unpack/Define Some Stuff
 idxs = find(obj.gt.seq==seq);
@@ -16,7 +16,7 @@ end
        
 % Initialize Our Outputs
 t_sigma = zeros(1,N_wp);
-sigma   = zeros(4,df.ndr,N_wp);
+sigma   = zeros(4,misc.ndr,N_wp);
 
 % Generate sigma and con_sigma
 sigma(:,:,1) = kf2sigma(x_kf(:,1));
@@ -35,7 +35,7 @@ for k_obj = 2:N_wp
     if s_int == 0
         t_int = 5;      % to catch the hover case
     else
-        t_int = round(s_int/df.vel,1);
+        t_int = round(s_int/misc.v_cr,1);
     end
     t_sigma(1,k_obj) = t_sigma(1,k_obj-1) + t_int;
 end
