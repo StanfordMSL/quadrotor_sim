@@ -64,11 +64,14 @@ for k = 1:2
     w2m = db.w2m;
     
     % Forces
-    F_m = sign(w_m).*(kw(1).*w_m.^2 + kw(2).*w_m.^1 + kw(3).*w_m.^0);
-    F_w = m2w*F_m; 
-
     F_g =  m.*[0 ; 0 ; -g];
+
+    A_w_m = [w_m.^2 w_m 1];
+    F_m = sign(w_m).*(A_w_m*kw);
+    F_w = m2w*F_m; 
     F_t =  quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
+    
+  
     F_D = -quatrotmat2(D,q)*v;
 
     % Torques
@@ -80,8 +83,14 @@ for k = 1:2
     J = (10^-7).*[ 7.8  0.0  0.0;...
                    0.0  7.8  0.0;...
                    0.0  0.0  9.6];      % Motor Inertia Tensor
-    tau_g1 = -J*w
-    tau_g = -J[0 ; 0 ; 0];
+    w_mg = [0       0      0      0;...
+            0       0      0      0;...
+         -w_m(1) -w_m(2) w_m(3) w_m(4)];
+    
+    tau_g = [0 ; 0 ; 0];
+    for k_mg = 1:4
+        tau_g = tau_g - J*cross(w,w_mg(:,k_mg));
+    end
     
     % Dynamics Equations 
     

@@ -1,4 +1,4 @@
-function model = model_init(frame,model_diff,model_noise,sensor_noise)
+function model = model_init(frame,model_diff,model_noise)
 
 % 'Zero' Constant to Keep Variables Well Behaved
 eps = 1e-9;
@@ -18,49 +18,61 @@ model.clock.dt_act = 1/model.clock.hz_act;
 switch frame
     case 'carlito'
         % Mass/Inertia/Dimension Properties
-        model.act.m     = 0.530;                % Total Mass
-        model.act.m_mst = 0.010;                % Motor Stator Mass
-        model.act.I     = 0.001.*[...           % Inertia Tensor
+        model.act.m     = 0.530;                    % Total Mass
+        model.act.m_mst = 0.010;                    % Motor Stator Mass
+        model.act.I     = 0.001.*[...               % Inertia Tensor
             1.00   0.00   0.00;...
             0.00   1.60   0.00;...
             0.00   0.00   2.00];
-        model.act.L     = 0.06;                 % X and Y arm offsets (square frame)
-        model.act.g     = 9.81;                 % Gravitational Acceleration Constant
+        model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
+        model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [2.31e-07  ; 0 ; 0];     % Rotor Thrust Coeffecient
-        model.act.b  = 0.06;                    % Rotor Torque Gain (multiplier on lift force to get yaw)
-        model.act.D  = [...                     % Frame Linear Drag Force Coefficients
-            0.80   0.00   0.00;...
+        model.act.kw = [2.31e-07 ; 0.00 ; 0.00];    % Rotor Thrust Coeffecients
+        model.act.b  = 0.06;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
+        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^2,^1,^0)
             0.00   0.80   0.00;...
-            0.00   0.00   0.80];
-        model.act.A  = eps.*eye(3,3);           % Frame Linear Drag Torque Coefficients
-        model.act.B  = eps.*eye(3,3);           % Frame Rotational Drag Torque Coefficients
-        model.act.kh = 0.000*model.act.m;       % Inflow Coefficient
+            0.00   0.80   0.00;...
+            0.00   0.80   0.00];
+        model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
+            0.00   eps   0.00;...
+            0.00   eps  0.00;...
+            0.00   eps   0.00];               
+        model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
+            0.00   eps   0.00;...
+            0.00   eps   0.00;...
+            0.00   eps   0.00];                
+        model.act.kh = 0.000*model.act.m;           % Inflow Coefficient
         
         % Motor Limits
-        model.motor.min = 0;                    % Motor Min rad/s
-        model.motor.max = 4250;                 % Motor Max rad/s
+        model.motor.min = 0;                        % Motor Min rad/s
+        model.motor.max = 4250;                     % Motor Max rad/s
     case 'iris'
-        model.act.m     = 1.50;                 % Total Mass
-        model.act.m_mst = 0.010;                % Motor Stator Mass
-        model.act.I     = 0.01.*[...            % Inertia Tensor
+        model.act.m     = 1.50;                     % Total Mass
+        model.act.m_mst = 0.010;                    % Motor Stator Mass
+        model.act.I     = 0.01.*[...                % Inertia Tensor
             2.91   0.00   0.00;...
             0.00   2.91   0.00;...
             0.00   0.00   5.52]; 
-        model.act.L     = 0.0885;               % X and Y arm offsets (square frame)
-        model.act.g     = 9.81;                 % Gravitational Acceleration Constant
+        model.act.L     = 0.0885;                   % X and Y arm offsets (square frame)
+        model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [5.84e-06 ; 0 ; 0];      % Rotor Thrust Coeffecient
-        model.act.b  = 0.06;                    % Rotor Torque Gain (multiplier on lift force to get yaw)
-        model.act.D  = [...                     % Frame Linear Drag Force Coefficients
-            eps    0.00   0.00;...
-            0.00    eps   0.00;...
-            0.00   0.00    eps];
-        model.act.A  = eps.*eye(3,3);           % Frame Linear Drag Torque Coefficients
-        model.act.B  = eps.*eye(3,3);           % Frame Rotational Drag Torque Coefficients
-        model.act.kh = 0.000.*model.act.m;      % Inflow Coefficient
+        model.act.kw = [5.84e-06 ; 0.00 ; 0.00];    % Rotor Thrust Coeffecients
+        model.act.b  = 0.06;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
+        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^2,^1,^0)
+            0.00   eps   0.00;...
+            0.00   eps  0.00;...
+            0.00   eps   0.00];  
+        model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
+            0.00   eps   0.00;...
+            0.00   eps  0.00;...
+            0.00   eps   0.00];               
+        model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
+            0.00   eps   0.00;...
+            0.00   eps   0.00;...
+            0.00   eps   0.00];              
+        model.act.kh = 0.000.*model.act.m;          % Inflow Coefficient
 end
 
 switch model_diff
@@ -120,7 +132,7 @@ model.motor.thrust_max = ...
 % Grasper position offset in body frame
 model.grasp.pos = [0 ; 0 ; 0];
 
-%% State Estimation
+%% Sensor Model and Noise
 
 % Sensor Model
 model.ses.C     = [...
@@ -137,6 +149,22 @@ var_sens = [var_mocap ; var_gyro];
 % Sensor Noise Matrices
 model.ses.Q = 0.0.*eye(13);
 model.ses.R = diag(var_sens);
+
+
+%% Model Noise
+switch model_noise
+    case 'precise'
+        W_pos   = 0.0*ones(3,1);
+        W_vel   = 0.0*ones(3,1);
+        W_quat  = 0.0*ones(4,1);
+        W_omega = 0.0*ones(3,1);
+    case 'noisy'
+        W_pos   = 0.0001*ones(3,1);
+        W_vel   = 0.01*ones(3,1);
+        W_quat  = 0.0001*ones(4,1);
+        W_omega = 0.01*ones(3,1);
+end
+model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 
 %% Misc
 model.misc.ndr  = 15;            % Number of Terms for Diff Flat Polynomial

@@ -64,12 +64,15 @@ for k = 1:2
     w2m = db.w2m;
     
     % Forces
-    F_m = sign(w_m).*(kw(1).*w_m.^2 + kw(2).*w_m.^1 + kw(3).*w_m.^0);
-    F_w = m2w*F_m; 
-
     F_g =  m.*[0 ; 0 ; -g];
+
+    A_w_m = [w_m.^2 w_m 1];
+    F_m = sign(w_m).*(A_w_m*kw);
+    F_w = m2w*F_m; 
     F_t =  quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
-    F_D = -quatrotmat2(D,q)*v;
+    
+    D_w = quatrotmat2(D,q);
+    F_D = -D_w*v;
 
     % Torques
     tau_mot  =  F_w(2:4,1);

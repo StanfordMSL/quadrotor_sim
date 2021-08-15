@@ -1,4 +1,4 @@
-function [traj,n_tr] = fout2traj(traj,n_tr,f_out,model,mode)
+function traj = fout2traj(traj,n_tr,f_out,model,mode)
 
 % Number of frames in this portion of the trajectory
 N_tr = size(f_out,3); 
@@ -62,6 +62,6 @@ switch mode
         traj.u_wr(:,idx_u) = u_wr;
 end
 
-n_tr = n_tr + N_tr - 1;
+traj.T = n_tr + N_tr - 1;
 
 end
