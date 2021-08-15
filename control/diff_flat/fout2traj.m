@@ -24,12 +24,16 @@ u_mt = zeros(4,N_tr-1);
 %%% Wrench
 u_wr = zeros(4,N_tr-1);
 
+% Initialize the PosAtt Controller
+pa = pa_init();
+
 % Run the trajectory forward to generate the various terms
 for k = 1:N_tr-1
-    % Wrench
-    u_wr(:,k) = df_con(f_out(:,:,k),model.est);
+    % Wrench through Pos Att
+    u_wr(:,k) = pa_ctrl(x_bar(:,k),f_out(:,:,k),pa,model.est);
+%     u_wr(:,k) = df_con(f_out(:,:,k),model.est);
     
-    % Direct
+    % Output to Motors
     u_mt(:,k) = w2m_est(u_wr(:,k));
     
     % Full State Nominal Trajectory

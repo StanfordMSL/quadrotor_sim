@@ -38,11 +38,13 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 % Initialize Trajectory Structure
 traj = traj_init(obj,model,input_mode);
 
-% % Warm Start Using Indirect Method
-% traj = diff_flat(obj,model,traj,input_mode);
+% Warm Start Using Indirect Method
+traj = diff_flat(obj,model,traj,input_mode);
+% nominal_plot(traj.x_bar,obj.gt,1,'persp');
 
 % Full Constraint Optimization
 traj = al_ilqr(traj,obj);
+nominal_plot(traj.x_bar,obj.gt,1,'persp');
 
 %% Simulation/Actual
 

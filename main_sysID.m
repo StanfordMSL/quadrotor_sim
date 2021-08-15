@@ -4,13 +4,13 @@ clear; clc;
 rehash toolboxcache
 
 %% Test Arrays
-N_kw    = 2;
+N_kw    = 1;
 N_Dxy   = 1;
 N_Dz    = 1;
 
-kw = linspace(2.010e-07,2.31e-7,N_kw);
-Dxy = linspace(0.8,0.8,N_Dxy);
-Dz = linspace(0.8,0.8,N_Dz);
+kw = linspace(2.300e-07,2.300e-7,N_kw);
+Dxy = linspace(0.9,0.9,N_Dxy);
+Dz = linspace(0.9,0.9,N_Dz);
 
 %% Load Trajectory Array
 ID_arr = {'194221','194232','194248','214058',...
@@ -49,7 +49,7 @@ for k_kw = 1:N_kw
             for k_fl = 1:N_fl
                 flightID = ID_arr{k_fl};
                 [f_type,T,X,U]  = loadtraj(flightID);
-                
+                                
                 % Convert obj to what was simulated
                 obj.kf.x(:,1) = X(:,1);
                 obj.kf.x(:,2) = X(:,end);
@@ -105,5 +105,5 @@ for k_kw = 1:N_kw
     end
 end
 
-save misc/sysID/results/full.mat data_full
-save misc/sysID/results/simp.mat data_simp
+% save misc/sysID/results/full.mat data_full
+% save misc/sysID/results/simp.mat data_simp

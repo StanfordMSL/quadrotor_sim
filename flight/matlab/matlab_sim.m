@@ -32,7 +32,7 @@ ses = ses_init(obj,model);
 u_mt = zeros(4,1);
 switch low_ctl
     case 'pos_att'                
-        pa = pa_init;
+        pa = pa_init();
     case 'body_rate'                
         br = br_init();
     case 'wrench'

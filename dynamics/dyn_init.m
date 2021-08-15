@@ -66,7 +66,7 @@ for k = 1:2
     % Forces
     F_g =  m.*[0 ; 0 ; -g];
 
-    A_w_m = [w_m.^2 w_m 1];
+    A_w_m = [w_m.^2 w_m.^1 w_m.^0];
     F_m = sign(w_m).*(A_w_m*kw);
     F_w = m2w*F_m; 
     F_t =  quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
