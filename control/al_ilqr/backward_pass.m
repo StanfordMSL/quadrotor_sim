@@ -3,10 +3,9 @@ function [l,L,delV] = backward_pass(X,U,lqr,con,mult,mode)
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
-N   = size(X,2);
 xs  = lqr.xs;
 us  = lqr.us;
-T   = lqr.T;
+N   = lqr.N;
 
 % Tuning Parameter
 rho = 0.001;

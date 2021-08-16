@@ -2,7 +2,7 @@ function [La_x_o,La_x_c] = lagr_x(X,Xbar,conx,lamx,mudx,lqr)
 
 % Unpack Some Stuff
 xs  = lqr.xs;
-N   = lqr.T;
+N   = lqr.N;
 Qn  = lqr.Qn;
 QN  = lqr.QN;
 

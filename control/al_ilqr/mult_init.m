@@ -1,9 +1,8 @@
-function mult = mult_init(con,lqr)
+function mult = mult_init(con)
 
 % Unpack Some Stuff
-N = lqr.T;
-nx = size(con.cx,1);
-nu = size(con.cu,1);
+[nx,N] = size(con.cx);
+nu     = size(con.cu,1);
 
 % Initialize Multiplier Terms
 mult.lamx = 0.*ones(nx,N);

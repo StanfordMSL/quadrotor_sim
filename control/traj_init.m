@@ -18,7 +18,6 @@ traj.hz    = hz_fmu;
 traj.t_fmu = 0:fmu_dt:t_end;
 traj.x_bar = zeros(13,N);
 traj.x_bar(:,1) = x0;
-traj.T  = N;
 
 switch mode
     case 'pos_att'

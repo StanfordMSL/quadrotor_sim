@@ -42,14 +42,14 @@ traj = traj_init(obj,model,input_mode);
 traj = diff_flat(obj,model,traj,input_mode);
 % nominal_plot(traj.x_bar,obj.gt,1,'persp');
 
-% Full Constraint Optimization
-traj = al_ilqr(traj,obj);
-nominal_plot(traj.x_bar,obj.gt,1,'persp');
+% Full Constraint Optimizationy
+[traj,~] = al_ilqr(traj,obj,999);
+% nominal_plot(traj.x_bar,obj.gt,1,'persp');
 
 %% Simulation/Actual
 
 % MATLAB
-log_M = matlab_sim(traj,obj,model,'none',input_mode,'bypass');
+log_M = matlab_sim(traj,obj,model,'al_ilqr',input_mode,'bypass');
 
 % % ROS -> Gazebo
 % log_G = ros_flight(traj,'gazebo');

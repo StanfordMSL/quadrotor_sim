@@ -113,6 +113,7 @@ while (k_act < N_sim)
             case 'al_ilqr'
                 [traj,t_end] = min_time_augment(traj,obj,k_fmu);
                 N_sim = round((t_end/dt_act) + 1);
+                N_ses = round((t_end/dt_ses) + 1);
                 N_fmu = round((t_end/dt_fmu) + 1);
             case 'none'
                 % Carry on
@@ -134,22 +135,14 @@ while (k_act < N_sim)
 end
 
 % Trim and Tie Up Terminal Point
-log.t_act = log.t_act(:,1:k_act);
-log.x_act = log.x_act(:,1:k_act);
-
-log.t_ses  = log.t_ses(:,1:k_ses);
-log.x_ses  = log.x_ses(:,1:k_ses);
-log.sigma  = log.sigma(:,:,1:k_ses);
-
-log.x_des = log.x_des;
-
-log.t_fmu = log.t_fmu(:,1:k_fmu);
-log.x_fmu = log.x_fmu(:,1:k_fmu);
-log.u_wr  = log.u_wr(:,1:k_fmu-1);
-log.u_br  = log.u_br(:,1:k_fmu-1);
-log.u_mt  = log.u_mt(:,1:k_fmu-1);
-
+if k_ses < N_ses
+    log.t_act = log.t_act(:,1:k_act);
+    log.x_act = log.x_act(:,1:k_act);
+    
+    log.t_ses  = log.t_ses(:,1:k_acty) ;   
+    log.x_ses(:,end)  = ses.x;  
+    log.x_fmu(:,end)  = ses.x;  
+end
 
 % Check Constraints
 % log.con = con_calc(log.x_fmu(1:10,:),log.u_br,obj.gt.p_box);
-end

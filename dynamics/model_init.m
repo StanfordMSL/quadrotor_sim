@@ -5,7 +5,7 @@ eps = 1e-9;
 
 %% Rate Parameters
 model.clock.hz_ses = 200;             % State Estimator Sample Rate
-model.clock.hz_lqr = 0.1;             % iLQR Update Rate
+model.clock.hz_lqr = 1;               % iLQR Update Rate
 model.clock.hz_fmu = 200;             % Flight Management Unit Update Rate
 model.clock.hz_act = 1000;            % Actual Dynamics Update Rate
 

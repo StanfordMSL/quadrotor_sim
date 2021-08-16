@@ -1,4 +1,4 @@
-function traj = al_ilqr(traj,obj)
+function [traj,flag_t] = al_ilqr(traj,obj,t_clim)
 
 % Tuning Parameters
 tol_motor = 1e-3;
@@ -8,12 +8,14 @@ phi       = [1.5 ; 15];
 % Unpack Variables
 X = traj.x_br;
 U = traj.u_br;
+L = traj.L_br;
+N = size(X,2);
 
-lqr.T = traj.T;
+lqr.N  = N;
 lqr.xs = obj.kf.x(1:10,end);
 lqr.us = round(U(:,end),3);
 lqr.Qn = zeros(10,1);
-lqr.Rn = [1/(100*lqr.T) ; 0 ; 0 ; 0];
+lqr.Rn = [1/(100*N) ; 0 ; 0 ; 0];
 lqr.QN = [ones(6,1) ; zeros(4,1)];
 
 p_box = obj.gt.p_box;
@@ -22,7 +24,7 @@ p_box = obj.gt.p_box;
 con  = con_calc(X,U,p_box);
 
 % Initialize Lagrange Multiplier Terms
-mult = mult_init(con,lqr);
+mult = mult_init(con);
 
 % Initialize Lagrangian
 La_c = lagr_calc(X,U,X,U,lqr,con,mult);
@@ -49,7 +51,7 @@ while true
         while true
             counter(1,3) = counter(1,3)+1;
 
-            [X,U,~,Umt] = forward_pass(Xbar,Ubar,l,L,alpha);
+            [X,U,~,~] = forward_pass(Xbar,Ubar,l,L,alpha);
 %             % Debug
 %             nominal_plot(X,obj.gt,10,'back');
 %             mthrust_debug(Umt)
@@ -66,8 +68,8 @@ while true
                 alpha = 0.8*alpha;
             end
         end
-%         % Debug
-%         nominal_plot(X,obj.gt,10,'persp');
+        % Debug
+%         nominal_plot(X,obj.gt,10,'nice');
 %         mthrust_debug(Umt)
         
         flag_iLQR = check_iLQR(flag_LS);
@@ -84,19 +86,31 @@ while true
     % Update Lagrangian
     mult = mult_update(mult,con,phi);
     La_c = lagr_calc(X,U,X,U,lqr,con,mult);
-    
-    if (check_outer(con,tol_motor,tol_gate) == true)
-        % Constraints satisfied. Stop al-iLQR.
+            
+    if toc < t_clim
+        if (check_outer(con,tol_motor,tol_gate) == true)
+            % Constraints satisfied. Stop al-iLQR.
+            flag_t = 0;
+            break
+        end
+    else
+        % Ran out of compute time.
+        flag_t = 1;
         break
     end
+    
 end
     
 % % Debug
 % mthrust_debug(Umt); 
 
-% Package the Output
-traj.x_bar = [X ; U(2:4,:) zeros(3,1)];     % Regenerate the full trajectory (with 'fake' last body rate frame).
+% Package the State and Input Terms
 traj.x_br = X;
 traj.u_br = U;
+
+% Regenerate the full trajectory (with 'fake' last body rate frame).
+traj.x_bar = [X ; U(2:4,:) zeros(3,1)]; 
+
+% Generate the feedback matrix
+% [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
 traj.L_br = L;
-traj.u_mt = Umt;

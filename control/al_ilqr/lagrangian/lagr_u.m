@@ -2,7 +2,7 @@ function [La_u_o,La_u_c] = lagr_u(U,Ubar,conu,lamu,mudu,lqr)
 
 % Unpack Some Stuff
 us  = lqr.us;
-N   = lqr.T;
+N   = lqr.N;
 Rn  = lqr.Rn;
 
 % Initialize Variables

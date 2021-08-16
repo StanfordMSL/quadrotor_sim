@@ -82,8 +82,6 @@ switch view_point
         camva(6);
 end
 
-
-
 set(gcf,'color','w');
 
 end

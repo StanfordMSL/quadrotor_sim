@@ -3,7 +3,7 @@ function La_xup = lagr_xup(X,U,Xbar,Ubar,lqr)
 % Unpack Some Stuff
 xs  = lqr.xs;
 us  = lqr.us;
-N   = lqr.T;
+N   = lqr.N;
 Qn  = lqr.Qn;
 QN  = lqr.QN;
 Rn  = lqr.Rn;

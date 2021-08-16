@@ -1,6 +1,7 @@
 function traj = fout2traj(traj,n_tr,f_out,model,mode)
 
-% Number of frames in this portion of the trajectory
+% Unpack some stuff
+dt_fmu = 1/traj.hz;
 N_tr = size(f_out,3); 
 
 % Some Useful Terms
@@ -49,23 +50,20 @@ end
 x_br(:,N_tr)   = x_bar(1:10,N_tr);
 
 % Store it in the desired format
-idx_x = n_tr:n_tr+N_tr-1;
-idx_u = n_tr:n_tr+N_tr-2;
+traj.t_fmu = 0:dt_fmu:(N_tr-1)*dt_fmu;
+traj.x_bar = x_bar;
 
-traj.x_bar(:,idx_x) = x_bar;
 switch mode
     case 'pos_att'
-        traj.f_out(:,:,idx_x) = f_out;
+        traj.f_out = f_out;
     case 'body_rate'
-        traj.x_br(:,idx_x) = x_br;
-        traj.u_br(:,idx_u) = u_br;
-        traj.L_br(:,:,idx_u) = L_br;
+        traj.x_br = x_br;
+        traj.u_br = u_br;
+        traj.L_br = L_br;
     case 'direct'
-        traj.u_mt(:,idx_u) = u_mt;
+        traj.u_mt = u_mt;
     case 'wrench'
-        traj.u_wr(:,idx_u) = u_wr;
+        traj.u_wr = u_wr;
 end
-
-traj.T = n_tr + N_tr - 1;
 
 end
