@@ -24,10 +24,10 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 % % Generate QP Matrices
 % QP_init(model.misc.ndr);                       
-% 
-% % Generate Dynamics and Linearization Functions
-% dyn_init(model,input_mode);      
-% 
+
+% Generate Dynamics and Linearization Functions
+dyn_init(model,input_mode);      
+
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % motor_con_init(model,input_mode)
@@ -52,10 +52,7 @@ traj = diff_flat(obj,model,traj,input_mode);
 % log_M = matlab_sim(traj,obj,model,'al_ilqr',input_mode,'bypass');
 
 % % ROS -> Gazebo
-traj_a = traj;
-traj_a.u_br(1,:) = 1.02.*traj_a.u_br(1,:);
-traj_a.u_br(2:4,:) = 1.0.*traj_a.u_br(2:4,:);
-log_G = ros_flight(traj_a,'gazebo');
+log_G = ros_flight(traj,'gazebo');
 
 % % ROS -> Actual
 % log_A = ros_flight(traj,'actual');

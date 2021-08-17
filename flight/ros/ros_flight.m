@@ -3,8 +3,8 @@ function log = ros_flight(traj,mode)
 switch mode
     case 'gazebo'
         droneID = 'drone1';
-%         coreADD = 'ASGARD.local';
-        coreADD = 'FOLKVANGR.local';
+        coreADD = 'ASGARD.local';
+%         coreADD = 'FOLKVANGR.local';
     case 'actual'
         droneID = 'drone7';
         coreADD = 'relay.local';
