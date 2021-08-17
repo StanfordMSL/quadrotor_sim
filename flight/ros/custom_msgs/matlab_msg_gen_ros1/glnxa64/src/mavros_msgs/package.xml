@@ -8,6 +8,7 @@
   <license>TODO</license>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
+  <build_depend>message_generation</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -15,6 +16,7 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
 </package>
-<!-- Generated 13-Aug-2021 17:24:06 -->
-<!-- Copyright 2019-2020 The MathWorks, Inc. -->
+<!-- Generated 16-Aug-2021 22:15:33 -->
+<!-- Copyright 2019-2021 The MathWorks, Inc. -->

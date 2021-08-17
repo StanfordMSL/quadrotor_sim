@@ -12,8 +12,8 @@ classdef Thrust < ros.Message
         PropertyList = { 'Header' 'Thrust_' } % List of non-constant message properties
         ROSPropertyList = { 'header' 'thrust' } % List of non-constant ROS message properties
         PropertyMessageTypes = { 'ros.msggen.std_msgs.Header' ...
-			 '' ...
-			 } % Types of contained nested messages
+            '' ...
+            } % Types of contained nested messages
     end
     properties (Constant)
     end
@@ -44,8 +44,7 @@ classdef Thrust < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.Thrust;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.Thrust(strObj);
         end
     end
 end

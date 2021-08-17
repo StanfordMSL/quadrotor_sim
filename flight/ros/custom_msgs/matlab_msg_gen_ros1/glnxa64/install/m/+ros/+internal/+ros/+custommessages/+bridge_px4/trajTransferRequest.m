@@ -1,12 +1,14 @@
 function [data, info] = trajTransferRequest
 %TrajTransfer gives an empty data for bridge_px4/TrajTransferRequest
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.hz, info.hz] = ros.internal.ros.messages.ros.default_type('int32',1);
+data.MessageType = 'bridge_px4/TrajTransferRequest';
+[data.Hz, info.Hz] = ros.internal.ros.messages.ros.default_type('int32',1);
 [data.N, info.N] = ros.internal.ros.messages.ros.default_type('int32',1);
-[data.u_arr, info.u_arr] = ros.internal.ros.messages.ros.default_type('single',NaN);
-[data.x_arr, info.x_arr] = ros.internal.ros.messages.ros.default_type('single',NaN);
-[data.L_arr, info.L_arr] = ros.internal.ros.messages.ros.default_type('single',NaN);
+[data.UArr, info.UArr] = ros.internal.ros.messages.ros.default_type('single',NaN);
+[data.XArr, info.XArr] = ros.internal.ros.messages.ros.default_type('single',NaN);
+[data.LArr, info.LArr] = ros.internal.ros.messages.ros.default_type('single',NaN);
 info.MessageType = 'bridge_px4/TrajTransferRequest';
 info.constant = 0;
 info.default = 0;

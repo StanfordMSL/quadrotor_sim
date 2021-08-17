@@ -1,5 +1,5 @@
-% addpath(genpath(pwd));
-% addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
+addpath(genpath(pwd));
+addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
 clear; clc; 
 % rehash toolboxcache
 

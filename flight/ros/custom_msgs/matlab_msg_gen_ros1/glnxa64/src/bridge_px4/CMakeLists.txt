@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   message_generation
+  message_generation
 )
 ## System dependencies are found with CMake''s conventions
 ################################################
@@ -55,13 +56,13 @@ include_directories(
   ${PROJECT_SOURCE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
- "/usr/local/MATLAB/R2020b/extern/include"
- "/usr/local/MATLAB/R2020b/extern/include/MatlabDataArray"
- "/usr/local/MATLAB/R2020b/toolbox/ros/include/ros1"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/include"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/include"
- "/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages/include"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/boost/include"
+ "/usr/local/MATLAB/R2021a/extern/include"
+ "/usr/local/MATLAB/R2021a/extern/include/MatlabDataArray"
+ "/usr/local/MATLAB/R2021a/toolbox/ros/include/ros1"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/include"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/include"
+ "/usr/local/MATLAB/R2021a/toolbox/ros/mlroscpp/custom_messages/include"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/boost/include"
   "include/bridge_px4"
 )
 set (CMAKE_SKIP_BUILD_RPATH false)
@@ -71,36 +72,27 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 file(GLOB ${PROJECT_NAME}_C_SOURCES RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/*.c)
 ## Get list of .cpp files in project source directory
 file(GLOB ${PROJECT_NAME}_CPP_SOURCES RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/*.cpp)
-link_directories("/usr/local/MATLAB/R2020b/extern/bin/glnxa64")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/lib")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/boost/lib")
+link_directories("/usr/local/MATLAB/R2021a/extern/bin/glnxa64")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/lib")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/boost/lib")
 # Declare library
 add_library(
     bridge_px4_matlab 
     SHARED
-    src/bridge_px4_TrajTransfer_request_common.cpp
-    src/bridge_px4_TrajTransfer_response_common.cpp
-    src/bridge_px4_srv_TrajTransfer_client.cpp
-    src/bridge_px4_srv_TrajTransfer_server.cpp
-    src/bridge_px4_msg_TrajTransferRequest_publisher.cpp
-    src/bridge_px4_msg_TrajTransferRequest_subscriber.cpp
-    src/bridge_px4_msg_TrajTransferResponse_publisher.cpp
-    src/bridge_px4_msg_TrajTransferResponse_subscriber.cpp
-    src/bridge_px4_TrajTransferRequest_common.cpp
-    src/bridge_px4_TrajTransferResponse_common.cpp
+    src/bridge_px4_TrajTransfer_service.cpp
 )
 target_include_directories(bridge_px4_matlab PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries( bridge_px4_matlab
-	"/usr/local/MATLAB/R2020b/extern/bin/glnxa64/libMatlabDataArray.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/lib/libconsole_bridge.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libclass_loader.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librosconsole.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp_serialization.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librostime.so"
+	"/usr/local/MATLAB/R2021a/extern/bin/glnxa64/libMatlabDataArray.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/lib/libconsole_bridge.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libclass_loader.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/librosconsole.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libroscpp.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libroscpp_serialization.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/librostime.so"
 	${Boost_LIBRARIES}
 	${CMAKE_DL_LIBS}
 	)
@@ -126,5 +118,5 @@ install(
   RUNTIME DESTINATION bin
 )
 install (DIRECTORY m/ DESTINATION m/ FILES_MATCHING PATTERN "*.m")
-# Generated 13-Aug-2021 17:24:04
-# Copyright 2019-2020 The MathWorks, Inc.
+# Generated 16-Aug-2021 22:15:32
+# Copyright 2019-2021 The MathWorks, Inc.

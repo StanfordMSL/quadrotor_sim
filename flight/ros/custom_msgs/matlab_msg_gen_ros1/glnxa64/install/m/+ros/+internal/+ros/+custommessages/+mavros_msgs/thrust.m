@@ -1,10 +1,12 @@
 function [data, info] = thrust
 %Thrust gives an empty data for mavros_msgs/Thrust
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.header, info.header] = ros.internal.ros.messages.std_msgs.header;
-info.header.MLdataType = 'struct';
-[data.thrust, info.thrust] = ros.internal.ros.messages.ros.default_type('single',1);
+data.MessageType = 'mavros_msgs/Thrust';
+[data.Header, info.Header] = ros.internal.ros.messages.std_msgs.header;
+info.Header.MLdataType = 'struct';
+[data.Thrust_, info.Thrust_] = ros.internal.ros.messages.ros.default_type('single',1);
 info.MessageType = 'mavros_msgs/Thrust';
 info.constant = 0;
 info.default = 0;

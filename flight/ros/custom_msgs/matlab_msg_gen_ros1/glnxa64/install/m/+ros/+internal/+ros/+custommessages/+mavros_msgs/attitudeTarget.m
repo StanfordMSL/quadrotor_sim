@@ -1,20 +1,22 @@
 function [data, info] = attitudeTarget
 %AttitudeTarget gives an empty data for mavros_msgs/AttitudeTarget
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.header, info.header] = ros.internal.ros.messages.std_msgs.header;
-info.header.MLdataType = 'struct';
-[data.type_mask, info.type_mask] = ros.internal.ros.messages.ros.default_type('uint8',1);
-[data.IGNORE_ROLL_RATE, info.IGNORE_ROLL_RATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 1);
-[data.IGNORE_PITCH_RATE, info.IGNORE_PITCH_RATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 2);
-[data.IGNORE_YAW_RATE, info.IGNORE_YAW_RATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 4);
-[data.IGNORE_THRUST, info.IGNORE_THRUST] = ros.internal.ros.messages.ros.default_type('uint8',1, 64);
-[data.IGNORE_ATTITUDE, info.IGNORE_ATTITUDE] = ros.internal.ros.messages.ros.default_type('uint8',1, 128);
-[data.orientation, info.orientation] = ros.internal.ros.messages.geometry_msgs.quaternion;
-info.orientation.MLdataType = 'struct';
-[data.body_rate, info.body_rate] = ros.internal.ros.messages.geometry_msgs.vector3;
-info.body_rate.MLdataType = 'struct';
-[data.thrust, info.thrust] = ros.internal.ros.messages.ros.default_type('single',1);
+data.MessageType = 'mavros_msgs/AttitudeTarget';
+[data.Header, info.Header] = ros.internal.ros.messages.std_msgs.header;
+info.Header.MLdataType = 'struct';
+[data.TypeMask, info.TypeMask] = ros.internal.ros.messages.ros.default_type('uint8',1);
+[data.IGNOREROLLRATE, info.IGNOREROLLRATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 1);
+[data.IGNOREPITCHRATE, info.IGNOREPITCHRATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 2);
+[data.IGNOREYAWRATE, info.IGNOREYAWRATE] = ros.internal.ros.messages.ros.default_type('uint8',1, 4);
+[data.IGNORETHRUST, info.IGNORETHRUST] = ros.internal.ros.messages.ros.default_type('uint8',1, 64);
+[data.IGNOREATTITUDE, info.IGNOREATTITUDE] = ros.internal.ros.messages.ros.default_type('uint8',1, 128);
+[data.Orientation, info.Orientation] = ros.internal.ros.messages.geometry_msgs.quaternion;
+info.Orientation.MLdataType = 'struct';
+[data.BodyRate, info.BodyRate] = ros.internal.ros.messages.geometry_msgs.vector3;
+info.BodyRate.MLdataType = 'struct';
+[data.Thrust, info.Thrust] = ros.internal.ros.messages.ros.default_type('single',1);
 info.MessageType = 'mavros_msgs/AttitudeTarget';
 info.constant = 0;
 info.default = 0;

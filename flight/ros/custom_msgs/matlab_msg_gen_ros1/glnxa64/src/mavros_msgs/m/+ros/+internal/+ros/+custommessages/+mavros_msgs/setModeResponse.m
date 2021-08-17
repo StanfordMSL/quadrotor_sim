@@ -1,8 +1,10 @@
 function [data, info] = setModeResponse
 %SetMode gives an empty data for mavros_msgs/SetModeResponse
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.mode_sent, info.mode_sent] = ros.internal.ros.messages.ros.default_type('logical',1);
+data.MessageType = 'mavros_msgs/SetModeResponse';
+[data.ModeSent, info.ModeSent] = ros.internal.ros.messages.ros.default_type('logical',1);
 info.MessageType = 'mavros_msgs/SetModeResponse';
 info.constant = 0;
 info.default = 0;

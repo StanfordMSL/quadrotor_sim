@@ -15,4 +15,4 @@ list(APPEND CATKIN_ORDERED_PACKAGES_BUILD_TYPE "catkin")
 
 set(CATKIN_MESSAGE_GENERATORS )
 
-set(CATKIN_METAPACKAGE_CMAKE_TEMPLATE "/home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/lib/python2.7/site-packages/catkin_pkg/templates/metapackage.cmake.in")
+set(CATKIN_METAPACKAGE_CMAKE_TEMPLATE "/home/lowjunen/.matlab/R2021a/ros1/glnxa64/venv/lib/python2.7/site-packages/catkin_pkg/templates/metapackage.cmake.in")

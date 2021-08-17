@@ -12,7 +12,7 @@ classdef CommandBoolRequest < ros.Message
         PropertyList = { 'Value' } % List of non-constant message properties
         ROSPropertyList = { 'value' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
-			 } % Types of contained nested messages
+            } % Types of contained nested messages
     end
     properties (Constant)
     end
@@ -36,8 +36,7 @@ classdef CommandBoolRequest < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.CommandBoolRequest;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.CommandBoolRequest(strObj);
         end
     end
 end

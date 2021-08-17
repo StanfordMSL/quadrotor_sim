@@ -12,7 +12,7 @@ classdef TrajTransferResponse < ros.Message
         PropertyList = { 'Checksum' } % List of non-constant message properties
         ROSPropertyList = { 'checksum' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
-			 } % Types of contained nested messages
+            } % Types of contained nested messages
     end
     properties (Constant)
     end
@@ -36,8 +36,7 @@ classdef TrajTransferResponse < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.bridge_px4.TrajTransferResponse;
-            obj.reload(strObj);
+            obj = ros.msggen.bridge_px4.TrajTransferResponse(strObj);
         end
     end
 end

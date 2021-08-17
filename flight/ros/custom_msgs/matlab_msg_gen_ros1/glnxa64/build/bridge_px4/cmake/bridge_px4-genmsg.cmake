@@ -2,7 +2,7 @@
 
 message(STATUS "bridge_px4: 0 messages, 1 services")
 
-set(MSG_I_FLAGS "-Istd_msgs:/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg")
+set(MSG_I_FLAGS "-Istd_msgs:/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/share/std_msgs/cmake/../msg")
 
 # Find all generators
 find_package(gencpp REQUIRED)
@@ -103,7 +103,7 @@ if(TARGET std_msgs_generate_messages_cpp)
 endif()
 
 if(genpy_INSTALL_DIR AND EXISTS ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/bridge_px4)
-  install(CODE "execute_process(COMMAND \"/home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2\" -m compileall \"${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/bridge_px4\")")
+  install(CODE "execute_process(COMMAND \"/home/lowjunen/.matlab/R2021a/ros1/glnxa64/venv/bin/python2\" -m compileall \"${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/bridge_px4\")")
   # install generated code
   install(
     DIRECTORY ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/bridge_px4

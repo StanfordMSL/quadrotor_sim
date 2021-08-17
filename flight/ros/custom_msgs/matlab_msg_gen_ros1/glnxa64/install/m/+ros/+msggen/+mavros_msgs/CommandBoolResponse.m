@@ -12,8 +12,8 @@ classdef CommandBoolResponse < ros.Message
         PropertyList = { 'Success' 'Result' } % List of non-constant message properties
         ROSPropertyList = { 'success' 'result' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
-			 '' ...
-			 } % Types of contained nested messages
+            '' ...
+            } % Types of contained nested messages
     end
     properties (Constant)
     end
@@ -44,8 +44,7 @@ classdef CommandBoolResponse < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.CommandBoolResponse;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.CommandBoolResponse(strObj);
         end
     end
 end

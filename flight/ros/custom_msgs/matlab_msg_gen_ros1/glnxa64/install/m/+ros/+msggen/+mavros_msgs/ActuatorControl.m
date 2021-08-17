@@ -12,9 +12,9 @@ classdef ActuatorControl < ros.Message
         PropertyList = { 'Header' 'GroupMix' 'Controls' } % List of non-constant message properties
         ROSPropertyList = { 'header' 'group_mix' 'controls' } % List of non-constant ROS message properties
         PropertyMessageTypes = { 'ros.msggen.std_msgs.Header' ...
-			 '' ...
-			 '' ...
-			 } % Types of contained nested messages
+            '' ...
+            '' ...
+            } % Types of contained nested messages
     end
     properties (Constant)
         PX4MIXFLIGHTCONTROL = uint8(0)
@@ -57,8 +57,7 @@ classdef ActuatorControl < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.ActuatorControl;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.ActuatorControl(strObj);
         end
     end
 end

@@ -131,7 +131,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib;/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib;/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages/lib)
+    foreach(path /home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib;/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib;/usr/local/MATLAB/R2021a/toolbox/ros/mlroscpp/custom_messages/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -162,7 +162,7 @@ foreach(t ${mavros_msgs_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "message_runtime;geometry_msgs;roscpp;std_msgs")
+set(depends "message_runtime;message_runtime;geometry_msgs;roscpp;std_msgs")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

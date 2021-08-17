@@ -12,8 +12,8 @@ classdef SetModeRequest < ros.Message
         PropertyList = { 'BaseMode' 'CustomMode' } % List of non-constant message properties
         ROSPropertyList = { 'base_mode' 'custom_mode' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
-			 '' ...
-			 } % Types of contained nested messages
+            '' ...
+            } % Types of contained nested messages
     end
     properties (Constant)
         MAVMODEPREFLIGHT = uint8(0)
@@ -56,8 +56,7 @@ classdef SetModeRequest < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.SetModeRequest;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.SetModeRequest(strObj);
         end
     end
 end

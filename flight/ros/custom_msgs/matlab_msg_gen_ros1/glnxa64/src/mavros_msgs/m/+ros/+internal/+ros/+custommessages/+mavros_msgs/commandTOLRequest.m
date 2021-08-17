@@ -1,12 +1,14 @@
 function [data, info] = commandTOLRequest
 %CommandTOL gives an empty data for mavros_msgs/CommandTOLRequest
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.min_pitch, info.min_pitch] = ros.internal.ros.messages.ros.default_type('single',1);
-[data.yaw, info.yaw] = ros.internal.ros.messages.ros.default_type('single',1);
-[data.latitude, info.latitude] = ros.internal.ros.messages.ros.default_type('single',1);
-[data.longitude, info.longitude] = ros.internal.ros.messages.ros.default_type('single',1);
-[data.altitude, info.altitude] = ros.internal.ros.messages.ros.default_type('single',1);
+data.MessageType = 'mavros_msgs/CommandTOLRequest';
+[data.MinPitch, info.MinPitch] = ros.internal.ros.messages.ros.default_type('single',1);
+[data.Yaw, info.Yaw] = ros.internal.ros.messages.ros.default_type('single',1);
+[data.Latitude, info.Latitude] = ros.internal.ros.messages.ros.default_type('single',1);
+[data.Longitude, info.Longitude] = ros.internal.ros.messages.ros.default_type('single',1);
+[data.Altitude, info.Altitude] = ros.internal.ros.messages.ros.default_type('single',1);
 info.MessageType = 'mavros_msgs/CommandTOLRequest';
 info.constant = 0;
 info.default = 0;

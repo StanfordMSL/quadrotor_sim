@@ -6,13 +6,13 @@ import stat
 import sys
 
 # find the import for catkin's python package - either from source space or from an installed underlay
-if os.path.exists(os.path.join('/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/catkin/cmake', 'catkinConfig.cmake.in')):
-    sys.path.insert(0, os.path.join('/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/share/catkin/cmake', '..', 'python'))
+if os.path.exists(os.path.join('/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/share/catkin/cmake', 'catkinConfig.cmake.in')):
+    sys.path.insert(0, os.path.join('/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/share/catkin/cmake', '..', 'python'))
 try:
     from catkin.environment_cache import generate_environment_script
 except ImportError:
     # search for catkin package in all workspaces and prepend to path
-    for workspace in "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages".split(';'):
+    for workspace in "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2021a/toolbox/ros/mlroscpp/custom_messages".split(';'):
         python_path = os.path.join(workspace, 'lib/python2.7/dist-packages')
         if os.path.isdir(os.path.join(python_path, 'catkin')):
             sys.path.insert(0, python_path)

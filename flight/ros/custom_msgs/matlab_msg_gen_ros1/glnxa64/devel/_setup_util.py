@@ -1,4 +1,4 @@
-#!/home/lowjunen/.matlab/R2020b/ros1/glnxa64/venv/bin/python2
+#!/home/lowjunen/.matlab/R2021a/ros1/glnxa64/venv/bin/python2
 # -*- coding: utf-8 -*-
 
 # Software License Agreement (BSD License)
@@ -274,7 +274,7 @@ if __name__ == '__main__':
             try:
                 CMAKE_PREFIX_PATH = os.environ['ROS1_INSTALL_DIR'].split(';')
             except:
-                CMAKE_PREFIX_PATH = '/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages'.split(';')
+                CMAKE_PREFIX_PATH = '/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1;/usr/local/MATLAB/R2021a/toolbox/ros/mlroscpp/custom_messages'.split(';')
         else:
             # don't consider any other prefix path than this one
             CMAKE_PREFIX_PATH = []

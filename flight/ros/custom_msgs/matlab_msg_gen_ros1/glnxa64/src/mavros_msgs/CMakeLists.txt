@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   message_generation
+  message_generation
   geometry_msgs
   std_msgs
 )
@@ -56,6 +57,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   CATKIN_DEPENDS
+  message_runtime
   "message_runtime"
   "geometry_msgs"
   "roscpp"
@@ -72,13 +74,13 @@ include_directories(
   ${PROJECT_SOURCE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
- "/usr/local/MATLAB/R2020b/extern/include"
- "/usr/local/MATLAB/R2020b/extern/include/MatlabDataArray"
- "/usr/local/MATLAB/R2020b/toolbox/ros/include/ros1"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/include"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/include"
- "/usr/local/MATLAB/R2020b/toolbox/ros/mlroscpp/custom_messages/include"
- "/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/boost/include"
+ "/usr/local/MATLAB/R2021a/extern/include"
+ "/usr/local/MATLAB/R2021a/extern/include/MatlabDataArray"
+ "/usr/local/MATLAB/R2021a/toolbox/ros/include/ros1"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/include"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/include"
+ "/usr/local/MATLAB/R2021a/toolbox/ros/mlroscpp/custom_messages/include"
+ "/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/boost/include"
   "include/mavros_msgs"
 )
 set (CMAKE_SKIP_BUILD_RPATH false)
@@ -88,65 +90,32 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 file(GLOB ${PROJECT_NAME}_C_SOURCES RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/*.c)
 ## Get list of .cpp files in project source directory
 file(GLOB ${PROJECT_NAME}_CPP_SOURCES RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/*.cpp)
-link_directories("/usr/local/MATLAB/R2020b/extern/bin/glnxa64")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/lib")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib")
-link_directories("/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/boost/lib")
+link_directories("/usr/local/MATLAB/R2021a/extern/bin/glnxa64")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/lib")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib")
+link_directories("/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/boost/lib")
 # Declare library
 add_library(
     mavros_msgs_matlab 
     SHARED
-    src/mavros_msgs_ActuatorControl_common.cpp
-    src/mavros_msgs_msg_ActuatorControl_publisher.cpp
-    src/mavros_msgs_msg_ActuatorControl_subscriber.cpp
-    src/mavros_msgs_AttitudeTarget_common.cpp
-    src/mavros_msgs_msg_AttitudeTarget_publisher.cpp
-    src/mavros_msgs_msg_AttitudeTarget_subscriber.cpp
-    src/mavros_msgs_Thrust_common.cpp
-    src/mavros_msgs_msg_Thrust_publisher.cpp
-    src/mavros_msgs_msg_Thrust_subscriber.cpp
-    src/mavros_msgs_CommandBool_request_common.cpp
-    src/mavros_msgs_CommandBool_response_common.cpp
-    src/mavros_msgs_srv_CommandBool_client.cpp
-    src/mavros_msgs_srv_CommandBool_server.cpp
-    src/mavros_msgs_msg_CommandBoolRequest_publisher.cpp
-    src/mavros_msgs_msg_CommandBoolRequest_subscriber.cpp
-    src/mavros_msgs_msg_CommandBoolResponse_publisher.cpp
-    src/mavros_msgs_msg_CommandBoolResponse_subscriber.cpp
-    src/mavros_msgs_CommandBoolRequest_common.cpp
-    src/mavros_msgs_CommandBoolResponse_common.cpp
-    src/mavros_msgs_CommandTOL_request_common.cpp
-    src/mavros_msgs_CommandTOL_response_common.cpp
-    src/mavros_msgs_srv_CommandTOL_client.cpp
-    src/mavros_msgs_srv_CommandTOL_server.cpp
-    src/mavros_msgs_msg_CommandTOLRequest_publisher.cpp
-    src/mavros_msgs_msg_CommandTOLRequest_subscriber.cpp
-    src/mavros_msgs_msg_CommandTOLResponse_publisher.cpp
-    src/mavros_msgs_msg_CommandTOLResponse_subscriber.cpp
-    src/mavros_msgs_CommandTOLRequest_common.cpp
-    src/mavros_msgs_CommandTOLResponse_common.cpp
-    src/mavros_msgs_SetMode_request_common.cpp
-    src/mavros_msgs_SetMode_response_common.cpp
-    src/mavros_msgs_srv_SetMode_client.cpp
-    src/mavros_msgs_srv_SetMode_server.cpp
-    src/mavros_msgs_msg_SetModeRequest_publisher.cpp
-    src/mavros_msgs_msg_SetModeRequest_subscriber.cpp
-    src/mavros_msgs_msg_SetModeResponse_publisher.cpp
-    src/mavros_msgs_msg_SetModeResponse_subscriber.cpp
-    src/mavros_msgs_SetModeRequest_common.cpp
-    src/mavros_msgs_SetModeResponse_common.cpp
+    src/mavros_msgs_ActuatorControl_message.cpp
+    src/mavros_msgs_AttitudeTarget_message.cpp
+    src/mavros_msgs_Thrust_message.cpp
+    src/mavros_msgs_CommandBool_service.cpp
+    src/mavros_msgs_CommandTOL_service.cpp
+    src/mavros_msgs_SetMode_service.cpp
 )
 target_include_directories(mavros_msgs_matlab PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries( mavros_msgs_matlab
-	"/usr/local/MATLAB/R2020b/extern/bin/glnxa64/libMatlabDataArray.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/console_bridge/lib/libconsole_bridge.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libclass_loader.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librosconsole.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/libroscpp_serialization.so"
-	"/usr/local/MATLAB/R2020b/sys/ros1/glnxa64/ros1/lib/librostime.so"
+	"/usr/local/MATLAB/R2021a/extern/bin/glnxa64/libMatlabDataArray.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/console_bridge/lib/libconsole_bridge.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libclass_loader.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/librosconsole.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libroscpp.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/libroscpp_serialization.so"
+	"/usr/local/MATLAB/R2021a/sys/ros1/glnxa64/ros1/lib/librostime.so"
 	${Boost_LIBRARIES}
 	${CMAKE_DL_LIBS}
 	)
@@ -172,5 +141,5 @@ install(
   RUNTIME DESTINATION bin
 )
 install (DIRECTORY m/ DESTINATION m/ FILES_MATCHING PATTERN "*.m")
-# Generated 13-Aug-2021 17:24:06
-# Copyright 2019-2020 The MathWorks, Inc.
+# Generated 16-Aug-2021 22:15:33
+# Copyright 2019-2021 The MathWorks, Inc.

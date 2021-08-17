@@ -1,20 +1,22 @@
 function [data, info] = setModeRequest
 %SetMode gives an empty data for mavros_msgs/SetModeRequest
 % Copyright 2019-2020 The MathWorks, Inc.
+%#codegen
 data = struct();
-[data.MAV_MODE_PREFLIGHT, info.MAV_MODE_PREFLIGHT] = ros.internal.ros.messages.ros.default_type('uint8',1, 0);
-[data.MAV_MODE_STABILIZE_DISARMED, info.MAV_MODE_STABILIZE_DISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 80);
-[data.MAV_MODE_STABILIZE_ARMED, info.MAV_MODE_STABILIZE_ARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 208);
-[data.MAV_MODE_MANUAL_DISARMED, info.MAV_MODE_MANUAL_DISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 64);
-[data.MAV_MODE_MANUAL_ARMED, info.MAV_MODE_MANUAL_ARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 192);
-[data.MAV_MODE_GUIDED_DISARMED, info.MAV_MODE_GUIDED_DISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 88);
-[data.MAV_MODE_GUIDED_ARMED, info.MAV_MODE_GUIDED_ARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 216);
-[data.MAV_MODE_AUTO_DISARMED, info.MAV_MODE_AUTO_DISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 92);
-[data.MAV_MODE_AUTO_ARMED, info.MAV_MODE_AUTO_ARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 220);
-[data.MAV_MODE_TEST_DISARMED, info.MAV_MODE_TEST_DISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 66);
-[data.MAV_MODE_TEST_ARMED, info.MAV_MODE_TEST_ARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 194);
-[data.base_mode, info.base_mode] = ros.internal.ros.messages.ros.default_type('uint8',1);
-[data.custom_mode, info.custom_mode] = ros.internal.ros.messages.ros.char('string',0);
+data.MessageType = 'mavros_msgs/SetModeRequest';
+[data.MAVMODEPREFLIGHT, info.MAVMODEPREFLIGHT] = ros.internal.ros.messages.ros.default_type('uint8',1, 0);
+[data.MAVMODESTABILIZEDISARMED, info.MAVMODESTABILIZEDISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 80);
+[data.MAVMODESTABILIZEARMED, info.MAVMODESTABILIZEARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 208);
+[data.MAVMODEMANUALDISARMED, info.MAVMODEMANUALDISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 64);
+[data.MAVMODEMANUALARMED, info.MAVMODEMANUALARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 192);
+[data.MAVMODEGUIDEDDISARMED, info.MAVMODEGUIDEDDISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 88);
+[data.MAVMODEGUIDEDARMED, info.MAVMODEGUIDEDARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 216);
+[data.MAVMODEAUTODISARMED, info.MAVMODEAUTODISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 92);
+[data.MAVMODEAUTOARMED, info.MAVMODEAUTOARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 220);
+[data.MAVMODETESTDISARMED, info.MAVMODETESTDISARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 66);
+[data.MAVMODETESTARMED, info.MAVMODETESTARMED] = ros.internal.ros.messages.ros.default_type('uint8',1, 194);
+[data.BaseMode, info.BaseMode] = ros.internal.ros.messages.ros.default_type('uint8',1);
+[data.CustomMode, info.CustomMode] = ros.internal.ros.messages.ros.char('string',0);
 info.MessageType = 'mavros_msgs/SetModeRequest';
 info.constant = 0;
 info.default = 0;

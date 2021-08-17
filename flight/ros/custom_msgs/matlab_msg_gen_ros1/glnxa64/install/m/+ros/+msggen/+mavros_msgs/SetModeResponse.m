@@ -12,7 +12,7 @@ classdef SetModeResponse < ros.Message
         PropertyList = { 'ModeSent' } % List of non-constant message properties
         ROSPropertyList = { 'mode_sent' } % List of non-constant ROS message properties
         PropertyMessageTypes = { '' ...
-			 } % Types of contained nested messages
+            } % Types of contained nested messages
     end
     properties (Constant)
     end
@@ -36,8 +36,7 @@ classdef SetModeResponse < ros.Message
                 return
             end
             % Create an empty message object
-            obj = ros.msggen.mavros_msgs.SetModeResponse;
-            obj.reload(strObj);
+            obj = ros.msggen.mavros_msgs.SetModeResponse(strObj);
         end
     end
 end
