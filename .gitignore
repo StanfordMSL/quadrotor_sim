@@ -5,3 +5,6 @@
 # matlab extra files
 *.m~
 *.mat
+
+# ros msgs
+flight/ros/custom_msgs/matlab_msg_gen_ros1
