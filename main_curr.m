@@ -26,7 +26,7 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 % QP_init(model.misc.ndr);                       
 % 
 % % Generate Dynamics and Linearization Functions
-% model = dyn_init(model,input_mode);      
+% dyn_init(model,input_mode);      
 % 
 % % Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)

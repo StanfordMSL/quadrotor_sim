@@ -1,5 +1,7 @@
 function model = model_init_sysID(kw,Dx,Dy,Dz)
 
+
+disp('WARNING: NEED TO UPDATE TO NEW MODEL_INIT STANDARD BEFORE USING');
 % 'Zero' Constant to Keep Variables
 eps = 1e-9;
 

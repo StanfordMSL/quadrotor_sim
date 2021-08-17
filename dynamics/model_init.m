@@ -19,7 +19,6 @@ switch frame
     case 'carlito'
         % Mass/Inertia/Dimension Properties
         model.act.m     = 0.530;                    % Total Mass
-        model.act.m_mst = 0.010;                    % Motor Stator Mass
         model.act.I     = 0.001.*[...               % Inertia Tensor
             1.00   0.00   0.00;...
             0.00   1.60   0.00;...
@@ -28,28 +27,30 @@ switch frame
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [2.31e-07 ; 0.00 ; 0.00];    % Rotor Thrust Coeffecients
+        model.act.kw = [0.00 ; 0.00 ; 2.31e-07];    % Rotor Thrust Coeffecients
         model.act.b  = 0.06;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
-        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^2,^1,^0)
+        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   0.80   0.00;...
             0.00   0.80   0.00;...
             0.00   0.80   0.00];
-        model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
-            0.00   eps   0.00;...
+        model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   eps  0.00;...
-            0.00   eps   0.00];               
-        model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
+            0.00   eps  0.00;...
+            0.00   eps  0.00];               
+        model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   eps   0.00;...
             0.00   eps   0.00;...
             0.00   eps   0.00];                
         model.act.kh = 0.000*model.act.m;           % Inflow Coefficient
         
-        % Motor Limits
+        % Motor Parameters
+        model.motor.m   = 0.010;                    % Motor Stator Mass
+        model.motor.r0  = 0.009;
+        model.motor.r1  = 0.010;
         model.motor.min = 0;                        % Motor Min rad/s
         model.motor.max = 4250;                     % Motor Max rad/s
     case 'iris'
         model.act.m     = 1.50;                     % Total Mass
-        model.act.m_mst = 0.010;                    % Motor Stator Mass
         model.act.I     = 0.01.*[...                % Inertia Tensor
             2.91   0.00   0.00;...
             0.00   2.91   0.00;...
@@ -58,12 +59,12 @@ switch frame
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [5.84e-06 ; 0.00 ; 0.00];    % Rotor Thrust Coeffecients
+        model.act.kw = [0.00 ; 0.00 ; 5.84e-06];    % Rotor Thrust Coeffecients
         model.act.b  = 0.06;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^2,^1,^0)
-            0.00   eps   0.00;...
             0.00   eps  0.00;...
-            0.00   eps   0.00];  
+            0.00   eps  0.00;...
+            0.00   eps  0.00];  
         model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^2,^1,^0) 
             0.00   eps   0.00;...
             0.00   eps  0.00;...
@@ -73,6 +74,13 @@ switch frame
             0.00   eps   0.00;...
             0.00   eps   0.00];              
         model.act.kh = 0.000.*model.act.m;          % Inflow Coefficient
+        
+        % Motor Parameters
+        model.motor.m   = 0.010;                    % Motor Stator Mass
+        model.motor.r0  = 0.009;
+        model.motor.r1  = 0.010;
+        model.motor.min = 0;                        % Motor Min rad/s
+        model.motor.max = 950;                     % Motor Max rad/s
 end
 
 switch model_diff
@@ -121,13 +129,13 @@ model.act.w2m = inv(model.act.m2w);
 % Thrust Profile
 model.motor.thrust_hover = model.act.m*model.act.g;
 model.motor.thrust_min = ...
-    model.act.kw(1,1).*model.motor.min^2 +...
+    model.act.kw(3,1).*model.motor.min^2 +...
     model.act.kw(2,1).*model.motor.min +...
-    model.act.kw(3,1);
+    model.act.kw(1,1);
 model.motor.thrust_max = ...
-    model.act.kw(1,1).*model.motor.max^2 +...
+    model.act.kw(3,1).*model.motor.max^2 +...
     model.act.kw(2,1).*model.motor.max +...
-    model.act.kw(3,1);
+    model.act.kw(1,1);
 
 % Grasper position offset in body frame
 model.grasp.pos = [0 ; 0 ; 0];

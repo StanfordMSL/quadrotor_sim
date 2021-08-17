@@ -1,7 +1,4 @@
-function [traj_o,t_end] = min_time_augment(traj,obj,k_now)
-
-% Number of Frames to Cut
-n_fr = 50;
+function [traj_o,t_end] = min_time_augment(traj,obj,k_now,n_fr)
 
 % Some useful terms
 dt_fmu = 1/traj.hz;

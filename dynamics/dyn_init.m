@@ -1,4 +1,4 @@
-function model = dyn_init(model,input_mode)
+function dyn_init(model,input_mode)
 
 % States %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,49 +51,65 @@ for k = 1:2
     end
     
     % Unpack
-    g  = db.g;
-    dt = db.dt;
-    kw = db.kw;
-    kh = db.kh;
-    D = db.D;
-    A = db.A;
-    B = db.B;
-    m = db.m;
-    I = db.I;
-    m2w = db.m2w;
-    w2m = db.w2m;
+    g     = db.g;
+    dt    = db.dt;
+    kw    = db.kw;
+    kh    = db.kh;
+    D     = db.D;
+    A     = db.A;
+    B     = db.B;
+    m     = db.m;
+    I     = db.I;
+    m2w   = db.m2w;
+    w2m   = db.w2m;
     
     % Forces
     F_g =  m.*[0 ; 0 ; -g];
 
-    A_w_m = [w_m.^2 w_m.^1 w_m.^0];
+    A_w_m = [w_m.^0 w_m.^1 w_m.^2];
     F_m = sign(w_m).*(A_w_m*kw);
     F_w = m2w*F_m; 
-    F_t =  quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
+    F_t = quatrot2([0 ; 0 ; (F_w(1,1) + kh.*v_h.^2)],q);
     
-    D_w = quatrotmat2(D,q);
-    F_D = -D_w*v;
-
+    % Model force as a quadratic
+    v_D = sign(v).*[v.^0 abs(v) v.^2];
+    F_D = -[...
+        D(1,:)*v_D(1,:)';...
+        D(2,:)*v_D(2,:)';...
+        D(3,:)*v_D(3,:)'];
+    F_D = simplify(F_D);
+    
     % Torques
     tau_mot  =  F_w(2:4,1);
     tau_rot  = -cross(w,I*w);
-    tau_linD = -A*quatrot2(v,q_c);
-    tau_accD = -B*w;
     
-    J = (10^-7).*[ 7.8  0.0  0.0;...
-                   0.0  7.8  0.0;...
-                   0.0  0.0  9.6];      % Motor Inertia Tensor
+    % Model torque as a quadratic
+    v_b = quatrot2(v,q_c);
+    
+    v_A = sign(v_b).*[v_b.^0 abs(v_b) v_b.^2];
+    w_B =   sign(w).*[w.^0     abs(w)   w.^2];
+    
+    tau_linD = -[...
+        A(1,:)*v_A(1,:)';...
+        A(2,:)*v_A(2,:)';...
+        A(3,:)*v_A(3,:)'];
+    tau_accD = -[...
+        B(1,:)*w_B(1,:)';...
+        B(2,:)*w_B(2,:)';...
+        B(3,:)*w_B(3,:)'];
+    tau_linD = simplify(tau_linD);
+    tau_accD = simplify(tau_accD);
+
+    Jxx = (model.motor.m/12)*(3*(0.01^2+0.009^2)+0.02^2);
+    Jyy = (model.motor.m/12)*(3*(0.01^2+0.009^2)+0.02^2);
+    Jzz = (model.motor.m/2)*(0.01^2+0.009^2);
+    J = diag([Jxx Jyy Jzz]);
     w_mg = [0       0      0      0;...
             0       0      0      0;...
-         -w_m(1) -w_m(2) w_m(3) w_m(4)];
-    
-    tau_g = [0 ; 0 ; 0];
-    for k_mg = 1:4
-        tau_g = tau_g - J*cross(w,w_mg(:,k_mg));
-    end
+         -w_m(1) -w_m(2) w_m(3) w_m(4)]; 
+    tau_g = -J*(cross(w,w_mg(:,1))+cross(w,w_mg(:,2))+cross(w,w_mg(:,3))+cross(w,w_mg(:,4)));
     
     % Dynamics Equations 
-    
     p_dot = v;
     v_dot = (1/m) .* ( F_g + F_t + F_D + F_ext);
     q_dot = 0.5*W*q;
@@ -122,7 +138,7 @@ for k = 1:2
     mt_sgn = sign(mt);
     mt_abs = abs(mt);
     
-    u_m = mt_sgn.*sqrt(mt_abs./kw(1));
+    u_m = mt_sgn.*sqrt(mt_abs./kw(3));
     matlabFunction(u_m,'File',w2m_func,'vars',{wrench});
 
     %% Output Thrust (f) to Normalized Thrust (fn)
@@ -185,14 +201,34 @@ for k = 1:2
                 % Forces
                 F_g =  m.*[0 ; 0 ; -g];
                 F_t =  u(1);
-                F_D = -quatrotmat2(D,q)*v;
+                
+                v_D = sign(v).*[v.^0 abs(v) v.^2];
+                F_D = -[...
+                    D(1,:)*v_D(1,:)';...
+                    D(2,:)*v_D(2,:)';...
+                    D(3,:)*v_D(3,:)'];
+                F_D = simplify(F_D);
 
                 % Torques
                 tau_mot  =  u(2:4,1);
                 tau_rot  = -cross(w,I*w);
-                tau_linD = -A*quatrot2(v,q_c);
-                tau_accD = -B*w;
 
+                v_b = quatrot2(v,q_c);
+                
+                v_A = sign(v_b).*[v_b.^0 abs(v_b) v_b.^2];
+                w_B =   sign(w).*[w.^0     abs(w)   w.^2];
+                
+                tau_linD = -[...
+                    A(1,:)*v_A(1,:)';...
+                    A(2,:)*v_A(2,:)';...
+                    A(3,:)*v_A(3,:)'];
+                tau_accD = -[...
+                    B(1,:)*w_B(1,:)';...
+                    B(2,:)*w_B(2,:)';...
+                    B(3,:)*w_B(3,:)'];
+                tau_linD = simplify(tau_linD);
+                tau_accD = simplify(tau_accD);
+                
                 % Dynamics Equations
                 p_dot = v;
                 v_dot = (1/m) .* ( F_g + F_t + F_D + F_ext);
@@ -219,8 +255,13 @@ for k = 1:2
                 % Forces
                 F_g =  m.*[0 ; 0 ; -g];
                 F_t =  quatrot2([0 ; 0 ; fn2f(u(1))],q);
-                F_D = -quatrotmat2(D,q)*v;
-                
+                v_D = sign(v).*[v.^0 abs(v) v.^2];
+                F_D = -[...
+                    D(1,:)*v_D(1,:)';...
+                    D(2,:)*v_D(2,:)';...
+                    D(3,:)*v_D(3,:)'];
+                F_D = simplify(F_D);
+
                 % Dynamic Equations
                 p_dot = v;
                 v_dot = (1/m) .* ( F_g + F_t + F_D + F_ext);

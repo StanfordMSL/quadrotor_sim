@@ -6,7 +6,7 @@ wm_max = model.motor.max.*ones(4,1);
 
 I   = model.est.I;
 w2m = model.est.w2m;
-kw  = model.est.kw(1,1);
+kw  = model.est.kw(3,1);
 dt  = model.est.dt;
 
 fm_min = kw.*wm_min.^2;
