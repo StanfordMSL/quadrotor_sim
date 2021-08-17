@@ -1,5 +1,13 @@
-function mthrust_debug(u_mt,model)
+function mthrust_debug(u_mt,varargin)
 
+    if nargin == 1
+        motor_max = 3300;
+        motor_min = 80;           
+    else        
+        motor_max = varargin{1}.motor.max;
+        motor_min = varargin{1}.motor.min; 
+    end
+        
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Define plot window and clear previous stuff
     figure(3)
@@ -10,8 +18,8 @@ function mthrust_debug(u_mt,model)
     
     % Generate lines for upper and lower limits
     N = size(u_mt,2);
-    w_min = model.motor.max.*ones(1,N);
-    w_max = model.motor.max.*ones(1,N);
+    w_min = motor_max.*ones(1,N);
+    w_max = motor_min.*ones(1,N);
     
     for k = 1:4
         subplot(4,1,k)

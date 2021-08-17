@@ -1,64 +1,41 @@
-function [X,U,La_c,con,con_x,con_u] = forward_pass(X,U,l,L,delV,La_p,lambda,mu,xs,us,map)
-
-% Tuning Parameter
-alpha = 1;
+function [Xfp,Ufp,Xact,Umt] = forward_pass(Xbar,Ubar,l,L,alpha)
 
 % Unpack the relevant variables
-Xb = X;
-Ub = U;
+N = size(Xbar,2);
+n_x = size(Xbar,1);
+n_u = size(Ubar,1);
 
-N = size(X,2);
-n_x = size(X,1);
-n_u = size(U,1);
-
-Xact = zeros(13,N);
-Xact(:,1) = [X(:,1) ; zeros(3,1)];
-
-Xfp = zeros(n_x,N);
-Xfp(:,1) = X(:,1);
-Ufp = zeros(n_u,N-1);
-
-% Forward pass assumes no external forces and noise
+% Forward Pass Dynamics have no noise
 FT_ext = zeros(6,1);  
 wt = zeros(13,1);
 
-while true
-    br = br_init(); 
+% Prepare Container Variables
+Xact = zeros(13,N);
+Xact(1:10,1) = Xbar(:,1);
 
-    for k = 1:N-1
-        del_x = Xact(1:10,k) - Xb(:,k);
+Xfp = zeros(n_x,N);
+Xfp(:,1) = Xbar(:,1);
+Ufp = zeros(n_u,N-1);
 
-        u_op = Ub(:,k) + alpha*l(:,k);
-        u_cl = L(:,:,k)*del_x;
-        
-        Ufp(:,k) = u_op +  u_cl;
-        
-        [u_wr ,br] = br_ctrl(Xact(:,k),Ufp(:,k),br);
-        u_mt = w2m_est(u_wr);
-        
-        Xact(:,k+1) = quadcopter_est(Xact(:,k),u_mt,FT_ext,wt);
-        Xfp(:,k+1) = Xact(1:10,k+1);
-    end
+Umt = zeros(n_u,N-1);
+
+% Roll the Dynamic Forward (to get candidates: u_fp,x_fp)
+br = br_init(); 
+for k = 1:N-1
+    x_now = Xact(:,k);
+    del_x = Xfp(:,k)-Xbar(:,k);
     
-    [con, con_x, con_u] = con_calc(Xfp,Ufp);
-    mu_diag = check_con(con,lambda,mu);
-    
-    La_c = lagr_calc(Xfp,Ufp,xs,us,con,lambda,mu_diag);
+    u_ol = alpha*l(:,k);
+    u_cl = L(:,:,k)*del_x;
+    u_fp = Ubar(:,k) + u_ol + u_cl;
 
-    % Debug
-%     La_plot(La_p,La_c);
-%    nominal_plot(Xact,map,10,'nice');
-    disp(['[forward_pass]: alpha = ',num2str(alpha)]);
+    [u_wr,br] = br_ctrl(x_now,u_fp,br);
+    u_mt = w2m_est(u_wr);
 
-    [flag_LS,alpha] = check_LS(La_c,La_p,alpha,delV);
-    if flag_LS == 0 
-        X = Xfp;
-        U = Ufp;
-        break;
-    elseif flag_LS == 1
-        % Carry On
-    elseif flag_LS == 2
-        % Rever to Old
-        break
-    end
+    Xact(:,k+1) = quadcopter_est(x_now,u_mt,FT_ext,wt);
+    Xfp(:,k+1)  = Xact(1:10,k+1);
+    Ufp(:,k)    = u_fp;
+    Umt(:,k)    = u_mt;
+end
+
 end

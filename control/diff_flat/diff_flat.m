@@ -1,63 +1,28 @@
-function traj = diff_flat(obj,map,model,n_der,nom_show)
+function traj = diff_flat(obj,model,traj,mode)
 
-% Unpack Some Terms
-fmu_dt  = model.clock.dt_fmu;
-N_wp    = size(obj.x,2);
+% Solve the trajectory as a sequence of keyframe pairs with n gates in
+% between. Note that most trajectories can be built from such a primitive.
+% There probably are some exceptions but we can look into this later on.
 
-% Trajectory time setup. We assume a constant velocity of around
-% $(vel) m/s in between waypoints to generate an estimated time.
-vel = 1.0;
+% The next important thing is that with our trajectory planner, we have a 
+% fixed horizon of 10s. This hopefully gives some uniformity to solve times
+% in the direct method, assuming a close enough warm start. On top of that,
+% we want the warm start to prioritize flying at $(vel). So, we will also
+% have to pad the trajectory to hover for the remainder of the 10s.
 
-t_wp = zeros(1,N_wp);
-for k = 1:N_wp-1
-    s_int = norm(obj.x(1:3,k+1) - obj.x(1:3,k));
-    t_int = fmu_dt*round(s_int/(fmu_dt*vel));
+%% Generate the main part of the trajectory
+N_kf = size(obj.kf.x,2)-1;
+T = 1;
+for k_kf = 1:N_kf
+    % Convert objectives to flat outputs
+    f_wp = obj2fwp(obj,k_kf,model.misc);
+
+    % Solve the Piecewise QP
+    f_out = piecewise_QP(f_wp,model.clock.dt_fmu);
     
-    if s_int == 0   % hover (default)
-        t_wp(1,k+1) = 5;
-    else
-        t_wp(1,k+1) = t_wp(1,k) + t_int;
-    end
-end
-
-% Convert objectives to flat outputs
-[t_sigma, sigma, con_sigma] = obj2sigma(obj,t_wp,n_der);
-
-% Solve the Piecewise QP
-f_out = piecewise_QP(t_sigma,sigma,con_sigma,fmu_dt);
-
-% Run through the model in perfect conditions to get x.
-N_tr = size(f_out,3);
-x_bar = zeros(13,N_tr);
-x_bar(:,1) = obj.x(:,1);
-
-u_wr = zeros(4,N_tr-1);
-
-for k = 1:N_tr-1
-    u_wr(:,k) = df_con(f_out(:,:,k),model.est);
-    
-    % Directly convert wrench to motor inputs
-    T_motor = model.est.w2m*u_wr(:,k);
-    u_mt = sqrt(T_motor./model.est.kw(1,1));
-    
-    FT_ext = zeros(6,1);
-    wt = zeros(13,1);
-    x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt,FT_ext,wt);
-end
-
-traj.x = x_bar;
-traj.u_wr = u_wr;
-
-traj.t_fmu = t_sigma;
-traj.f_out = f_out;
-
-traj.hz = model.clock.hz_fmu;
-
-% Publish some diagnostics
-switch nom_show
-    case 'show'
-        nominal_plot(traj.x,map,100,'persp');
-    case 'hide'
+    % Update the total trajectory
+    traj = fout2traj(traj,T,f_out,model,mode);
 end
 
 end
+

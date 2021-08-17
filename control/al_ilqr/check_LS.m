@@ -1,21 +1,25 @@
-function [flag,alpha] = check_LS(Jc,Jp,alpha,delV)
+function flag = check_LS(La_c,La_p)
 
-z = Jp.tot-Jc.tot;
+tol_obj = 1;
+tol_con = 1e-2;
 
-if (z > 0)
-    % Line-Search Gain Valid
-    flag = 0;
-else
-    if z < -100
-        % Trajectory Exploded. Generate an 'empty' update
-        flag = 2;
+del_obj = La_p.obj - La_c.obj;
+del_con = La_p.con - La_c.con;
+
+if (abs(del_con) < tol_con)         % Constraint Moderate
+    if (abs(del_obj) < tol_obj)         % Cost Moderate
+        flag = 0;                           % Use alpha and update multiplier
+    else                                % Cost Improved/Worsened
+        flag = 1;                           % Use alpha and maintain multiplier
     end
-    if alpha > 0.3
-        % Line-Search Gain Invalid
-        flag = 1;
-        alpha = 0.5.*alpha; 
-    elseif ((alpha < 0.3) && (alpha > 0.0))
-        % Alpha Too Small. Generate an 'empty' update
-        flag = 2;
+elseif (del_con > tol_con)          % Constraint Improved
+    if (del_obj > -tol_obj)             % Cost Moderate/Improved
+        flag = 1;                           % Use alpha and maintain multiplier
+    else                                % Cost Worsened
+        flag = 2;                           % Update alpha
     end
+else                                 % Constraint Worsened
+    flag = 2;                           % Update alpha.
+end
+
 end

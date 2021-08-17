@@ -30,23 +30,23 @@ function animation_plot(flight,obj,map,view_point,wp_show)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Generate flight room map
-    if any(ismember(fields(map),'p_gc'))
-        N_g = size(map.p_gc,3);
+    if any(ismember(fields(obj.gt),'p_ctr'))
+        N_g = size(obj.gt.p_ctr,2);
 
         for k = 1:N_g
             % Gate(s) Present. Render.    
-            p_G1 = map.p_gc(:,1,k);
-            p_G2 = map.p_gc(:,2,k);
-            p_G4 = map.p_gc(:,4,k);
+            p_G1 = obj.gt.p_box(:,1,k);
+            p_G2 = obj.gt.p_box(:,2,k);
+            p_G4 = obj.gt.p_box(:,4,k);
 
             r_12 = p_G2 - p_G1;
             r_14 = p_G4 - p_G1;
             n_G  = cross(r_14,r_12);
-            p_gc_dir = map.p_gc(:,1,k)+ (0.3.*n_G./norm(n_G));
+            gate_dir = obj.gt.p_box(:,1,k)+ (0.3.*n_G./norm(n_G));
 
-            gate = [map.p_gc(:,:,k) map.p_gc(:,1,k) p_gc_dir];  % render points need to terminate at start
+            g_frame = [obj.gt.p_box(:,:,k) obj.gt.p_box(:,1,k) gate_dir];  % render points need to terminate at start
 
-            gate_h = plot3(gate(1,:)',gate(2,:)',gate(3,:)','b');
+            gate_h = plot3(g_frame(1,:)',g_frame(2,:)',g_frame(3,:)','b');
             gate_h.LineWidth = 3;
             gate_h.Annotation.LegendInformation.IconDisplayStyle = 'off';
             hold on
@@ -56,18 +56,18 @@ function animation_plot(flight,obj,map,view_point,wp_show)
     end
     
     % Plot the target
-    if obj.type == 0
-        % Do Nothing
-    else
+    if strcmp(obj.type,'grasp') 
         h_targ = plot3(obj.pos(1,1),obj.pos(2,1),obj.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
     	h_targ.Annotation.LegendInformation.IconDisplayStyle = 'off';
+    else
+        % Do Nothing
     end
     
     switch wp_show
         case 'show'
             % Plot the Waypoints
-            for k = 1:size(obj.x,2)
-                [x_arrow, y_arrow, z_arrow] = frame_builder(obj.x(:,k));
+            for k = 1:size(obj.kf.x,2)
+                [x_arrow, y_arrow, z_arrow] = frame_builder(obj.kf.x(:,k));
                 x = [x_arrow(1,:) ; y_arrow(1,:) ; z_arrow(1,:)]';
                 y = [x_arrow(2,:) ; y_arrow(2,:) ; z_arrow(2,:)]';
                 z = [x_arrow(3,:) ; y_arrow(3,:) ; z_arrow(3,:)]';
@@ -96,7 +96,7 @@ function animation_plot(flight,obj,map,view_point,wp_show)
         case 'back'
             view(-90,0);
         case 'top'
-            view(0,90);
+        view(-90,90);
 %             zoom(3)
         case 'side'
             view(0,0);

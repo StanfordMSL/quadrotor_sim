@@ -1,0 +1,8 @@
+prefix=/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install
+
+Name: mavros_msgs
+Description: Description of mavros_msgs
+Version: 0.0.0
+Cflags: -I/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/include
+Libs: -L/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/lib 
+Requires: message_runtime message_runtime geometry_msgs roscpp std_msgs

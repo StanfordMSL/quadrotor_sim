@@ -7,11 +7,11 @@ I    = model.I;
 
 %%%%%%%%%%%%%%%
 kh   = model.kh;
-A    = model.A;
-B    = model.B;
+A    = diag(model.A(:,2));
+B    = diag(model.B(:,2));
 tau_g = 0.000.*ones(3,1);
 
-D   = model.D;
+D   = diag(model.D(:,2));
 kDx = D(1,1);
 kDy = D(2,2);
 kDz = D(3,3);
