@@ -19,8 +19,10 @@ for k = 1:7
         ylim([0 5]);
     elseif ( (k >=1) && (k <=2) )
         ylim([-5 5]);
-    else
+    elseif k == 4
         ylim([-1 1]);
+    else
+        ylim([-0.3 0.3]);
     end
 end
 

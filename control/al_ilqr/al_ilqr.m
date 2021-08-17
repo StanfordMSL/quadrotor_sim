@@ -32,6 +32,7 @@ La_c = lagr_calc(X,U,X,U,lqr,con,mult);
 % Initialize Counter
 counter = [0 0 0];
 
+tic
 % Multiplier Loop
 while true
     counter(1,1) = counter(1,1)+1;

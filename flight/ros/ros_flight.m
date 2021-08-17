@@ -3,10 +3,11 @@ function log = ros_flight(traj,mode)
 switch mode
     case 'gazebo'
         droneID = 'drone1';
-        coreADD = 'relay.local';
+%         coreADD = 'ASGARD.local';
+        coreADD = 'FOLKVANGR.local';
     case 'actual'
         droneID = 'drone7';
-        coreADD = 'ASGARD.local';
+        coreADD = 'relay.local';
 end
 
 % Initialize ROS Matlab Node
@@ -20,6 +21,7 @@ end
 node = ros.Node('/matlab_node');
 pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
 pose_init_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
+pause(1);
 
 % Send the Drone to Initial Position
 send2init(pose_init_pub,pose_sub,traj.x_bar(:,1));
