@@ -27,7 +27,7 @@ if isfile(gt_add)
     obj.gt.seq  = zeros(1,N_g);
     
     if N_g == 0
-        % Empty room. No need to go further.
+        % Empty room.
     else
         for j = 1:N_g
             obj.gt.p_ctr(:,j)  = data(1:3,j);
