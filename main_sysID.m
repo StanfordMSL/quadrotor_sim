@@ -1,22 +1,27 @@
 addpath(genpath(pwd));
-addpath([pwd '/simulation/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m'])
+addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
 clear; clc; 
 rehash toolboxcache
 
 %% Test Arrays
-N_kw    = 1;
-N_Dxy   = 1;
-N_Dz    = 1;
+N_kw  = 1;
+N_b   = 1;
+N_Dxy = 1;
+N_Dz  = 1;
+N_Axy = 1;
+N_Az  = 1;
 
-kw = linspace(2.300e-07,2.300e-7,N_kw);
+kw = linspace(2.310e-07,2.310e-7,N_kw);
+b  = linspace(2.310e-07,2.310e-7,N_kw);
 Dxy = linspace(0.9,0.9,N_Dxy);
 Dz = linspace(0.9,0.9,N_Dz);
+Axy = linspace(0.9,0.9,N_Axy);
+Az = linspace(0.9,0.9,N_Az);
 
 %% Load Trajectory Array
-ID_arr = {'194221','194232','194248','214058',...
-          '214111','214124','214136','214616','214629',...
-          '214716','214728','214741'};
-N_fl = size(ID_arr,2);
+ID_arr = dir([pwd '/misc/sysID/data/point_command/*']);
+ID_arr = ID_arr(3:end);     % remove the . and .. files
+N_fl = size(ID_arr,1);
 
 %% Prepare Containers
 N_full = N_kw*N_Dxy*N_Dz*N_fl;

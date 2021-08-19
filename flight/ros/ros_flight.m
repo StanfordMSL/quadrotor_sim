@@ -20,11 +20,15 @@ end
 % Initialize ROS Parameters
 node = ros.Node('/matlab_node');
 pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
-pose_init_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
+vel_sub  = ros.Subscriber(node,[droneID 'mavros/local_position/velocity_local']);
+th_sub   = ros.Subscriber(node,[droneID '/mavros/target_actuator_control']);
+br_sub   = ros.Subscriber(node,[droneID 'mavros/setpoint_raw/target_attitude']);
+
+x0_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
 pause(1);
 
 % Send the Drone to Initial Position
-send2init(pose_init_pub,pose_sub,traj.x_bar(:,1));
+send2init(x0_pub,pose_sub,traj.x_bar(:,1));
 
 % Send Trajectory for Execution
 traj_client = ros.ServiceClient(node,[droneID '/setpoint/TrajTransfer'],"Timeout",3);
@@ -47,5 +51,5 @@ switch mode
 
 end
 
-log = ros_logger(pose_sub,traj.t_fmu(1,end));
+log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,traj.t_fmu(1,end));
 
