@@ -17,7 +17,7 @@ while (t_now <= t_end)
     u_br = br_sub.LatestMessage;
     
     % Log Time
-    T(1,k) = pose.Header.Stamp;
+    T(1,k) = t_now;
     
     % Log Position
     X(1,k) = pose.Pose.Position.X;
@@ -48,9 +48,9 @@ while (t_now <= t_end)
     
     k = k + 1;
 
-    pause(0.1);
+    pause(0.005);
 end
 
-log.t_fmu = T;
-log.x_fmu = X;
-log.u_fmu = U;
+log.t_fmu = T(:,1:k-1);
+log.x_fmu = X(:,1:k-1);
+log.u_fmu = U(:,1:k-1);

@@ -1,4 +1,4 @@
-function model = model_init_sysID(kw,b,Dxy,Dz,Axy,Az)
+function model = model_init_sysID(kw,Dxy,Dz,Axy,Az,Bxy,Bz)
 
 
 % 'Zero' Constant to Keep Variables
@@ -6,7 +6,6 @@ eps = 1e-9;
 
 %% Tuned Stuff
 model.act.kw = [0.00 ; 0.00 ; kw];    % Rotor Thrust Coeffecients
-model.act.b  = b;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
 model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
     0.00  Dxy  0.00;...
     0.00  Dxy  0.00;...
@@ -16,9 +15,9 @@ model.act.A  = [...                         % Frame Linear Drag Torque Coefficie
     0.00   Axy  0.00;...
     0.00   Az   0.00];
 model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-    0.00   eps   0.00;...
-    0.00   eps   0.00;...
-    0.00   eps   0.00];
+    0.00   Bxy   0.00;...
+    0.00   Bxy   0.00;...
+    0.00   Bz   0.00];
 
 %% Rate Parameters
 model.clock.hz_ses = 200;             % State Estimator Sample Rate
@@ -36,27 +35,14 @@ model.clock.dt_act = 1/model.clock.hz_act;
 % Mass/Inertia/Dimension Properties
 model.act.m     = 0.530;                    % Total Mass
 model.act.I     = 0.001.*[...               % Inertia Tensor
-    1.00   0.00   0.00;...
-    0.00   1.60   0.00;...
+    1.00   0.10   0.00;...
+    0.10   1.60   0.00;...
     0.00   0.00   2.00];
 model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
 model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
 % Aerodynamic Properties
-model.act.kw = [0.00 ; 0.00 ; 2.31e-07];    % Rotor Thrust Coeffecients
-model.act.b  = 0.06;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
-model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-    0.00   0.80   0.00;...
-    0.00   0.80   0.00;...
-    0.00   0.80   0.00];
-model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-    0.00   eps  0.00;...
-    0.00   eps  0.00;...
-    0.00   eps  0.00];
-model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-    0.00   eps   0.00;...
-    0.00   eps   0.00;...
-    0.00   eps   0.00];
+model.act.b  = 0.0157;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
 model.act.kh = 0.000*model.act.m;           % Inflow Coefficient
 
 % Motor Parameters

@@ -46,6 +46,8 @@ w_max = max(w);
 tau = data_raw(:,9);
 b = thrust\tau;
 
+volt = data_raw(:,11);
+
 figure(1)
 clf
 
@@ -53,7 +55,7 @@ subplot(2,1,1)
 plot(rel_pwm,rel_thrust,'*')
 hold on
 
-thr_mdl = 0.5;
+thr_mdl = 0.3;
 x = 0:0.01:1;
 y = thr_mdl*x.^2+(1-thr_mdl)*x;
 plot(x,y)

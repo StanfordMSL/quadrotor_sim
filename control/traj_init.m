@@ -6,7 +6,7 @@ x1 = obj.kf.x(:,2);
 hz_fmu = model.clock.hz_fmu;
 
 % Estimate t_end using assumed velocity.
-t_end = norm(x1(1:3)-x0(1:3))/model.misc.v_cr;
+t_end = round(norm(x1(1:3)-x0(1:3))/model.misc.v_cr,1);
 
 % Intermediate Variables
 fmu_dt = 1/hz_fmu;

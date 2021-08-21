@@ -18,11 +18,11 @@ catch
 end
 
 % Initialize ROS Parameters
-node = ros.Node('/matlab_node');
+node     = ros.Node('/matlab_node');
 pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
-vel_sub  = ros.Subscriber(node,[droneID 'mavros/local_position/velocity_local']);
+vel_sub  = ros.Subscriber(node,[droneID '/mavros/local_position/velocity_local']);
 th_sub   = ros.Subscriber(node,[droneID '/mavros/target_actuator_control']);
-br_sub   = ros.Subscriber(node,[droneID 'mavros/setpoint_raw/target_attitude']);
+br_sub   = ros.Subscriber(node,[droneID '/mavros/setpoint_raw/target_attitude']);
 
 x0_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
 pause(1);
@@ -44,12 +44,6 @@ req.XArr = traj.x_br(:);
 
 call(traj_client,req,'Timeout',3);
 % print(["Actual: ",num2str(cs_act)," ROS: ",num2str(cs_ros)]);
-
-switch mode
-    case 'body_rate'
-
-
-end
 
 log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,traj.t_fmu(1,end));
 
