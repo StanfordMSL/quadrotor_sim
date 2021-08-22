@@ -35,14 +35,14 @@ model.clock.dt_act = 1/model.clock.hz_act;
 % Mass/Inertia/Dimension Properties
 model.act.m     = 0.530;                    % Total Mass
 model.act.I     = 0.001.*[...               % Inertia Tensor
-    1.00   0.10   0.00;...
-    0.10   1.60   0.00;...
+    1.00   0.00   0.00;...
+    0.00   1.60   0.00;...
     0.00   0.00   2.00];
 model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
 model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
 % Aerodynamic Properties
-model.act.b  = 0.0157;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
+model.act.b  = 0.0157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
 model.act.kh = 0.000*model.act.m;           % Inflow Coefficient
 
 % Motor Parameters

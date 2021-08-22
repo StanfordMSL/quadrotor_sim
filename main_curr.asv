@@ -12,8 +12,8 @@ model = model_init('carlito','match','precise');
 % model = model_init('iris','match','precise');  
 
 % Objective and Constraints
-% obj  = race_init('line','empty');
-obj  = race_init('line','gate2');
+obj  = race_init('line','empty');
+% obj  = race_init('line','gate2');
 % obj  = race_init('line','slit_hard');
 
 % Cost Mode
@@ -38,11 +38,11 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 %% Trajectory Planning
 
 % Initialize Trajectory Structure
-traj = traj_init(obj,model,input_mode);
+% traj = traj_init(obj,model,input_mode);
 
 % Warm Start Using Indirect Method
 traj = diff_flat(obj,model,traj,input_mode);
-% nominal_plot(traj.x_bar,obj.gt,20,'persp');
+nominal_plot(traj.x_bar,obj.gt,20,'persp');
 
 % Full Constraint Optimizationy
 [traj,~] = al_ilqr(traj,obj,999);
@@ -54,17 +54,17 @@ nominal_plot(traj.x_bar,obj.gt,20,'persp');
 traj_a = traj;
 traj_a.L_br(:,4:6,:) = 0;
 
-% % MATLAB
-% log_M = matlab_sim(traj,obj,model,'al_ilqr',input_mode,'bypass');
+% MATLAB
+log_M = matlab_sim(traj_a,obj,model,'al_ilqr',input_mode,'bypass');
 
 % % % ROS -> Gazebo
-% log_G = ros_flight(traj,'gazebo');
+% log_G = ros_flight(traj_a,'gazebo');
 
 % ROS -> Actual
-log_A = ros_flight(traj,'actual');
+log_A = ros_flight(traj_a,'actual');
 
 %% Plot the States, Animate and Debug
 
 % animation_plot(log_M,obj,model.map,'persp','show');
-% sim_compare(traj,log_M,log_A)
+sim_compare(traj,log_M,log_A)
 % br_debug(log_M.u_br)
