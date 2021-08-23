@@ -1,9 +1,10 @@
-function log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,t_end)
+function log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,volt_sub,t_end)
 
 % Generate Containers
 T = zeros(1,2000);
 X = zeros(13,2000);
 U = zeros(4,2000);
+V = zeros(1,2000);
 
 t_now = 0;
 k = 1;
@@ -15,7 +16,8 @@ while (t_now <= t_end)
     vel  = vel_sub.LatestMessage;
     u_th = th_sub.LatestMessage;
     u_br = br_sub.LatestMessage;
-    
+    v_br = volt_sub.LatestMessage;
+
     % Log Time
     T(1,k) = t_now;
     
@@ -45,6 +47,9 @@ while (t_now <= t_end)
     U(2,k) = u_br.BodyRate.X;
     U(3,k) = u_br.BodyRate.Y;
     U(4,k) = u_br.BodyRate.Z;
+    
+    % Log Voltage Values
+    V(1,k) = v_br.Voltage;
     
     k = k + 1;
 

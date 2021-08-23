@@ -113,7 +113,8 @@ traj.u_br = U;
 traj.x_bar = [X ; U(2:4,:) zeros(3,1)]; 
 
 % Generate the feedback matrix
-lqr.Qn = [10.0.*ones(3,1) ; 0.01.*ones(3,1) ; 0.5.*ones(4,1)];
-lqr.QN = [10.0.*ones(3,1) ; 0.01.*ones(3,1) ; 0.5.*ones(4,1)];
+lqr.Qn = [ 10.0 ; 10.0 ; 10 ; 0.00.*ones(3,1) ; 0.0.*ones(4,1)];
+lqr.QN = [ 10.0 ; 10.0 ; 10 ; 0.00.*ones(3,1) ; 0.0.*ones(4,1)];
+
 [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
-traj.L_br = L;
+% traj.L_br = L;
