@@ -14,7 +14,7 @@ N = size(X,2);
 lqr.N  = N;
 lqr.xs = obj.kf.x(1:10,end);
 lqr.us = round(U(:,end),3);
-lqr.Qn = zeros(10,1);
+lqr.Qn = 0.0.*ones(10,1);
 lqr.Rn = [1/(1*N) ; 0 ; 0 ; 0];
 lqr.QN = [1.0.*ones(3,1) ; 0.001.*ones(3,1) ; zeros(4,1)];
 
@@ -113,5 +113,7 @@ traj.u_br = U;
 traj.x_bar = [X ; U(2:4,:) zeros(3,1)]; 
 
 % Generate the feedback matrix
-% [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
+lqr.Qn = [10.0.*ones(3,1) ; 0.01.*ones(3,1) ; 0.5.*ones(4,1)];
+lqr.QN = [10.0.*ones(3,1) ; 0.01.*ones(3,1) ; 0.5.*ones(4,1)];
+[~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
 traj.L_br = L;

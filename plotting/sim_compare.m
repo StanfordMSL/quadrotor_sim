@@ -25,9 +25,19 @@ for k = 1:N
     legend('nominal','matlab','ros');
     
     if k <= R
-        ylim([-2.5 2.5]);
+        if k == 1
+            ylim([-3.5 3.5]);
+        elseif k == 3
+            ylim([0 2.5]);
+        else
+            ylim([-2.0 2.0]);
+        end
     else
-        ylim([-1 1]);
+        if k == R+1
+            ylim([-1.3 -0.7]);
+        else
+            ylim([-0.3 0.3]);
+        end
     end
 end
 

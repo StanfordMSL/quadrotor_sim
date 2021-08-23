@@ -27,7 +27,7 @@ switch frame
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [0.00 ; 0.00 ; 2.31e-07];    % Rotor Thrust Coeffecients
+        model.act.kw = [0.00 ; 0.00 ; 2.35e-07];    % Rotor Thrust Coeffecients
         model.act.b  = 0.0157;                        % Rotor Torque Gain (multiplier on lift force to get yaw)
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   0.20   0.00;...

@@ -47,7 +47,7 @@ for k = N-1:-1:1
     
     dQk = dQn(Qin,1);
     dRk = dRn(Rin,1);
-    dqk = dqn(x,xs,Qin,1);
+    dqk = dqn(x,x,Qin,1);
     drk = drn(u,us,Rin,1);
     
     Qx  = dqk + A'*v + c_x'*(lam + I_mu*c);
@@ -60,7 +60,7 @@ for k = N-1:-1:1
             l(:,k)   = -Qu;
         case 'slow'
             Quu = dRk + B'*V*B + c_u'*I_mu*c_u + reg;
-            while rcond(Quu) < 1e-5
+            while rcond(Quu) < 1e-1
                 reg = rho.*eye(n_u);
                 rho = 10.*rho;
                 
