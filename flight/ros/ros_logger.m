@@ -59,3 +59,4 @@ end
 log.t_fmu = T(:,1:k-1);
 log.x_fmu = X(:,1:k-1);
 log.u_fmu = U(:,1:k-1);
+log.vbat  = V(:,1:k-1);

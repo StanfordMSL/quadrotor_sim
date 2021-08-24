@@ -17,6 +17,8 @@ catch
     rosinit(coreADD)
 end
 
+%% Trajectory (single send)
+
 % Initialize ROS Parameters
 node     = ros.Node('/matlab_node');
 pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
@@ -46,5 +48,10 @@ req.XArr = traj.x_br(:);
 call(traj_client,req,'Timeout',3);
 % print(["Actual: ",num2str(cs_act)," ROS: ",num2str(cs_ros)]);
 
+% Log
 log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,volt_sub,traj.t_fmu(1,end));
+
+%% Hover Test
+% pause(1);
+% log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,volt_sub,120);
 

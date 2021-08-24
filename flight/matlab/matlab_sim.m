@@ -111,9 +111,9 @@ while (k_act < N_sim)
         k_lqr = k_lqr + 1;
         switch high_ctl
             case 'al_ilqr'
-                [traj,t_end] = min_time_augment(traj,obj,k_fmu,0);
-                N_sim = round((t_end/dt_act) + 1);
-                N_fmu = round((t_end/dt_fmu) + 1);
+%                 [traj,t_end] = min_time_augment(traj,obj,k_fmu,0);
+%                 N_sim = round((t_end/dt_act) + 1);
+%                 N_fmu = round((t_end/dt_fmu) + 1);
             case 'none'
                 % Carry on
         end
