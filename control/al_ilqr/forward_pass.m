@@ -37,5 +37,10 @@ for k = 1:N-1
     Ufp(:,k)    = u_fp;
     Umt(:,k)    = u_mt;
 end
-
+% figure(1)
+% clf
+% plot(Xact(11,1:k))
+% hold on
+% plot(Ubar(2,1:k));
+% ylim([-5 5]);
 end

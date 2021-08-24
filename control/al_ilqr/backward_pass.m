@@ -47,7 +47,7 @@ for k = N-1:-1:1
     
     dQk = dQn(Qin,1);
     dRk = dRn(Rin,1);
-    dqk = dqn(x,x,Qin,1);
+    dqk = dqn(x,xs,Qin,1);
     drk = drn(u,us,Rin,1);
     
     Qx  = dqk + A'*v + c_x'*(lam + I_mu*c);
@@ -89,4 +89,6 @@ for k = N-1:-1:1
     % Generate line-search checker
     delV(1,k) = (l(:,k)' * Qu);
     delV(2,k) = 0.5.*(l(:,k)' * Quu * l(:,k));
+end
+
 end

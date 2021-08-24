@@ -177,7 +177,7 @@ model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 
 %% Misc
 model.misc.ndr  = 15;            % Number of Terms for Diff Flat Polynomial
-model.misc.v_cr = 0.75;          % 'cruise' velocity for initial estimates
+model.misc.v_cr = 1.0;          % 'cruise' velocity for initial estimates
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)

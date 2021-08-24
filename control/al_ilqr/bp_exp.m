@@ -53,6 +53,6 @@ for k = N-1:-1:1
     L(:,:,k) = -Quu\Qux;
     
     V = Qxx + L(:,:,k)'*Quu*L(:,:,k) + L(:,:,k)'*Qux + Qux'*L(:,:,k);
-
+end
 
 end
