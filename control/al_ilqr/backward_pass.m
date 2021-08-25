@@ -3,8 +3,8 @@ function [l,L,delV] = backward_pass(X,U,lqr,con,mult,mode)
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
-xs  = lqr.xs;
-us  = lqr.us;
+Xs  = lqr.Xs;
+Us  = lqr.Us;
 N   = lqr.N;
 
 % Tuning Parameter
@@ -19,13 +19,15 @@ delV = zeros(2,N);
 % Initial
 Qin = lqr.QN;
 V = dQN(Qin,1);
-v = dqN(X(:,N),xs,Qin,1);
+v = dqN(X(:,N),Xs(:,N),Qin,1);
 
 for k = N-1:-1:1
     % Unpack stagewise stuff
     x = X(:,k);
     u = U(:,k);
-
+    xs = Xs(:,k);
+    us = Us(:,k);
+    
     A = A_calc(x,u);
     B = B_calc(x,u);
     

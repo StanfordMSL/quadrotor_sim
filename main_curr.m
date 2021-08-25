@@ -52,9 +52,13 @@ traj = diff_flat(obj,model,traj,input_mode);
 
 % Modifications
 traj_a = traj;
+obj_a  = obj;
+% obj_a.kf.x(1:3,1) = obj_a.kf.x(1:3,1) - [ 0.5 ; 0.0 ; 0.5];
+% traj_a.L_br(:,11:17,:) = 0;
 
 % MATLAB
-log_M = matlab_sim(traj_a,obj,model,'al_ilqr',input_mode,'bypass');
+log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
+animation_plot(log_M,obj_a,model.map,'persp','show');
 
 % % % ROS -> Gazebo
 % log_G = ros_flight(traj_a,'gazebo');
@@ -64,7 +68,7 @@ log_M = matlab_sim(traj_a,obj,model,'al_ilqr',input_mode,'bypass');
 
 %% Plot the States, Animate and Debug
 
-animation_plot(log_M,obj,model.map,'persp','show');
+% animation_plot(log_M,obj,model.map,'persp','show');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_A)

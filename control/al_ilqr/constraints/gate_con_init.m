@@ -1,5 +1,7 @@
 function gate_con_init(model,input_mode)
 
+tic
+
 % Quadcopter Parameters (relative position of n_p points on body)
 l_arm  = model.est.L;
 r_d_arr = [ l_arm    0.00  -l_arm    0.00;
@@ -14,7 +16,7 @@ switch input_mode
     case 'wrench'
         n_x = 13;
     case 'body_rate'
-        n_x = 10;
+        n_x = 17;
 end
 
 % Initialize Input/Outputs
@@ -42,7 +44,11 @@ conx   = [-gain ; gain-ones(n_p*2,1)];
 conx_x = jacobian(conx,x);
 
 address = 'control/al_ilqr/constraints/';
-matlabFunction(conx,'File',[address,'conx'],'vars',{x,p_box})
-matlabFunction(conx_x,'File',[address,'conx_x'],'vars',{x,p_box})
+matlabFunction(conx,'File',[address,'conx'],'vars',{x,p_box});
+matlabFunction(conx_x,'File',[address,'conx_x'],'vars',{x,p_box});
+
+t_comp = toc;
+
+disp(['[gate_con_init]: Gate Constraints Generated in ' num2str(t_comp) 's'])
 
 end

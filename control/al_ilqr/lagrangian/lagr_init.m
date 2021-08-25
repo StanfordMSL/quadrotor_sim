@@ -1,11 +1,10 @@
 function lagr_init(cost_mode,input_mode)
 
+tic
+
 switch input_mode
-    case 'wrench'
-        n_x = 13;
-        n_u = 4;
     case 'body_rate'
-        n_x = 10;
+        n_x = 17;
         n_u = 4;
 end
 
@@ -34,7 +33,7 @@ conu = sym('conu',[N_cu 1],'real');
 trig = sym('trig','real');
 
 % Weight Inputs
-Qin = sym('Qin_d',[10 1],'real');
+Qin = sym('Qin_d',[17 1],'real');
 Rin  = sym('Rin_d',[4 1],'real');
 
 disp('[lagr_init]: Assuming we are using l2-norm style costs');
@@ -113,4 +112,10 @@ matlabFunction(dCN_p,'File',[add,'dCN_p'],'vars',{x_bar,x_star,Qin,trig});
 
 matlabFunction(conx_cost,'File',[add,'conx_cost'],'vars',{conx,lam_x,mud_x});
 matlabFunction(conu_cost,'File',[add,'conu_cost'],'vars',{conu,lam_u,mud_u});
+
+t_comp = toc;
+disp(['[lagr_init]: Lagrangian Terms Generated in ' num2str(t_comp) 's']);
+
+
+end
 

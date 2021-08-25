@@ -41,12 +41,12 @@ switch frame
             0.00   eps   0.00;...
             0.00   eps   0.00;...
             0.00   eps   0.00];                
-        model.act.kh = 0.000*model.act.m;           % Inflow Coefficient
         
         % Motor Parameters
         model.motor.m   = 0.010;                    % Motor Stator Mass
         model.motor.r0  = 0.009;
         model.motor.r1  = 0.010;
+        model.motor.h   = 0.02;
         model.motor.min = 0;                        % Motor Min rad/s
         model.motor.max = 4250;                     % Motor Max rad/s
     case 'iris'
@@ -73,12 +73,12 @@ switch frame
             0.00   0.00   0.00;...
             0.00   0.00   0.00;...
             0.00   0.00   0.00];              
-        model.act.kh = 0.000.*model.act.m;          % Inflow Coefficient
         
         % Motor Parameters
         model.motor.m   = 0.010;                    % Motor Stator Mass
         model.motor.r0  = 0.009;
         model.motor.r1  = 0.010;
+        model.motor.h   = 0.02;
         model.motor.min = 0;                        % Motor Min rad/s
         model.motor.max = 950;                     % Motor Max rad/s
 end
@@ -91,9 +91,14 @@ switch model_diff
         
         %%%%%%%%%%%%%%%%%%% Place Mismatched Terms Here %%%%%%%%%%%%%%%%%%%
         
-%         model.est.m = 0.560;
-        model.act.kw = [0.00 ; 0.00 ; 2.30e-07];
-         
+        model.est.kw = [0.00 ; 0.00 ; 2.30e-07];
+        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
+            0.00   3.50   0.00;...
+            0.00   3.50   0.00;...
+            0.00   0.10   0.00];
+
+%         model.est.m = 0.5;
+ 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
@@ -128,15 +133,20 @@ model.est.w2m = inv(model.est.m2w);
 model.act.w2m = inv(model.act.m2w);
 
 % Thrust Profile
-model.motor.thrust_hover = model.act.m*model.act.g;
-model.motor.thrust_min = ...
+th_hov = model.act.m*model.act.g;
+th_min =  ...
     model.act.kw(3,1).*model.motor.min^2 +...
     model.act.kw(2,1).*model.motor.min +...
     model.act.kw(1,1);
-model.motor.thrust_max = ...
+th_max = ...
     model.act.kw(3,1).*model.motor.max^2 +...
     model.act.kw(2,1).*model.motor.max +...
     model.act.kw(1,1);
+
+model.motor.thrust_min = th_min;
+model.motor.thrust_max = th_max;
+model.motor.thrust_hover = th_hov;
+model.motor.c_hover = (1/4)*((th_hov-th_min)/(th_max-th_min));
 
 % Grasper position offset in body frame
 model.grasp.pos = [0 ; 0 ; 0];
@@ -158,7 +168,6 @@ var_sens = [var_mocap ; var_gyro];
 % Sensor Noise Matrices
 model.ses.Q = 0.0.*eye(13);
 model.ses.R = diag(var_sens);
-
 
 %% Model Noise
 switch model_noise

@@ -56,7 +56,7 @@ for k = 1:N-1
 %         u_wr = [fn2f(u_now(1,1)) ; zeros(3,1)];
 %         u_wr = [fn2f(u_now(1,1)) ; 0 ; 0 ; 0];
         
-        u_mt = w2m_est(u_wr);
+        u_mt = w2m(u_wr);
     end
     
     Xact(:,k+1) = quadcopter_est(Xact(:,k),u_mt,FT_ext,wt);

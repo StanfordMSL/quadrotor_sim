@@ -17,6 +17,8 @@ log.x_ses(:,1) = obj.kf.x(:,1);
 
 log.sigma = zeros(13,13,N_ses);
 
+log.z_ses = zeros(7,N_ses);
+
 % Store Desired Trajectory
 log.x_des = traj.x_bar;
 

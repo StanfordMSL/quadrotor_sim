@@ -1,8 +1,8 @@
 function La_xup = lagr_xup(X,U,Xbar,Ubar,lqr)
 
 % Unpack Some Stuff
-xs  = lqr.xs;
-us  = lqr.us;
+Xs  = lqr.Xs;
+Us  = lqr.Us;
 N   = lqr.N;
 Qn  = lqr.Qn;
 QN  = lqr.QN;
@@ -18,6 +18,9 @@ for k = 1:N-1
     
     xb = Xbar(:,k);
     ub = Ubar(:,k);
+    
+    xs = Xs(:,k);
+    us = Us(:,k);
     
     La_xup(1,k) = dCn_xu(x,u,xb,ub,xs,us,1);
     La_xup(2,k) = dCn_p(xb,ub,xs,us,Qn,Rn,1);

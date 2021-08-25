@@ -52,10 +52,16 @@ while (k_act < N_sim)
         k_ses = k_ses + 1;
         
         x_act = log.x_act(:,k_act);
-        ses = state_estimation(x_act,ses,sense_mode);
+        if k_fmu == 0
+            x_bar = log.x_des(:,1);
+        else
+            x_bar = log.x_des(:,k_fmu);
+        end
+        ses = state_estimation(x_act,x_bar,ses,sense_mode);
         
         log.t_ses(:,k_ses)   = t_now;   
-        log.x_ses(:,k_ses)   = ses.x; 
+        log.x_ses(:,k_ses)   = ses.x;
+        log.z_ses(:,k_ses)   = ses.z;
         log.sigma(:,:,k_ses) = ses.sigma;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,12 +75,12 @@ while (k_act < N_sim)
                 u_wr = pa_ctrl(ses.x,f_out_now,pa,model.est);
                 
                 % Output to Motors
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Pos Att Logging
                 log.u_wr(:,k_fmu)  = u_wr;
             case 'body_rate'
-                del_x = ses.x(1:10,:) - traj.x_br(:,k_fmu);
+                del_x = ses.s - traj.x_br(:,k_fmu);
 
                 u_op = traj.u_br(:,k_fmu);
                 u_cl = traj.L_br(:,:,k_fmu)*del_x;
@@ -83,7 +89,7 @@ while (k_act < N_sim)
                 [u_wr,br] = br_ctrl(ses.x,u_now,br);
                 
                 % Output to Motors
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Body Rate Logging
                 log.u_wr(:,k_fmu)  = u_wr;
@@ -92,7 +98,7 @@ while (k_act < N_sim)
                 u_mt = traj.u_mt(:,k_fmu);
             case 'wrench'
                 u_wr = traj.u_wr(:,k_fmu);
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Wrench Logging
                 log.u_wr(:,k_fmu)  = u_wr;
