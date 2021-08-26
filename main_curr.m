@@ -1,7 +1,7 @@
 %% Pre-Setup Setup (paths and ROS msg linking)
 
 addpath(genpath(pwd));
-addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
+%addpath('/home/lowjunen/StanfordMSL/quadrotor_sim/flight/ros/custom_msgs/matlab_msg_gen_ros1/glnxa64/install/m')
 clear; clc; 
 rehash toolboxcache
 
@@ -12,7 +12,8 @@ rehash toolboxcache
 model = model_init('iris','match','precise');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_right');
+% obj  = race_init('line','gate_right');
+obj  = grasp_init('line');
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
