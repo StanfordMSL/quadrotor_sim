@@ -12,9 +12,9 @@ rehash toolboxcache
 model = model_init('iris','match','precise');  
 
 % Objective and Constraints
-% obj  = race_init('line','gate_center');
+obj  = race_init('line','gate_center');
 % obj  = race_init('line','gate2');
-obj  = race_init('hover','empty');
+% obj  = race_init('hover','empty');
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -24,16 +24,16 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% Generate QP Matrices
-QP_init(model.misc.ndr);                       
-
-% Generate Dynamics and Linearization Functions
-dyn_init(model,input_mode);      
-
-% Generate Constraint Variables
-lagr_init(cost_mode,input_mode)
-motor_con_init(model,input_mode)
-gate_con_init(model,input_mode)
+% % Generate QP Matrices
+% QP_init(model.misc.ndr);                       
+% 
+% % Generate Dynamics and Linearization Functions
+% dyn_init(model,input_mode);      
+% 
+% % Generate Constraint Variables
+% lagr_init(cost_mode,input_mode)
+% motor_con_init(model,input_mode)
+% gate_con_init(model,input_mode)
 
 %% Trajectory Planning
 
@@ -53,8 +53,7 @@ traj = diff_flat(obj,model,traj,input_mode);
 % Modifications
 traj_a = traj;
 obj_a  = obj;
-% obj_a.kf.x(1:3,1) = obj_a.kf.x(1:3,1) - [ 0.5 ; 0.0 ; 0.5];
-traj_a.L_br(:,11:17,:) = 0;
+% traj_a.L_br(:,11:17,:) = 0;
 
 % MATLAB
 log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
@@ -72,4 +71,4 @@ log_G = ros_flight(traj_a,'gazebo');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_A)
-sim_compare(traj,log_M,log_G)
+% sim_compare(traj,log_M,log_G)

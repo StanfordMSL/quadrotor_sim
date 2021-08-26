@@ -138,7 +138,7 @@ while (k_act < N_sim)
     wt = model.ses.W*randn(13,1);
     log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
     
-    if log.x_act(7:10,k+1)'*log.x_act(7:10,k) < 0
+    if log.x_act(7:10,k_act+1)'*log.x_act(7:10,k_act) < 0
         disp("UHOH... sign flip might need to be invoked");
     end
 end
