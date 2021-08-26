@@ -12,8 +12,8 @@ rehash toolboxcache
 model = model_init('iris','match','precise');  
 
 % Objective and Constraints
-obj  = race_init('line','gate_center');
-% obj  = race_init('line','gate2');
+% obj  = race_init('line','gate_center');
+obj  = race_init('line','gate2');
 % obj  = race_init('hover','empty');
 
 % Cost Mode
@@ -71,4 +71,4 @@ log_G = ros_flight(traj_a,'gazebo');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_A)
-% sim_compare(traj,log_M,log_G)
+sim_compare(traj,log_M,log_G)
