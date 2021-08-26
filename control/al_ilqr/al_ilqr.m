@@ -19,9 +19,9 @@ lqr.Qn = [
     0.00000.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
-    0.50000.*ones(2,1) ;       % err xy
-    0.40000.*ones(1,1) ;       % err z
-    0.00001.*ones(4,1)];       % err quat    
+    0.50000.*ones(2,1) ;      % err xy
+    0.40000.*ones(1,1) ;      % err z
+    0.00001.*ones(4,1)];      % err quat    
 lqr.Rn = [
     0.00000.*ones(1,1) ;      % normalized thrust
     0.00000.*ones(3,1) ];     % body rate
@@ -29,8 +29,8 @@ lqr.QN = [
     1.00000.*ones(3,1) ;      % position
     0.00001.*ones(3,1) ;      % velocity
     0.00001.*ones(4,1) ;      % quaternion
-    0.1000.*ones(2,1) ;      % err xy
-    0.1000.*ones(1,1) ;      % err z
+    0.1000.*ones(2,1) ;       % err xy
+    0.1000.*ones(1,1) ;       % err z
     0.00001.*ones(4,1)];      % err quat    
 
 p_box = obj.gt.p_box;

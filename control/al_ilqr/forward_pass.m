@@ -43,6 +43,10 @@ for k = 1:N-1
     Xact(:,k+1) = quadcopter_est(x_k,u_mt,FT_ext,wt);
     Xfp(1:10,k+1) = Xact(1:10,k+1);
     
+    if Xact(7:10,k+1)'*Xact(7:10,k) < 0
+        disp("UHOH... sign flip might need to be invoked");
+    end
+    
 %     Z(:,k+1)= error_upd(z_k,p_k,q_k,p_bar,q_bar);
 %     Xfp(11:17,k+1) = Z(:,k+1);
     
