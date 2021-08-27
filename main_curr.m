@@ -15,6 +15,7 @@ model = model_init('carlito','match','precise');
 % Objective and Constraints
 % obj  = race_init('hover','empty');
 % obj  = race_init('line','gate_center');
+% obj  = race_init('line','gate1');
 obj  = race_init('line','gate2');
 
 % Cost Mode
@@ -25,16 +26,16 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% Generate QP Matrices
-QP_init(model.misc.ndr);                       
-
-% Generate Dynamics and Linearization Functions
-dyn_init(model,input_mode);      
-
-% Generate Constraint Variables
-lagr_init(cost_mode,input_mode)
-motor_con_init(model,input_mode)
-gate_con_init(model,input_mode)
+% % Generate QP Matrices
+% QP_init(model.misc.ndr);                       
+% 
+% % Generate Dynamics and Linearization Functions
+% dyn_init(model,input_mode);      
+% 
+% % Generate Constraint Variables
+% lagr_init(cost_mode,input_mode)
+% motor_con_init(model,input_mode)
+% gate_con_init(model,input_mode)
 
 %% Trajectory Planning
 
@@ -61,13 +62,13 @@ log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 % % ROS -> Gazebo
 % log_G = ros_flight(traj_a,'gazebo');
 
-% % ROS -> Actual
-% log_A = ros_flight(traj_a,'actual');
+% ROS -> Actual
+log_A = ros_flight(traj_a,'actual');
 
 %% Plot the States, Animate and Debug
 
-animation_plot(log_M,obj,model.map,'persp','show');
+% animation_plot(log_M,obj,model.map,'persp','show');
 
 % sim_compare(traj,log_M,log_M)
-% sim_compare(traj,log_M,log_A)
+sim_compare(traj,log_M,log_A)
 % sim_compare(traj,log_M,log_G)
