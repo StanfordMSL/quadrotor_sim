@@ -1,12 +1,9 @@
-function [c, cx, cu] = conx_calc(x,p_box)
+function [c, cx, cu] = conx_calc(x,p_box,n_x,n_u,N)
 
 % Initialize Variables
-n_x   = size(x,1);
-N     = size(x,2);
-
 c  = zeros(16,N);
 cx = zeros(16,n_x,N);
-cu = zeros(16,4,N);
+cu = zeros(16,n_u,N);
 
 if (size(p_box,3) > 0)
     p12 = p_box(:,2)-p_box(:,1);

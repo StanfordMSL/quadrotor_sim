@@ -50,7 +50,7 @@ for k = 1:N-1
 
     for j = 1:2
         [u_wr,~] = br_ctrl(XSim(:,k,j),u_now(:,1,j),br);
-        u_mt =  w2m_est(u_wr);
+        u_mt =  w2m(u_wr);
         
         XSim(:,k+1,j) = quadcopter_est(XSim(:,k,j),u_mt,FT_ext,wt);
 

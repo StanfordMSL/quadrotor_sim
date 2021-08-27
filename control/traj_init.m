@@ -31,7 +31,7 @@ switch mode
         % L: feedback matrix (body rate)
         traj.type = 'body_rate';
 
-        traj.x_br = repmat(x0(1:10,1),1,N);
+        traj.x_br = repmat([x0(1:10,1) ; zeros(7,1)] ,1,N);
         traj.u_br = repmat(u_br_hov,1,N-1);
         traj.L_br = zeros(4,10,N-1);
     case 'direct'

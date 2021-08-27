@@ -1,5 +1,7 @@
 function motor_con_init(model,input_mode)
 
+tic
+
 % Unpack some stuff
 wm_min = model.motor.min.*ones(4,1);
 wm_max = model.motor.max.*ones(4,1);
@@ -23,8 +25,8 @@ switch input_mode
         
         conu_u = jacobian(conu,u);
         
-        matlabFunction(conu,'File',[address,'conu'],'vars',{u})
-        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u});
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u});
     case 'wrench'
         u = sym('u',[4 1],'real');
         
@@ -33,8 +35,8 @@ switch input_mode
      
         conu_u = jacobian(conu,u);
         
-        matlabFunction(conu,'File',[address,'conu'],'vars',{u})
-        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u});
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u});
     case 'body_rate'
         u = sym('u',[4 1],'real');
         up = sym('up',[4 1],'real');
@@ -52,8 +54,12 @@ switch input_mode
 
         conu_u = jacobian(conu,u);
 
-        matlabFunction(conu,'File',[address,'conu'],'vars',{u,up})
-        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u,up})
+        matlabFunction(conu,'File',[address,'conu'],'vars',{u,up});
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u,up});
 end
+
+t_comp = toc;
+
+disp(['[motor_con_init]: Motor Constraints Generated in ' num2str(t_comp) 's'])
 
 end
