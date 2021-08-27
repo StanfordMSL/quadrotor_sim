@@ -18,6 +18,39 @@ model.clock.dt_act = 1/model.clock.hz_act;
 switch frame
     case 'carlito'
         % Mass/Inertia/Dimension Properties
+        model.act.m     = 0.530;                    % Total Mass
+        model.act.I     = 0.001.*[...               % Inertia Tensor
+            1.00   0.00   0.00;...
+            0.00   1.60   0.00;...
+            0.00   0.00   2.00];
+        model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
+        model.act.g     = 9.81;                     % Gravitational Acceleration Constant
+
+        % Aerodynamic Properties
+        model.act.kw = [0.00 ; 0.00 ; 2.31e-07];     % Rotor Thrust Coeffecients
+        model.act.b  = 0.0157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
+        model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
+            0.00   0.20   0.00;...
+            0.00   0.20   0.00;...
+            0.00   0.10   0.00];
+        model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
+            0.00   eps  0.00;...
+            0.00   eps  0.00;...
+            0.00   eps  0.00];               
+        model.act.B  = [...                         % Frame Rotational Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
+            0.00   eps   0.00;...
+            0.00   eps   0.00;...
+            0.00   eps   0.00];                
+        
+        % Motor Parameters
+        model.motor.m   = 0.010;                    % Motor Stator Mass
+        model.motor.r0  = 0.009;
+        model.motor.r1  = 0.010;
+        model.motor.h   = 0.02;
+        model.motor.min = 0;                        % Motor Min rad/s
+        model.motor.max = 4250;                     % Motor Max rad/s
+    case 'carlito_himo'
+        % Mass/Inertia/Dimension Properties
         model.act.m     = 0.415;                    % Total Mass
         model.act.I     = 0.001.*[...               % Inertia Tensor
             0.48   0.00   0.00;...
@@ -185,8 +218,9 @@ end
 model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 
 %% Misc
-model.misc.ndr  = 15;            % Number of Terms for Diff Flat Polynomial
+model.misc.ndr  = 15;           % Number of Terms for Diff Flat Polynomial
 model.misc.v_cr = 1.0;          % 'cruise' velocity for initial estimates
+model.misc.t_hov = 5.0;         % how long to hover if no waypoints
 
 model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
 model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)

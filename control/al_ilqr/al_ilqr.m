@@ -27,10 +27,10 @@ lqr.Rn = [
     0.00000.*ones(3,1) ];     % body rate
 lqr.QN = [
     1.00000.*ones(3,1) ;      % position
-    0.00000.*ones(3,1) ;      % velocity
+    1.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
-    0.00000.*ones(2,1) ;       % err xy
-    0.00000.*ones(1,1) ;       % err z
+    0.00000.*ones(2,1) ;      % err xy
+    0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
 
 p_box = obj.gt.p_box;
