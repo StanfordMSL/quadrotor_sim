@@ -129,7 +129,7 @@ traj.x_br = X;
 traj.u_br = U;
 
 % Regenerate the full trajectory (with 'fake' last body rate frame).
-traj.x_bar = [X ; U(2:4,:) zeros(3,1)]; 
+traj.x_bar = [X(1:10,:) ; U(2:4,:) zeros(3,1)]; 
 
 % Generate the feedback matrix
 

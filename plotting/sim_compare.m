@@ -20,7 +20,7 @@ for k = 1:N
     plot(traj.t_fmu,traj.x_bar(k,:),'--','Linewidth',1.5);
     hold on
     plot(log_M.t_fmu,log_M.x_fmu(k,:));
-    plot(log_R.t_fmu(1,:),log_R.x_fmu(k,:));
+    plot(log_R.t_fmu(1,:),log_R.x_fmu(k,:),'*');
     title(title_arr{k});
     legend('nominal','matlab','ros');
     

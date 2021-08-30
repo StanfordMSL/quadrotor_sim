@@ -1,4 +1,4 @@
-function log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,volt_sub,t_end)
+function log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,t_end)
 
 % Generate Containers
 T = zeros(1,2000);

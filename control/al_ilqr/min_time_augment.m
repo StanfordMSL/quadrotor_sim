@@ -1,11 +1,11 @@
-function [traj_o,t_end] = min_time_augment(traj,obj,k_now,n_fr)
+function [traj_o,N_o,traj_t,N_t] = min_time_augment(traj,obj,x_now,k_now,n_fr)
 
 % Total Available Compute Time
-t_lim = 1;
+t_lim = 1.0;
 
 % Some useful terms
 dt_fmu = 1/traj.hz;
-obj.kf.x(:,1) = traj.x_bar(:,k_now);
+obj.kf.x(:,1) = [x_now ; zeros(3,1)];
 
 % Trim trajectory down to relevant portion.
 traj_t.x_bar = traj.x_bar(:,k_now:end);
@@ -19,7 +19,7 @@ counter = 0;
 while true    
     % Terminal frame variable after cut
     Ns = N_t-n_fr;           % State
-    Ni = Ns-1;                 % Input
+    Ni = Ns-1;               % Input
 
     if (Ns <= 1)
         % No more frames to trim. Pack up!
@@ -58,8 +58,14 @@ traj_o.L_br  = cat(3,traj.L_br(:,:,1:k_now-1),traj_t.L_br);
 traj_o.hz = traj.hz;
 traj_o.type = traj.type;
 
-t_end = dt_fmu*(size(traj_o.x_bar,2)-1);
-traj_o.t_fmu = 0:dt_fmu:t_end;
+traj_t.hz = traj.hz;
+traj_t.type = traj.type;
+
+N_o = size(traj_o.x_bar,2);
+N_t = size(traj_t.x_bar,2);
+
+traj_o.t_fmu = 0:dt_fmu:(N_o*dt_fmu);
+traj_t.t_fmu = 0:dt_fmu:(N_t*dt_fmu);
 
 % nominal_plot(traj_o.x_bar,obj.gt,10,'persp');
 disp(['[min_time_augment]: Trajectory reduced by ' num2str(counter*n_fr/200) 's']);
