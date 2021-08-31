@@ -1,7 +1,14 @@
-function ses = state_estimation(x_now,ses,mode)
+function ses = state_estimation(x_now,x_bar,ses,mode)
+    
+    % Integral Dynamics
+    p_bar = x_bar(1:3,1);
+    q_bar = x_bar(7:10,1);
+    z = error_upd(ses.z,x_now,p_bar,q_bar);
+
     switch mode
         case 'bypass'
-            x = x_now;
+            x = x_now;    
+            
             sigma = zeros(13,13);
         case 'ekf'
             % Unpack some stuff
@@ -33,6 +40,10 @@ function ses = state_estimation(x_now,ses,mode)
             sigma = sig_pred - K*C*sig_pred;
     end
     
+    s = [x(1:10) ; z];
+
     ses.x = x;
+    ses.z = z;
+    ses.s = s;
     ses.sigma = sigma;
 end

@@ -1,27 +1,44 @@
 function [traj,flag_t] = al_ilqr(traj,obj,t_clim)
 
-% Tuning Parameters
-tol_motor = 1e-3;
-tol_gate  = 1e-3;
-phi       = [1.5 ; 15];
-
 % Unpack Variables
 X = traj.x_br;
 U = traj.u_br;
 L = traj.L_br;
 N = size(X,2);
 
+% Iteration Tuning Parameters
+tol_motor = 1e-3;
+tol_gate  = 1e-3;
+phi       = [1.5 ; 15];
+
+% LQR Parameters
 lqr.N  = N;
-lqr.xs = obj.kf.x(1:10,end);
-lqr.us = round(U(:,end),3);
-lqr.Qn = zeros(10,1);
-lqr.Rn = [1/(100*N) ; 0 ; 0 ; 0];
-lqr.QN = [ones(6,1) ; zeros(4,1)];
+% lqr.Xs = repmat([obj.kf.x(:,2);zeros(7,1)],1,N);
+lqr.Qn = [
+    0.00000.*ones(3,1) ;      % position
+    0.00000.*ones(3,1) ;      % velocity
+    0.00000.*ones(4,1) ;      % quaternion
+    0.01000.*ones(2,1) ;      % err xy
+    0.01000.*ones(1,1) ;      % err z
+    0.00000.*ones(4,1)];      % err quat    
+lqr.Rn = [
+    0.00000.*ones(1,1) ;      % normalized thrust
+    0.00000.*ones(3,1) ];     % body rate
+lqr.QN = [
+    1.00000.*ones(3,1) ;      % position
+    1.00000.*ones(3,1) ;      % velocity
+    0.00000.*ones(4,1) ;      % quaternion
+    0.00000.*ones(2,1) ;      % err xy
+    0.00000.*ones(1,1) ;      % err z
+    0.00000.*ones(4,1)];      % err quat    
+lqr.Xs = X;     % pin to nominal
+lqr.Us = U;     % pin to nominal
 
 p_box = obj.gt.p_box;
+map   = obj.map;
 
 % Initialize Constraints
-con  = con_calc(X,U,p_box);
+con  = con_calc(X,U,p_box,map);
 
 % Initialize Lagrange Multiplier Terms
 mult = mult_init(con);
@@ -48,16 +65,18 @@ while true
         La_p = La_c;
         Xbar = X;
         Ubar = U;
+        lqr.Xs = X;
+        lqr.Us = U;
         alpha = 1;
         while true
             counter(1,3) = counter(1,3)+1;
 
             [X,U,~,~] = forward_pass(Xbar,Ubar,l,L,alpha);
 %             % Debug
-%             nominal_plot(X,obj.gt,10,'back');
+%             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
-            con  = con_calc(X,U,p_box);
+            con  = con_calc(X,U,p_box,map);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
@@ -66,11 +85,15 @@ while true
             if flag_LS <= 1
                 break;
             else
-                alpha = 0.8*alpha;
+                if alpha > 1e-5
+                    alpha = 0.8*alpha;
+                else
+                    alpha = 0;
+                end
             end
         end
         % Debug
-%         nominal_plot(X,obj.gt,10,'nice');
+%         nominal_plot(X,obj,10,'nice');
 %         mthrust_debug(Umt)
         
         flag_iLQR = check_iLQR(flag_LS);
@@ -81,7 +104,7 @@ while true
         end
     end
 %     % Debug
-%     nominal_plot(X,obj.gt,1,'nice');
+%     nominal_plot(X,obj,10,'persp');
 %     mthrust_debug(Umt);  
     
     % Update Lagrangian
@@ -110,8 +133,28 @@ traj.x_br = X;
 traj.u_br = U;
 
 % Regenerate the full trajectory (with 'fake' last body rate frame).
-traj.x_bar = [X ; U(2:4,:) zeros(3,1)]; 
+traj.x_bar = [X(1:10,:) ; U(2:4,:) zeros(3,1)]; 
 
 % Generate the feedback matrix
+% % v1
+% traj.L_br = L;
+
+% % v2
 % [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
-traj.L_br = L;
+
+% v3
+lqr.Qn = [
+    0.03000.*ones(3,1) ;      % position
+    0.00000.*ones(3,1) ;      % velocity
+    0.00000.*ones(4,1) ;      % quaternion
+    0.01000.*ones(2,1) ;      % err xy
+    0.01000.*ones(1,1) ;      % err z
+    0.00000.*ones(4,1)];      % err quat    
+lqr.QN = [
+    1.000.*ones(3,1) ;      % position
+    1.000.*ones(3,1) ;      % velocity
+    0.000.*ones(4,1) ;      % quaternion
+    0.000.*ones(2,1) ;       % err xy
+    0.000.*ones(1,1) ;       % err z
+    0.000.*ones(4,1)];       % err quat   
+[~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');

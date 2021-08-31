@@ -1,7 +1,7 @@
 function [La_u_o,La_u_c] = lagr_u(U,Ubar,conu,lamu,mudu,lqr)
 
 % Unpack Some Stuff
-us  = lqr.us;
+Us  = lqr.Us;
 N   = lqr.N;
 Rn  = lqr.Rn;
 
@@ -13,6 +13,7 @@ La_u_c = zeros(1,N);
 for k = 1:N-1
     u = U(:,k);
     ub = Ubar(:,k);
+    us = Us(:,k);
     cu = conu(:,k);
     ldu = lamu(:,k);
     mdu = mudu(:,k);

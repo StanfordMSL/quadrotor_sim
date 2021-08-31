@@ -1,6 +1,6 @@
 function flag = check_LS(La_c,La_p)
 
-tol_obj = 1;
+tol_obj = 1e-1;
 tol_con = 1e-2;
 
 del_obj = La_p.obj - La_c.obj;

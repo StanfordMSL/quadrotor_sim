@@ -3,8 +3,8 @@ function [l,L,delV] = backward_pass(X,U,lqr,con,mult,mode)
 % Unpack some useful stuff
 n_x = size(X,1);
 n_u = size(U,1);
-xs  = lqr.xs;
-us  = lqr.us;
+Xs  = lqr.Xs;
+Us  = lqr.Us;
 N   = lqr.N;
 
 % Tuning Parameter
@@ -19,13 +19,15 @@ delV = zeros(2,N);
 % Initial
 Qin = lqr.QN;
 V = dQN(Qin,1);
-v = dqN(X(:,N),xs,Qin,1);
+v = dqN(X(:,N),Xs(:,N),Qin,1);
 
 for k = N-1:-1:1
     % Unpack stagewise stuff
     x = X(:,k);
     u = U(:,k);
-
+    xs = Xs(:,k);
+    us = Us(:,k);
+    
     A = A_calc(x,u);
     B = B_calc(x,u);
     
@@ -60,7 +62,7 @@ for k = N-1:-1:1
             l(:,k)   = -Qu;
         case 'slow'
             Quu = dRk + B'*V*B + c_u'*I_mu*c_u + reg;
-            while rcond(Quu) < 1e-5
+            while rcond(Quu) < 1e-1
                 reg = rho.*eye(n_u);
                 rho = 10.*rho;
                 
@@ -89,4 +91,6 @@ for k = N-1:-1:1
     % Generate line-search checker
     delV(1,k) = (l(:,k)' * Qu);
     delV(2,k) = 0.5.*(l(:,k)' * Quu * l(:,k));
+end
+
 end

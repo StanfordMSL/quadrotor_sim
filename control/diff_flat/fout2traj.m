@@ -12,11 +12,11 @@ x_bar      = zeros(13,N_tr);
 x_bar(:,1) = traj.x_bar(:,n_tr);
 
 %%% Body Rates
-x_br      = zeros(10,N_tr);
+x_br      = zeros(17,N_tr);
 u_br      = zeros(4,N_tr-1);
 L_br      = zeros(4,10,N_tr-1);
 
-x_br(:,1) = traj.x_bar(1:10,n_tr);
+x_br(1:10,1) = traj.x_bar(1:10,n_tr);
 u_br(:,1) = [fn ; traj.x_bar(11:13,n_tr)];
 
 %%% Direct
@@ -32,10 +32,9 @@ pa = pa_init();
 for k = 1:N_tr-1
     % Wrench through Pos Att
     u_wr(:,k) = pa_ctrl(x_bar(:,k),f_out(:,:,k),pa,model.est);
-%     u_wr(:,k) = df_con(f_out(:,:,k),model.est);
     
     % Output to Motors
-    u_mt(:,k) = w2m_est(u_wr(:,k));
+    u_mt(:,k) = w2m(u_wr(:,k));
     
     % Full State Nominal Trajectory
     FT_ext = zeros(6,1);
@@ -43,11 +42,11 @@ for k = 1:N_tr-1
     x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt(:,k),FT_ext,wt);
     
     % Body Rates
-    x_br(:,k)   = x_bar(1:10,k);
-    u_br(:,k)   = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
-    L_br(:,:,k) = zeros(4,10);
+    x_br(1:10,k) = x_bar(1:10,k);
+    u_br(:,k)    = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
+    L_br(:,:,k)  = zeros(4,10);
 end
-x_br(:,N_tr)   = x_bar(1:10,N_tr);
+x_br(1:10,N_tr)   = x_bar(1:10,N_tr);
 
 % Store it in the desired format
 traj.t_fmu = 0:dt_fmu:(N_tr-1)*dt_fmu;

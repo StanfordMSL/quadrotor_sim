@@ -1,7 +1,7 @@
 function [La_x_o,La_x_c] = lagr_x(X,Xbar,conx,lamx,mudx,lqr)
 
 % Unpack Some Stuff
-xs  = lqr.xs;
+Xs  = lqr.Xs;
 N   = lqr.N;
 Qn  = lqr.Qn;
 QN  = lqr.QN;
@@ -14,6 +14,7 @@ La_x_c = zeros(1,N);
 for k = 1:N
     x = X(:,k);
     xb = Xbar(:,k);
+    xs = Xs(:,k);
     cx = conx(:,k);
     ldx = lamx(:,k);
     mdx = mudx(:,k);
