@@ -13,11 +13,12 @@ model = model_init('carlito','match','precise');
 % model = model_init('iris','match','precise');  
 
 % Objective and Constraints
+obj = grasp_init("massless");
 % obj  = race_init('hover','empty');
 % obj  = race_init('line','gate_center');
 % obj  = race_init('line','gate1');
 % obj  = race_init('line','gate2');
-obj  = race_init('line','slit');
+% obj  = race_init('line','slit');
 % obj = race_update(0);
 
 % Cost Mode
@@ -65,12 +66,12 @@ log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 % log_G = ros_flight(traj_a,obj,'gazebo','single');
 
 % ROS -> Actual
-log_A = ros_flight(traj_a,obj,'actual','single');
+% log_A = ros_flight(traj_a,obj,'actual','single');
 
 %% Plot the States, Animate and Debug
 
-% animation_plot(log_M,obj,'persp','show');
+animation_plot(log_M,obj,'persp','show');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_G)
-sim_compare(traj,log_M,log_A)
+% sim_compare(traj,log_M,log_A)

@@ -7,7 +7,7 @@ bRw = quat2rotm(quat');
 p_grasp_W = x_now(1:3) + bRw*model.grasp.pos;
 
 % check for contact
-check_ct = obj.x(1:3,2) - p_grasp_W;
+check_ct = obj.kf.x(1:3,2) - p_grasp_W;
 
 switch contact_type
     case 'catch'

@@ -149,7 +149,7 @@ while (k_act < N_sim)
     
     % Simple Contact/External Forces Model
     if strcmp(obj.type,'grasp') 
-        [FT_ext,obj,model] = contact_func(x_now,obj,model,'catch');
+        [FT_ext,obj,model] = contact_func(log.x_act(:,k_act),obj,model,'catch');
     else
         FT_ext = zeros(6,1);
     end
