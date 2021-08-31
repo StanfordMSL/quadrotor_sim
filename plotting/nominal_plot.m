@@ -1,4 +1,4 @@
-function nominal_plot(x_bar,gate,step,view_point)
+function nominal_plot(x_bar,obj,step,view_point)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Define plot window and clear previous stuff
@@ -8,6 +8,10 @@ cla
 set(gca,'ColorOrder','factory')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Unpack some stuff
+gate = obj.gt;
+map  = obj.map;
 
 % Generate flight room map
 if any(ismember(fields(gate),'p_ctr'))
@@ -61,9 +65,9 @@ plot3(x_bar(1,:),x_bar(2,:),x_bar(3,:),'--k','linewidth',1);
 daspect([1 1 1])
 
 % Set Limits
-xlim([-8.1 8.1]);
-ylim([-3.2 3.2]);
-zlim([ 0.0 3.0]);
+xlim(map(1,:));
+ylim(map(2,:));
+zlim(map(3,:));
 
 switch view_point
     case 'persp'

@@ -52,10 +52,16 @@ while (k_act < N_sim)
         k_ses = k_ses + 1;
         
         x_act = log.x_act(:,k_act);
-        ses = state_estimation(x_act,ses,sense_mode);
+        if k_fmu == 0
+            x_bar = log.x_des(:,1);
+        else
+            x_bar = log.x_des(:,k_fmu);
+        end
+        ses = state_estimation(x_act,x_bar,ses,sense_mode);
         
         log.t_ses(:,k_ses)   = t_now;   
-        log.x_ses(:,k_ses)   = ses.x; 
+        log.x_ses(:,k_ses)   = ses.x;
+        log.z_ses(:,k_ses)   = ses.z;
         log.sigma(:,:,k_ses) = ses.sigma;
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,12 +75,12 @@ while (k_act < N_sim)
                 u_wr = pa_ctrl(ses.x,f_out_now,pa,model.est);
                 
                 % Output to Motors
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Pos Att Logging
                 log.u_wr(:,k_fmu)  = u_wr;
             case 'body_rate'
-                del_x = ses.x(1:10,:) - traj.x_br(:,k_fmu);
+                del_x = ses.s - traj.x_br(:,k_fmu);
 
                 u_op = traj.u_br(:,k_fmu);
                 u_cl = traj.L_br(:,:,k_fmu)*del_x;
@@ -83,7 +89,7 @@ while (k_act < N_sim)
                 [u_wr,br] = br_ctrl(ses.x,u_now,br);
                 
                 % Output to Motors
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Body Rate Logging
                 log.u_wr(:,k_fmu)  = u_wr;
@@ -92,7 +98,7 @@ while (k_act < N_sim)
                 u_mt = traj.u_mt(:,k_fmu);
             case 'wrench'
                 u_wr = traj.u_wr(:,k_fmu);
-                u_mt = w2m_est(u_wr);
+                u_mt = w2m(u_wr);
                 
                 % Wrench Logging
                 log.u_wr(:,k_fmu)  = u_wr;
@@ -111,9 +117,29 @@ while (k_act < N_sim)
         k_lqr = k_lqr + 1;
         switch high_ctl
             case 'al_ilqr'
-                [traj,t_end] = min_time_augment(traj,obj,k_fmu,0);
-                N_sim = round((t_end/dt_act) + 1);
-                N_fmu = round((t_end/dt_fmu) + 1);
+%                 % Ciruit %%%
+%                 tic
+%                 obj = race_update(t_now,ses.x);
+%                 traj_t = traj_init(obj,model,'body_rate');
+%                 traj_t = diff_flat(obj,model,traj_t,'body_rate');
+%                 nominal_plot(traj.x_bar,obj,20,'persp');
+% 
+%                 [traj_t,~] = al_ilqr(traj_t,obj,999);
+%                 
+%                 [traj_t,~] = al_ilqr(traj_t,obj,999);
+%                 toc
+                
+%                 % Minimum Time %%%
+%                 traj_t = trim(traj,k_fmu);
+%                 traj_t = min_time_augment(traj_t,obj,ses.x,0);
+%                 
+%                 % Restitch
+%                 traj = restitch(traj,traj_t,k_fmu);
+% 
+%                 % Update horizon
+%                 N_fmu = size(traj.x_bar,2);
+%                 N_sim = round(N_fmu*dt_fmu/dt_act);
+                
             case 'none'
                 % Carry on
         end
@@ -131,10 +157,14 @@ while (k_act < N_sim)
     % Dynamic Model
     wt = model.ses.W*randn(13,1);
     log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
+    
+    if log.x_act(7:10,k_act+1)'*log.x_act(7:10,k_act) < 0
+        disp("UHOH... sign flip might need to be invoked");
+    end
 end
 
 % Trim and Tie Up Terminal Point
-log.t_act = log.t_act(:,1:k_act);
+log.t_act = 0:dt_act:(N_sim-1)*dt_act;
 log.x_act = log.x_act(:,1:k_act);
 
 log.t_ses  = log.t_ses(:,1:k_ses);

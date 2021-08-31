@@ -15,7 +15,7 @@ msg.Pose.Orientation.Z = x_init(10,1);
 disp('[send2init]: Sending Drone to Initial Waypoint');
 p_tol = 999;
 p_now = zeros(3,1);
-while (p_tol > 0.1)
+while (p_tol > 0.2)
     % Send to Initial Position
     msg.Header.Stamp = rostime('now');
     send(pose_init_pub,msg);

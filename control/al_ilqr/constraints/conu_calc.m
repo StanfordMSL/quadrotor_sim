@@ -1,14 +1,11 @@
-function [c, cx, cu] = conu_calc(u,up)
+function [c, cx, cu] = conu_calc(u,up,n_x,n_u,N)
 
 % Initialize Variables
-n_u   = size(u,1);
-N     = size(u,2);
+c  = zeros(8,N);
+cx = zeros(8,n_x,N);
+cu = zeros(8,n_u,N);
 
-c  = zeros(8,N+1);
-cx = zeros(8,10,N+1);
-cu = zeros(8,n_u,N+1);
-
-for k = 1:N
+for k = 1:N-1
     u_k = u(:,k);
     up_k = up(:,k);
     

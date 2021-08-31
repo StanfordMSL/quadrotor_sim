@@ -6,11 +6,11 @@ x1 = obj.kf.x(:,2);
 hz_fmu = model.clock.hz_fmu;
 
 % Estimate t_end using assumed velocity.
-t_end = norm(x1(1:3)-x0(1:3))/model.misc.v_cr;
+t_end = round(norm(x1(1:3)-x0(1:3))/model.misc.v_cr,1);
 
 % Intermediate Variables
 fmu_dt = 1/hz_fmu;
-N      = hz_fmu*t_end + 1;
+N      = round(hz_fmu*t_end + 1);
 u_br_hov = [f2fn(model.motor.thrust_hover) ; 0 ; 0 ; 0];
 
 % Some Useful Parameters
@@ -31,7 +31,7 @@ switch mode
         % L: feedback matrix (body rate)
         traj.type = 'body_rate';
 
-        traj.x_br = repmat(x0(1:10,1),1,N);
+        traj.x_br = repmat([x0(1:10,1) ; zeros(7,1)] ,1,N);
         traj.u_br = repmat(u_br_hov,1,N-1);
         traj.L_br = zeros(4,10,N-1);
     case 'direct'
