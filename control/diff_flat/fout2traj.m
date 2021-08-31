@@ -8,15 +8,15 @@ N_tr = size(f_out,3);
 fn = f2fn(model.motor.thrust_hover);
 
 %%% Full State Nominal Trajectory
-x_bar      = zeros(13,N_tr);
+x_bar      = zeros(12,N_tr);
 x_bar(:,1) = traj.x_bar(:,n_tr);
 
 %%% Body Rates
-x_br      = zeros(17,N_tr);
+x_br      = zeros(15,N_tr);
 u_br      = zeros(4,N_tr-1);
 L_br      = zeros(4,10,N_tr-1);
 
-x_br(1:10,1) = traj.x_bar(1:10,n_tr);
+x_br(1:9,1) = [traj.x_bar(1:6,n_tr) ; traj.x_bar(8:10,n_tr)];
 u_br(:,1) = [fn ; traj.x_bar(11:13,n_tr)];
 
 %%% Direct
@@ -42,11 +42,11 @@ for k = 1:N_tr-1
     x_bar(:,k+1) = quadcopter_est(x_bar(:,k),u_mt(:,k),FT_ext,wt);
     
     % Body Rates
-    x_br(1:10,k) = x_bar(1:10,k);
-    u_br(:,k)    = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
-    L_br(:,:,k)  = zeros(4,10);
+    x_br(1:9,k) = [x_bar(1:6,k) ; x_bar(8:10,k)];
+    u_br(:,k)   = [f2fn(u_wr(1,k)) ; x_bar(11:13,k)];
+    L_br(:,:,k) = zeros(4,9);
 end
-x_br(1:10,N_tr)   = x_bar(1:10,N_tr);
+x_br(1:9,N_tr) = [x_bar(1:6,N_tr) ; x_bar(8:10,N_tr)];
 
 % Store it in the desired format
 traj.t_fmu = 0:dt_fmu:(N_tr-1)*dt_fmu;
