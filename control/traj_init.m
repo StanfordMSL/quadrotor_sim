@@ -10,7 +10,7 @@ t_end = round(norm(x1(1:3)-x0(1:3))/model.misc.v_cr,1);
 
 % Intermediate Variables
 fmu_dt = 1/hz_fmu;
-N      = hz_fmu*t_end + 1;
+N      = round(hz_fmu*t_end + 1);
 u_br_hov = [f2fn(model.motor.thrust_hover) ; 0 ; 0 ; 0];
 
 % Some Useful Parameters

@@ -117,8 +117,29 @@ while (k_act < N_sim)
         k_lqr = k_lqr + 1;
         switch high_ctl
             case 'al_ilqr'
-%                 [traj,N_fmu,~,~] = min_time_augment(traj,obj,k_fmu,0);
+%                 % Ciruit %%%
+%                 tic
+%                 obj = race_update(t_now,ses.x);
+%                 traj_t = traj_init(obj,model,'body_rate');
+%                 traj_t = diff_flat(obj,model,traj_t,'body_rate');
+%                 nominal_plot(traj.x_bar,obj,20,'persp');
+% 
+%                 [traj_t,~] = al_ilqr(traj_t,obj,999);
+%                 
+%                 [traj_t,~] = al_ilqr(traj_t,obj,999);
+%                 toc
+                
+%                 % Minimum Time %%%
+%                 traj_t = trim(traj,k_fmu);
+%                 traj_t = min_time_augment(traj_t,obj,ses.x,0);
+%                 
+%                 % Restitch
+%                 traj = restitch(traj,traj_t,k_fmu);
+% 
+%                 % Update horizon
+%                 N_fmu = size(traj.x_bar,2);
 %                 N_sim = round(N_fmu*dt_fmu/dt_act);
+                
             case 'none'
                 % Carry on
         end
@@ -143,7 +164,7 @@ while (k_act < N_sim)
 end
 
 % Trim and Tie Up Terminal Point
-log.t_act = log.t_act(:,1:k_act);
+log.t_act = 0:dt_act:(N_sim-1)*dt_act;
 log.x_act = log.x_act(:,1:k_act);
 
 log.t_ses  = log.t_ses(:,1:k_ses);

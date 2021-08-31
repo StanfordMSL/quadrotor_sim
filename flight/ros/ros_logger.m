@@ -1,22 +1,21 @@
-function log = ros_logger(pose_sub,vel_sub,th_sub,br_sub,t_end)
+function log = ros_logger(subs,t_end)
 
 % Generate Containers
 T = zeros(1,2000);
 X = zeros(13,2000);
 U = zeros(4,2000);
-V = zeros(1,2000);
 
 t_now = 0;
 k = 1;
 tic
 while (t_now <= t_end)
     t_now = toc;
+    
     % Pull Data from Topics Trajectory Data
-    pose = pose_sub.LatestMessage;
-    vel  = vel_sub.LatestMessage;
-    u_th = th_sub.LatestMessage;
-    u_br = br_sub.LatestMessage;
-    v_br = volt_sub.LatestMessage;
+    pose = subs.pose.LatestMessage;
+    vel  = subs.vel.LatestMessage;
+    u_th = subs.th.LatestMessage;
+    u_br = subs.br.LatestMessage;
 
     % Log Time
     T(1,k) = t_now;
@@ -48,15 +47,10 @@ while (t_now <= t_end)
     U(3,k) = u_br.BodyRate.Y;
     U(4,k) = u_br.BodyRate.Z;
     
-    % Log Voltage Values
-    V(1,k) = v_br.Voltage;
-    
+    % Update Counter
     k = k + 1;
-
-    pause(0.005);
 end
 
 log.t_fmu = T(:,1:k-1);
 log.x_fmu = X(:,1:k-1);
 log.u_fmu = U(:,1:k-1);
-log.vbat  = V(:,1:k-1);

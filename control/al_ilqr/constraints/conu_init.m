@@ -1,4 +1,4 @@
-function motor_con_init(model,input_mode)
+function conu_init(model,input_mode)
 
 tic
 
@@ -60,6 +60,6 @@ end
 
 t_comp = toc;
 
-disp(['[motor_con_init]: Motor Constraints Generated in ' num2str(t_comp) 's'])
+disp(['[conu_init]: Input Constraints Generated in ' num2str(t_comp) 's'])
 
 end

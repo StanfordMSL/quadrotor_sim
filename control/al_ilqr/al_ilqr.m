@@ -13,14 +13,13 @@ phi       = [1.5 ; 15];
 
 % LQR Parameters
 lqr.N  = N;
-lqr.Xs = traj.x_br;
-lqr.Us = repmat(traj.u_br(:,1),1,N);    % Usually equal to the hover throttle
+% lqr.Xs = repmat([obj.kf.x(:,2);zeros(7,1)],1,N);
 lqr.Qn = [
     0.00000.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
     0.01000.*ones(2,1) ;      % err xy
-    0.05000.*ones(1,1) ;      % err z
+    0.01000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
 lqr.Rn = [
     0.00000.*ones(1,1) ;      % normalized thrust
@@ -32,11 +31,14 @@ lqr.QN = [
     0.00000.*ones(2,1) ;      % err xy
     0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
+lqr.Xs = X;     % pin to nominal
+lqr.Us = U;     % pin to nominal
 
 p_box = obj.gt.p_box;
+map   = obj.map;
 
 % Initialize Constraints
-con  = con_calc(X,U,p_box);
+con  = con_calc(X,U,p_box,map);
 
 % Initialize Lagrange Multiplier Terms
 mult = mult_init(con);
@@ -63,16 +65,18 @@ while true
         La_p = La_c;
         Xbar = X;
         Ubar = U;
+        lqr.Xs = X;
+        lqr.Us = U;
         alpha = 1;
         while true
             counter(1,3) = counter(1,3)+1;
 
             [X,U,~,~] = forward_pass(Xbar,Ubar,l,L,alpha);
 %             % Debug
-%             nominal_plot(X,obj.gt,10,'persp');
+%             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
-            con  = con_calc(X,U,p_box);
+            con  = con_calc(X,U,p_box,map);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
@@ -89,7 +93,7 @@ while true
             end
         end
         % Debug
-%         nominal_plot(X,obj.gt,10,'nice');
+%         nominal_plot(X,obj,10,'nice');
 %         mthrust_debug(Umt)
         
         flag_iLQR = check_iLQR(flag_LS);
@@ -100,7 +104,7 @@ while true
         end
     end
 %     % Debug
-%     nominal_plot(X,obj.gt,10,'persp');
+%     nominal_plot(X,obj,10,'persp');
 %     mthrust_debug(Umt);  
     
     % Update Lagrangian
@@ -132,27 +136,25 @@ traj.u_br = U;
 traj.x_bar = [X(1:10,:) ; U(2:4,:) zeros(3,1)]; 
 
 % Generate the feedback matrix
-
 % % v1
-% lqr.Qn = [
-%     0.000.*ones(3,1) ;      % position
-%     0.000.*ones(3,1) ;      % velocity
-%     0.000.*ones(4,1) ;      % quaternion
-%     0.050.*ones(2,1) ;       % err xy
-%     0.010.*ones(1,1) ;       % err z
-%     0.000.*ones(4,1)];       % err quat    
-% lqr.QN = [
-%     1.000.*ones(3,1) ;      % position
-%     0.000.*ones(3,1) ;      % velocity
-%     0.000.*ones(4,1) ;      % quaternion
-%     0.050.*ones(2,1) ;       % err xy
-%     0.010.*ones(1,1) ;       % err z
-%     0.000.*ones(4,1)];       % err quat   
-% [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
+% traj.L_br = L;
 
 % % v2
-% lqr.Qn = [ 10.0 ; 10.0 ; 10 ; 0.00.*ones(3,1) ; 0.0.*ones(4,1)];
-% lqr.QN = [ 10.0 ; 10.0 ; 10 ; 0.00.*ones(3,1) ; 0.0.*ones(4,1)];
-% traj.L_br = bp_exp(X,U,lqr,con,mult);
- 
-traj.L_br = L;
+% [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
+
+% v3
+lqr.Qn = [
+    0.03000.*ones(3,1) ;      % position
+    0.00000.*ones(3,1) ;      % velocity
+    0.00000.*ones(4,1) ;      % quaternion
+    0.01000.*ones(2,1) ;      % err xy
+    0.01000.*ones(1,1) ;      % err z
+    0.00000.*ones(4,1)];      % err quat    
+lqr.QN = [
+    1.000.*ones(3,1) ;      % position
+    1.000.*ones(3,1) ;      % velocity
+    0.000.*ones(4,1) ;      % quaternion
+    0.000.*ones(2,1) ;       % err xy
+    0.000.*ones(1,1) ;       % err z
+    0.000.*ones(4,1)];       % err quat   
+[~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');

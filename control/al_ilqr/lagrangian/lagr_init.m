@@ -8,7 +8,7 @@ switch input_mode
         n_u = 4;
 end
 
-N_cx = 16;
+N_cx = 22;
 N_cu = 8;
 
 % Initialize Variables

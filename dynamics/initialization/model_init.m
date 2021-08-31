@@ -27,7 +27,7 @@ switch frame
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
 
         % Aerodynamic Properties
-        model.act.kw = [0.00 ; 0.00 ; 2.22e-07];     % Rotor Thrust Coeffecients
+        model.act.kw = [0.00 ; 0.00 ; 2.05e-07];     % Rotor Thrust Coeffecients
         model.act.b  = 0.0157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   0.20   0.00;...
@@ -126,9 +126,9 @@ switch model_diff
         
         model.est.kw = [0.00 ; 0.00 ; 2.30e-07];
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-            0.00   3.50   0.00;...
-            0.00   3.50   0.00;...
-            0.00   0.10   0.00];
+            0.00   0.50   0.00;...
+            0.00   0.50   0.00;...
+            0.00   0.20   0.00];
 
 %         model.est.m = 0.5;
  
@@ -221,7 +221,3 @@ model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 model.misc.ndr  = 15;           % Number of Terms for Diff Flat Polynomial
 model.misc.v_cr = 1.0;          % 'cruise' velocity for initial estimates
 model.misc.t_hov = 5.0;         % how long to hover if no waypoints
-
-model.map.x_lim = [-8.1 8.1];   % Map x-limits (length)
-model.map.y_lim = [-3.2 3.2];   % Map y-limits (width)
-model.map.z_lim = [0 3];        % Map z-limits (height)

@@ -17,6 +17,13 @@ else
     disp('[race_init]: Keyframe input not recognized. Defaulting to hover at origin');
 end
 
+% Map
+obj.map = [
+    -8.1 8.1;       % Map x-limits (length)
+    -3.2 3.2;       % Map y-limits (width)
+     0 3];          % Map z-limits (height)      
+
+% Gate
 if isfile(gt_add)
     data = readmatrix(gt_add, 'Range', [2 2]);
     N_g = size(data,2);

@@ -1,10 +1,12 @@
-function log = ros_update(traj,obj,t_start,traj_pub,pose_sub,vel_sub,th_sub,br_sub)
+function log = ros_update(subs,traj_pub,traj,res)
+
+% Unpack some stuff
+t_start = res.TStart;
 
 % Generate Containers
 T = zeros(1,2000);
 X = zeros(13,2000);
 U = zeros(4,2000);
-V = zeros(1,2000);
 
 t_end = round(size(traj.x_br,2)*(1/traj.hz));
 k = 1;
@@ -23,10 +25,10 @@ while true
     k_now = round(t_k*traj.hz);
     
     % Pull Data from Topics Trajectory Data
-    pose = pose_sub.LatestMessage;
-    vel  = vel_sub.LatestMessage;
-    u_th = th_sub.LatestMessage;
-    u_br = br_sub.LatestMessage;
+    pose = subs.pose.LatestMessage;
+    vel  = subs.vel.LatestMessage;
+    u_th = subs.th.LatestMessage;
+    u_br = subs.br.LatestMessage;
     
     % Measure current state
     x_now(1,1) =  pose.Pose.Position.X;
@@ -41,6 +43,9 @@ while true
     x_now(8,1) = pose.Pose.Orientation.X;
     x_now(9,1) = pose.Pose.Orientation.Y;
     x_now(10,1) = pose.Pose.Orientation.Z;
+    
+    % Generate New Objective and Constraint
+    
     
     % Run trajectory update using al-iLQR
     [traj,N,traj_t,~] = min_time_augment(traj,obj,x_now,k_now,0);
@@ -82,4 +87,3 @@ end
 log.t_fmu = T(:,1:k-1);
 log.x_fmu = X(:,1:k-1);
 log.u_fmu = U(:,1:k-1);
-log.vbat  = V(:,1:k-1);

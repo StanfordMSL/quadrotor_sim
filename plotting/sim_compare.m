@@ -20,7 +20,7 @@ for k = 1:N
     plot(traj.t_fmu,traj.x_bar(k,:),'--','Linewidth',1.5);
     hold on
     plot(log_M.t_fmu,log_M.x_fmu(k,:));
-    plot(log_R.t_fmu(1,:),log_R.x_fmu(k,:),'*');
+    plot(log_R.t_fmu(1,:),log_R.x_fmu(k,:));
     title(title_arr{k});
     legend('nominal','matlab','ros');
     
@@ -30,13 +30,13 @@ for k = 1:N
         elseif k == 3
             ylim([0 2.5]);
         else
-            ylim([-2.0 2.0]);
+            ylim([-3.0 3.0]);
         end
     else
         if k == R+1
             ylim([-1.3 -0.7]);
         else
-            ylim([-0.3 0.3]);
+            ylim([-0.5 0.5]);
         end
     end
 end
