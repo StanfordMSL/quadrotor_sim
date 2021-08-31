@@ -64,29 +64,29 @@ ylim([-1.1 1.1])
 legend('actual','simulated')
 title('q3');
 
-figure(3)
-clf
-
-subplot(3,1,1)
-plot(T,U(2,:));
-hold on
-plot(log.t_fmu,log.x_fmu(11,:));
-ylim([-5 5])
-legend('actual','simulated')
-title('w_x');
-
-subplot(3,1,2)
-plot(T,U(3,:));
-hold on
-plot(log.t_fmu,log.x_fmu(12,:));
-ylim([-5 5])
-legend('actual','simulated')
-title('w_y');
-
-subplot(3,1,3)
-plot(T,U(4,:));
-hold on
-plot(log.t_fmu,log.x_fmu(13,:));
-ylim([-1 3])
-legend('actual','simulated')
-title('w_z');
+% figure(3)
+% clf
+% 
+% subplot(3,1,1)
+% plot(T,U(2,:));
+% hold on
+% plot(log.t_fmu,log.x_fmu(11,:));
+% ylim([-5 5])
+% legend('actual','simulated')
+% title('w_x');
+% 
+% subplot(3,1,2)
+% plot(T,U(3,:));
+% hold on
+% plot(log.t_fmu,log.x_fmu(12,:));
+% ylim([-5 5])
+% legend('actual','simulated')
+% title('w_y');
+% 
+% subplot(3,1,3)
+% plot(T,U(4,:));
+% hold on
+% plot(log.t_fmu,log.x_fmu(13,:));
+% ylim([-1 3])
+% legend('actual','simulated')
+% title('w_z');

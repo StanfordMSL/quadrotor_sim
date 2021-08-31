@@ -1,4 +1,4 @@
-function animation_plot(flight,obj,map,view_point,wp_show)
+function animation_plot(flight,obj,view_point,wp_show)
     
     t_act = flight.t_act;
     x_act = flight.x_act;
@@ -21,9 +21,9 @@ function animation_plot(flight,obj,map,view_point,wp_show)
     zlabel('z-axis');
 
     % Define Map Limits
-    xlim(map.x_lim);
-    ylim(map.y_lim);
-    zlim(map.z_lim);
+    xlim(obj.map(1,:));
+    ylim(obj.map(2,:));
+    zlim(obj.map(3,:));
     grid on
     hold on
     set(gcf,'color','white')

@@ -1,32 +1,45 @@
-function log = ros_flight(traj,mode)
+function log = ros_flight(traj,obj,mode,type)
+
+%% Initialize MATLAB -> ROS node
 
 switch mode
     case 'gazebo'
         droneID = 'drone1';
+        
+        coreADD = 'relay.local';
 %         coreADD = 'ASGARD.local';
-        coreADD = 'FOLKVANGR.local';
+%         coreADD = 'FOLKVANGR.local';
     case 'actual'
-        droneID = 'drone7';
+        droneID = 'drone2';
+        %         droneID = 'drone7';
+        
         coreADD = 'relay.local';
 end
 
-% Initialize ROS Matlab Node
 try
     rosnode list
 catch
     rosinit(coreADD)
 end
 
-% Initialize ROS Parameters
 node = ros.Node('/matlab_node');
-pose_sub = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
-pose_init_pub = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
+
+%% Define the relevant ROS publishers and subscribers
+
+subs.pose = ros.Subscriber(node,[droneID '/mavros/local_position/pose']);
+subs.vel  = ros.Subscriber(node,[droneID '/mavros/local_position/velocity_local']);
+subs.th   = ros.Subscriber(node,[droneID '/mavros/target_actuator_control']);
+subs.br   = ros.Subscriber(node,[droneID '/mavros/setpoint_raw/target_attitude']);
+
+x0_pub   = ros.Publisher(node,[droneID '/setpoint/position'],'geometry_msgs/PoseStamped');
+traj_pub = ros.Publisher(node,[droneID '/setpoint/TrajUpdate'],'bridge_px4/TrajUpdate');
+
 pause(1);
 
-% Send the Drone to Initial Position
-send2init(pose_init_pub,pose_sub,traj.x_bar(:,1));
+%% Send the Drone to Initial Position
+send2init(x0_pub,subs.pose,traj.x_bar(:,1));
 
-% Send Trajectory for Execution
+%% Send Initial Trajectory for Execution
 traj_client = ros.ServiceClient(node,[droneID '/setpoint/TrajTransfer'],"Timeout",3);
 
 req = rosmessage(traj_client);
@@ -38,14 +51,14 @@ req.LArr = traj.L_br(:);
 
 req.XArr = traj.x_br(:);
 
-call(traj_client,req,'Timeout',3);
-% print(["Actual: ",num2str(cs_act)," ROS: ",num2str(cs_ros)]);
+res = call(traj_client,req,'Timeout',3);
 
-switch mode
-    case 'body_rate'
+%% Online Updates
 
-
+switch type
+    case 'single'
+        log = ros_logger(subs,traj.t_fmu(1,end));
+    case 'iterate'
+        log = ros_update(subs,traj_pub,traj,obj,res);
 end
-
-log = ros_logger(pose_sub,traj.t_fmu(1,end));
 
