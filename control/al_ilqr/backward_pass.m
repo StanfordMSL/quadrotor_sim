@@ -8,7 +8,7 @@ Us  = lqr.Us;
 N   = lqr.N;
 
 % Tuning Parameter
-rho = 0.001;
+rho_0 = 0.001;
 reg = zeros(n_u,n_u);
 
 % Initialize feedback policy variables
@@ -64,6 +64,7 @@ for k = N-1:-1:1
     Qu  = drk + B'*v + c_u'*(lam + I_mu*c);
     Qxx = dQk + A'*V*A + c_x'*I_mu*c_x;
     
+    rho = rho_0;
     switch mode
         case 'fast'
             % Generate Feedback Update
