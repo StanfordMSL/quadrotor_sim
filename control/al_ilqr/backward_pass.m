@@ -18,8 +18,16 @@ delV = zeros(2,N);
 
 % Initial
 Qin = lqr.QN;
-V = dQN(Qin,1);
-v = dqN(X(:,N),Xs(:,N),Qin,1);
+c   = con.cx(:,N);
+c_x = con.cx_x(:,:,N);
+
+lamx = mult.lamx(:,N);
+mudx = mult.mudx(:,N);
+
+I_mu = diag(mudx);
+    
+V = dQN(Qin,1)  +c_x^T*I_mu*c_x;
+v = dqN(X(:,N),Xs(:,N),Qin,1) + c_x^T*(lamx+I_mu*c);
 
 for k = N-1:-1:1
     % Unpack stagewise stuff
