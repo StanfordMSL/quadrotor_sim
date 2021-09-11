@@ -10,27 +10,20 @@ set(gca,'ColorOrder','factory')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Unpack some stuff
-gate = obj.gt;
+N_gt = size(obj.kf.gt,2);
 map  = obj.map;
 
 % Generate flight room map
-if any(ismember(fields(gate),'p_ctr'))
-    N_g = size(gate.p_ctr,2);
-    
-    for k = 1:N_g
-        % Gate(s) Present. Render.    
-        p_G1 = gate.p_box(:,1,k);
-        p_G2 = gate.p_box(:,2,k);
-        p_G4 = gate.p_box(:,4,k);
-
-        r_12 = p_G2 - p_G1;
-        r_14 = p_G4 - p_G1;
-        n_G  = cross(r_14,r_12);
-        gate_dir = gate.p_box(:,1,k)+ (0.3.*n_G./norm(n_G));
+if N_gt > 0
+    for k = 1:N_gt
+        % Gate(s) Present. Render.
+        gt_dim = obj.db(obj.kf.gt(1,k)).gt_dim;
         
-        g_frame = [gate.p_box(:,:,k) gate.p_box(:,1,k) gate_dir];  % render points need to terminate at start
+        q_star = quatconj(obj.kf.gt(5:8,k)');
 
-        gate_h = plot3(g_frame(1,:)',g_frame(2,:)',g_frame(3,:)','b');
+        edges = obj.kf.gt(2:4,k)+quatrotate(q_star,gt_dim')';
+            
+        gate_h = plot3(edges(1,:)',edges(2,:)',edges(3,:)','b');
         gate_h.LineWidth = 3;
         hold on
     end

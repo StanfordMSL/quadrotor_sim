@@ -25,14 +25,18 @@ switch frame
             0.00   0.00   2.00];
         model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
+        model.act.dim   = [0.10 ; 0.12 ; 0.035];    % Craft Dimensions
 
         % Aerodynamic Properties
         model.act.kw = [0.00 ; 0.00 ; 2.05e-07];     % Rotor Thrust Coeffecients
         model.act.b  = 0.0157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
-            0.00   0.20   0.00;...
-            0.00   0.20   0.00;...
-            0.00   0.10   0.00];
+            0.00   eps   0.00;...
+            0.00   eps   0.00;...
+            0.00   eps   0.00];
+%             0.00   0.20   0.00;...
+%             0.00   0.20   0.00;...
+%             0.00   0.10   0.00];
         model.act.A  = [...                         % Frame Linear Drag Torque Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   eps  0.00;...
             0.00   eps  0.00;...
@@ -58,6 +62,7 @@ switch frame
             0.00   0.00   1.51];
         model.act.L     = 0.06;                     % X and Y arm offsets (square frame)
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
+        model.act.dim   = [0.10 ; 0.12 ; 0.035];    % Craft Dimensions
 
         % Aerodynamic Properties
         model.act.kw = [0.00 ; 0.00 ; 2.0e-07];    % Rotor Thrust Coeffecients
@@ -90,6 +95,7 @@ switch frame
             0.00   0.00   5.52]; 
         model.act.L     = 0.0885;                   % X and Y arm offsets (square frame)
         model.act.g     = 9.81;                     % Gravitational Acceleration Constant
+        model.act.dim   = [0.40 ; 0.40 ; 0.08];    % Craft Dimensions
 
         % Aerodynamic Properties
         model.act.kw = [0.00 ; 0.00 ; 5.86e-06];    % Rotor Thrust Coeffecients
@@ -219,5 +225,5 @@ model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 
 %% Misc
 model.misc.ndr  = 15;           % Number of Terms for Diff Flat Polynomial
-model.misc.v_cr = 1.0;          % 'cruise' velocity for initial estimates
+model.misc.v_cr = 0.5;          % 'cruise' velocity for initial estimates
 model.misc.t_hov = 5.0;         % how long to hover if no waypoints

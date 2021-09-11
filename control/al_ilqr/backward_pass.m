@@ -26,8 +26,8 @@ mudx = mult.mudx(:,N);
 
 I_mu = diag(mudx);
     
-V = dQN(Qin,1)  +c_x^T*I_mu*c_x;
-v = dqN(X(:,N),Xs(:,N),Qin,1) + c_x^T*(lamx+I_mu*c);
+V = dQN(Qin,1)  +c_x'*I_mu*c_x;
+v = dqN(X(:,N),Xs(:,N),Qin,1) + c_x'*(lamx+I_mu*c);
 
 for k = N-1:-1:1
     % Unpack stagewise stuff

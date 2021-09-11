@@ -13,11 +13,13 @@ model = model_init('carlito','match','precise');
 % model = model_init('iris','match','precise');  
 
 % Objective and Constraints
-% obj  = race_init('hover','empty');
-% obj  = race_init('line','gate_center');
-% obj  = race_init('line','gate1');
-% obj  = race_init('line','gate2');
-obj  = race_init('line','slit');
+% obj  = race_init('circuit_free',model.misc);
+% obj  = race_init('circuit_obst',model.misc);
+obj  = race_init('delt_line',model.misc);
+% obj  = race_init('hover',model.misc);
+% obj  = race_init('port_line',model.misc);
+% obj  = race_init('slit_line_I',model.misc);
+
 % obj = race_update(0);
 
 % Cost Mode
@@ -28,13 +30,13 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% % Generate QP Matrices
+% Generate QP Matrices
 % QP_init(model.misc.ndr);                       
-% 
-% % Generate Dynamics and Linearization Functions
+
+% Generate Dynamics and Linearization Functions
 % dyn_init(model,input_mode);      
-% 
-% % Generate Constraint Variables
+
+% Generate Constraint Variables
 % lagr_init(cost_mode,input_mode)
 % conx_init(model,input_mode)
 % conu_init(model,input_mode)
@@ -46,7 +48,7 @@ traj = traj_init(obj,model,input_mode);
 
 % Warm Start Using Indirect Method
 traj = diff_flat(obj,model,traj,input_mode);
-% nominal_plot(traj.x_bar,obj,20,'persp');
+nominal_plot(traj.x_bar,obj,20,'persp');
 
 % Full Constraint Optimizationy
 [traj,~] = al_ilqr(traj,obj,999);

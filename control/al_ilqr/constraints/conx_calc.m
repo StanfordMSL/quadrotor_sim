@@ -1,25 +1,31 @@
-function [c, cx, cu] = conx_calc(x,p_box,map,n_x,n_u,N)
+function [c, cx, cu] = conx_calc(X,pose_gt,gt_dim,n_x,n_u,N)
 
 % Initialize Variables
-c  = zeros(22,N);
-cx = zeros(22,n_x,N);
-cu = zeros(22,n_u,N);
+c  = zeros(32,N);
+cx = zeros(32,n_x,N);
+cu = zeros(32,n_u,N);
 
-if (size(p_box,3) > 0)
-    p12 = p_box(:,2)-p_box(:,1);
-    p14 = p_box(:,4)-p_box(:,1);
-    plane = [ cross(p12,p14) ; dot(cross(p12,p14),p_box(:,1))];
+if (size(pose_gt,2) > 0)
+    N_pts = size(gt_dim,2)-1;
+    p0  = pose_gt(1:3,1);
+    q_gt = quatconj(pose_gt(4:7,1)');
+    pts = pose_gt(1:3,1)+quatrotate(q_gt,gt_dim')';
 
-    for k = 1:N
-        x_k = x(:,k);
+    for k_fr = 1:N
+        x_k = X(:,k_fr);
 
-        dist = plane_dist(plane,x_k(1:3));
-        if dist < 0.1
-            c(1:16,k)    = conx_gate(x_k,p_box);   
-            cx(1:16,:,k) = conx_gate_x(x_k,p_box);
+        dist = norm(x_k(1:3)-p0);
+        if dist < 0.3
+            for k_pts = 1:N_pts
+                idx1 = (k_pts-1)*8+1;
+                idx2 = 8*k_pts;
+                
+                p1 = pts(:,k_pts);
+                p2 = pts(:,k_pts+1);
+                c(idx1:idx2,k_fr)    = conx_gate(x_k,p0,p1,p2);   
+                cx(idx1:idx2,:,k_fr) = conx_gate_x(x_k,p0,p1,p2);
+            end
         end
-        c(17:22,k) = conx_map(x_k,map);
-        cx(17:22,:,k) = conx_map_x(x_k,map);
     end
 end
 

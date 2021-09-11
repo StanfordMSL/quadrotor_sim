@@ -3,10 +3,12 @@ function conx_init(model,input_mode)
 tic
 
 % Quadcopter Parameters (relative position of n_p points on body)
-l_arm  = model.est.L;
-r_d_arr = [ l_arm    0.00  -l_arm    0.00;
-            0.00  -l_arm    0.00   l_arm; 
-            0.00    0.00    0.00    0.00 ];
+l_x = model.est.dim(1);
+l_y = model.est.dim(2);
+l_z = model.est.dim(3);
+r_d_arr = [-l_x   l_x   l_x  -l_x  -l_x   l_x   l_x  -l_x;
+            l_y   l_y  -l_y  -l_y   l_y   l_y  -l_y  -l_y;
+            l_z   l_z   l_z   l_z  -l_z  -l_z  -l_z  -l_z];
 n_p = size(r_d_arr,2);
 
 % Variable dimensions based on Input
@@ -23,26 +25,23 @@ end
 x = sym('x',[n_x 1],'real');
 
 % Gate Constraint
-p_box = sym('p_box',[3 4],'real');
-gain = sym('gain',[n_p*2 1],'real');
+p0 = sym('p0',[3 1],'real');
+p1 = sym('p1',[3 1],'real');
+p2 = sym('p2',[3 1],'real');
 
-p_G1 = p_box(:,1);
-p_G2 = p_box(:,2);
-p_G4 = p_box(:,4);
-r_g_arr = [p_G2-p_G1 p_G4-p_G1];
+p12 = p2-p1;
+p10 = p0-p1;
 
-for j = 1:2
-    r_g = r_g_arr(:,j);
+t  = (p10'*p12)/(p12'*p12);
+pn = p1 + t*(p2-p1);
+n  = p0-pn;
 
-    for k = 1:n_p
-        idx = (j-1)*n_p+k;
-
-        r_d = x(1:3,1) + quatrot2(r_d_arr(:,k),x(7:10,1));
-        gain(idx,1) = dot((r_d-p_G1),r_g)./(r_g'*r_g);
-    end
+conx_gate = sym('conx_gate',[n_p 1],'real');
+for k = 1:n_p    
+    r_d = x(1:3,1) + quatrot2(r_d_arr(:,k),x(7:10,1));
+    
+    conx_gate(k,1) = -(n(1)*(r_d(1)-pn(1))+n(2)*(r_d(2)-pn(2))+ n(3)*(r_d(3)-pn(3)));
 end
-
-conx_gate   = [-gain ; gain-ones(n_p*2,1)];
 
 % Map Constraint
 map_lim = sym('map_lim',[3 2],'real');
@@ -60,8 +59,8 @@ conx_gate_x = jacobian(conx_gate,x);
 conx_map_x = jacobian(conx_map,x);
 
 address = 'control/al_ilqr/constraints/';
-matlabFunction(conx_gate,'File',[address,'conx_gate'],'vars',{x,p_box});
-matlabFunction(conx_gate_x,'File',[address,'conx_gate_x'],'vars',{x,p_box});
+matlabFunction(conx_gate,'File',[address,'conx_gate'],'vars',{x,p0,p1,p2});
+matlabFunction(conx_gate_x,'File',[address,'conx_gate_x'],'vars',{x,p0,p1,p2});
 
 matlabFunction(conx_map,'File',[address,'conx_map'],'vars',{x,map_lim});
 matlabFunction(conx_map_x,'File',[address,'conx_map_x'],'vars',{x,map_lim});

@@ -11,18 +11,20 @@ function traj = diff_flat(obj,model,traj,mode)
 % have to pad the trajectory to hover for the remainder of the 10s.
 
 %% Generate the main part of the trajectory
-N_kf = size(obj.kf.x,2)-1;
-T = 1;
-for k_kf = 1:N_kf
-    % Convert objectives to flat outputs
-    f_wp = obj2fwp(obj,k_kf,model.misc);
 
-    % Solve the Piecewise QP
-    f_out = piecewise_QP(f_wp,model.clock.dt_fmu);
-    
-    % Update the total trajectory
-    traj = fout2traj(traj,T,f_out,model,mode);
-end
+ndr = model.misc.ndr;
+N    = size(obj.kf.fo,3);
+
+% Convert objectives to flat outputs
+f_wp.t = obj.kf.t;
+f_wp.sigma = zeros(4,ndr,N);
+f_wp.sigma(:,1:2,:) = obj.kf.fo;
+
+% Solve the Piecewise QP
+f_out = piecewise_QP(f_wp,model.clock.dt_fmu);
+
+% Update the total trajectory
+traj = fout2traj(traj,1,f_out,model,mode);
 
 end
 

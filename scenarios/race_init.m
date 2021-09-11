@@ -1,63 +1,78 @@
-function obj = race_init(keyframes,gates)
+function obj = race_init(mission,misc)
 
 obj.type = 'race';
 
-kf_add = ['scenarios/keyframes/',keyframes,'.csv'];
-gt_add = ['scenarios/gates/',gates,'.csv'];
-
-% Keyframes
-if isfile(kf_add)    
-    obj.kf.x = readmatrix(kf_add, 'Range', [2 2]);
-    
-    disp(['[race_init]: Loaded Keyframe Sequence: ',keyframes]);
-else
-    obj.kf.x = zeros(13,2);
-    obj.kf.x(7,:) = 1;
-    
-    disp('[race_init]: Keyframe input not recognized. Defaulting to hover at origin');
-end
+gt_add = 'scenarios/gates/';
+ms_add = ['scenarios/missions/',mission,'.csv'];
 
 % Map
 obj.map = [
     -8.1 8.1;       % Map x-limits (length)
     -3.2 3.2;       % Map y-limits (width)
-     0 3];          % Map z-limits (height)      
+     0.0 3.0];          % Map z-limits (height)      
 
-% Gate
-if isfile(gt_add)
-    data = readmatrix(gt_add, 'Range', [2 2]);
-    N_g = size(data,2);
+% Gates
+gates = dir([gt_add '*.csv']);
+for k_wp = 1:length(gates)
+  file = [gt_add gates(k_wp).name];
+  obj.db(k_wp).gt_dim = readmatrix(file,'Range', [1 2]);
+end
+
+% Missions
+if isfile(ms_add)
+    % Raw mission data
+    data = readmatrix(ms_add, 'Range', [1 2]);
     
-    obj.gt.p_ctr = zeros(3,N_g);    
-    obj.gt.p_box = zeros(3,4,N_g);
-    obj.gt.q_box = zeros(4,N_g);
-    obj.gt.seq  = zeros(1,N_g);
+    % Some useful intermediate terms
+    N = size(data,2);
+    N_kf = sum(data(1,:)==0);
+    N_gt = N-N_kf;
     
-    if N_g == 0
-        % Empty room.
-    else
-        for j = 1:N_g
-            obj.gt.p_ctr(:,j)  = data(1:3,j);
-            
-            dim_gate = zeros(3,4);
-            for k = 1:4
-                idx = 3*(k-1) + 8;
-                dim_gate(:,k) = data(idx:idx+2,j);
+    % Mission flatoutputs, keyframes and gates
+    obj.kf.t   = zeros(1,N);
+    obj.kf.fo  = zeros(4,2,N);
+    obj.kf.x   = zeros(13,N_kf);
+    obj.kf.gt  = zeros(8,N_gt);
+    
+    q = [-1 ; 0 ; 0 ; 0];
+    k_kf = 1;
+    k_gt = 1;
+    for k_wp = 1:N
+        if (data(1,k_wp) == 0)
+            % Keyframes
+            obj.kf.x(:,k_kf) = data(2:14,k_wp);
+            k_kf = k_kf + 1;
+            q = data(8:11,k_wp) ;
+        else
+            % Gates
+            obj.kf.gt(:,k_gt) = [data(1,k_wp) ; data(2:4,k_wp) ; data(8:11,k_wp) ];
+            k_gt = k_gt + 1;
+        end
+        
+        % Flat Outputs
+        eul = quat2eul(q');
+        obj.kf.fo(1:3,1,k_wp) = data(2:4,k_wp);
+        obj.kf.fo(1:3,2,k_wp) = data(5:7,k_wp);
+        obj.kf.fo(4,1,k_wp)   = eul(1);
+        obj.kf.fo(4,2,k_wp)   = data(14,k_wp);
+        
+        if k_wp > 1
+            s_int = norm(obj.kf.fo(1:3,1,k_wp) - obj.kf.fo(1:3,1,k_wp-1));
+            if s_int == 0
+                t_int = misc.t_hov;      % to catch the hover case
+            else
+                t_int = round(s_int/misc.v_cr,1);
             end
-            % Generate conjugate because because matlab uses the frame rotation convention
-            q_star = quatconj(data(4:7,j)');
-            obj.gt.q_box(:,j)   = q_star';
-            obj.gt.p_box(:,:,j) = data(1:3,j)+quatrotate(q_star,dim_gate')';
-            
-            obj.gt.seq(1,j) = data(20,j);
+            obj.kf.t(1,k_wp) = obj.kf.t(1,k_wp-1) + t_int;
         end
     end
-    disp(['[race_init]: Loaded Gate Sequence: ',gates]);  
-else
-    obj.gt.p_ctr = zeros(3,0);    
-    obj.gt.p_box = zeros(3,4,0);
-    obj.gt.q_box = zeros(4,0);
-    obj.gt.seq  = zeros(1,0);
     
-    disp('[race_init]: Gate input not recognized. Defaulting to empty room');
+    disp(['[race_init]: Loaded Mission: ', mission]);
+else
+    obj.kf.x = zeros(13,2);
+    obj.kf.x(7,:) = 1;
+    
+    disp('[race_init]: Mission input not recognized. Defaulting to hover at origin');
+end
+
 end

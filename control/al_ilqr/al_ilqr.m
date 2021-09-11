@@ -34,11 +34,11 @@ lqr.QN = [
 lqr.Xs = X;     % pin to nominal
 lqr.Us = U;     % pin to nominal
 
-p_box = obj.gt.p_box;
-map   = obj.map;
+pose_gt = obj.kf.gt(2:8,1);
+gt_dim  = obj.db(obj.kf.gt(1,1)).gt_dim;
 
 % Initialize Constraints
-con  = con_calc(X,U,p_box,map);
+con  = con_calc(X,U,pose_gt,gt_dim);
 
 % Initialize Lagrange Multiplier Terms
 mult = mult_init(con);
@@ -76,7 +76,7 @@ while true
 %             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
-            con  = con_calc(X,U,p_box,map);
+            con  = con_calc(X,U,pose_gt,gt_dim);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
