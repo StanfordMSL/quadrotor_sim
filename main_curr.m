@@ -18,8 +18,8 @@ model = model_init('carlito','match','precise');
 obj  = race_init('delt_line',model.misc);
 % obj  = race_init('hover',model.misc);
 % obj  = race_init('port_line',model.misc);
+% obj  = race_init('vent_line',model.misc);
 % obj  = race_init('slit_line_I',model.misc);
-
 % obj = race_update(0);
 
 % Cost Mode
@@ -31,15 +31,15 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 %% Pre-Computes (comment out after initial run to save time)
 
 % Generate QP Matrices
-% QP_init(model.misc.ndr);                       
+QP_init(model.misc.ndr);                       
 
 % Generate Dynamics and Linearization Functions
-% dyn_init(model,input_mode);      
+dyn_init(model,input_mode);      
 
 % Generate Constraint Variables
-% lagr_init(cost_mode,input_mode)
-% conx_init(model,input_mode)
-% conu_init(model,input_mode)
+lagr_init(cost_mode,input_mode)
+conx_init(model,input_mode)
+conu_init(model,input_mode)
 
 %% Trajectory Planning
 
@@ -48,7 +48,7 @@ traj = traj_init(obj,model,input_mode);
 
 % Warm Start Using Indirect Method
 traj = diff_flat(obj,model,traj,input_mode);
-nominal_plot(traj.x_bar,obj,20,'persp');
+% nominal_plot(traj.x_bar,obj,20,'persp');
 
 % Full Constraint Optimizationy
 [traj,~] = al_ilqr(traj,obj,999);
@@ -63,11 +63,11 @@ obj_a  = obj;
 % MATLAB
 log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 
-% % ROS -> Gazebo
-% log_G = ros_flight(traj_a,obj,'gazebo','single');
+% ROS -> Gazebo
+log_G = ros_flight(traj_a,obj,'gazebo','single');
 
-% ROS -> Actual
-log_A = ros_flight(traj_a,obj,'actual','single');
+% % ROS -> Actual
+% log_A = ros_flight(traj_a,obj,'actual','single');
 
 %% Plot the States, Animate and Debug
 
@@ -75,4 +75,4 @@ log_A = ros_flight(traj_a,obj,'actual','single');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_G)
-sim_compare(traj,log_M,log_A)
+% sim_compare(traj,log_M,log_A)

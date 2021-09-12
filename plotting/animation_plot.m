@@ -20,40 +20,37 @@ function animation_plot(flight,obj,view_point,wp_show)
     ylabel('y-axis');
     zlabel('z-axis');
 
-    % Define Map Limits
-    xlim(obj.map(1,:));
-    ylim(obj.map(2,:));
-    zlim(obj.map(3,:));
+    % Define Map Bounds
+    xlim(obj.map.act(1,:));
+    ylim(obj.map.act(2,:));
+    zlim(obj.map.act(3,:));
     grid on
     hold on
     set(gcf,'color','white')
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Unpack some stuff
+    N_gt = size(obj.kf.gt,2);
+%     map  = obj.map.act;
+    
     % Generate flight room map
-    if any(ismember(fields(obj.gt),'p_ctr'))
-        N_g = size(obj.gt.p_ctr,2);
-
-        for k = 1:N_g
-            % Gate(s) Present. Render.    
-            p_G1 = obj.gt.p_box(:,1,k);
-            p_G2 = obj.gt.p_box(:,2,k);
-            p_G4 = obj.gt.p_box(:,4,k);
-
-            r_12 = p_G2 - p_G1;
-            r_14 = p_G4 - p_G1;
-            n_G  = cross(r_14,r_12);
-            gate_dir = obj.gt.p_box(:,1,k)+ (0.3.*n_G./norm(n_G));
-
-            g_frame = [obj.gt.p_box(:,:,k) obj.gt.p_box(:,1,k) gate_dir];  % render points need to terminate at start
-
-            gate_h = plot3(g_frame(1,:)',g_frame(2,:)',g_frame(3,:)','b');
+    if N_gt > 0
+        for k = 1:N_gt
+            % Gate(s) Present. Render.
+            gt_dim = obj.db(obj.kf.gt(1,k)).gt_dim;
+            
+            q_star = quatconj(obj.kf.gt(5:8,k)');
+            
+            edges = obj.kf.gt(2:4,k)+quatrotate(q_star,gt_dim')';
+            
+            gate_h = plot3(edges(1,:)',edges(2,:)',edges(3,:)','b');
             gate_h.LineWidth = 3;
-            gate_h.Annotation.LegendInformation.IconDisplayStyle = 'off';
             hold on
         end
     else
         % No Gate. Carry On.
     end
+    grid on
     
     % Plot the target
     if strcmp(obj.type,'grasp') 

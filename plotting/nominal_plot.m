@@ -11,7 +11,7 @@ set(gca,'ColorOrder','factory')
 
 % Unpack some stuff
 N_gt = size(obj.kf.gt,2);
-map  = obj.map;
+map  = obj.map.act;
 
 % Generate flight room map
 if N_gt > 0

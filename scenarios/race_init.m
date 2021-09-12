@@ -6,11 +6,15 @@ gt_add = 'scenarios/gates/';
 ms_add = ['scenarios/missions/',mission,'.csv'];
 
 % Map
-obj.map = [
-    -8.1 8.1;       % Map x-limits (length)
-    -3.2 3.2;       % Map y-limits (width)
-     0.0 3.0];          % Map z-limits (height)      
-
+obj.map.act = [
+    -8.1 8.1;       % Actual Map x-limits (length)
+    -3.2 3.2;       % Actual  Map y-limits (width)
+     0.0 3.0];      % Actual  Map z-limits (height)      
+obj.map.lim  = [
+    -7.5 7.5;       % Traj Map x-limits (length)
+    -2.7 2.7;       % Traj Map y-limits (width)
+     0.5 2.5];      % Traj Map z-limits (height)
+ 
 % Gates
 gates = dir([gt_add '*.csv']);
 for k_wp = 1:length(gates)

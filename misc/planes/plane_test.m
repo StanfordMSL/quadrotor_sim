@@ -20,7 +20,10 @@ slit_map = 0.01.*[
     -9.00  9.30   9.1 -8.50 -9.00;
      18.7  18.8 -18.6 -18.4  18.7;
      0.00  0.00  0.00  0.00  0.00];
-  
+slot_map = 0.01.*[
+    -17.5  18.5  18.4 -18.1 -17.5;
+     13.6  13.0 -13.3 -13.1 13.6;
+     0.00  0.00  0.00  0.00  0.00];
 delt_text = ["Lower","Left","Right"];
 bulk_map = [
      -1.000  1.000 
@@ -30,21 +33,22 @@ bulk_map = [
 % rosshutdown 
 % pause(1);
 % droneID = 'drone2';
-% coreADD = 'relay.local';
-% rosinit(coreADD)
+coreADD = 'relay.local';
+rosinit(coreADD)
 node = ros.Node('/matlab_node');
 pause(1.0);
 
 quad = ros.Subscriber(node,'drone2/mavros/vision_pose/pose');
-wand = ros.Subscriber(node,'vrpn_client_node/wand/pose');
-delt = ros.Subscriber(node,'vrpn_client_node/delt/pose');
-bulk = ros.Subscriber(node,'vrpn_client_node/bulk/pose');
-gate = ros.Subscriber(node,'vrpn_client_node/gate/pose');
-slit = ros.Subscriber(node,'vrpn_client_node/slit/pose');
+% wand = ros.Subscriber(node,'vrpn_client_node/wand/pose');
+% delt = ros.Subscriber(node,'vrpn_client_node/delt/pose');
+% bulk = ros.Subscriber(node,'vrpn_client_node/bulk/pose');
+% vent = ros.Subscriber(node,'vrpn_client_node/vent/pose');
+% slit = ros.Subscriber(node,'vrpn_client_node/slit/pose');
+slot = ros.Subscriber(node,'vrpn_client_node/slot/pose');
 pause(1.0);
 
-obs = delt;
-map = delt_map;
+obs = slot;
+map = slot_map;
 drone = quad;
 
 pose = drone.LatestMessage.Pose;
@@ -63,7 +67,7 @@ while (norm(p_drone) < 5)
     q_drone = [pose.Orientation.W ; pose.Orientation.X ; pose.Orientation.Y ; pose.Orientation.Z];
     q_drone = quatconj(q_drone')';
     
-    if (norm(p_drone-p_obs) < 0.6)
+    if (norm(p_drone-p_obs) < 0.3)
          status = zeros(4,8);
 %         output = [];
         for j = 1:(size(map,2)-1)

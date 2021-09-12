@@ -8,8 +8,8 @@ N = size(X,2);
 
 % Iteration Tuning Parameters
 tol_motor = 1e-3;
-tol_gate  = 1e-3;
-phi       = [1.5 ; 15];
+tol_gate  = 1e-2;
+phi       = [1.2 ; 15];
 
 % LQR Parameters
 lqr.N  = N;
@@ -18,8 +18,8 @@ lqr.Qn = [
     0.00000.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
-    0.01000.*ones(2,1) ;      % err xy
-    0.01000.*ones(1,1) ;      % err z
+    0.00000.*ones(2,1) ;      % err xy
+    0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
 lqr.Rn = [
     0.00000.*ones(1,1) ;      % normalized thrust
@@ -36,9 +36,10 @@ lqr.Us = U;     % pin to nominal
 
 pose_gt = obj.kf.gt(2:8,1);
 gt_dim  = obj.db(obj.kf.gt(1,1)).gt_dim;
+map     = obj.map.lim;
 
 % Initialize Constraints
-con  = con_calc(X,U,pose_gt,gt_dim);
+con  = con_calc(X,U,pose_gt,gt_dim,map);
 
 % Initialize Lagrange Multiplier Terms
 mult = mult_init(con);
@@ -76,7 +77,7 @@ while true
 %             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
-            con  = con_calc(X,U,pose_gt,gt_dim);
+            con  = con_calc(X,U,pose_gt,gt_dim,map);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
@@ -144,17 +145,21 @@ traj.x_bar = [X(1:10,:) ; U(2:4,:) zeros(3,1)];
 
 % v3
 lqr.Qn = [
-    0.03000.*ones(3,1) ;      % position
+    0.00100.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
-    0.00000.*ones(4,1) ;      % quaternion
-    0.01000.*ones(2,1) ;      % err xy
+    0.00000.*ones(1,1) ;      % q_scalar
+    0.00100.*ones(3,1) ;      % q_vect
+    0.02000.*ones(2,1) ;      % err xy
     0.01000.*ones(1,1) ;      % err z
-    0.00000.*ones(4,1)];      % err quat    
+    0.00000.*ones(4,1)];      % err quat   
 lqr.QN = [
-    1.000.*ones(3,1) ;      % position
-    1.000.*ones(3,1) ;      % velocity
-    0.000.*ones(4,1) ;      % quaternion
-    0.000.*ones(2,1) ;       % err xy
-    0.000.*ones(1,1) ;       % err z
-    0.000.*ones(4,1)];       % err quat   
+    1.000.*ones(3,1) ;        % position
+    1.000.*ones(3,1) ;        % velocity
+    0.0000.*ones(1,1) ;      % q_scalar
+    0.0000.*ones(3,1) ;      % q_vect
+    0.000.*ones(2,1) ;        % err xy
+    0.000.*ones(1,1) ;        % err z
+    0.000.*ones(4,1)];        % err quat   
+
+mult = mult_init(con);
 [~,traj.L_br,~] = backward_pass(X,U,lqr,con,mult,'slow');
