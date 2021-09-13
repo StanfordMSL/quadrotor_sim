@@ -35,7 +35,7 @@ if isfile(ms_add)
     % Mission flatoutputs, keyframes and gates
     obj.kf.t   = zeros(1,N);
     obj.kf.fo  = zeros(4,2,N);
-    obj.kf.x   = zeros(13,N_kf);
+    obj.kf.x   = zeros(10,N_kf);
     obj.kf.gt  = zeros(8,N_gt);
     
     q = [-1 ; 0 ; 0 ; 0];
@@ -44,7 +44,7 @@ if isfile(ms_add)
     for k_wp = 1:N
         if (data(1,k_wp) == 0)
             % Keyframes
-            obj.kf.x(:,k_kf) = data(2:14,k_wp);
+            obj.kf.x(:,k_kf) = data(2:11,k_wp);
             k_kf = k_kf + 1;
             q = data(8:11,k_wp) ;
         else
@@ -58,7 +58,7 @@ if isfile(ms_add)
         obj.kf.fo(1:3,1,k_wp) = data(2:4,k_wp);
         obj.kf.fo(1:3,2,k_wp) = data(5:7,k_wp);
         obj.kf.fo(4,1,k_wp)   = eul(1);
-        obj.kf.fo(4,2,k_wp)   = data(14,k_wp);
+        obj.kf.fo(4,2,k_wp)   = 0;
         
         if k_wp > 1
             s_int = norm(obj.kf.fo(1:3,1,k_wp) - obj.kf.fo(1:3,1,k_wp-1));
@@ -73,7 +73,7 @@ if isfile(ms_add)
     
     disp(['[race_init]: Loaded Mission: ', mission]);
 else
-    obj.kf.x = zeros(13,2);
+    obj.kf.x = zeros(10,2);
     obj.kf.x(7,:) = 1;
     
     disp('[race_init]: Mission input not recognized. Defaulting to hover at origin');

@@ -8,7 +8,7 @@ nu     = size(con.cu,1);
 mult.lamx = 0.*ones(nx,N);
 mult.lamu = 0.*ones(nu,N);
 
-mult.mux  = (1e-3)*ones(nx,N);
+mult.mux  = (10)*ones(nx,N);
 mult.muu  = (1e-3)*ones(nu,N);
 mult.mudx = zeros(nx,N);
 mult.mudu = zeros(nu,N);

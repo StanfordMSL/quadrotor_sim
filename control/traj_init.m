@@ -16,8 +16,6 @@ u_br_hov = [f2fn(model.motor.thrust_hover) ; 0 ; 0 ; 0];
 % Some Useful Parameters
 traj.hz    = hz_fmu;
 traj.t_fmu = 0:fmu_dt:t_end;
-traj.x_bar = zeros(13,N);
-traj.x_bar(:,1) = x0;
 
 switch mode
     case 'pos_att'
@@ -31,9 +29,9 @@ switch mode
         % L: feedback matrix (body rate)
         traj.type = 'body_rate';
 
-        traj.x_br = repmat([x0(1:10,1) ; zeros(7,1)] ,1,N);
+        traj.x_br = repmat([x0(:,1) ; zeros(7,1)] ,1,N);
         traj.u_br = repmat(u_br_hov,1,N-1);
-        traj.L_br = zeros(4,10,N-1);
+        traj.L_br = zeros(4,17,N-1);
     case 'direct'
         % u: motor input
         traj.type = 'direct';

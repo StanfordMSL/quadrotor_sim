@@ -24,18 +24,17 @@ if floor(N_fmu) ~= N_fmu
 end
 
 % Initialize Logger Variable
-log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,obj,model);     
+log = logger_init(t_sim,N_sim,N_ses,N_fmu,traj,model);     
 
 % State Estimator Initilization
 ses = ses_init(obj,model);
 
 % Low Level Controller Initialization
-u_mt = zeros(4,1);
 switch low_ctl
     case 'pos_att'                
         pa = pa_init();
     case 'body_rate'                
-        br = br_init();
+        % Do Nothing
     case 'wrench'
         % Do Nothing
     case 'direct'
@@ -85,20 +84,11 @@ while (k_act < N_sim)
                 u_op = traj.u_br(:,k_fmu);
                 u_cl = traj.L_br(:,:,k_fmu)*del_x;
                 u_now = u_op + u_cl;
-                
-                [u_wr,br] = br_ctrl(ses.x,u_now,br);
-                
-                % Output to Motors
-                u_mt = w2m(u_wr);
-                
+             
                 % Body Rate Logging
-                log.u_wr(:,k_fmu)  = u_wr;
                 log.u_br(:,k_fmu)  = u_now;
-            case 'direct'
-                u_mt = traj.u_mt(:,k_fmu);
             case 'wrench'
                 u_wr = traj.u_wr(:,k_fmu);
-                u_mt = w2m(u_wr);
                 
                 % Wrench Logging
                 log.u_wr(:,k_fmu)  = u_wr;
@@ -106,10 +96,7 @@ while (k_act < N_sim)
         
         % General Logging
         log.t_fmu(:,k_fmu) = t_now;
-        log.x_fmu(:,k_fmu) = ses.x;
-        log.u_mt(:,k_fmu)  = u_mt;
-        
-        ses.u = u_mt;
+        log.x_fmu(:,k_fmu) = ses.x;        
     end
     %%%%%%%%%%%%%%%%%%%%%%y%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % High Level Control Updater    
@@ -149,14 +136,14 @@ while (k_act < N_sim)
     
     % Simple Contact/External Forces Model
     if strcmp(obj.type,'grasp') 
-        [FT_ext,obj,model] = contact_func(x_now,obj,model,'catch');
+        [F_ext,obj,model] = contact_func(x_now,obj,model,'catch');
     else
-        FT_ext = zeros(6,1);
+        F_ext = zeros(3,1);
     end
     
     % Dynamic Model
-    wt = model.ses.W*randn(13,1);
-    log.x_act(:,k_act+1) = quadcopter_act(log.x_act(:,k_act),u_mt,FT_ext,wt);
+    log.x_act(1:10,k_act+1) = quadcopter_act(log.x_act(1:10,k_act),u_now,F_ext);
+    log.x_act(11:13,k_act)  = u_now(2:4,1);
     
     if log.x_act(7:10,k_act+1)'*log.x_act(7:10,k_act) < 0
         disp("UHOH... sign flip might need to be invoked");
@@ -173,12 +160,18 @@ log.sigma  = log.sigma(:,:,1:k_ses);
 
 log.x_des = log.x_des;
 
-log.t_fmu = log.t_fmu(:,1:k_fmu);
-log.x_fmu = log.x_fmu(:,1:k_fmu);
-log.u_wr  = log.u_wr(:,1:k_fmu-1);
-log.u_br  = log.u_br(:,1:k_fmu-1);
-log.u_mt  = log.u_mt(:,1:k_fmu-1);
+log.t_fmu = log.t_fmu;
+log.x_fmu = log.x_fmu;
+log.u_br  = log.u_br(:,1:k_fmu);
 
+for k = 2:N_fmu-1
+    x  = log.x_fmu(1:10,k);
+    u  = log.u_br(:,k);
+    up = log.u_br(:,k-1);
+    wm = 2000.*ones(4,1);
+    
+    log.u_mt(:,k) = br2wr(x,u,up,wm);            
+end
 
 % Check Constraints
 % log.con = con_calc(log.x_fmu(1:10,:),log.u_br,obj.gt.p_box);

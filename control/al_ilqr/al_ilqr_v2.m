@@ -1,4 +1,4 @@
-function [traj,flag_t] = al_ilqr(traj,obj,t_clim)
+function [traj,flag_t] = al_ilqr_v2(traj,obj,t_clim)
 
 % Unpack Variables
 X = traj.x_br;
@@ -9,7 +9,7 @@ N = size(X,2);
 % Iteration Tuning Parameters
 tol_motor = 1e-3;
 tol_gate  = 5e-3;
-phi       = [1.2 ; 15];
+phi       = [10 ; 15];
 
 % LQR Parameters
 lqr.N  = N;
@@ -18,7 +18,7 @@ lqr.Qn = [
     0.00000.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
-    0.00100.*ones(2,1) ;      % err xy
+    0.00000.*ones(2,1) ;      % err xy
     0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
 lqr.Rn = [
@@ -61,38 +61,20 @@ while true
 
         % Backward Pass
         [l,L,~] = backward_pass(X,U,lqr,con,mult,'slow');
-         % Line Search Loop
+        
+        % Initialize Constants
         La_p = La_c;
         Xbar = X;
         Ubar = U;
         lqr.Xs = X;
         lqr.Us = U;
-        alpha = 1;
-        while true
-            counter(1,3) = counter(1,3)+1;
-
-            [X,U] = forward_pass(Xbar,Ubar,l,L,alpha);
-%             % Debug
-            nominal_plot(X,obj,10,'persp');
-%             mthrust_debug(Umt)
-
-            con  = con_calc(X,U,pose_gt,gt_dim,map);
-            mult = mult_check(con,mult,0);
-
-            La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
-            
-            flag_SM = lag_SM(La_c,La_p,alpha);
-            if flag_SM <= 1
-                break;
-            else
-                if alpha > 1e-3
-                    alpha = 0.8*alpha;
-                else
-                    alpha = 0;
-                end
-            end
-        end
+        
+        % Sampling Method %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        [X,U,con,La_c,alpha] = La_pop(Xbar,Ubar,lqr,l,L,pose_gt,gt_dim,map,mult);
+        % Debug
+        nominal_plot(X,obj,10,'persp');
     
+        flag_SM = lag_SM(La_c,La_p,alpha);
         if flag_SM == 0
             break;
         else

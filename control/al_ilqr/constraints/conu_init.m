@@ -38,24 +38,20 @@ switch input_mode
         matlabFunction(conu,'File',[address,'conu'],'vars',{u});
         matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u});
     case 'body_rate'
+        x = sym('x',[10 1],'real');
         u = sym('u',[4 1],'real');
         up = sym('up',[4 1],'real');
-        
-        w = u(2:4);
-        wp = up(2:4);
-        delta_w = w-wp;
-        
-        tau = ((I*delta_w)./dt) + cross(w,I*w);        
-        wrench = [fn2f(u(1)) ; tau];
-        
+        wm = 2000.*ones(4,1);
+               
+        wrench = br2wr(x,u,up,wm);
         fm = w2m*wrench;
-%         conu = [fm-fm_max ; -fm+fm_min]/fm_max(1);
+        
         conu = [fm-fm_max ; -fm+fm_min];
 
         conu_u = jacobian(conu,u);
 
-        matlabFunction(conu,'File',[address,'conu'],'vars',{u,up});
-        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{u,up});
+        matlabFunction(conu,'File',[address,'conu'],'vars',{x,u,up});
+        matlabFunction(conu_u,'File',[address,'conu_u'],'vars',{x,u,up});
 end
 
 t_comp = toc;

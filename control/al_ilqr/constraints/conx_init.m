@@ -6,6 +6,10 @@ tic
 l_x = model.est.dim(1);
 l_y = model.est.dim(2);
 l_z = model.est.dim(3);
+
+% r_d_arr = [-l_x-0.1   l_x+0.1   l_x+0.1  -l_x-0.1  -l_x-0.1   l_x+0.1   l_x+0.1  -l_x-0.1;
+%               l_y       l_y      -l_y      -l_y       l_y       l_y      -l_y      -l_y;
+%               l_z       l_z       l_z       l_z      -l_z      -l_z      -l_z      -l_z];
 r_d_arr = [-l_x   l_x   l_x  -l_x  -l_x   l_x   l_x  -l_x;
             l_y   l_y  -l_y  -l_y   l_y   l_y  -l_y  -l_y;
             l_z   l_z   l_z   l_z  -l_z  -l_z  -l_z  -l_z];
@@ -43,6 +47,14 @@ for k = 1:n_p
     conx_gate(k,1) = -(n(1)*(r_d(1)-pn(1))+n(2)*(r_d(2)-pn(2))+ n(3)*(r_d(3)-pn(3)));
 end
 
+% Plane Constraint
+c = sym('c',[4 1],'real');
+x_d = x(1:3,1);
+
+num = abs(c(1:3)'*x_d+c(4));
+den = norm(c(1:3));
+conx_plane = num/den;
+
 % Map Constraint
 map_lim = sym('map_lim',[3 2],'real');
 
@@ -56,11 +68,15 @@ conx_map = [
 
 % Combine them
 conx_gate_x = jacobian(conx_gate,x);
+conx_plane_x = jacobian(conx_plane,x);
 conx_map_x = jacobian(conx_map,x);
 
 address = 'control/al_ilqr/constraints/';
 matlabFunction(conx_gate,'File',[address,'conx_gate'],'vars',{x,p0,p1,p2});
 matlabFunction(conx_gate_x,'File',[address,'conx_gate_x'],'vars',{x,p0,p1,p2});
+
+matlabFunction(conx_plane,'File',[address,'conx_plane'],'vars',{x,c});
+matlabFunction(conx_plane_x,'File',[address,'conx_plane_x'],'vars',{x,c});
 
 matlabFunction(conx_map,'File',[address,'conx_map'],'vars',{x,map_lim});
 matlabFunction(conx_map_x,'File',[address,'conx_map_x'],'vars',{x,map_lim});

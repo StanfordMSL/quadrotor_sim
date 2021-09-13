@@ -10,20 +10,20 @@ if (size(pose_gt,2) > 0)
     p0  = pose_gt(1:3,1);
     q_gt = quatconj(pose_gt(4:7,1)');
     pts = pose_gt(1:3,1)+quatrotate(q_gt,gt_dim')';
-    
-    
+  
+%     d_lim = max(vecnorm(p0-pts))+0.15;
+    d_lim = 0.3;
     for k_fr = 1:N
         x_k = X(:,k_fr);
 
-        vect = x_k(1:3)-p0;
-%         p_dist = plane_dist_calc(x_k(1:3),pts(:,1:3));
-        dist = norm(vect,2);
-
-        if (dist < 0.3) 
+        % Large Radius
+        vect = x_k(1:3)-[p0 pts(:,1:end-1)];
+        dist = vecnorm(vect,2);
+        if any(dist < d_lim) 
             for k_pts = 1:N_pts
                 idx1 = (k_pts-1)*8+1;
                 idx2 = 8*k_pts;
-                
+
                 p1 = pts(:,k_pts);
                 p2 = pts(:,k_pts+1);
                 c(idx1:idx2,k_fr)    = conx_gate(x_k,p0,p1,p2);   

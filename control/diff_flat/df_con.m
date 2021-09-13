@@ -6,7 +6,7 @@ m    = model.m;
 I    = model.I;
 
 %%%%%%%%%%%%%%%
-kh   = model.kh;
+kh   = 0;
 A    = diag(model.A(:,2));
 B    = diag(model.B(:,2));
 tau_g = 0.000.*ones(3,1);

@@ -65,7 +65,7 @@ zlim(map(3,:));
 switch view_point
     case 'persp'
         view(320,20);
-%              zoom(1.8)
+%         zoom(1.8)
     case 'back'
         view(-90,0);
     case 'side'

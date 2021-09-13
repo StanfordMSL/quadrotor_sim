@@ -4,9 +4,9 @@ function model = model_init(frame,model_diff,model_noise)
 eps = 1e-9;
 
 %% Rate Parameters
-model.clock.hz_ses = 200;             % State Estimator Sample Rate
+model.clock.hz_ses = 100;             % State Estimator Sample Rate
 model.clock.hz_lqr = 1;               % iLQR Update Rate
-model.clock.hz_fmu = 200;             % Flight Management Unit Update Rate
+model.clock.hz_fmu = 100;             % Flight Management Unit Update Rate
 model.clock.hz_act = 1000;            % Actual Dynamics Update Rate
 
 model.clock.dt_ses = 1/model.clock.hz_ses;
@@ -29,7 +29,7 @@ switch frame
 
         % Aerodynamic Properties
         model.act.kw = [0.00 ; 0.00 ; 2.05e-07];     % Rotor Thrust Coeffecients
-        model.act.b  = 0.157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
+        model.act.b  = 0.0157;                      % Rotor Torque Gain (multiplier on lift force to get yaw)
         model.act.D  = [...                         % Frame Linear Drag Force Coefficients (rows: x,y,z. cols: ^0,^1,^2)
             0.00   eps   0.00;...
             0.00   eps   0.00;...
@@ -226,5 +226,5 @@ model.ses.W = diag([W_pos ; W_vel ; W_quat ; W_omega]);
 %% Misc
    
 model.misc.ndr  = 15;           % Number of Terms for Diff Flat Polynomial
-model.misc.v_cr = 0.5;          % 'cruise' velocity for initial estimates
+model.misc.v_cr = 1.0;          % 'cruise' velocity for initial estimates
 model.misc.t_hov = 5.0;         % how long to hover if no waypoints
