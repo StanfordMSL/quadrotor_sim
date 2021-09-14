@@ -71,8 +71,8 @@ while true
         
         % Sampling Method %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         [X,U,con,La_c,alpha] = La_pop(Xbar,Ubar,lqr,l,L,pose_gt,gt_dim,map,mult);
-        % Debug
-        nominal_plot(X,obj,10,'persp');
+%         % Debug
+%         nominal_plot(X,obj,10,'persp');
     
         flag_SM = lag_SM(La_c,La_p,alpha);
         if flag_SM == 0
@@ -121,13 +121,20 @@ traj.x_bar = [X(1:10,:) ; U(2:4,:) zeros(3,1)];
 
 % v3
 lqr.Qn = [
-    0.00100.*ones(3,1) ;      % position
-    0.00000.*ones(3,1) ;      % velocity
-    0.00000.*ones(1,1) ;      % q_scalar
-    0.00100.*ones(3,1) ;      % q_vect
-    0.02000.*ones(2,1) ;      % err xy
-    0.01000.*ones(1,1) ;      % err z
-    0.00000.*ones(4,1)];      % err quat   
+%     0.0300.*ones(3,1) ;      % position
+%     0.0000.*ones(3,1) ;      % velocity
+%     0.0010.*ones(1,1) ;      % q_scalar
+%     0.0010.*ones(3,1) ;      % q_vect
+%     0.0300.*ones(2,1) ;        % err xy
+%     0.0100.*ones(1,1) ;        % err z
+%     0.0010.*ones(4,1)];      % err quat   
+    0.0100.*ones(3,1) ;      % position
+    0.0000.*ones(3,1) ;      % velocity
+    0.0010.*ones(1,1) ;      % q_scalar
+    0.0010.*ones(3,1) ;      % q_vect
+    0.0500.*ones(2,1) ;        % err xy
+    0.0100.*ones(1,1) ;        % err z
+    0.0010.*ones(4,1)];      % err quat   
 lqr.QN = [
     1.000.*ones(3,1) ;        % position
     1.000.*ones(3,1) ;        % velocity

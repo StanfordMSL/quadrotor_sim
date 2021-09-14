@@ -1,4 +1,4 @@
-function log = ros_flight(traj,obj,mode,type)
+function log = ros_flight_old(traj,obj,mode,type)
 
 %% Initialize MATLAB -> ROS node
 

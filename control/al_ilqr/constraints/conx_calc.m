@@ -12,7 +12,7 @@ if (size(pose_gt,2) > 0)
     pts = pose_gt(1:3,1)+quatrotate(q_gt,gt_dim')';
   
 %     d_lim = max(vecnorm(p0-pts))+0.15;
-    d_lim = 0.3;
+    d_lim = 0.5;
     for k_fr = 1:N
         x_k = X(:,k_fr);
 

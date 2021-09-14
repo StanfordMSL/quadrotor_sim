@@ -1,11 +1,11 @@
 function obj = race_ros(subs,obj,misc)
 
 % Quick Initialization
-p0 = [ 0.0 ; 0.0 ; 1.5];
-p1 = [ 0.0 ; 0.0 ; 0.0];
-% p0 = [-3.0 ; 0 ; 1.0];
-% p1 = [ 3.0 ; 0 ; 1.0];
-q_base = [-1 ; 0 ; 0 ; 0];
+% p0 = [ 0.0 ; 0.0 ; 1.5];
+% p1 = [ 0.0 ; 0.0 ; 0.0];
+p0 = [-3.0 ; 0 ; 1.0];
+p1 = [ 3.0 ; 0 ; 1.0];
+q_base = [ -1 ; 0 ; 0 ; 0];
 v_base = [ 0 ; 0 ; 0];
 w_base = [ 0 ; 0 ; 0];
 x_rmdr = [v_base ; q_base ; w_base];

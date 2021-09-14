@@ -9,7 +9,7 @@ rehash toolboxcache
 
 clear node
 droneID = 'drone2';
-gateID   = 'slot';
+gateID   = 'delt';
 [node,subs,pubs,srvs,obj] = ros_start(droneID,gateID);
 
 %% Initialize Model, Objective, Constraint and Misc. Parameters
@@ -29,15 +29,18 @@ toc
 traj = traj_init(obj,model,input_mode);
 
 % Warm Start Using Indirect Method
+tic
 traj = diff_flat(obj,model,traj,input_mode);
-nominal_plot(traj.x_bar,obj,20,'persp');
+t_df = toc;
+nominal_plot(traj.x_br,obj,10,'persp');
 traj_df = traj;
 
 % Full Constraint Optimizationy
 tic
-[traj,~] = al_ilqr(traj,obj,999);
-toc
-nominal_plot(traj.x_bar,obj,20,'top');
+[traj,~] = al_ilqr_v2(traj,obj,999);
+t_al = toc;
+nominal_plot(traj.x_br,obj,10,'persp');
+traj_al = traj;
 
 %% Simulation/Actual
 
