@@ -8,12 +8,12 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-model = model_init('carlito','match','precise');  
-% model = model_init('carlito_himo','match','precise');  
-% model = model_init('iris','match','precise');  
+model = model_init('carlito','match','precise');
+% model = model_init('carlito_himo','match','precise');
+% model = model_init('iris','match','precise');
 
 % Objective and Constraints
-obj = grasp_init("massless");
+obj = grasp_init('pigeon');
 % obj  = race_init('hover','empty');
 % obj  = race_init('line','gate_center');
 % obj  = race_init('line','gate1');
@@ -29,16 +29,16 @@ input_mode = 'body_rate';    % || pos_att || wrench || body_rate || body_rate_pi
 
 %% Pre-Computes (comment out after initial run to save time)
 
-% % Generate QP Matrices
-% QP_init(model.misc.ndr);                       
-% 
-% % Generate Dynamics and Linearization Functions
-% dyn_init(model,input_mode);      
-% 
-% % Generate Constraint Variables
-% lagr_init(cost_mode,input_mode)
-% conx_init(model,input_mode)
-% conu_init(model,input_mode)
+% Generate QP Matrices
+QP_init(model.misc.ndr);                       
+
+% Generate Dynamics and Linearization Functions
+dyn_init(model,input_mode);      
+
+% Generate Constraint Variables
+lagr_init(cost_mode,input_mode)
+conx_init(model,input_mode, obj)
+conu_init(model,input_mode)
 
 %% Trajectory Planning
 

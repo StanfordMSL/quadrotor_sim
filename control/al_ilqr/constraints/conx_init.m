@@ -1,4 +1,4 @@
-function conx_init(model,input_mode)
+function conx_init(model,input_mode, obj)
 
 tic
 
@@ -55,9 +55,17 @@ conx_map = [
     -x(3)+map_lim(3,1) ;
      x(3)-map_lim(3,2) ]; 
 
+% Contact Constraint
+cone_coeffs = sym('cone_coeffs', [2 1], 'real');
+
+rotm_world2obj = quat2rotm(obj.pose(4:7,1).');       % world frame to body frame
+v_obj = rotm_world2obj * x(4:6);                     % velocity of quad in object frame
+conx_contact = cone_coeffs(1,1)*v_obj(1)^2 + cone_coeffs(2,1)*v_obj(2)^2 - v_obj(3)^2; % quadratic velocity cone constraint
+
 % Combine them
 conx_gate_x = jacobian(conx_gate,x);
 conx_map_x = jacobian(conx_map,x);
+conx_contact_x = jacobian(conx_contact, x);
 
 address = 'control/al_ilqr/constraints/';
 matlabFunction(conx_gate,'File',[address,'conx_gate'],'vars',{x,p_box});
@@ -65,6 +73,9 @@ matlabFunction(conx_gate_x,'File',[address,'conx_gate_x'],'vars',{x,p_box});
 
 matlabFunction(conx_map,'File',[address,'conx_map'],'vars',{x,map_lim});
 matlabFunction(conx_map_x,'File',[address,'conx_map_x'],'vars',{x,map_lim});
+
+matlabFunction(conx_contact,'File',[address,'conx_contact'],'vars',{x,cone_coeffs});
+matlabFunction(conx_contact_x,'File',[address,'conx_contact_x'],'vars',{x,cone_coeffs});
 
 t_comp = toc;
 

@@ -57,7 +57,7 @@ function animation_plot(flight,obj,view_point,wp_show)
     
     % Plot the target
     if strcmp(obj.type,'grasp') 
-        h_targ = plot3(obj.pos(1,1),obj.pos(2,1),obj.pos(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
+        h_targ = plot3(obj.pose(1,1),obj.pose(2,1),obj.pose(3,1),'d','MarkerSize',8,'MarkerFaceColor','r');
     	h_targ.Annotation.LegendInformation.IconDisplayStyle = 'off';
     else
         % Do Nothing

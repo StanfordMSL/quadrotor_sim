@@ -19,9 +19,9 @@ switch trajectory
     case "massless"
         obj.name   = "massless";
         obj.m_act  = 0.0;
-        obj.pos    = [2 ; 0.1 ; 1];
+        obj.pose    = [2 ; 0.1 ; 1; 1; 0; 0; 0]; % x y z q1 q2 q3 q4
 
-        x_final = obj.pos + K_over.*vel_des;
+        x_final = obj.pose(1:3) + K_over.*vel_des;
 
         obj.kf.x(:,1) = [-3 ; 0   ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
         obj.kf.x(:,2) = [ x_final ; vel_des ; q_final' ; zeros(3,1)];
@@ -30,9 +30,9 @@ switch trajectory
     case "pigeon"
         obj.name = "pigeon";
         obj.m_act = 0.3;
-        obj.pos    = [2 ; 0 ; 1];
+        obj.pose    = [2 ; 0 ; 1; 1; 0; 0; 0];
 
-        x_final = obj.pos + K_over.*vel_des;
+        x_final = obj.pose(1:3) + K_over.*vel_des;
 
         obj.kf.x(:,1) = [-3 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
         obj.kf.x(:,2) = [ x_final ; vel_des ; q_final' ; zeros(3,1)];
@@ -41,9 +41,9 @@ switch trajectory
     case "soft toy"
         obj.name = "soft toy";
         obj.m_act = 0.1;
-        obj.pos    = [2 ; 0 ; 1];
+        obj.pose    = [2 ; 0 ; 1; 1; 0; 0; 0];
 
-        x_final = obj.pos + K_over.*vel_des;
+        x_final = obj.pose(1:3) + K_over.*vel_des;
 
         obj.kf.x(:,1) = [-3 ; 0 ; 1; zeros(3,1) ; 1 ; zeros(6,1)];
         obj.kf.x(:,2) = [ x_final ; vel_des ; q_final' ; zeros(3,1)];
