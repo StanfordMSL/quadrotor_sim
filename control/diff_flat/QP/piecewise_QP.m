@@ -46,7 +46,8 @@ for k_sig = 1:4
     beq = [beq0 ; beq1 ; beq_fr];
     
     % Solve the QP
-    c = quadprog(H,[],[],[],Aeq,beq);
+    options = optimset('Display', 'off');
+    c = quadprog(H,[],[],[],Aeq,beq,[],[],[],options);
 
     % Roll the solution forward in time to geneate flat outputs
     for k_roll = 1:N_dt

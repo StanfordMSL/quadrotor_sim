@@ -1,5 +1,6 @@
 function [traj,flag_t] = al_ilqr_v2(traj,obj,t_clim)
 
+tLIM = tic;
 % Unpack Variables
 X = traj.x_br;
 U = traj.u_br;
@@ -8,8 +9,8 @@ N = size(X,2);
 
 % Iteration Tuning Parameters
 tol_motor = 1e-3;
-tol_gate  = 5e-3;
-phi       = [10 ; 15];
+tol_gate  = 1e-3;
+phi       = [1.2 ; 15];
 
 % LQR Parameters
 lqr.N  = N;
@@ -54,6 +55,11 @@ tic
 % Multiplier Loop
 while true
     counter(1,1) = counter(1,1)+1;
+    if (check_outer(con,tol_motor,tol_gate) == true)
+        % Constraints satisfied. Stop al-iLQR.
+        flag_t = 0;
+        break
+    end
     
     % iLQR Loop
     while true
@@ -74,21 +80,21 @@ while true
 %         % Debug
 %         nominal_plot(X,obj,10,'persp');
     
-        flag_SM = lag_SM(La_c,La_p,alpha);
-        if flag_SM == 0
+        flag_SM = lag_SM_v2(La_c,La_p,alpha);
+        if ((flag_SM == 0) || (toc(tLIM) > t_clim))
             break;
         else
             % Carry on.
         end
     end
-%     % Debug
+% %     % Debug
 %     nominal_plot(X,obj,10,'persp');
     
     % Update Lagrangian
     mult = mult_update(mult,con,phi);
     La_c = lagr_calc(X,U,X,U,lqr,con,mult);
             
-    if toc < t_clim
+    if toc(tLIM) < t_clim
         if (check_outer(con,tol_motor,tol_gate) == true)
             % Constraints satisfied. Stop al-iLQR.
             flag_t = 0;

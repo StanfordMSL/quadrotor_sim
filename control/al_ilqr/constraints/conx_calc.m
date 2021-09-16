@@ -12,11 +12,12 @@ if (size(pose_gt,2) > 0)
     pts = pose_gt(1:3,1)+quatrotate(q_gt,gt_dim')';
   
 %     d_lim = max(vecnorm(p0-pts))+0.15;
-    d_lim = 0.5;
+    d_lim = 0.2;
     for k_fr = 1:N
         x_k = X(:,k_fr);
 
         % Large Radius
+%         dist = plane_dist_calc(x_k(1:3),pts(:,1:3));
         vect = x_k(1:3)-[p0 pts(:,1:end-1)];
         dist = vecnorm(vect,2);
         if any(dist < d_lim) 

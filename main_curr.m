@@ -14,10 +14,10 @@ model = model_init('carlito','match','precise');
 
 % Objective and Constraints
 % obj  = race_init('delt_line',model.misc);
-% obj  = race_init('port_line',model.misc);
+obj  = race_init('port_line',model.misc);
 % obj  = race_init('vent_line',model.misc);
 % obj  = race_init('slot_line',model.misc);
-obj  = race_init('slit_line_I',model.misc);
+% obj  = race_init('slit_line_I',model.misc);
 % obj  = race_init('slit_line_II',model.misc);
 
 % Cost Mode
@@ -74,12 +74,14 @@ log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 
 % ROS -> Actual
 % log_A = ros_flight(traj_a,obj,'actual','single');
-log_A = ros_flight_old(traj_a,obj,'actual','single');
+% log_A = ros_flight_old(traj_a,obj,'actual','single');
 
 %% Plot the States, Animate and Debug
 
 % animation_plot(log_M,obj,'persp','show');
 
+[traj_a,N_t] = min_time_augment(traj_a,obj,obj.kf.x(:,1),10);
+
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_G)
-sim_compare(traj,log_M,log_A)
+% sim_compare(traj,log_M,log_A)

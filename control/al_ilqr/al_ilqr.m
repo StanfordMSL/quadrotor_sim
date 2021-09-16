@@ -1,5 +1,7 @@
 function [traj,flag_t] = al_ilqr(traj,obj,t_clim)
 
+tLIM = tic;
+
 % Unpack Variables
 X = traj.x_br;
 U = traj.u_br;
@@ -8,7 +10,7 @@ N = size(X,2);
 
 % Iteration Tuning Parameters
 tol_motor = 1e-3;
-tol_gate  = 5e-3;
+tol_gate  = 1e-3;
 phi       = [1.2 ; 15];
 
 % LQR Parameters
@@ -18,20 +20,21 @@ lqr.Qn = [
     0.00000.*ones(3,1) ;      % position
     0.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
-    0.00100.*ones(2,1) ;      % err xy
+    0.00000.*ones(2,1) ;      % err xy
     0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
 lqr.Rn = [
     0.00000.*ones(1,1) ;      % normalized thrust
     0.00000.*ones(3,1) ];     % body rate
 lqr.QN = [
-    1.00000.*ones(3,1) ;      % position
-    1.00000.*ones(3,1) ;      % velocity
+    10.00000.*ones(3,1) ;      % position
+    10.00000.*ones(3,1) ;      % velocity
     0.00000.*ones(4,1) ;      % quaternion
     0.00000.*ones(2,1) ;      % err xy
     0.00000.*ones(1,1) ;      % err z
     0.00000.*ones(4,1)];      % err quat    
-lqr.Xs = X;     % pin to nominal
+% lqr.Xs = X;     % pin to nominal
+lqr.Xs = repmat([obj.kf.x(:,2) ; zeros(7,1)] ,1,N);
 lqr.Us = U;     % pin to nominal
 
 pose_gt = obj.kf.gt(2:8,1);
@@ -73,7 +76,7 @@ while true
 
             [X,U] = forward_pass(Xbar,Ubar,l,L,alpha);
 %             % Debug
-            nominal_plot(X,obj,10,'persp');
+%             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
             con  = con_calc(X,U,pose_gt,gt_dim,map);
@@ -81,8 +84,9 @@ while true
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
             
-            flag_SM = lag_SM(La_c,La_p,alpha);
-            if flag_SM <= 1
+            flag_SM = lag_SM(La_c,La_p,alpha);           
+
+            if ((flag_SM <= 1) || (toc(tLIM) > t_clim))
                 break;
             else
                 if alpha > 1e-3
@@ -93,7 +97,7 @@ while true
             end
         end
     
-        if flag_SM == 0
+        if (flag_SM == 0 || (toc(tLIM) > t_clim))
             break;
         else
             % Carry on.
@@ -106,7 +110,7 @@ while true
     mult = mult_update(mult,con,phi);
     La_c = lagr_calc(X,U,X,U,lqr,con,mult);
             
-    if toc < t_clim
+    if toc(tLIM) < t_clim
         if (check_outer(con,tol_motor,tol_gate) == true)
             % Constraints satisfied. Stop al-iLQR.
             flag_t = 0;
