@@ -21,7 +21,7 @@ for k = 1:N-1
     
     del_x = Xfp(:,k)-Xbar(:,k);
     
-    u_ol = alpha*l(:,k);
+    u_ol = alpha.*[ 0.1.*l(1,k) ; l(2:4,k)];
     u_cl = L(:,:,k)*del_x;
     u_fp = Ubar(:,k) + u_ol + u_cl;
 

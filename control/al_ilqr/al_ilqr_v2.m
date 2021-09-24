@@ -66,7 +66,11 @@ while true
         counter(1,2) = counter(1,2)+1;
 
         % Backward Pass
-        [l,L,~] = backward_pass(X,U,lqr,con,mult,'slow');
+        [l,L,delV] = backward_pass(X,U,lqr,con,mult,'slow');
+        figure(2)
+        plot(delV(1,:));
+        hold on
+        plot(delV(2,:));
         
         % Initialize Constants
         La_p = La_c;
@@ -77,8 +81,8 @@ while true
         
         % Sampling Method %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         [X,U,con,La_c,alpha] = La_pop(Xbar,Ubar,lqr,l,L,pose_gt,gt_dim,map,mult);
-%         % Debug
-%         nominal_plot(X,obj,10,'persp');
+        % Debug
+        nominal_plot(X,obj,10,'none');
     
         flag_SM = lag_SM_v2(La_c,La_p,alpha);
         if ((flag_SM == 0) || (toc(tLIM) > t_clim))

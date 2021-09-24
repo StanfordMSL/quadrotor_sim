@@ -14,11 +14,11 @@ model = model_init('carlito','match','precise');
 
 % Objective and Constraints
 % obj  = race_init('delt_line',model.misc);
-obj  = race_init('port_line',model.misc);
+% obj  = race_init('port_line',model.misc);
 % obj  = race_init('vent_line',model.misc);
 % obj  = race_init('slot_line',model.misc);
 % obj  = race_init('slit_line_I',model.misc);
-% obj  = race_init('slit_line_II',model.misc);
+obj  = race_init('slit_line_II',model.misc);
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -48,17 +48,16 @@ traj = traj_init(obj,model,input_mode);
 tic
 traj = diff_flat(obj,model,traj,input_mode);
 t_df = toc;
-nominal_plot(traj.x_br,obj,10,'persp');
+% nominal_plot(traj.x_br,obj,10,'persp');
 traj_df = traj;
 
-% Full Constraint Optimizationy
+% Full Constraint Optimiyzationy
 tic
-% [traj,~] = al_ilqr(traj,obj,999);
 [traj,~] = al_ilqr_v2(traj,obj,999);
 t_al = toc;
 traj_al = traj;
 
-% nominal_plot(traj.x_bar,obj,20,'persp');
+nominal_plot(traj.x_bar,obj,20,'persp');
 
 %% Simulation/Actual
 

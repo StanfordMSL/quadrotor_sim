@@ -7,9 +7,6 @@ l_x = model.est.dim(1);
 l_y = model.est.dim(2);
 l_z = model.est.dim(3);
 
-% r_d_arr = [-l_x   l_x+0.08   l_x+0.08  -l_x  -l_x   l_x+0.08   l_x+0.08  -l_x;
-%             l_y   l_y  -l_y  -l_y   l_y   l_y  -l_y  -l_y;
-%             l_z   l_z   l_z   l_z  -l_z  -l_z  -l_z  -l_z];
 r_d_arr = [-l_x   l_x   l_x  -l_x  -l_x   l_x   l_x  -l_x;
             l_y   l_y  -l_y  -l_y   l_y   l_y  -l_y  -l_y;
             l_z   l_z   l_z   l_z  -l_z  -l_z  -l_z  -l_z];
