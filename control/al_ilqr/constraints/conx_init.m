@@ -57,10 +57,9 @@ conx_map = [
 
 % Contact Constraint
 cone_coeffs = sym('cone_coeffs', [2 1], 'real');
-
 rotm_world2obj = quat2rotm(obj.pose(4:7,1).');       % world frame to body frame
 v_obj = rotm_world2obj * x(4:6);                     % velocity of quad in object frame
-conx_contact = cone_coeffs(1,1)*v_obj(1)^2 + cone_coeffs(2,1)*v_obj(2)^2 - v_obj(3)^2; % quadratic velocity cone constraint
+conx_contact = cone_coeffs(1,1)*v_obj(1,1)^2 + cone_coeffs(2,1)*v_obj(2,1)^2 - v_obj(3,1)^2; % quadratic velocity cone constraint
 
 % Combine them
 conx_gate_x = jacobian(conx_gate,x);

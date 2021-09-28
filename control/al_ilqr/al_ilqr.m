@@ -34,11 +34,13 @@ lqr.QN = [
 lqr.Xs = X;     % pin to nominal
 lqr.Us = U;     % pin to nominal
 
-p_box = obj.gt.p_box;
-map   = obj.map;
+p_box       = obj.gt.p_box;
+map         = obj.map;
+cone_coeffs = obj.cone_coeffs; 
+obj_type    = obj.type;
 
 % Initialize Constraints
-con  = con_calc(X,U,p_box,map);
+con  = con_calc(obj_type,X,U,p_box,map,cone_coeffs);
 
 % Initialize Lagrange Multiplier Terms
 mult = mult_init(con);
@@ -76,7 +78,7 @@ while true
 %             nominal_plot(X,obj,10,'persp');
 %             mthrust_debug(Umt)
 
-            con  = con_calc(X,U,p_box,map);
+            con  = con_calc(obj_type,X,U,p_box,map,cone_coeffs);
             mult = mult_check(con,mult,0);
 
             La_c = lagr_calc(X,U,Xbar,Ubar,lqr,con,mult);
