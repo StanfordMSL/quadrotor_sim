@@ -11,7 +11,7 @@ model = model_init('carlito','match','precise');
 
 %% Time Variables (Horizon) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-N  = 100;                       % Time Horizon (in input frames)
+N  = 1;                       % Time Horizon (in input frames)
 dt = model.est.dt;              % Controller Time Step
 
 %% Optimization Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,31 +26,32 @@ T = opti.variable();            % Final Time
 %% Optimization Components  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Boundary Conditions
-x0 = [-2.0 ; 0.1 ; 0.0 ; 0.0 ; 0.0 ; 0.0 ];
-xf = [ 2.0 ; 0.1 ; 0.0  ; 0.0 ; 0.0 ; 0.0 ];
+x0 = [-2;0;0;0;0;0];
+xf = [2;0;0;0;0;0];
+opti.subject_to(X(:,N+1)==xf);      % finish line at position 1
 
 % Objective
 [Q,R] = QR_init(nx,nu,N);
-J = obj_init(X,U,Q,R,xf);
+J = obj_init(X,U,Q,R);
 opti.minimize(J);
 
 % Constraints
-f = @quad2D;                            % Dynamics Constraint
-g = @con2D;                             % State/Input Constraints
-opti = rk4_int(f,g,X,U,N,dt,opti);      % Stagewise Constraints (dynamics,state,input)
+f = @quad2D;                        % Dynamics Constraint
+g = @con2D;                         % State/Input Constraints
+opti = rk4_int(f,g,X,U,N,dt,opti);  % Stagewise Constraints (dynamics,state,input)
 
-opti.subject_to(T>=0);                  % Time must be positive
-opti.subject_to(X(:,1)==x0);            % start at position x0 ...
-opti.subject_to(X(:,N)==xf);            % end at position xf ...
-opti.subject_to(X(3,round(N/2))==pi);   % end at position xf ...
+opti.subject_to(T>=0);              % Time must be positive
+opti.subject_to(X(:,1)==x0);        % start at position 0 ...
 
-% Initialize
+
+% Initial
 opti.set_initial(X, 0);
 opti.set_initial(T, 1);
 
 % Solve NLP
 opti.solver('ipopt'); % set numerical backend
 sol = opti.solve();   % actual solve
+
 
 %% ---- post-processing        ------
 

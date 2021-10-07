@@ -4,9 +4,9 @@ function model = model_init(frame,model_diff,model_noise)
 eps = 1e-9;
 
 %% Rate Parameters
-model.clock.hz_ses = 10;             % State Estimator Sample Rate
+model.clock.hz_ses = 100;             % State Estimator Sample Rate
 model.clock.hz_lqr = 1;               % iLQR Update Rate
-model.clock.hz_fmu = 10;             % Flight Management Unit Update Rate
+model.clock.hz_fmu = 100;             % Flight Management Unit Update Rate
 model.clock.hz_act = 1000;            % Actual Dynamics Update Rate
 
 model.clock.dt_ses = 1/model.clock.hz_ses;
