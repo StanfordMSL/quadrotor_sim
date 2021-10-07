@@ -1,17 +1,15 @@
-%% Environment Setup (MATLAB paths and ROS msg linking) %%%%%%%%%%%%%%%%%%%
+%% Environment Setup (MATLAB paths) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear; clc; 
-
 addpath(genpath(pwd));
 
-%% Casadi
+%% Casadi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 addpath('/home/lowjunen/casadi-linux-matlabR2014b-v3.5.5')
 opti = casadi.Opti();
 
 %% Load Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Quad Model Parameters
 model = model_init('carlito','match','precise');
 
 %% Time Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,38 +107,39 @@ ylim([-1.5 1.5]);
 
 
 function x_dot = quad2D(x,u)
-th  =  x(3);
-v   = [x(4) ; x(5)];   % Linear Velocity
-thd =  x(6);            % Angular Velocity
+    th  =  x(3);
+    v   = [x(4) ; x(5)];   % Linear Velocity
+    thd =  x(6);            % Angular Velocity
 
-% Generate Equations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Generate Equations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Unpack
-%         dt    = db.dt;
-g     = 9.81;
-m     = 0.5;
-Iqd   =  0.0016 ;
+    % Unpack
+    %         dt    = db.dt;
+    g     = 9.81;
+    m     = 0.5;
+    Iqd   =  0.0016 ;
 
-% Forces
-F_g   = m.*[0 ; -g];                        % Gravity
-F_t   = [-u(1)*sin(th) ; u(1)*cos(th)];     % Thrust
+    % Forces
+    F_g   = m.*[0 ; -g];                        % Gravity
+    F_t   = [-u(1)*sin(th) ; u(1)*cos(th)];     % Thrust
 
-% Torques
-tau_wr   = u(2);                            % Torque Input
+    % Torques
+    tau_wr   = u(2);                            % Torque Input
 
-% Dynamics Equations
-p_dot   = v;
-th_dot  = thd;
-v_dot   = (1/m) .* ( F_g + F_t);
-thd_dot = tau_wr/Iqd;
+    % Dynamics Equations
+    p_dot   = v;
+    th_dot  = thd;
+    v_dot   = (1/m) .* ( F_g + F_t);
+    thd_dot = tau_wr/Iqd;
 
-x_dot = [ p_dot ; th_dot ; v_dot ; thd_dot];
+    x_dot = [ p_dot ; th_dot ; v_dot ; thd_dot];
 end
-function g = con2D(x)
-p = [0;0];
-del_p = x(1:2)-p;
-g_pos = -del_p'*del_p+1;
-% g_vel = (x(4:5)'*x(4:5)) -9;
 
-g = g_pos;
+function g = con2D(x)
+    p = [0;0];
+    del_p = x(1:2)-p;
+    g_pos = -del_p'*del_p+1;
+    % g_vel = (x(4:5)'*x(4:5)) -9;
+
+    g = g_pos;
 end
