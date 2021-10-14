@@ -8,8 +8,8 @@ function x_dot = quad2D(x,u)
     % Unpack
     %         dt    = db.dt;
     g     = 9.81;
-    m     = 0.5;
-    Iqd   =  0.0016 ;
+    m     = 0.53;
+    Iqd   = 0.0016 ;
 
     % Forces
     F_g   = m.*[0 ; -g];                        % Gravity

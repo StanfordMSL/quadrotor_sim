@@ -1,3 +1,5 @@
+clear; clc; 
+
 % Car race along a track
 % ----------------------
 % An optimal control problem (OCP),
@@ -63,7 +65,6 @@ plot(sol.value(pos));
 plot(limit(sol.value(pos)),'r--');
 stairs(1:N,sol.value(U),'k');
 legend('speed','pos','speed limit','throttle','Location','northwest')
-
 
 figure
 spy(sol.value(jacobian(opti.g,opti.x)))
