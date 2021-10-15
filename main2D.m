@@ -32,14 +32,14 @@ hold on
 N_test = size((1:10:N),2);
 succ = zeros(3,N_test);
 counter = 1;
-step = 50;
+step = 20;
 for j = 1:10:N-step
-%     Xbar = Xs(:,j:j+step+1);
-%     Ubar = Us(:,j:j+step);
-%     Lbar = Ls(:,:,j:j+step);
-    Xbar = Xs(:,j:end);
-    Ubar = Us(:,j:end);
-    Lbar = Ls(:,:,j:end);
+    Xbar = Xs(:,j:j+step+1);
+    Ubar = Us(:,j:j+step);
+    Lbar = Ls(:,:,j:j+step);
+%     Xbar = Xs(:,j:end);
+%     Ubar = Us(:,j:end);
+%     Lbar = Ls(:,:,j:end);
     
     xj = Xbar(:,1);
     [X1,X2,X3,X4,X5,X6,Ns] = mesh_gen(xj);
