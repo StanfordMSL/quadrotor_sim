@@ -32,7 +32,11 @@ hold on
 N_test = size((1:10:N),2);
 succ = zeros(3,N_test);
 counter = 1;
-for j = 1:10:N
+step = 50;
+for j = 1:10:N-step
+%     Xbar = Xs(:,j:j+step+1);
+%     Ubar = Us(:,j:j+step);
+%     Lbar = Ls(:,:,j:j+step);
     Xbar = Xs(:,j:end);
     Ubar = Us(:,j:end);
     Lbar = Ls(:,:,j:end);
