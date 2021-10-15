@@ -2,7 +2,7 @@ function g = con2D(x,u)
     % Obstacle Constraints
     p = [0;0];
     del_p = x(1:2)-p;
-    g_pos = -del_p'*del_p + 0;
+    g_pos = -del_p'*del_p + 1;
     
     % Velocity Constraints
     g_vel = (x(4:5)'*x(4:5)) - 999;
