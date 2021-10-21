@@ -5,7 +5,6 @@ N = size(X,2);
 x_obs = -1:0.01:1;
 y_obs_t = sqrt(1-x_obs.^2);
 y_obs_b = -sqrt(1-x_obs.^2);
-figure(2)
 clf
 daspect([1 1 1])
 hold on

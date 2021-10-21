@@ -3,8 +3,8 @@ function [X1,X2,X3,X4,X5,X6,Ns] = mesh_gen(x0)
 % n_range = -0.3:0.03:0.3;
 % n_range = -0.5:0.1:0.5;
 % nd_range = -0.25:0.25:0.25;
-pos_sample = -0.10:0.05:0.10;
-ang_sample = 0;
+pos_sample = -0.30:0.05:0.30;
+ang_sample = -0.30:0.05:0.30;
 vel_sample = 0;
 omg_sample = 0;
 

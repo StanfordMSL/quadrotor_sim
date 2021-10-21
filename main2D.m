@@ -27,13 +27,27 @@ dt = model.est.dt;
 T = 0:dt:N*dt;
 
 %% Sample Test
+figure(2)
 traj_plot(Xs);
 hold on
 N_test = size((1:10:N),2);
 succ = zeros(3,N_test);
 counter = 1;
-step = 20;
-for j = 1:10:N-step
+step = 30;
+
+figure(3)
+clf
+hold on
+% xlim([-1 1])
+% ylim([ 0 2])
+% zlim([pi-0.3 pi+0.3])
+xlabel('x')
+ylabel('y')
+zlabel('\theta')
+daspect([1 1 1])
+
+% for j = 1:10:N-step
+for j = 50:50:50
     Xbar = Xs(:,j:j+step+1);
     Ubar = Us(:,j:j+step);
     Lbar = Ls(:,:,j:j+step);
@@ -42,6 +56,9 @@ for j = 1:10:N-step
 %     Lbar = Ls(:,:,j:end);
     
     xj = Xbar(:,1);
+    uj = Ubar(:,1);
+    
+    plot3(xj(1),xj(2),xj(3),'x')
     [X1,X2,X3,X4,X5,X6,Ns] = mesh_gen(xj);
 
     x_g = zeros(6,0);
@@ -56,8 +73,8 @@ for j = 1:10:N-step
             x_b = [x_b x0];    
         end
     end
-    plot(x_b(1,:),x_b(2,:),'r*')
-    plot(x_g(1,:),x_g(2,:),'bo')
+%     plot3(x_b(1,:),x_b(2,:),x_b(3,:),'*')
+    plot3(x_g(1,:),x_g(2,:),x_g(3,:),'o')
     
     ratio = size(x_g,2)/(size(x_b,2)+size(x_g,2));
     succ(1,counter) = size(x_g,2);
@@ -67,6 +84,8 @@ for j = 1:10:N-step
     counter = counter + 1;
 end
 
+A = A_calc(xj,uj);
+ellipse_plot(xj,A)
 %% Jacobian and Hessian
 
 sens = zeros(1,N_test);
