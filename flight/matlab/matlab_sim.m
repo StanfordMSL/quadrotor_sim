@@ -83,7 +83,7 @@ while (k_act < N_sim)
                 del_x = ses.s - traj.x_br(:,k_fmu);
 
                 u_op = traj.u_br(:,k_fmu);
-                u_cl = traj.L_br(:,:,k_fmu)*del_x;
+                u_cl = traj.L_br(:,:,k_fmu)*del_x;                
                 u_now = u_op + u_cl;
                 
                 [u_wr,br] = br_ctrl(ses.x,u_now,br);

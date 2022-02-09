@@ -8,17 +8,11 @@ rehash toolboxcache
 %% Initialize Model, Objective, Constraint and Misc. Parameters
 
 % Model Parameters
-model = model_init('carlito','match','precise');  
-% model = model_init('carlito_himo','match','precise');  
-% model = model_init('iris','match','precise');  
+model = model_init('carlito','match','precise');    
 
 % Objective and Constraints
-% obj  = race_init('hover','empty');
-% obj  = race_init('line','gate_center');
-% obj  = race_init('line','gate1');
-% obj  = race_init('line','gate2');
-obj  = race_init('line','slit');
-% obj = race_update(0);
+% obj = race_init('hover','empty');
+obj = race_init('line','empty'); 
 
 % Cost Mode
 cost_mode = 'terminal';      % || con_only || terminal || min_time || min_energy ||
@@ -64,13 +58,13 @@ log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 % % ROS -> Gazebo
 % log_G = ros_flight(traj_a,obj,'gazebo','single');
 
-% ROS -> Actual
-log_A = ros_flight(traj_a,obj,'actual','single');
+% % ROS -> Actual
+% log_A = ros_flight(traj_a,obj,'actual','single');
 
 %% Plot the States, Animate and Debug
 
-% animation_plot(log_M,obj,'persp','show');
+animation_plot(log_M,obj,'persp','show');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_G)
-sim_compare(traj,log_M,log_A)
+% sim_compare(traj,log_M,log_A)
