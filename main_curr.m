@@ -64,13 +64,13 @@ log_M = matlab_sim(traj_a,obj_a,model,'al_ilqr',input_mode,'bypass');
 % % ROS -> Gazebo
 % log_G = ros_flight(traj_a,obj,'gazebo','single');
 
-% ROS -> Actual
-log_A = ros_flight(traj_a,obj,'actual','single');
+% % ROS -> Actual
+% log_A = ros_flight(traj_a,obj,'actual','single');
 
 %% Plot the States, Animate and Debug
 
-% animation_plot(log_M,obj,'persp','show');
+animation_plot(log_M,obj,'persp','show');
 
 % sim_compare(traj,log_M,log_M)
 % sim_compare(traj,log_M,log_G)
-sim_compare(traj,log_M,log_A)
+% sim_compare(traj,log_M,log_A)
