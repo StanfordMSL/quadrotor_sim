@@ -1,21 +1,15 @@
-function traj = fout2traj(f_out,model,x0,hz)
+function traj = wr2traj(U,obj,model,hz)
 
 % Unpack some stuff
 dt_fmu = 1/hz;
-N_tr = size(f_out,3); 
+N = size(U,2)+1; 
 
 %%% Full State Nominal Trajectory
-X      = zeros(13,N_tr);
-X(:,1) = x0;
-
-%%% Wrench
-U = zeros(4,N_tr-1);
+X      = zeros(13,N);
+X(:,1) = obj.x(:,1);
 
 % Run the trajectory forward to generate the various terms
-for k = 1:N_tr-1
-    % Wrench through Pos Att
-    U(:,k) = pa_ctrl(X(:,k),f_out(:,:,k),model);
-
+for k = 1:N-1
     % Nominal Parameter Input
     theta = [model.m ; model.Ipp ; model.Df(1:3,1)];
     
@@ -24,6 +18,6 @@ for k = 1:N_tr-1
 end
 
 % Store it in the desired format
-traj.t_fmu = 0:dt_fmu:(N_tr-1)*dt_fmu;
+traj.t_fmu = 0:dt_fmu:(N-1)*dt_fmu;
 traj.X = X;
 traj.U = U;

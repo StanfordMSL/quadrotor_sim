@@ -1,0 +1,51 @@
+addpath(genpath(pwd));
+clear; clc; 
+
+%% Initialize Model, Objective, Constraint and Misc. Parameters
+
+% Generate Model Parameters
+model = param_gen('carlito','mismatch');
+
+% Generate Objective
+obj  = obj_gen('line');
+
+% Generate Simulation Dynamics Function
+quad_gen(model,'simulation')
+
+% Generate Nominal Trajectory
+traj_nom = ms_traj_gen(obj,model.est,200);
+
+% Generate Actual Trajectory
+traj_act = wr2traj(traj_nom.U,obj,model.act,200);
+
+%% Plot Trajectory
+compare_plot(traj_nom,traj_act,obj,'show',100)
+
+%% Generate Cost Function
+Xnom = traj_nom.X;
+Unom = traj_nom.U;
+z = [model.est.m ; model.est.Ipp ; model.est.Df(1:3,1)];
+
+xo = sym('xo',[13 1],'real');
+u = sym('u',[4 1],'real');
+theta = sym('theta',[7 1],'real');
+
+J1 = 0;
+x = xo;
+for k = 1:3
+    % Calculate Cost
+    xnom = Xnom(:,k);
+    delx = x-xnom;
+    J1 = J1 + 0.5*(delx'*delx);
+    J1 = simplify(J1);
+
+    
+    if k < 3
+        x = quad_sim(x,Unom(:,k),z,200);
+    end
+end
+
+z = [x0 ; theta];
+dJ1 = jacobian(J1,z);
+
+output = double(subs(dJ1,xo,Xnom(:,1)))

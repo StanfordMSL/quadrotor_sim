@@ -1,0 +1,24 @@
+,Values,,,Units,Description
+Mass,,,,,
+mass,5.30E-01,,,kg,Quadcopter Mass
+Ipp,1.00E-03,1.60E-03,2.00E-03,kgm2,"[Ixx,Iyy,Izz]"
+Ipd,0.00E+00,0.00E+00,0.00E+00,kgm2,"[Ixy,Ixz,Iyz]"
+g,9.81,,,ms-2,Acceleration due to gravity
+Aerodynamics,,,,,"Linear Drag Force (Df), Linear Drag Torque (Dt) and Rotational Drag Torque (Bt) coefficients with structure (_2)_^2+(_1)_+(_0)"
+Df,1.00E-04,0.00E+00,0.00E+00,-,"x [k2,k1,k0]"
+,1.00E-04,0.00E+00,0.00E+00,-,"y [k2,k1,k0]"
+,1.00E-04,0.00E+00,0.00E+00,-,"z [k2,k1,k0]"
+Motor,,,,,"Motor Thrust = (k2)w^2+(k1)w+(k0), where w is propeller angular rate in rad/s"
+kw,2.05E-07,,,-,thrust coefficient (kw^2)
+b,0.0157,,,-,yaw gain
+p_m,6.00E-02,-6.00E-02,0.00E+00,m,"m1 [x,y,z]"
+,-6.00E-02,6.00E-02,0.00E+00,m,"m2 [x,y,z]"
+,6.00E-02,6.00E-02,0.00E+00,m,"m3 [x,y,z]"
+,-6.00E-02,-6.00E-02,0.00E+00,m,"m4 [x,y,z]"
+w_lim,0.00E+00,4.25E+03,,rad/s,"[min,max]"
+mass,1.00E-02,,,kg,Rotor Mass
+Ipp,5.59E-07,5.59E-07,4.51E-07,kgm2,"[Ixx,Iyy,Izz]"
+Ipd,0.00E+00,0.00E+00,0.00E+00,kgm2,"[Ixy,Ixz,Iyz]"
+,,,,,
+Notes,,,,,
+"x front, y left",,,,,

@@ -1,20 +1,27 @@
-function u_wr = pa_ctrl(x_now,f_out,pa,model)     
+function u_wr = pa_ctrl(x_now,f_out,model)     
 
 % Some useful constants
+Kp = [ 1.00 0.00 0.00 ;
+       0.00 1.00 0.00 ;
+       0.00 0.00 1.80];
+Kv = [ 1.00 0.00 0.00 ;
+       0.00 1.00 0.00 ;
+       0.00 0.00 1.80];
+Kr = 0.1.*eye(3);
+Kw = 0.1.*eye(3);
+
+
 e1 = [ 1 ; 0 ; 0];
 e2 = [ 0 ; 1 ; 0];
 e3 = [ 0 ; 0 ; 1];
 eta = 1e-9;
 
 % Unpack some stuff
-Kp = pa.Kp;
-Kv = pa.Kv;
-Kr = pa.Kr;
-Kw = pa.Kw;
-
+q = x_now(7:10,1);
+q_c = [q(1) ; -q(2) ; -q(3) ; -q(4)];
 p_now = x_now(1:3,1);
 v_now = x_now(4:6,1);
-R_now = quat2rotm(x_now(7:10,1)');
+R_now = quat2rotm(q');
 w_now = x_now(11:13,1);
 
 x_b = R_now*e1;

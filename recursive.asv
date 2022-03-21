@@ -1,0 +1,43 @@
+function output = recursive(traj_nom,traj_act,model)
+
+x  = sym('x',[13 1],'real');
+u  = sym('u',[4 1],'real'); 
+th = sym('th',[7 1],'real'); 
+s = [x;u;th];
+
+f = quad_sim(x,u,th,200);
+
+Dx  = jacobian(f,x);
+Dx = simplify(Dx);
+Dth = jacobian(f,th);
+Dth = simplify(Dth);
+
+DJ = zeros(1,10);
+for k = 1:3
+    % Unpack 
+    xk = traj_act.X(:,k);
+    uk = traj_act.U(:,k);
+    xb = traj_nom.X(:,k);
+    ub = traj_nom.U(:,k);
+    
+    thk = [model.m ; model.Ipp ; model.Df(1:3,1)];
+    sk = [xk ; uk ; thk];
+
+    % Calculate Cost
+    delx = xk-xb;
+    c1 = subs(Dx,s,sk)
+    c3 = subs(Dth,s,sk)
+
+    if k == 1
+        c2 = subs(Dth,s,sk)
+
+        C = c
+    else
+
+    end
+end
+
+% s = [xo ; theta];
+% eqns = jacobian(J,s) == zeros(20,1)
+% 
+output = 1;
