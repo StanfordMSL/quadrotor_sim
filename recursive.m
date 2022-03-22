@@ -9,11 +9,15 @@ f = quad_sim(x,u,th,200);
 
 Dx  = jacobian(f,x);
 Dx = simplify(Dx);
+
 Dth = jacobian(f,th);
 Dth = simplify(Dth);
+
 c1 = eye(13);
 
 output = zeros(1,20);
+
+function rA = recA(X,)
 for k = 1:3
     % Unpack 
     xk = traj_act.X(:,k);

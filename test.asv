@@ -10,7 +10,6 @@ N = 10;
 s0 = [1 ; 5];
 
 % Brute Force
-tic
 xk = x0;
 for k = 1:N
     xk = dyn(xk,th,c,dt);
@@ -18,7 +17,7 @@ end
 
 dF_br  = jacobian(xk,s);
 out_br = double(subs(dF_br,s,s0));
-toc
+
 
 % Recursive
 tic

@@ -22,6 +22,6 @@ for k = 1:N
 end
 
 s = [xo ; theta];
-eqns = jacobian(J,s) == zeros(20,1)
+eqns = jacobian(J,s) == zeros(20,1);
 
 output = solve(eqns,s);
