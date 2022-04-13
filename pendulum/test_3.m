@@ -1,76 +1,95 @@
 clear 
 
-% Setup
-model.dt = 0.05;
+% Define Model Parameters and Generate Corresponding System
+model.dt = 0.01;
 model.g = 9.81;
 model.m = 0.1;
 model.l = 1.5;
 
 dyn_gen(model)
 
-% Generate Ground Truth and Sensor Data
-N = 200;
-x0 = [pi/2 ; 0.0];
-th = [0.3  ; 1.5];
-n = size(x0,1);
-m = size(th,1);
+% Lock RNG
+rng('default');
 
-[Xact,Xdat] = data_gen(N,x0,th);
+% Fixed Parameters
+Nsim = 200;                         % Number of steps in trajectory 
+Nvar = 1000;                        % Number of variations of initial conditions/parameter tests
+s0  = [1.2 ; 0.0 ; 0.5 ; 1.0];      % Warm Start (guess) [ x0 ; th ]
 
-% Gauss Newton (full kickback)
-s0  = [0.3 ; 0.0 ; 0.1 ; 1.0];             % Warm Start (guess)
-% s0 = [pi/2 ; 0.0 ; 0.3 ; 1.5];             % Warm Start (actual answer)
+%% Test Across Random Initial Conditions
 
-[s,Xhat] = GN_full(s0,Xdat);
+Jout = zeros(2,Nvar);
+Tout = zeros(2,Nvar);
+Nout = zeros(2,Nvar);
 
-s_act = [x0 ; th];
-s_est = s;
+for k = 1:Nvar
+    % Generate Ground Truth and Sensor Data
+    x0 = [-pi + 2.*pi.*rand() ; -10.0 + 20.0.*rand()];
+    th = [rand() ; 1.0 + rand()];
+    [Xact,Xdat] = data_gen(Nsim,x0,th);
+    
+    % Parameter Estimation
+    [s,J,Tcomp,Nitr] = param_est(Xact,Xdat,s0);
+    
+    % Precision Trick
+    if (J(1) >= 100) && (J(2) < 100)
+        [s,J,Tcomp,Nitr] = param_est(Xact,Xdat,s(:,2));
+    end
+    
+    Jout(:,k) = J';
+    Tout(:,k) = Tcomp';
+    Nout(:,k) = Nitr';
+end
 
-output = [s_act s_est];
+%% Process the Data
+Jproc = Jout(:,all(Jout<100));
+Tproc = Tout(:,all(Jout<100));
+Nproc = Nout(:,all(Jout<100));
 
-% % Plot
-% figure(1)
-% clf
-% 
-% Pact = th2xy(Xact(1,:),model.l);
-% Pdat = th2xy(Xdat(1,:),model.l);
-% Phat = th2xy(Xhat(1,:),model.l);
-% 
-% h_act = plot(Pact(1,1),Pact(2,1),'*');
-% hold on
-% h_dat = plot(Pdat(1,1),Pdat(2,1),'o');
-% h_hat = plot(Phat(1,1),Phat(2,1),'x');
-% 
-% xlim([-1.5 1.5]);
-% ylim([-2.0 1.0]);
-% 
-% for k = 2:N
-%     h_act(1).XData = Pact(1,1:k);
-%     h_act(1).YData = Pact(2,1:k);
-%     
-%     h_dat(1).XData = Pdat(1,1:k);
-%     h_dat(1).YData = Pdat(2,1:k);
-%     
-%     h_hat(1).XData = Phat(1,1:k);
-%     h_hat(1).YData = Phat(2,1:k);
-% 
-%     drawnow
-%     pause(0.05)
-% end
+score = zeros(1,4);
+for k = 1:Nvar
+    if (Jout(1,k) < 100) && (Jout(2,k) >= 100)
+        score(1,1) = score(1,1) + 1;        % comp wins
+    elseif (Jout(1,k) >= 100) && (Jout(2,k) < 100)
+        score(1,2) = score(1,2) + 1;        % indv wins
+    elseif (Jout(1,k) < 100) && (Jout(2,k) < 100)
+        score(1,3) = score(1,3) + 1;        % both win
+    else
+        score(1,4) = score(1,4) + 1;        % both lose
+    end
+end
 
-figure(2)
+score_normalized = score./Nvar;
+
+%% Plot Performance
+figure(1)
 clf
 
-subplot(2,1,1)
-plot(Xact(1,:),'LineWidth',2.0);
-hold on
-plot(Xdat(1,:),'--');
-plot(Xhat(1,:),'LineWidth',2.0);
-legend('actual','data','estimate');
+subplot(4,1,1)
+bins = categorical({'Comp1 Indv0','Comp0 Indv1','Comp1 Indv1','Comp0 Indv0'});
+bins = reordercats(bins,{'Comp1 Indv0','Comp0 Indv1','Comp1 Indv1','Comp0 Indv0'});
+bar(bins,score_normalized);
 
-subplot(2,1,2)
-plot(Xact(2,:),'LineWidth',2.0);
+ylim([0.0 1.0]);
+title('Robustness');
+
+subplot(4,1,2)
+plot(Jproc(1,:));
 hold on
-plot(Xdat(2,:),'--');
-plot(Xhat(2,:),'LineWidth',2.0);
-legend('actual','data','estimate');
+plot(Jproc(2,:));
+legend('composite','individual')
+title('Comp1 Indv1, Costs');
+
+subplot(4,1,3)
+plot(Tproc(1,:));
+hold on
+plot(Tproc(2,:));
+legend('composite','individual')
+title('Comp1 Indv1, Compute Time');
+
+subplot(4,1,4)
+plot(Nproc(1,:));
+hold on
+plot(Nproc(2,:));
+legend('composite','individual')
+title('Comp1 Indv1, Iterations');

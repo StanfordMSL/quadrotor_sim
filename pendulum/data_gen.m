@@ -1,11 +1,17 @@
 function [Xact,Xdat] = data_gen(N,x0,th)
 
-rng('default')
+% Gain
+K1 = 0.2;
+K2 = 0.5;
+
+% rng('default')
 
 Xact = zeros(2,N);
 Xdat = zeros(2,N);
 Xact(:,1) = x0;
-Xdat(:,1) = [th(2)  ; 0.0];
+
+v = K1.*(2.*rand(2,1)-1);
+Xdat(:,1) = x0 + v;
 
 for k = 1:N-1
 %     % Different Drags
@@ -23,7 +29,7 @@ for k = 1:N-1
     % Regular
     Xact(:,k+1) = x_calc(Xact(:,k),th);
     
-    v = 0.5.*(2.*rand(2,1)-1);
+    v = K2.*(2.*rand(2,1)-1);
     Xdat(:,k+1) = Xact(:,k+1) + v;
 end
 
